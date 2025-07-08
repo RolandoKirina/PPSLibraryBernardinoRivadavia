@@ -1,0 +1,39 @@
+.employee-form {
+    width: 60%;
+    height: 80%;
+    border: 0.2em solid var(--light-primary-2);
+    border-radius: 1em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.employee-form form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 70%;
+    height: 1000%;
+}
+
+.input-form {
+    width: 100%;
+    height: 4em;
+    border-radius: 0.8em;
+    border: 0.1em solid var(--light-primary-2);
+    padding-left: 0.6em;
+    font-size: medium;
+    color: var(--place-holder-register);
+}
+
+.register-button {
+    width: 40%;
+    height: 5em;
+}
+
+a {
+    color: var(--register-subtitle);
+}
+
