@@ -1,0 +1,33 @@
+.header{
+  height: 6.25em;
+  background-color: var(--primary-dark-2);
+  width: 100%;
+
+}
+.header div{
+  display: flex;
+
+}
+
+.title{
+  justify-content: center;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+   height: 100%;
+}
+
+.menu{
+  margin-left: 1em;
+}
+.title {
+  display: flex;
+  align-items: center;
+  margin: 0 auto; 
+  gap: 10px;
+  color: white;
+}
+

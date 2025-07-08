@@ -1,6 +1,5 @@
-import { useState } from 'react'
-import './App.css'
-import Header from './components/Header.jsx'
+import './components/header/Header.css'
+import Header from './components/header/Header.jsx'
 
 function App() {
 
@@ -8,7 +7,6 @@ function App() {
     <>
       <Header />
     </>
-
   )
 }
 
