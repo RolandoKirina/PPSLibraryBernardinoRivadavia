@@ -1,5 +1,6 @@
 import logo from '../../assets/img/logo_biblioteca_rivadavia.svg';
 import menuleft from '../../assets/img/menu-arrow-left.png';
+import './Header.css';
 
 export default function Header(){
     return (

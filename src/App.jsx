@@ -1,6 +1,5 @@
-import './App.css'
 import RegisterEmployee from './pages/RegisterEmployee/RegisterEmployee';
-import Header from './components/Header.jsx'
+import Header from './components/header/Header';
 
 function App() {
 

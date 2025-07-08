@@ -35,7 +35,6 @@
     height: 4em;
     border-radius: 0.8em;
     font-size: larger;
-    background-color: var(--sucess);
     box-shadow: 0.08em 0.08em 0.08em rgb(190, 189, 189);
 }
 
