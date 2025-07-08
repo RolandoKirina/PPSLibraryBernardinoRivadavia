@@ -10,7 +10,10 @@ export default function EmployeeForm() {
             <input type='text' className='input-form' placeholder='Nombre completo' />
             <input type='email' className='input-form' placeholder='Correo electronico'/>
             <input type='password' className='input-form' placeholder='Contraseña'/>
-            <input type='text' className='input-form' placeholder='Elegir rol'/>
+            <select>
+                <option value=''>Elige un rol</option>
+                <option value='admin'>Administrador</option>
+            </select>
            
 
             <button className='register-button' type='button'>Registrarte</button>
