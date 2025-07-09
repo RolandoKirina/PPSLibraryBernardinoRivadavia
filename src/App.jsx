@@ -1,6 +1,5 @@
 import RegisterEmployee from './pages/RegisterEmployee/RegisterEmployee';
-import Books from './components/sidebar/Sidebar.jsx';
-import Author from './components/sidebar/Sidebar.jsx';
+import BookSection from './pages/BookSection/BookSection.jsx';
 import Layout from './layout/Layout';
 // import Header from './components/header/Header';
 
