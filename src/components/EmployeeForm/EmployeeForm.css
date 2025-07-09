@@ -12,11 +12,19 @@
 .employee-form form {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-evenly;
     width: 70%;
     height: 100%;
     margin-top: 1em;
+}
+
+label { 
+    font-size: large;
+    font-family: var(--font-titles);
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    letter-spacing: 0.05em;
 }
 
 .input-form, select {
@@ -30,12 +38,35 @@
     letter-spacing: 0.15em;
 }
 
+.form-button {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 1em;
+}
+
 .register-button {
     width: 35%;
     height: 4em;
     border-radius: 0.8em;
     font-size: larger;
-    box-shadow: 0.08em 0.08em 0.08em rgb(190, 189, 189);
+    background-color: var(--primary-light-2);
+    color: var(--white);
+    /* box-shadow: 0.08em 0.08em 0.08em rgb(190, 189, 189); */
+    border: 0.20em solid var(--sucess);
+}
+
+.register-button:hover {
+    background-color: var(--primary-light);
+    transition: background-color 0.30s ease-in-out;
+}
+
+.message {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 1em;
+    margin-bottom: 1em;
 }
 
 a {
@@ -43,5 +74,9 @@ a {
     font-size: large;
     letter-spacing: 0.05em;
     cursor: pointer;
+}
+
+.required {
+    color: var(--error);
 }
 

@@ -11,8 +11,10 @@ export default function Header(){
                     <img src={menuleft} alt="Menú" />
                 </div>
                 <div className="title">
-                    <img src={logo} alt="Logo Biblioteca Rivadavia" />
-                    <h1>Biblioteca Popular Bernardino Rivadavia</h1>
+                    <div>
+                        <img src={logo} alt="Logo Biblioteca Rivadavia" />
+                        <h1>Biblioteca Popular Bernardino Rivadavia</h1>
+                    </div>
                 </div>
             </div>
     </header>

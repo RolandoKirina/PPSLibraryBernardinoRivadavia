@@ -22,7 +22,9 @@ button {
   --secondary-dark-2:#806A19;
   --placeholder-register: #5A524C;
   --register-subtitle: #9A7E1F;
+  --error: #EF1414;
   --accent:#A33182;
+  --sucess: #7EED1E;
   --font-titles:'Merriweather', serif;
   --font-texts:"Roboto",sans-serif;
 }

@@ -8,9 +8,6 @@ function App() {
 
   return (
     <>
-      {/* <Header />
-      <RegisterEmployee/> */}
-
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<Layout />}> 
