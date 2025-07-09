@@ -33,11 +33,7 @@ export default function Header(){
                 </div>
             </div>
     </header>
-
-    
-
-               
-                <Sidebar isOpen={open} />
+        <Sidebar isOpen={open} />
             
         </>
     )

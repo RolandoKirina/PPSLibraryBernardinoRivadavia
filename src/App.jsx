@@ -1,4 +1,6 @@
 import RegisterEmployee from './pages/RegisterEmployee/RegisterEmployee';
+import Books from './components/sidebar/Sidebar.jsx';
+import Author from './components/sidebar/Sidebar.jsx';
 import Layout from './layout/Layout';
 // import Header from './components/header/Header';
 
@@ -16,6 +18,10 @@ function App() {
           <Route path='/' element={<Layout />}> 
             <Route path='/register' element={<RegisterEmployee/>}/>
           </Route>
+          <Route path='/' element={<Layout />}> 
+            <Route path='/books' element={<BookSection/>}/>
+          </Route>
+         
         </Routes>
       </BrowserRouter>
     </>
