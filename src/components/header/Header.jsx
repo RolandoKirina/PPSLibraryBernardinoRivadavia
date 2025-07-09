@@ -1,5 +1,5 @@
 import logo from '../../assets/img/logo_biblioteca_rivadavia.svg';
-import menuleft from '../../assets/img/menu-arrow-left.png';
+import menuleft from '../../assets/img/menu_arrow_left.svg';
 import './Header.css';
 
 export default function Header(){
@@ -11,8 +11,13 @@ export default function Header(){
                     <img src={menuleft} alt="Menú" />
                 </div>
                 <div className="title">
-                    <img src={logo} alt="Logo Biblioteca Rivadavia" />
-                    <h1>Biblioteca Popular Bernardino Rivadavia</h1>
+                    <div> 
+                        <div className='logo' > 
+                        <img src={logo} alt="Logo Biblioteca Rivadavia" />                
+                        </div>
+                          <h1>Biblioteca Popular Bernardino Rivadavia</h1>
+                    </div>
+                   
                 </div>
             </div>
     </header>

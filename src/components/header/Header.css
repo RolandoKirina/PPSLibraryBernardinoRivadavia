@@ -8,9 +8,17 @@
   display: flex;
 
 }
+.menu{
+  margin-left: 1em;
+}
+.logo{
+  width: 8em;
+  height: 8em;
 
-.title{
-  justify-content: center;
+}
+.logo img{
+  width: 100%;
+  height: 100%;
 }
 
 .header-container {
@@ -20,14 +28,16 @@
    height: 100%;
 }
 
-.menu{
-  margin-left: 1em;
-}
+
 .title {
   display: flex;
   align-items: center;
+  justify-content: center;
   margin: 0 auto; 
-  gap: 10px;
   color: white;
+
 }
 
+.title div {
+  align-items: center;
+}
