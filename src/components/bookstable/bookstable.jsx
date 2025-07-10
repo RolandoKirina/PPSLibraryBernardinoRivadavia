@@ -1,5 +1,5 @@
 
-export default function bookstable() {
+export default function Bookstable() {
 
     return(
     <>

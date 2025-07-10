@@ -1,10 +1,11 @@
+import Bookstable from '../../components/Bookstable/Bookstable.jsx';
 
 
 export default function BookSection() {
     return (
         <>
             <section>
-          <h1>hola</h1>
+            <Bookstable/>
             </section>
         </>
     );
