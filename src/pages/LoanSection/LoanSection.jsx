@@ -1,5 +1,6 @@
 import LoanFilters from "../../components/loan/filters/LoanFilters.Jsx";
 
+
 export default function LoanSection() {
     return (
         
@@ -11,7 +12,7 @@ export default function LoanSection() {
         <>
             <main>
                 <LoanFilters />
-
+                
             </main>
         
         </>
