@@ -1,4 +1,4 @@
-import LoanFilters from "../../components/loan/filters/LoanFilters.Jsx";
+import LoanFilter from "../../components/loanfilter/LoanFilter";
 
 
 export default function LoanSection() {
@@ -11,8 +11,7 @@ export default function LoanSection() {
 //buttons        
         <>
             <main>
-                <LoanFilters />
-                
+               <LoanFilter />
             </main>
         
         </>
