@@ -1,5 +1,6 @@
 .sidebar{
-    position: sticky;
+    position: absolute;
+    z-index: 100;
     background-color: var(--primary-dark-1);
     width: 15%;
     height: 30em;

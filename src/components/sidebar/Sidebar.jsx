@@ -8,6 +8,8 @@ import partner from '../../assets/img/options-icon.svg';
 export default function Sidebar({ isOpen }) {
 
     return   (
+
+        
 <>
           <nav className={`sidebar ${isOpen ? 'sidebar-active' : ''}`}>
             <h3><strong>Javier Ondicol</strong></h3>

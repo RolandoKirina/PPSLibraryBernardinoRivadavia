@@ -1,25 +1,33 @@
 
-export default function Bookstable() {
 
-    return(
-    <>
-        <div className='employee-form'>
-            <form>
-                <input type='text' className='input-form' placeholder='Nombre de usuario'/>
-                <input type='text' className='input-form' placeholder='Nombre completo' />
-                <input type='email' className='input-form' placeholder='Correo electronico'/>
-                <input type='password' className='input-form' placeholder='Contraseña'/>
-                <select>
-                    <option value=''>Elige un rol</option>
-                    <option value='admin'>Administrador</option>
-                </select>
-            
+export const BooksTable = ({ columns, data }) => {
+  return (
+    <div className="content">
+    <table className="table">
+        <thead>
+          <tr>
+            {columns.map(col => (
+              <th key={col.accessor} className={col.className ? col.className : ''}>
+                {col.header}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((row, i) => (
+            <tr key={i}>
+              {columns.map((col, j) => (
+                <td key={j} className={col.className ? col.className : ''}>
+                  {col.render ? col.render(row[col.accessor], row) : row[col.accessor]}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+   
+    
+};
 
-                <button className='register-button' type='button'>Registrarte</button>
-
-                <a>¿ Ya tienes una cuenta ?</a>
-            </form>
-        </div>
-    </>
-    );
-}
