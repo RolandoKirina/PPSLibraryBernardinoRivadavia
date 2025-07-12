@@ -1,0 +1,18 @@
+
+.booksection{
+    display: flex;
+    width: 100%;
+}
+.book-title {
+
+    height: 6em;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: var(--primary-light);
+}
+
+.book-title h2 {
+    margin-left: 1em;
+    font-size: 2em;
+}

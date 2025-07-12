@@ -1,6 +1,5 @@
 
-
-export const BooksTable = ({ columns, data }) => {
+export const Table = ({ columns, data }) => {
   return (
     <div className="content">
     <table className="table">

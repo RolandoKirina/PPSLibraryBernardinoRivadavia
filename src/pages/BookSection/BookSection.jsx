@@ -1,9 +1,11 @@
-import {BooksTable} from '../../components/bookstable/BooksTable.jsx';
 import DeleteIcon from '../../assets/img/delete-icon.svg';
 import EditIcon from '../../assets/img/edit-icon.svg';
 import DetailsIcon from '../../assets/img/details-icon.svg';
-import './Table.css'
- const BookSection = () => {
+import { Table } from '../../components/table/Table.jsx';
+import BookFilter from  '../../components/bookfilter/BookFilter.jsx';
+import  '../../components/Table/Table.css';
+import './BookSection.css';
+const BookSection = () => {
 
   const books = [
     { id: 1, title: 'El principito', code_inventory:202 },
@@ -45,10 +47,20 @@ import './Table.css'
   ];
 
   return (
-    <section>
-      <h2>Libros disponibles</h2>
-      <BooksTable columns={columns} data={books} />
+    <>
+    
+    <section className='booksection'>
+      <BookFilter/>
+      <div className="bookinf">
+        <div className="book-title">
+              <h2>Listado de libros</h2>
+          </div>
+        <Table columns={columns} data={books} />
+      </div>
+       
     </section>
+    </>
+    
   );
 };
 
