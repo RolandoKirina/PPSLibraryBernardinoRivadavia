@@ -4,6 +4,7 @@ import Layout from './layout/Layout';
 // import Header from './components/header/Header';
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import LoanSection from './pages/LoanSection/LoanSection';
+import AddLendBook from './pages/AddLendbook/AddLendBook.jsx';
 
 function App() {
 
@@ -14,11 +15,9 @@ function App() {
           <Route path='/' element={<Layout />}> 
             <Route path='/register' element={<RegisterEmployee/>}/>
             <Route path='/loans' element={<LoanSection/>}/>
+             <Route path='/books' element={<BookSection/>}/>
+            <Route path='/add-book-lend' element={<AddLendBook/>}/>
           </Route>
-          <Route path='/' element={<Layout />}> 
-            <Route path='/books' element={<BookSection/>}/>
-          </Route>
-         
         </Routes>
       </BrowserRouter>
     </>

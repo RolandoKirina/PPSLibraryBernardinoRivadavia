@@ -5,8 +5,21 @@ import EditIcon from '../../assets/img/edit-icon.svg';
 import DetailsIcon from '../../assets/img/details-icon.svg';
 import { Table } from "../../components/table/Table";
 import LoanButtons from "../../components/loanbuttons/LoanButtons";
+import { useState } from "react";
+import LoanForm from "../../components/loanform/LoanForm";
 
 export default function LoanSection() {
+    const [openLoanForm, setOpenLoanForm] = useState(false);
+
+    //add loan form popup
+
+    function displayLoanform() {
+        setOpenLoanForm(true);
+    }
+
+    function closeLoanForm() {
+        setOpenLoanForm(false);
+    }
     
     const loans = [
     { id: 1, reader_name: 'Carolina Gómez', title: 'La sombra del viento' },
@@ -59,8 +72,9 @@ export default function LoanSection() {
                     <h2>Listado de Prestamos</h2>
                 </div>
                 <div className="loans">
-                    <Table  columns={columns} data={loans}>
-                        <LoanButtons />
+                    <Table columns={columns} data={loans}>
+                        <LoanButtons displayLoanform={displayLoanform}/>
+                        {openLoanForm && <LoanForm closeLoanForm={closeLoanForm} />}
                     </Table>
                     
                 </div>

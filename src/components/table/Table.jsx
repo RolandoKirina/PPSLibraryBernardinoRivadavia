@@ -1,9 +1,9 @@
 import Pagination from "../pagination/Pagination";
 
-export const Table = ({ columns, data, children }) => {
+export const Table = ({ columns, data, children, popupLength }) => {
   return (
     <div className="content">
-      <table className="table">
+      <table className={`table ${popupLength ? popupLength : ''}`}>
           <thead>
             <tr>
               {columns.map(col => (
@@ -25,7 +25,7 @@ export const Table = ({ columns, data, children }) => {
             ))}
           </tbody>
       </table>
-      <Pagination />
+      {data.length > 4 && <Pagination />}
       {children}
     </div>
   );

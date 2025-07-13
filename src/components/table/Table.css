@@ -1,8 +1,13 @@
 .table {
     width: 80%;
-    background-color: blue;
     margin-right: 1em;
 }
+
+.popup-length {
+  width: 100%;
+  margin-right: 0;
+}
+
 .table tbody,th{
     font-family: 'Roboto', sans-serif;
     color:var(--white)
@@ -14,6 +19,7 @@
     align-items: center;
     flex-direction: column;
     margin-top: 1em;
+    position: relative;
 }
 .table td {
     padding: 1.5em;
@@ -52,4 +58,10 @@
   width: 70%;
   height: 60%;
 }
+
+.button-table:hover {
+  background-color: var(--primary-light);
+  transition: background-color 0.30s ease-in-out;
+}
+
 
