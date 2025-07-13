@@ -1,0 +1,10 @@
+.lend-books-container {
+    width: 80%;
+    background-color: rgb(66, 18, 18);
+    margin-top: 2em;
+}
+
+.lend-books-container h2 {
+    color: var(--secondary-light-2);
+}
+
