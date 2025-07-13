@@ -1,67 +1,68 @@
-.filter-aside {
-    width: 25em;
-    
-    background-color: var(--primary-dark-1);
-    color: var(--white);
+.loan-filter-aside {
+  background-color: var(--primary-dark-1);
+  color: var(--white);
+  width: 15%;
 }
 
-.filter-title {
-    margin-left: 1em;
-    color: var(--secondary-light-2);
+.loan-filter-title {
+  display: flex;
+  justify-content: center;
+  color: var(--secondary-light-2);
 }
 
-.filter-title h3 {
-    letter-spacing: 0.05em;
-    padding-top: 1em;
-    font-size: 1.5em;
+.loan-filter-title h3 {
+  letter-spacing: 0.05em;
+  padding-top: 1em;
 }
 
-.filter-form form {
-    display: flex;
-    flex-direction: column;
-    width: 70%;
-    margin-left: 1em;
+.loan-filter-form form {
+  display: flex;
+  flex-direction: column;
+  margin-right: 1em;
+  margin-left: 1em;
+  margin-bottom: 1em;
 }
 
-.filter-form form input {
-    height: 2.5em;
+.loan-filter-form form input {
+  height: 2.5em;
 }
 
-.form-inputs, .form-inputs-checkbox {
-    display: flex;
-    flex-direction: column;
+/* Grupos de inputs */
+.loan-form-input-group,
+.loan-form-checkbox-group {
+  display: flex;
+  flex-direction: column;
 }
 
-.form-inputs label, .form-inputs-checkbox label{
-    margin: 0;
-    font-size: large;
+.loan-form-input-group label,
+.loan-form-checkbox-group label {
+  margin: 0;
 }
 
-.form-inputs h4, .form-inputs-checkbox h4 {
-    margin-top: 1em;
-    font-size: 1.4em;
-    margin-bottom: 0.5em;
+.loan-form-input-group h4,
+.loan-form-checkbox-group h4 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
 }
 
-.filter-form form label {
-    display: flex;
-    align-items: center;
+.loan-filter-form form label {
+  display: flex;
+  align-items: center;
 }
 
-.filter-form form label input {
-    margin-right: 0.5em;
-    
+.loan-filter-form form label input {
+  margin-right: 0.5em;
 }
 
-.form-inputs label {
-    margin-top: 1em;
-    margin-bottom: 0.5em;
+.loan-form-input-group label {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
 }
 
-.form-inputs input {
-    margin-top: 0.5em;
+.loan-form-input-group input {
+  margin-top: 0.5em;
 }
 
-.form-inputs h4 {
-    margin-bottom: 0;
+.loan-form-input-group h4 {
+  margin-bottom: 0;
 }

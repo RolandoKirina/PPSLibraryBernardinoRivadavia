@@ -12,6 +12,8 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    flex-direction: column;
+    margin-top: 1em;
 }
 .table td {
     padding: 1.5em;
@@ -44,6 +46,7 @@
     width: 4em;
     background-color: var(--primary-light-2);
     border-radius: 0.5em;
+    border: 0;
 }
 .button-table img {
   width: 70%;

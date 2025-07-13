@@ -1,0 +1,30 @@
+.pagination { 
+    width: 80%;
+    margin-right: 1em;
+}
+
+.pagination-options {
+    height: 100%;
+    margin-top: 1em;
+}
+
+.number-buttons button {
+    min-width: 3.5em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    height: 4em;
+    border: 0.15em solid black;
+    border-right: 0;
+    font-family: var(--font-texts);
+    letter-spacing: 0.2em;
+}
+
+.number-buttons button:first-child {
+    background-color: var(--secondary);
+}
+
+.number-buttons button:last-child {
+    border-right: 0.15em solid black;
+
+}
+
