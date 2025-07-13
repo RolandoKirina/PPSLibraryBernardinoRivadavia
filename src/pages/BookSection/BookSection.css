@@ -3,8 +3,12 @@
     display: flex;
     width: 100%;
 }
-.book-title {
 
+.bookinf {
+    width: 100%;
+}
+
+.book-title {
     height: 6em;
     display: flex;
     justify-content: flex-start;
@@ -15,4 +19,5 @@
 .book-title h2 {
     margin-left: 1em;
     font-size: 2em;
+    display: inline-block;
 }
