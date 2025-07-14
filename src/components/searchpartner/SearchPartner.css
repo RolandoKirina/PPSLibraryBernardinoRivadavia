@@ -1,6 +1,6 @@
 .search-partner-container {
     width: 80%;
-    margin-top: 2em;
+    margin-top: 1em;
 }
 
 .search-partner-container h2 {
@@ -35,3 +35,10 @@
     background-color: var(--primary-light-2);
     color: var(--white);
 }
+
+.search-partner-buttons button:hover {
+    background-color: var(--primary-light);
+    transition: background-color 0.30s ease-in-out;
+}
+
+  

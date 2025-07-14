@@ -1,0 +1,86 @@
+.add-lend-book-section {
+    width: 100%;
+    background-color: var(--white);
+    display: flex;
+    justify-content: center;
+}
+
+.add-lend-book-container {
+    width: 25em;
+    background-color: var(--primary-dark-2);
+    border: 0.15em solid var(--primary-light-2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 0.2em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.add-lend-book-title {
+    width: 100%;
+    height: 3em;
+    background-color: var(--primary-light-2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--secondary-light-2);
+}
+
+.add-lend-book-form {
+    margin-top: 1em;
+    width: 90%;
+    color: var(--white);
+}
+
+.add-lend-book-form form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.add-lend-book-inputs {
+    width: 50%;
+}
+
+.add-lend-book-form form div div {
+    display: flex;
+    flex-direction: column;
+}
+
+.add-lend-book-save {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1em;
+}
+
+.add-lend-book-save button {
+    height: 2.5em;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 0.2em;
+    background-color: var(--primary-light-2);
+    border-radius: 0.8em;
+    letter-spacing: 0.10em;
+    color: var(--white);
+    border: 0;
+    border: 0.15em solid var(--sucess);
+}
+
+.add-lend-book-save button:hover {
+    background-color: var(--primary-light);
+    transition: background-color 0.30s ease-in-out;
+}
+
+.add-lend-book-save button img {
+    height: 60%;
+    margin-right: 0.3em;
+    margin-left: 0.3em;
+}
+
+ .add-lend-book-checkbox input {
+    margin-right: 0.5em;
+ }
