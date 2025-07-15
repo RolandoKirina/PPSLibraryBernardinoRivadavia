@@ -1,0 +1,69 @@
+.footer{
+
+    display: flex;
+    justify-content: space-between;
+    height: 8em;
+    align-items: center;
+    background-color: var(--primary-dark-2);
+    
+}
+.footer div{
+    color: var(--white);
+}
+.footer div strong{
+    color: var(--secondary-light-2);
+}
+.icons-footer{
+    width: 1.5em;
+    height: 1.5em;
+}
+.icons-footer img{
+    width: 100%;
+    height: 100%;
+}
+
+.div-icons-footer{
+    flex-direction: row;
+}
+
+.footer-social {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8em;
+}
+
+.social-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.social-item a {
+  color: var(--white);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  cursor:pointer;
+}
+
+.social-item a:hover {
+  color: var(--secondary-light-2);
+}
+
+.social-icon {
+  width: 1.5em;
+  height: 1.5em;
+}
+
+.imgicons {
+  display: flex;
+  align-items: center;  
+  gap: 0.5em;          
+  
+}
+.maintitlefooter{
+    margin-left: 1em;
+}
+
+.bibliotecarivadavia{
+    margin-right: 1em;
+}

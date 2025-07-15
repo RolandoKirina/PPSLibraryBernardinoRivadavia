@@ -21,3 +21,30 @@
     color: var(--white);
     display: inline-block;
 }
+.inputCDU input{
+    display: flex;
+    width: 85%;
+    
+}
+.inputCodeCDU{
+    width: 35%;
+}
+
+.content{
+    display: flex;
+    flex-direction: row;
+}
+
+.labelinput{
+    margin-bottom: 2em;
+}
+.select{
+    height: 2.5em;
+}
+
+.titleh3{
+    margin-top: 1em;
+    color: var(--secondary-light-2);
+    text-align:left;
+}
+

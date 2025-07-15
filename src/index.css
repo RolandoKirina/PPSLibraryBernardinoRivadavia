@@ -45,6 +45,7 @@ h2{
 }
 h3{
   font-size: 1.25rem;
+  letter-spacing: 0.05em;
 }
 h4 {
   font-size: 1.150rem;
@@ -53,3 +54,21 @@ h4 {
 p, span, label, input, select, a {
   font-size: 1rem;
 }
+a {
+  text-decoration: none;
+}
+
+ html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    main {
+      flex: 1;
+    }
