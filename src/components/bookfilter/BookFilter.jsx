@@ -23,7 +23,7 @@ export default function BookFilter() {
             <input type="text" />
           </div>
 
-           <div className="book-form-input-group">
+           <div className="book-form-input-group cdu">
             <label className='labelinput'>Código de CDU </label>
 
             <div className='content'>

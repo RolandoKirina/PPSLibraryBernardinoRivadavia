@@ -7,21 +7,31 @@ import { Table } from "../../components/table/Table";
 import LoanButtons from "../../components/loanbuttons/LoanButtons";
 import { useState } from "react";
 import LoanForm from "../../components/loanform/LoanForm";
+import LoanDetails from "../../components/loandetails/LoanDetails";
 
 export default function LoanSection() {
     const [openLoanForm, setOpenLoanForm] = useState(false);
     const [openEditLoanForm, setOpenEditLoanForm] = useState(false);
+    const [openLoanDetails, setOpenLoanDetails] = useState(false);
+
+    function displayLoanDetailsPopup() {
+        setOpenLoanDetails(true);
+    }
 
     function displayEditFieldTable(id) {
         setOpenEditLoanForm(true);
     }
 
-    function closeLoanEditFieldForm() {
-        setOpenEditLoanForm(false);
-    }
-
     function displayLoanform() {
         setOpenLoanForm(true);
+    }
+
+     function closeLoanDetailsPopup() {
+        setOpenLoanDetails(false);
+    }
+
+    function closeLoanEditFieldForm() {
+        setOpenEditLoanForm(false);
     }
 
     function closeLoanForm() {
@@ -62,7 +72,7 @@ export default function LoanSection() {
         header: 'Ver detalle',
         accessor: 'details',
         render: (_, row) => (
-        <button className="button-table" onClick={() => console.log('Ver detalle', row)}>
+        <button className="button-table" onClick={() => displayLoanDetailsPopup()}>
             <img src={DetailsIcon} alt="Detalles" />
         </button>
         )
@@ -76,13 +86,15 @@ export default function LoanSection() {
                <LoanFilter />
                <section className="loan-section">
                 <div className="loan-title">
-                    <h2>Listado de Prestamos</h2>
+                    <h2>Listado de préstamos</h2>
                 </div>
                 <div className="loans">
                     <Table columns={columns} data={loans}>
                         <LoanButtons displayLoanform={displayLoanform}/>
                         {openLoanForm && <LoanForm method={'add'} closeLoanForm={closeLoanForm} />}
                         {openEditLoanForm && <LoanForm method={'update'} closeLoanForm={closeLoanEditFieldForm} />}
+                        {openEditLoanForm && <LoanForm method={'update'} closeLoanForm={closeLoanEditFieldForm} />}
+                        {openLoanDetails && <LoanDetails closePopup={closeLoanDetailsPopup}/>}
                     </Table>
                     
                 </div>

@@ -30,9 +30,9 @@
     width: 35%;
 }
 
-.content{
-    display: flex;
-    flex-direction: row;
+.cdu .content {
+  display: flex;
+  flex-direction: row;
 }
 
 .labelinput{

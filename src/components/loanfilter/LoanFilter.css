@@ -8,11 +8,14 @@
   display: flex;
   justify-content: center;
   color: var(--secondary-light-2);
+  width: 100%;
+  text-align: left;
 }
 
 .loan-filter-title h3 {
   letter-spacing: 0.05em;
   padding-top: 1em;
+  width: 100%;
 }
 
 .loan-filter-form form {

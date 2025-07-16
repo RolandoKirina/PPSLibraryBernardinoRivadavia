@@ -7,14 +7,16 @@ export default function LoanFilter() {
 
   return (
     <aside className="loan-filter-aside">
-      <div className="loan-filter-title">
-        <h3>Filtro de préstamos</h3>
-      </div>
+      
 
       <div className="loan-filter-form">
+       
         <form>
+           <div className="loan-filter-title">
+             <h3>Filtro de préstamos</h3>
+          </div>
           <div className="loan-form-checkbox-group">
-            <h4>Tipo de Préstamo</h4>
+            <h4>Tipo de préstamos</h4>
             <label>
               <input
                 type="radio"
@@ -48,7 +50,7 @@ export default function LoanFilter() {
           </div>
 
           <div className="loan-form-checkbox-group">
-            <h4>Estado de Préstamo</h4>
+            <h4>Estado de préstamo</h4>
             <label>
               <input
                 type="radio"
@@ -79,7 +81,7 @@ export default function LoanFilter() {
           </div>
 
           <div className="loan-form-input-group">
-            <h4>Fecha de Retiro</h4>
+            <h4>Fecha de retiro</h4>
             <label>Mayor a: </label>
             <input type="date" />
             <label>Y Menor a: </label>
@@ -87,7 +89,7 @@ export default function LoanFilter() {
           </div>
 
           <div className="loan-form-input-group">
-            <h4>Fecha de Devolución</h4>
+            <h4>Fecha de devolución</h4>
             <label>Mayor a: </label>
             <input type="date" />
             <label>Y Menor a: </label>
