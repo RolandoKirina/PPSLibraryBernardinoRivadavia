@@ -10,8 +10,15 @@ import LoanForm from "../../components/loanform/LoanForm";
 
 export default function LoanSection() {
     const [openLoanForm, setOpenLoanForm] = useState(false);
+    const [openEditLoanForm, setOpenEditLoanForm] = useState(false);
 
-    //add loan form popup
+    function displayEditFieldTable(id) {
+        setOpenEditLoanForm(true);
+    }
+
+    function closeLoanEditFieldForm() {
+        setOpenEditLoanForm(false);
+    }
 
     function displayLoanform() {
         setOpenLoanForm(true);
@@ -46,7 +53,7 @@ export default function LoanSection() {
         accessor: 'edit',
 
         render: (_, row) => (
-        <button className="button-table"  onClick={() => console.log('Editar', row)}>
+        <button className="button-table"  onClick={() => displayEditFieldTable(row.id)}>
             <img src={EditIcon} alt="Editar" />
         </button>
         )
@@ -74,7 +81,8 @@ export default function LoanSection() {
                 <div className="loans">
                     <Table columns={columns} data={loans}>
                         <LoanButtons displayLoanform={displayLoanform}/>
-                        {openLoanForm && <LoanForm closeLoanForm={closeLoanForm} />}
+                        {openLoanForm && <LoanForm method={'add'} closeLoanForm={closeLoanForm} />}
+                        {openEditLoanForm && <LoanForm method={'update'} closeLoanForm={closeLoanEditFieldForm} />}
                     </Table>
                     
                 </div>
