@@ -34,7 +34,6 @@ export default function BookFilter() {
             </div>
           </div>
 
-        
            <div className="book-form-input-group">
             <label>Codigo de signatura </label>
             <input type="text" />

@@ -2,6 +2,9 @@ import DeleteIcon from '../../assets/img/delete-icon.svg';
 import EditIcon from '../../assets/img/edit-icon.svg';
 import DetailsIcon from '../../assets/img/details-icon.svg';
 import { Table } from '../../components/table/Table.jsx';
+
+import plusIcon from '../../assets/img/add-book-icon.svg';
+import Btn from '../../components/btn/Btn'
 import BookFilter from  '../../components/bookfilter/BookFilter.jsx';
 import  '../../components/Table/Table.css';
 import './BookSection.css';
@@ -59,11 +62,36 @@ const BookSection = () => {
               <h2>Listado de libros</h2>
           </div>
         <Table columns={columns} data={books} />
-      </div>
+
+  <div>
+    <div className="listbtns">
+              <div>
+                
+                <Btn 
+                className="primary-btn"
+                text="Agregar libro" 
+                icon={<img src={plusIcon} alt="Añadir" />} 
+              />  
+              </div>
+
+              <div>
+                <Btn 
+                 className="primary-btn"
+                  text="Duplicar libro" 
+                  icon={<img src={plusIcon} alt="duplicar"
+                  />} 
+                />
+              </div>
+            </div>
+          </div>
+</div>
+         
        
     </section>
-    </>
     
+   
+    
+    </>
   );
 };
 

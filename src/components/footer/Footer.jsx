@@ -39,9 +39,7 @@ export default function Footer() {
     <div className='libraryfooter'>
       <div><img src={logo} alt="Logo biblioteca Rivadavia" /></div>
       <div><h3 className='libraryrivadavia'>Biblioteca <strong className='strongfooter'>Rivadavia</strong></h3></div>
-    
     </div>
-           
           </footer>
         </>
     );

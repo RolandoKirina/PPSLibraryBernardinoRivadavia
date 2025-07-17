@@ -1,5 +1,7 @@
 import Pagination from "../pagination/Pagination";
 
+
+
 export const Table = ({ columns, data, children, popupLength }) => {
   return (
     <div className="content-table">
@@ -27,7 +29,14 @@ export const Table = ({ columns, data, children, popupLength }) => {
       </table>
       {data.length > 4 && <Pagination />}
       {children}
+
+        
+   
     </div>
+    
+
+   
+
   );
    
     
