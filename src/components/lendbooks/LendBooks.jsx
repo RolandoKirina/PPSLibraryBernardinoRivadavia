@@ -7,6 +7,7 @@ import AddBookIcon from '../../assets/img/add-book-icon.svg';
 import SaveIcon from '../../assets/img/save-icon.svg';
 
 export default function LendBooks() {
+
         // const loans = [
         // { id: 1, book_code: 'BK-202', title: 'Orgullo y prejuicio', return: 'si' },
         // { id: 2, book_code: 'BK-203', title: 'Don Quijote de la Mancha', return: 'no' },
@@ -29,7 +30,7 @@ export default function LendBooks() {
             header: 'Borrar',
             accessor: 'delete',
             render: (_, row) => (
-            <button className="button-table" onClick={() => console.log('Eliminar', row)}>
+             <button type='button' className="button-table" onClick={() => window.open(`${window.location.origin}/book-on-loan-delete`, '_blank')}>
                 <img src={DeleteIcon} alt="Borrar" />
             </button>
             )
@@ -38,7 +39,7 @@ export default function LendBooks() {
             header: 'Editar',
             accessor: 'edit',
             render: (_, row) => (
-            <button className="button-table" onClick={() => console.log('Editar', row)}>
+            <button type='button' className="button-table" onClick={() => window.open(`${window.location.origin}/book-on-loan-edit`, '_blank')}>
                 <img src={EditIcon} alt="Editar" />
             </button>
             )
@@ -47,7 +48,7 @@ export default function LendBooks() {
             header: 'Ver detalle',
             accessor: 'details',
             render: (_, row) => (
-            <button className="button-table" onClick={() => console.log('Ver detalle', row)}>
+            <button type='button' className="button-table" onClick={() => window.open(`${window.location.origin}/book-on-loan-details`, '_blank')}>
                 <img src={DetailsIcon} alt="Detalles" />
             </button>
             )

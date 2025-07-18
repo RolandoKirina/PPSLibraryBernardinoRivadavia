@@ -1,6 +1,5 @@
 export default function Btn({ text, className, icon, onClick }) {
 
-
   return (
     
     <button className={`my-button ${className}`} onClick={onClick}>

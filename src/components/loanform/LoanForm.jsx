@@ -6,7 +6,6 @@ import ToggleIcon from '../../assets/img/toggle-icon.svg';
 import SaveIcon from '../../assets/img/save-icon.svg';
 import { useState } from 'react';
 
-
 export default function LoanForm({method, closeLoanForm}) {
 
     let inputMenusInitial = [
@@ -20,7 +19,6 @@ export default function LoanForm({method, closeLoanForm}) {
     const [inputMenus, setInputMenus] = useState(inputMenusInitial);
 
 
-
     function toggleDrowMenu(id) {
         const updatedMenus = inputMenus.map(menu => 
             menu.id === id ? {...menu, active: !menu.active } : menu
@@ -30,10 +28,6 @@ export default function LoanForm({method, closeLoanForm}) {
 
     function handleCloseLoanForm() {
         closeLoanForm();
-    }
-
-    function example() {
-        alert("s");
     }
 
     return (

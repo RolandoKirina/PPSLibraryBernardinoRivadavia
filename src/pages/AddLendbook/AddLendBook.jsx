@@ -5,7 +5,6 @@ import SaveIcon from '../../assets/img/save-icon.svg';
 export default function AddLendBook() {
     return (
         <>
-            <section className='add-lend-book-section'>
                 <div className="add-lend-book-container">
                     <div className='add-lend-book-title'>
                         <h2>Agregar Libro a Prestamo</h2>
@@ -50,7 +49,6 @@ export default function AddLendBook() {
                         </form>
                     </div>
                 </div>
-            </section>
         </>
     );
 }
