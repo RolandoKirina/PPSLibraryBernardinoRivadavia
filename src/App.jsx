@@ -7,8 +7,9 @@ import LoanSection from './pages/loan-pages/LoanSection/LoanSection';
 import AddLendBook from './pages/loan-pages/AddLendbook/AddLendBook.jsx';
 import Content from './components/content/Content.jsx';
 import ShowDetails from './components/showdetails/ShowDetails.jsx';
-import { lendBooksDetails } from './data/LoanDetails.js';
+import { lendBooksDetails, lendBooksReturnDetails } from './data/LoanDetails.js';
 import LoanDelete from './components/loan-components/loandelete/LoanDelete.jsx';
+import Listing from './components/loan-components/listing/Listing.jsx';
 
 function App() {
 
@@ -20,21 +21,39 @@ function App() {
             <Route path='/register' element={<RegisterEmployee/>}/>
             <Route path='/loans' element={<LoanSection/>}/>
             <Route path='/books' element={<BookSection/>}/>
-            <Route path='/add-book-lend' element={<Content>
+            <Route path='/loans/add-book-lend' element={<Content>
               <AddLendBook method={'add'}/>
             </Content>}/>
 
-            <Route path='/book-on-loan-edit' element={<Content>
+            <Route path='/loans/book-on-loan-edit' element={<Content>
               <AddLendBook method={'update'}/>
             </Content>}/>
 
-            <Route path='/book-on-loan-details' element={<Content>
+            <Route path='/loans/book-on-loan-details' element={<Content>
               <ShowDetails titleText={'Detalles de libro en préstamo'} isPopup={false} detailsData={lendBooksDetails}/>
             </Content>}/>
 
-            <Route path='/book-on-loan-delete' element={<Content>
+            <Route path='/loans/book-on-loan-delete' element={<Content>
                <LoanDelete isPopup={false} />
             </Content>}/>
+
+             <Route path='/loans/book-on-loan-returns-details' element={<Content>
+              <ShowDetails titleText={'Detalles de libro prestado'} isPopup={false} detailsData={lendBooksReturnDetails}/>
+            </Content>}/>
+
+            <Route path='/loans/listening/return-date' element={<Content>
+              <Listing type={'return-date'}/>
+            </Content>}/>
+
+            <Route path='/loans/listening/phone' element={<Content>
+              <Listing type={'phone'}/>
+            </Content>}/>
+
+            <Route path='/loans/listening/loans-per-partner' element={<Content>
+              <Listing type={'loans-per-partner'}/>
+            </Content>}/>
+
+            
 
           </Route>
         </Routes>
