@@ -22,7 +22,7 @@ export default function ShowDetails({closePopupFunction, titleText, isPopup, det
             <div className='details-title'>
                 <h2>{titleText}</h2>
                 {isPopup && 
-                <button className='details-close-btn' onClick={() => closePopupFunction()}><img src={ClosePopupImg}/></button>
+                <button className='details-close-btn' onClick={() => closePopupFunction(false)}><img src={ClosePopupImg}/></button>
                 }
             </div>
             <div className='details-content'>

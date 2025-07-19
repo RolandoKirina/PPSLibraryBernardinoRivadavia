@@ -1,10 +1,10 @@
 import './LendBooks.css';
-import { Table } from '../table/Table';
-import DeleteIcon from '../../assets/img/delete-icon.svg';
-import EditIcon from '../../assets/img/edit-icon.svg';
-import DetailsIcon from '../../assets/img/details-icon.svg';
-import AddBookIcon from '../../assets/img/add-book-icon.svg';
-import SaveIcon from '../../assets/img/save-icon.svg';
+import { Table } from '../../table/Table';
+import DeleteIcon from '../../../assets/img/delete-icon.svg';
+import EditIcon from '../../../assets/img/edit-icon.svg';
+import DetailsIcon from '../../../assets/img/details-icon.svg';
+import AddBookIcon from '../../../assets/img/add-book-icon.svg';
+import SaveIcon from '../../../assets/img/save-icon.svg';
 
 export default function LendBooks() {
 
