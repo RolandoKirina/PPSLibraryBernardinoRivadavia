@@ -9,6 +9,7 @@ import BookFilter from  '../../components/bookfilter/BookFilter.jsx';
 import  '../../components/Table/Table.css';
 import './BookSection.css';
 import PopUp from '../../components/popup-table/PopUp2.jsx';
+import FormEditBook from '../../components/formeditbook/formeditbook.jsx';
 const BookSection = () => {
 
   const [PopUpEditBook,setPopupEditBook]=useState(false);
@@ -71,7 +72,8 @@ const BookSection = () => {
                 title="Editar libro"
                 className="popup-container"
                 onClick={() => setPopupEditBook(false)}
-              >       
+              > 
+              <FormEditBook></FormEditBook>   
               </PopUp>
             )}
   
