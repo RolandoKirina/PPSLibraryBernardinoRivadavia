@@ -2,14 +2,17 @@ import DeleteIcon from '../../assets/img/delete-icon.svg';
 import EditIcon from '../../assets/img/edit-icon.svg';
 import DetailsIcon from '../../assets/img/details-icon.svg';
 import { Table } from '../../components/table/Table.jsx';
-
+import { useState } from 'react';
 import plusIcon from '../../assets/img/add-book-icon.svg';
 import Btn from '../../components/btn/Btn'
 import BookFilter from  '../../components/bookfilter/BookFilter.jsx';
 import  '../../components/Table/Table.css';
 import './BookSection.css';
+import PopUp from '../../components/popup-table/PopUp2.jsx';
 const BookSection = () => {
 
+  const [PopUpEditBook,setPopupEditBook]=useState(false);
+  
   const books = [
     { id: 1, title: 'El principito', code_inventory: 202, codeCDU: 108 },
     { id: 2, title: '1984', title: '1984', code_inventory: 203, codeCDU: 109 },
@@ -36,7 +39,7 @@ const BookSection = () => {
       accessor: 'edit',
 
       render: (_, row) => (
-        <button className="button-table"  onClick={() => console.log('Editar', row)}>
+        <button className="button-table"  onClick={() => setPopupEditBook(true)}>
           <img src={EditIcon} alt="Editar" />
         </button>
       )
@@ -61,34 +64,45 @@ const BookSection = () => {
         <div className="book-title">
               <h2>Listado de libros</h2>
           </div>
-        <Table columns={columns} data={books} />
+        <Table columns={columns} data={books}>
 
-  <div>
-    <div className="listbtns">
-              <div>
-                
-                <Btn 
-                className="primary-btn"
-                text="Agregar libro" 
-                icon={<img src={plusIcon} alt="Añadir" />} 
-              />  
-              </div>
+            {PopUpEditBook && (
+              <PopUp
+                title="Editar libro"
+                className="popup-container"
+                onClick={() => setPopupEditBook(false)}
+              >       
+              </PopUp>
+            )}
+  
+        </Table>
+        
 
-              <div>
-                <Btn 
-                 className="primary-btn"
-                  text="Duplicar libro" 
-                  icon={<img src={plusIcon} alt="duplicar"
-                  />} 
-                />
+      <div>
+        <div className="listbtns">
+                  <div>
+                    
+                    <Btn 
+                    className="primary-btn"
+                    text="Agregar libro" 
+                    icon={<img src={plusIcon} alt="Añadir" />} 
+                  />  
+                  </div>
+
+                  <div>
+                    <Btn 
+                    className="primary-btn"
+                      text="Duplicar libro" 
+                      icon={<img src={plusIcon} alt="duplicar"
+                      />} 
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-</div>
-         
-       
+      </div>
+   
     </section>
-    
+  
    
     
     </>

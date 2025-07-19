@@ -65,3 +65,14 @@
 .primary-btn{
   background-color: var(--primary-light-2);
 }
+
+
+
+
+.popup-container{
+    background: var(--primary-dark-2);
+    border-radius: 10px;
+    width: 50em;      /* ancho total */
+    height: 40em;
+
+}
