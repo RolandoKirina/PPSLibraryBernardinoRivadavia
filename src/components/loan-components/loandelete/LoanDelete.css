@@ -1,10 +1,15 @@
 .loan-delete-container {
-    position: absolute;
     background-color: var(--white);
-    top: 0;
     border: 0.1em solid var(--primary-light-2);
     width: 50%;
     margin-top: 5em;
+    margin-bottom: 5em;
+}
+
+.is-popup {
+    position: absolute;
+    top: 0;
+    margin-bottom: 0em;
 }
 
 .loan-delete-container .color-top {

@@ -16,40 +16,8 @@ export default function LoanSection() {
     const [openEditLoanForm, setOpenEditLoanForm] = useState(false);
     const [openLoanDetails, setOpenLoanDetails] = useState(false);
     const [openLoanDelete, setOpenLoanDelete] = useState(false);
+    const [openReturnForm, setOpenReturnForm] = useState(false);
 
-    function displayLoanDeletePopup(id) {
-        setOpenLoanDelete(true);
-    }
-
-    function displayLoanDetailsPopup(id) {
-        setOpenLoanDetails(true);
-    }
-
-    function displayEditFieldTable(id) {
-        setOpenEditLoanForm(true);
-    }
-
-    function displayLoanform() {
-        setOpenLoanForm(true);
-    }
-
-
-     function closeLoanDetailsPopup() {
-        setOpenLoanDetails(false);
-    }
-
-    function closeLoanEditFieldForm() {
-        setOpenEditLoanForm(false);
-    }
-
-    function closeLoanForm() {
-        setOpenLoanForm(false);
-    }
-
-      function closeLoanDelete() {
-        setOpenLoanDelete(false);
-    }
-    
     const loans = [
     { id: 1, reader_name: 'Carolina Gómez', title: 'La sombra del viento' },
     { id: 2, reader_name: 'Martín Rodríguez', title: 'El Principito' },
@@ -65,7 +33,7 @@ export default function LoanSection() {
         header: 'Borrar',
         accessor: 'delete',
         render: (_, row) => (
-        <button className="button-table"onClick={() => displayLoanDeletePopup(row.id)}>
+        <button className="button-table"onClick={() => setOpenLoanDelete(true)}>
             <img src={DeleteIcon} alt="Borrar" />
         </button>
         )
@@ -75,7 +43,7 @@ export default function LoanSection() {
         accessor: 'edit',
 
         render: (_, row) => (
-        <button className="button-table"  onClick={() => displayEditFieldTable(row.id)}>
+        <button className="button-table"  onClick={() => setOpenEditLoanForm(true)}>
             <img src={EditIcon} alt="Editar" />
         </button>
         )
@@ -84,7 +52,7 @@ export default function LoanSection() {
         header: 'Ver detalle',
         accessor: 'details',
         render: (_, row) => (
-        <button className="button-table" onClick={() => displayLoanDetailsPopup(row.id)}>
+        <button className="button-table" onClick={() => setOpenLoanDetails(true)}>
             <img src={DetailsIcon} alt="Detalles" />
         </button>
         )
@@ -101,15 +69,17 @@ export default function LoanSection() {
                 </div>
                 <div className="loans">
                     <Table columns={columns} data={loans}>
-                        <LoanButtons displayLoanform={displayLoanform}/>
+                        <LoanButtons displayLoanform={setOpenLoanForm}/>
 
-                        {openLoanForm && <LoanForm method={'add'} closeLoanForm={closeLoanForm} />}
+                        {openLoanForm && <LoanForm method={'add'} closeLoanForm={setOpenLoanForm} />}
 
-                        {openEditLoanForm && <LoanForm method={'update'} closeLoanForm={closeLoanEditFieldForm} />}
+                        {openEditLoanForm && <LoanForm method={'update'} closeLoanForm={setOpenEditLoanForm} />}
 
-                        {openLoanDelete && <LoanDelete closePopup={closeLoanDelete}/>}
+                        {openLoanDelete && <LoanDelete isPopup={true} closePopup={setOpenLoanDelete}/>}
 
-                         {openLoanDetails && <ShowDetails closePopupFunction={closeLoanDetailsPopup} titleText={'Detalles del préstamo'} isPopup={true} detailsData={loanDetailsMenus}/> }
+                         {openLoanDetails && <ShowDetails closePopupFunction={setOpenLoanDetails} titleText={'Detalles del préstamo'} isPopup={true} detailsData={loanDetailsMenus}/> }
+
+                         {openReturnForm && <LoanForm method={'return'} closeLoanForm={setOpenReturnForm} />}
                     
                     </Table>
                     

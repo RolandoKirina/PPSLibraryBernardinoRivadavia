@@ -1,14 +1,14 @@
 import './LoanDelete.css';
 import Btn from '../../btn/Btn';
 
-export default function LoanDelete({closePopup}) {
+export default function LoanDelete({isPopup, closePopup}) {
     function handleClosePopup() {
-        closePopup();
+        closePopup(false);
     }
 
     return (
         <>
-            <div className='loan-delete-container'>
+            <div className={`loan-delete-container${isPopup ? ' is-popup' : ''}`}>
                 <div className='color-top'></div>
                 <div className='loan-delete-content'>
                     <div className='delete-message'>

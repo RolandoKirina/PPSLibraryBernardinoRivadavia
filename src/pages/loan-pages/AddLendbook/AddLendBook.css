@@ -38,6 +38,15 @@
     width: 50%;
 }
 
+.add-lend-book-inputs input, select {
+    height: 2em;
+}
+
+
+.add-lend-book-inputs select {
+    border-radius: 0;
+}
+
 .add-lend-book-form form div div {
     display: flex;
     flex-direction: column;
@@ -74,6 +83,11 @@
     margin-right: 0.3em;
     margin-left: 0.3em;
 }
+
+ .add-lend-book-checkbox label {
+    display: flex;
+    align-items: center;
+ }
 
  .add-lend-book-checkbox input {
     margin-right: 0.5em;

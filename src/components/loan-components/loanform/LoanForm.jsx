@@ -26,7 +26,7 @@ export default function LoanForm({method, closeLoanForm}) {
     }
 
     function handleCloseLoanForm() {
-        closeLoanForm();
+        closeLoanForm(false);
     }
 
     return (

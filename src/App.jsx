@@ -8,6 +8,7 @@ import AddLendBook from './pages/loan-pages/AddLendbook/AddLendBook.jsx';
 import Content from './components/content/Content.jsx';
 import ShowDetails from './components/showdetails/ShowDetails.jsx';
 import { lendBooksDetails } from './data/LoanDetails.js';
+import LoanDelete from './components/loan-components/loandelete/LoanDelete.jsx';
 
 function App() {
 
@@ -20,20 +21,21 @@ function App() {
             <Route path='/loans' element={<LoanSection/>}/>
             <Route path='/books' element={<BookSection/>}/>
             <Route path='/add-book-lend' element={<Content>
-              <AddLendBook />
+              <AddLendBook method={'add'}/>
+            </Content>}/>
+
+            <Route path='/book-on-loan-edit' element={<Content>
+              <AddLendBook method={'update'}/>
             </Content>}/>
 
             <Route path='/book-on-loan-details' element={<Content>
               <ShowDetails titleText={'Detalles de libro en préstamo'} isPopup={false} detailsData={lendBooksDetails}/>
             </Content>}/>
 
-            <Route path='/book-on-loan-edit' element={<Content>
-               {'HACER'}
+            <Route path='/book-on-loan-delete' element={<Content>
+               <LoanDelete isPopup={false} />
             </Content>}/>
 
-            <Route path='/book-on-loan-delete' element={<Content>
-               {'HACER'}
-            </Content>}/>
           </Route>
         </Routes>
       </BrowserRouter>
