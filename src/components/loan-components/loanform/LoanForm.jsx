@@ -1,9 +1,8 @@
 import './LoanForm.css';
-import ClosePopupImg from '../../assets/img/close-popup-btn.svg';
+import ClosePopupImg from '../../../assets/img/close-popup-btn.svg';
 import SearchPartner from '../searchpartner/SearchPartner';
 import LendBooks from '../lendbooks/LendBooks';
-import ToggleIcon from '../../assets/img/toggle-icon.svg';
-import SaveIcon from '../../assets/img/save-icon.svg';
+import SaveIcon from '../../../assets/img/save-icon.svg';
 import { useState } from 'react';
 
 export default function LoanForm({method, closeLoanForm}) {

@@ -1,5 +1,5 @@
 import './LoanDelete.css';
-import Btn from '../btn/Btn';
+import Btn from '../../btn/Btn';
 
 export default function LoanDelete({closePopup}) {
     function handleClosePopup() {

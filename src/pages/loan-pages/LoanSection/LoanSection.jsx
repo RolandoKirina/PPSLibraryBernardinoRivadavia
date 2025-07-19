@@ -1,15 +1,15 @@
-import LoanFilter from "../../components/loanfilter/LoanFilter";
+import LoanFilter from "../../../components/loan-components/loanfilter/LoanFilter";
 import './LoanSection.css';
-import DeleteIcon from '../../assets/img/delete-icon.svg';
-import EditIcon from '../../assets/img/edit-icon.svg';
-import DetailsIcon from '../../assets/img/details-icon.svg';
-import { Table } from "../../components/table/Table";
-import LoanButtons from "../../components/loanbuttons/LoanButtons";
+import DeleteIcon from '../../../assets/img/delete-icon.svg';
+import EditIcon from '../../../assets/img/edit-icon.svg';
+import DetailsIcon from '../../../assets/img/details-icon.svg';
+import { Table } from "../../../components/table/Table";
+import LoanButtons from "../../../components/loan-components/loanbuttons/LoanButtons";
 import { useState } from "react";
-import LoanForm from "../../components/loanform/LoanForm";
-import LoanDelete from "../../components/loandelete/LoanDelete";
-import ShowDetails from "../../components/showdetails/ShowDetails";
-import {loanDetailsMenus} from '../../data/LoanDetails';
+import LoanForm from "../../../components/loan-components/loanform/LoanForm";
+import LoanDelete from "../../../components/loan-components/loandelete/LoanDelete";
+import ShowDetails from "../../../components/showdetails/ShowDetails";
+import {loanDetailsMenus} from '../../../data/LoanDetails';
 
 export default function LoanSection() {
     const [openLoanForm, setOpenLoanForm] = useState(false);

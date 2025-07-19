@@ -1,5 +1,5 @@
 import './AddLendBook.css';
-import SaveIcon from '../../assets/img/save-icon.svg';
+import SaveIcon from '../../../assets/img/save-icon.svg';
 
 
 export default function AddLendBook() {
