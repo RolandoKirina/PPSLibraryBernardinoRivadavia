@@ -65,7 +65,7 @@ export default function LoanForm({method, closeLoanForm}) {
                                         
                                     </div>
                                     <SearchPartner />
-                                    <LendBooks />
+                                    <LendBooks method={'add'}/>
                             </form>
                         </div> 
                      </div>
@@ -118,6 +118,22 @@ export default function LoanForm({method, closeLoanForm}) {
                       </div>
                     </div>
                 </>}
+                {method==='return' &&
+                    <>  
+                    <div className='add-loan-form-container'>   
+                        <div className='add-loan-form-title'>
+                            <h2>Devoluciones</h2>
+                            <button className='add-loan-form-close-btn' onClick={handleCloseLoanForm}><img src={ClosePopupImg}/></button>
+                        </div>
+                        <div className='add-loan-form-content'>
+                          <form>
+                                    <SearchPartner />
+                                    <LendBooks method={'return'}/>
+                            </form>
+                        </div> 
+                     </div>
+                    </>
+                 }   
         
         </>
     )

@@ -10,6 +10,7 @@ import LoanForm from "../../../components/loan-components/loanform/LoanForm";
 import LoanDelete from "../../../components/loan-components/loandelete/LoanDelete";
 import ShowDetails from "../../../components/showdetails/ShowDetails";
 import {loanDetailsMenus} from '../../../data/LoanDetails';
+import LoanListings from "../../../components/loan-components/loanlistings/LoanListings";
 
 export default function LoanSection() {
     const [openLoanForm, setOpenLoanForm] = useState(false);
@@ -17,6 +18,7 @@ export default function LoanSection() {
     const [openLoanDetails, setOpenLoanDetails] = useState(false);
     const [openLoanDelete, setOpenLoanDelete] = useState(false);
     const [openReturnForm, setOpenReturnForm] = useState(false);
+    const [openListingsPopup, setOpenListingsPopup] = useState(false);
 
     const loans = [
     { id: 1, reader_name: 'Carolina Gómez', title: 'La sombra del viento' },
@@ -69,7 +71,7 @@ export default function LoanSection() {
                 </div>
                 <div className="loans">
                     <Table columns={columns} data={loans}>
-                        <LoanButtons displayLoanform={setOpenLoanForm}/>
+                        <LoanButtons displayLoanform={setOpenLoanForm} displayReturnForm={setOpenReturnForm} displayListingsPopup={setOpenListingsPopup}/>
 
                         {openLoanForm && <LoanForm method={'add'} closeLoanForm={setOpenLoanForm} />}
 
@@ -80,6 +82,9 @@ export default function LoanSection() {
                          {openLoanDetails && <ShowDetails closePopupFunction={setOpenLoanDetails} titleText={'Detalles del préstamo'} isPopup={true} detailsData={loanDetailsMenus}/> }
 
                          {openReturnForm && <LoanForm method={'return'} closeLoanForm={setOpenReturnForm} />}
+
+                         {openListingsPopup && <LoanListings closePopup={setOpenListingsPopup}/>}
+
                     
                     </Table>
                     

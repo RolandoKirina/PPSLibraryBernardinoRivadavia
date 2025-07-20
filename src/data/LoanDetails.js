@@ -113,3 +113,43 @@ export const lendBooksDetails = [
     ]
   }
 ]
+
+
+export const lendBooksReturnDetails = [
+  {
+    id: 1,
+    title: 'Datos del libro',
+    active: false,
+    rows: [
+      [
+        { label: 'Código de libro', value: 'información' }
+      ],
+      [
+        { label: 'Título', value: 'información' }
+      ]
+    ]
+  },
+  {
+    id: 2,
+    title: 'Fechas del libro prestado',
+    active: false,
+    rows: [
+      [
+        { label: 'Fecha retiro', value: 'información' }
+      ],
+      [
+        { label: 'Fecha prevista', value: 'información' }
+      ]
+    ]
+  },
+  {
+    id: 3,
+    title: 'Estado del libro prestado',
+    active: false,
+    rows: [
+      [
+        { label: 'Renovación', value: 'Si/No' },
+      ]
+    ]
+  }
+]
