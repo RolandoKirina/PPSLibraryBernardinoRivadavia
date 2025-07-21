@@ -4,7 +4,7 @@ import { useState } from 'react';
 import ToggleIcon from '../../assets/img/toggle-icon.svg';
 
 
-export default function ShowDetails({detailsData}) {
+export default function ShowDetails({isPopup, detailsData, titleText}) {
 
     function toggleDrowMenu(id) {
         const updatedMenus = detailsMenus.map(menu => 
@@ -20,6 +20,11 @@ export default function ShowDetails({detailsData}) {
         <>
         <div className={`details-container`}>
             <div className='details-content'>
+                {!isPopup && (
+                    <div className='titlepopup2'>
+                              <h1 className="titlepopuph1">{titleText}</h1>
+                    </div>
+                )}
                 <div className='dropdown-details-menu'>
                     {detailsMenus.map(menu => (
                     <div key={menu.id}>
