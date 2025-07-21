@@ -1,0 +1,35 @@
+.renewe-container {
+    width: 60em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--primary-dark-2);
+}
+
+.renewe-inputs-items {
+    width: 95%;
+}
+
+.renewe-inputs-items .renewe-input {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1em;
+}
+
+.renewe-inputs-items .renewe-input div {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.add-renew-btn {
+    width: 98%;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.add-renew-btn button {
+    background-color: var(--primary-light-2);
+}

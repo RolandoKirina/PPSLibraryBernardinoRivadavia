@@ -14,6 +14,7 @@ import LoanListings from "../../../components/loan-components/loanlistings/LoanL
 import PopUp from "../../../components/popup-table/PopUp2";
 import EditLoanForm from "../../../components/loan-components/editloanform/EditLoanForm";
 import Return from "../../../components/loan-components/return/Return";
+import Renewe from "../../../components/loan-components/renewe/Renewe";
 
 export default function LoanSection() {
     const [popupDeleteLoan, setPopupDeleteLoan] = useState(false);
@@ -26,6 +27,7 @@ export default function LoanSection() {
     const [openLoanDetails, setOpenLoanDetails] = useState(false);
     const [openReturnForm, setOpenReturnForm] = useState(false);
     const [openListingsPopup, setOpenListingsPopup] = useState(false);
+    const [openRenewe, setOpenRenewe] = useState(false);
 
     const loans = [
     { id: 1, reader_name: 'Carolina Gómez', title: 'La sombra del viento' },
@@ -91,7 +93,7 @@ export default function LoanSection() {
 
                         {openEditLoanForm && (
                             <PopUp
-                                title={'Editar Prestamo'}
+                                title={'Editar préstamo'}
                                 className={''}
                                 onClick={() => setOpenEditLoanForm(false)}
                             >
@@ -101,7 +103,7 @@ export default function LoanSection() {
 
                         {openLoanForm && (
                             <PopUp
-                                title={'Agregar Prestamo'}
+                                title={'Agregar préstamo'}
                                 className={''}
                                 onClick={() => setOpenLoanForm(false)}
                             >
@@ -115,7 +117,7 @@ export default function LoanSection() {
                                 className={''}
                                 onClick={() => setOpenLoanDetails(false)}
                             >
-                                <ShowDetails detailsData={loanDetailsMenus} />
+                                <ShowDetails detailsData={loanDetailsMenus} isPopup={true}/>
                             </PopUp>
                         )}
 
@@ -131,7 +133,7 @@ export default function LoanSection() {
 
                         {openListingsPopup && (
                             <PopUp
-                                title={'Imprimir Listados'}
+                                title={'Imprimir listados'}
                                 className={'loan-listings-size'}
                                 onClick={() => setOpenListingsPopup(false)}
                             >
@@ -139,7 +141,17 @@ export default function LoanSection() {
                             </PopUp>
                         )}
 
-                        <LoanButtons displayLoanform={() => setOpenLoanForm(true)} displayReturnForm={() => setOpenReturnForm(true)} displayListingsPopup={() => setOpenListingsPopup(true)}/>
+                        {openRenewe && (
+                            <PopUp
+                                title={'Listado de reservas'}
+                                className={'loan-listings-size'}
+                                onClick={() => setOpenRenewe(false)}
+                            >
+                               <Renewe />
+                            </PopUp>
+                        )}
+
+                        <LoanButtons displayLoanform={() => setOpenLoanForm(true)} displayReturnForm={() => setOpenReturnForm(true)} displayListingsPopup={() => setOpenListingsPopup(true)} displayRenewe={() => setOpenRenewe(true)}/>
                     </Table>
                     
                 </div>

@@ -153,3 +153,42 @@ export const lendBooksReturnDetails = [
     ]
   }
 ]
+
+
+export const reneweDetails = [
+  {
+    id: 1,
+    title: 'Datos del libro',
+    active: false,
+    rows: [
+      [
+        { label: 'Título', value: 'información' }
+      ]
+    ]
+  },
+  {
+    id: 2,
+    title: 'Datos del socio',
+    active: false,
+    rows: [
+      [
+        { label: 'Número de socio', value: 'información' }
+      ],
+      [
+        { label: 'Nombre', value: 'información' },
+        { label: 'Apellido', value: 'información' }
+      ]
+    ]
+  },
+  {
+    id: 3,
+    title: 'Fechas de reserva',
+    active: false,
+    rows: [
+      [
+        { label: 'Fecha de reserva', value: 'información' },
+        { label: 'Fecha de promesa', value: 'información' }
+      ]
+    ]
+  }
+]

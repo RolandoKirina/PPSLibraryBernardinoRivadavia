@@ -1,0 +1,115 @@
+/* RENEW SECTION */
+
+.renew-loan-form-container {
+    width: auto;
+    margin-top: 1em;
+}
+
+.renew-loan-form-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--primary-dark-2);
+}
+
+.renew-fields-loan-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.renew-loan-form-content form {
+    width: 30em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.renew-fields-loan {
+    width: 100%;
+    margin-bottom: 1em;
+}
+
+.renew-fields-loan div {
+    width: 100%;
+}
+
+.renew-fields-loan div .renew-fields-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 3em;
+    width: 100%;
+    background-color: var(--primary-dark-1);
+}
+
+.renew-fields-loan div .renew-fields-title h4 {
+    margin: 0;
+    margin-right: 0.5em;
+}
+
+.renew-fields-loan div .renew-fields-title button {
+    background-color: var(--primary-dark-1);
+    border: 0;
+}
+
+.renew-fields-loan div .renew-fields-title img {
+    height: 0.8em;
+}
+
+.renew-fields-loan div .renew-field-inputs {
+    width: 100%;
+    background-color: var(--primary-dark-2);
+    height: 13em;
+    display: flex;
+    justify-content: center;
+}
+
+.renew-fields-loan div .renew-field-inputs div {
+    width: 50%;
+}
+
+.renew-loan-form-inputs {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.save-changes-lend-books button span img {
+    height: 60%;
+    margin-right: 0.3em;
+    margin-left: 0.3em;
+}
+
+.save-changes-lend-books button {
+    border: 0.15em solid var(--sucess);
+    display: flex;
+    align-items: center;
+}
+
+.save-changes {
+    justify-content: center;
+    height: 3em;
+    border: 0.15em solid var(--sucess);
+    background-color: var(--primary-light-2);
+    padding: 0;
+}
+
+.save-changes .button-icon {
+    height: 100%;
+    width: 1em;
+    margin-left: 0.5em;
+}
+
+.save-changes .button-icon img {
+    height: 100%;
+    width: 1em;
+}
+
+.save-changes .button-text {
+    margin-right: 0.5em;
+}

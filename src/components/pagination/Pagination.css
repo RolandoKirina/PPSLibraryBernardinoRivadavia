@@ -1,8 +1,7 @@
 .pagination { 
-    width: 100%;
+    width: 98%;
     display: flex;
     justify-content:flex-start;
-    margin-left:1.8em ;
 }
 
 .pagination-options {

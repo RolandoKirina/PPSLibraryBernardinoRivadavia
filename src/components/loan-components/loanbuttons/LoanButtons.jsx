@@ -5,7 +5,7 @@ import ReserveIcon from '../../../assets/img/reserve-icon.svg';
 import ReturnIcon from '../../../assets/img/return-icon.svg';
 import Btn from '../../btn/Btn';
 
-export default function LoanButtons({displayLoanform, displayReturnForm, displayListingsPopup}) {
+export default function LoanButtons({displayLoanform, displayReturnForm, displayListingsPopup, displayRenewe}) {
     return (
         <>
             <div className='loan-buttons'>
@@ -13,7 +13,7 @@ export default function LoanButtons({displayLoanform, displayReturnForm, display
                     <Btn icon={<img src={PlusIcon}/>} onClick={displayLoanform} text={'Nuevo'}/>
                     <Btn icon={<img src={ReturnIcon}/>} onClick={displayReturnForm} text={'Devoluciones'}/>
                     <Btn icon={<img src={PrintIcon}/>} onClick={displayListingsPopup} text={'Listados'}/>
-                    <Btn icon={<img src={ReserveIcon}/>} onClick={displayListingsPopup} text={'Reservas'}/>
+                    <Btn icon={<img src={ReserveIcon}/>} onClick={displayRenewe} text={'Reservas'}/>
                 </div>
             </div>
         </>
