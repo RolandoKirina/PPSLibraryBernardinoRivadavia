@@ -11,12 +11,19 @@ import LoanDelete from "../../../components/loan-components/loandelete/LoanDelet
 import ShowDetails from "../../../components/showdetails/ShowDetails";
 import {loanDetailsMenus} from '../../../data/LoanDetails';
 import LoanListings from "../../../components/loan-components/loanlistings/LoanListings";
+import PopUp from "../../../components/popup-table/PopUp2";
+import EditLoanForm from "../../../components/loan-components/editloanform/EditLoanForm";
+import Return from "../../../components/loan-components/return/Return";
 
 export default function LoanSection() {
+    const [popupDeleteLoan, setPopupDeleteLoan] = useState(false);
+
+
+
+
     const [openLoanForm, setOpenLoanForm] = useState(false);
     const [openEditLoanForm, setOpenEditLoanForm] = useState(false);
     const [openLoanDetails, setOpenLoanDetails] = useState(false);
-    const [openLoanDelete, setOpenLoanDelete] = useState(false);
     const [openReturnForm, setOpenReturnForm] = useState(false);
     const [openListingsPopup, setOpenListingsPopup] = useState(false);
 
@@ -35,7 +42,7 @@ export default function LoanSection() {
         header: 'Borrar',
         accessor: 'delete',
         render: (_, row) => (
-        <button className="button-table"onClick={() => setOpenLoanDelete(true)}>
+        <button className="button-table"onClick={() => setPopupDeleteLoan(true)}>
             <img src={DeleteIcon} alt="Borrar" />
         </button>
         )
@@ -71,21 +78,68 @@ export default function LoanSection() {
                 </div>
                 <div className="loans">
                     <Table columns={columns} data={loans}>
-                        <LoanButtons displayLoanform={setOpenLoanForm} displayReturnForm={setOpenReturnForm} displayListingsPopup={setOpenListingsPopup}/>
+                        {/* {popupDeleteLoan && <LoanDelete closePopup={() => setPopupDeleteLoan(false)}/>} */}
+                        {popupDeleteLoan && (
+                            <PopUp
+                                title={'¿Estás seguro de que quieres eliminar el préstamo?'}
+                                className={'delete-size-popup'}
+                                onClick={() => setPopupDeleteLoan(false)}
+                            >
+                                <LoanDelete closePopup={() => setPopupDeleteLoan(false)} />
+                            </PopUp>
+                        )}
 
-                        {openLoanForm && <LoanForm method={'add'} closeLoanForm={setOpenLoanForm} />}
+                        {openEditLoanForm && (
+                            <PopUp
+                                title={'Editar Prestamo'}
+                                className={''}
+                                onClick={() => setOpenEditLoanForm(false)}
+                            >
+                                <EditLoanForm />
+                            </PopUp>
+                        )}
 
-                        {openEditLoanForm && <LoanForm method={'update'} closeLoanForm={setOpenEditLoanForm} />}
+                        {openLoanForm && (
+                            <PopUp
+                                title={'Agregar Prestamo'}
+                                className={''}
+                                onClick={() => setOpenLoanForm(false)}
+                            >
+                                <LoanForm />
+                            </PopUp>
+                        )}
 
-                        {openLoanDelete && <LoanDelete isPopup={true} closePopup={setOpenLoanDelete}/>}
+                        {openLoanDetails && (
+                            <PopUp
+                                title={'Detalles del préstamo'}
+                                className={''}
+                                onClick={() => setOpenLoanDetails(false)}
+                            >
+                                <ShowDetails detailsData={loanDetailsMenus} />
+                            </PopUp>
+                        )}
 
-                         {openLoanDetails && <ShowDetails closePopupFunction={setOpenLoanDetails} titleText={'Detalles del préstamo'} isPopup={true} detailsData={loanDetailsMenus}/> }
+                        {openReturnForm && (
+                            <PopUp
+                                title={'Devoluciones'}
+                                className={''}
+                                onClick={() => setOpenReturnForm(false)}
+                            >
+                               <Return />
+                            </PopUp>
+                        )}
 
-                         {openReturnForm && <LoanForm method={'return'} closeLoanForm={setOpenReturnForm} />}
+                        {openListingsPopup && (
+                            <PopUp
+                                title={'Imprimir Listados'}
+                                className={'loan-listings-size'}
+                                onClick={() => setOpenListingsPopup(false)}
+                            >
+                               <LoanListings />
+                            </PopUp>
+                        )}
 
-                         {openListingsPopup && <LoanListings closePopup={setOpenListingsPopup}/>}
-
-                    
+                        <LoanButtons displayLoanform={() => setOpenLoanForm(true)} displayReturnForm={() => setOpenReturnForm(true)} displayListingsPopup={() => setOpenListingsPopup(true)}/>
                     </Table>
                     
                 </div>

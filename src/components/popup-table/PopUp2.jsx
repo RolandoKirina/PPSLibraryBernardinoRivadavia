@@ -9,7 +9,7 @@ export default function PopUp({ title, className, onClick,children}) {
     <div className="popup">
     <div className={`bordepopup ${className}`}>
         <div className='titlepopup2'>
-          <h1 class="titlepopuph1">{title}</h1>
+          <h1 className="titlepopuph1">{title}</h1>
            <button className='edit-form-close-btn' onClick={onClick}><img src={ClosePopupImg}/></button>
         </div>
          <div>

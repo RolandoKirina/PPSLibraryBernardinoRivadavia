@@ -44,13 +44,9 @@ label {
 }
 
 .register-button {
-    width: 35%;
-    height: 4em;
-    border-radius: 0.8em;
+    border: 0.15em solid var(--sucess);
     background-color: var(--primary-light-2);
-    color: var(--white);
-    /* box-shadow: 0.08em 0.08em 0.08em rgb(190, 189, 189); */
-    border: 0.20em solid var(--sucess);
+    border-radius: 0.8em;
 }
 
 .register-button:hover {

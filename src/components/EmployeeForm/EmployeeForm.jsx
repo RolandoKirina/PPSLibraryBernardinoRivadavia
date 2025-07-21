@@ -1,4 +1,5 @@
 import './EmployeeForm.css';
+import Btn from '../btn/Btn';
 
 export default function EmployeeForm() {
 
@@ -44,7 +45,7 @@ export default function EmployeeForm() {
                     <option value='admin'>Administrador</option>
                 </select>
                 <div className='form-button'>
-                    <button className='register-button' type='submit'>Registrarte</button>
+                    <Btn className={'register-button'} type={'submit'} text={'Registrarte'}/>
                 </div>
                 <div className='message'>
                     <a>¿ Ya tienes una cuenta ?</a>

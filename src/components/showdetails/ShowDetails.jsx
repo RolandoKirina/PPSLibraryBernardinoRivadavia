@@ -4,7 +4,7 @@ import { useState } from 'react';
 import ToggleIcon from '../../assets/img/toggle-icon.svg';
 
 
-export default function ShowDetails({closePopupFunction, titleText, isPopup, detailsData}) {
+export default function ShowDetails({detailsData}) {
 
     function toggleDrowMenu(id) {
         const updatedMenus = detailsMenus.map(menu => 
@@ -18,13 +18,7 @@ export default function ShowDetails({closePopupFunction, titleText, isPopup, det
 
     return (
         <>
-        <div className={`details-container${isPopup ? ' is-popup' : ''}`}>
-            <div className='details-title'>
-                <h2>{titleText}</h2>
-                {isPopup && 
-                <button className='details-close-btn' onClick={() => closePopupFunction(false)}><img src={ClosePopupImg}/></button>
-                }
-            </div>
+        <div className={`details-container`}>
             <div className='details-content'>
                 <div className='dropdown-details-menu'>
                     {detailsMenus.map(menu => (

@@ -1,10 +1,10 @@
-export default function Btn({ text, className, icon, onClick }) {
+export default function Btn({ text, className, icon, onClick, type }) {
 
   return (
     
-    <button className={`my-button ${className}`} onClick={onClick}>
+    <button type={type ? type : 'button'} className={`my-button ${className}`} onClick={onClick}>
       {icon && <span className="button-icon">{icon}</span>}
-      <span>{text}</span>
+      <span className="button-text">{text}</span>
     </button>
   );
 

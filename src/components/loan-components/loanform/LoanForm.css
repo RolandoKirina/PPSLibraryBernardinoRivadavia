@@ -1,39 +1,9 @@
 
-.add-loan-form-container, .edit-loan-form-container {
-    width: 90%;
-    position: absolute;
-    background-color: var(--primary-dark-2);
-    top: 0;
-    border: 0.2em solid var(--primary-light-2);
-}
-
-.add-loan-form-title, .edit-loan-form-title {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 3em;
-    color: var(--white);
-    background-color: var(--primary-light-2);
-    position: relative;
-}
-
-.add-loan-form-title h2, .edit-loan-form-title h2 {
-    margin-right: 1em;
-}
-
-
-.add-loan-form-close-btn, .edit-loan-form-close-btn {
-    background-color: black;
-    height: 2em;
-    border-radius: 1em;
-    border: 0;
-}
-
-.add-loan-form-content, .edit-loan-form-content {
+.add-loan-form-content {
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: var(--primary-dark-2);
 }
 
 .add-loan-form-close-btn img, .edit-loan-form-close-btn img {
@@ -76,98 +46,4 @@
 
 .add-loan-code-employee input, .add-loan-retire-date input {
     margin-top: 0.5em;
-}
-
-
-/* EDIT SECTION */
-
-.edit-loan-form-container {
-    width: auto;
-    margin-top: 1em;
-}
-
-.edit-fields-loan-content {
-    width: 100%;
-}
-
-.edit-loan-form-content form{
-    width: 30em;
-    margin-top: 1em;
-    margin-bottom: 1em;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-
-.edit-fields-loan {
-    width: 100%;
-    margin-bottom: 1em;
-}
-
-.edit-fields-loan div {
-    width: 100%;
-}
-
-.edit-fields-loan div .edit-fields-title {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    height: 3em;
-    width: 100%;
-    background-color: var(--primary-dark-1);
-}
-
-.edit-fields-loan div .edit-fields-title h4 {
-    margin: 0;
-    margin-right: 0.5em;
-}
-
-.edit-fields-loan div .edit-fields-title button {
-    background-color: var(--primary-dark-1);
-    border: 0;
-}
-
-
-.edit-fields-loan div .edit-fields-title img {
-    height: 0.8em;
-}
-
-.edit-fields-loan div .edit-field-inputs {
-    width: 100%;
-    background-color: var(--primary-dark-2);
-    height: 13em;
-    display: flex;
-    justify-content: center;
-}
-
-.edit-fields-loan div .edit-field-inputs div {
-    width: 50%;
-}
-
-.edit-loan-form-inputs {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-}
-
-.save-edits {
-    width: 6em;
-}
-
-
-.save-changes-lend-books button img {
-    height: 60%;
-     margin-right: 0.3em;
-    margin-left: 0.3em;
-}
-
-.save-changes-lend-books button {
-    border: 0.15em solid var(--sucess);
-}
-
-.add-book-to-lend button a, .save-changes-lend-books button a {
-    color: var(--white);
-    text-decoration: none;
 }
