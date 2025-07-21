@@ -3,7 +3,6 @@
     justify-content: space-around;
     width: 100%;
     position: relative;
-    margin-bottom: 1rem;
     color: var(--white);
 }
 .contentformedit{
@@ -11,9 +10,7 @@
     flex-direction: column;
     width: 40%;
 }
-.input{
-    margin: 0.2em;
-}
+
  .inputcheckbox {
     width: 30%;
 }
@@ -26,6 +23,7 @@
 
 .checkbox{
     margin-top: 0.5em;
+    margin-left: 0.2em;
     height: 1em;
 }
 .checkbox input{
@@ -69,7 +67,7 @@ width: 50%;
 }
 
 .line{
-    margin: 10px 0 0 0.3em;
+    margin: 10px 0 0 0.2em;
     width: 50%;
     height: 2px;
     background-color: var(--white);
@@ -77,7 +75,7 @@ width: 50%;
 .btns-form{
     width: 100%;
     display: flex;
-    padding: 0 2.8em 0 2.8em;
+    padding: 0 2.3em 0 2.3em;
     margin-bottom: 2em;
     justify-content: space-between;
     gap: 0.5em;
@@ -111,4 +109,37 @@ width: 50%;
 .btn-left{
     display: flex;
     gap: 1em;
+}
+
+input,
+select,
+textarea {
+  margin-bottom: 0.5rem;
+  box-sizing: border-box;
+}
+
+.input,
+.divconteiner div,
+.content-form div {
+  margin-bottom: 0.5rem;
+}
+
+/* Márgenes uniformes entre inputs */
+input,
+select,
+textarea {
+margin-bottom: 0;
+  
+}
+
+/* Márgenes entre grupos */
+.input,
+.divconteiner div,
+.content-form div {
+  margin-bottom: 0.5rem;
+}
+
+/*lo siento, no supe como  arregarlo al margen*/
+.margininput{
+    margin-bottom: -1.2em;
 }

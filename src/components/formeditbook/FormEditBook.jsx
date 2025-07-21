@@ -14,7 +14,7 @@ export default function FormEditBook(){
                 </div>
                 
 
-               <div className="input">
+               <div className="input margininput">
                 <div className="content content-form">
                         <div>
                             <div>
