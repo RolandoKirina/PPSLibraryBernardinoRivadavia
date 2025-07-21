@@ -68,10 +68,14 @@
 
 .popup-container{
     background: var(--primary-dark-2);
+    overflow: scroll;
     border-radius: 10px;
-    width: 50em;      /* ancho total */
-    height: 40em;
-}
+    width: 50em;   
+    margin-top: 3em;   
+    height: auto;
+    max-height: 100vh;
+
+  }
 
 .input{
   display: flex;

@@ -1,5 +1,6 @@
 import "./formeditbook.css";
-
+import Btn from "../btn/Btn.jsx";
+import SaveIcon from '../../assets/img/save-icon.svg';
 
 export default function FormEditBook(){
     return(
@@ -103,7 +104,27 @@ export default function FormEditBook(){
                     </div>
                 </div>
 
+                <div className="input">
+                     <div className="divconteiner content">
+                        <div>
+                            <label htmlFor="prov">Numero de socio</label>
+                            <input id="prov" type="number" placeholder="Numero de prov" />
+                        </div>
+                        <div>
+                            <label htmlFor="numfactura">Fecha de compra</label>
+                            <select name="type" id="dateofbuy" className="selectform">
+                                <option value="1">opcion 1</option>
+                                <option value="2">opcion 2</option>
+                                <option value="3">opcion 3</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    
+                </div>   
+               
             </div>
+            
             <div className="contentformedit">
                 
                 
@@ -126,7 +147,18 @@ export default function FormEditBook(){
                         <input id="pages" type="text" />
                 </div>
             </div>
+
+          
+                
         </form>
+           <div className="btns-form">
+                    <div className="btn-left">
+                        <Btn text="Ver reservas" className="secondary-btn"></Btn>   
+                        <Btn text="Ver autores" className="secondary-btn"></Btn>
+                    </div>
+                        <Btn text="Guardar" className="changes btn" icon={<div className="img-ico"><img src={SaveIcon} alt="Guardar"  /></div> } ></Btn>
+
+                </div>
         </>
     )
 

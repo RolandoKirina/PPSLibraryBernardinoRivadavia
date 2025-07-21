@@ -100,8 +100,6 @@
 .save-changes {
     justify-content: center;
     height: 3em;
-    border: 0.15em solid var(--sucess);
-    background-color: var(--primary-light-2);
     padding: 0;
 }
 
