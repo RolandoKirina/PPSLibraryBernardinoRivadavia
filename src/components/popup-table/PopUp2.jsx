@@ -3,12 +3,14 @@ import "./popup.css";
 */
 import ClosePopupImg from '../../assets/img/close-popup-btn.svg';
 
-export default function PopUp({ title, className, onClick,children}) {
+export default function PopUp({ title, className, onClick,children,variant}) {
+
+  const variantClass = variant === "delete" ? "titlepopup-delete" : "";
   return (
     <>
     <div className="popup">
     <div className={`bordepopup ${className}`}>
-        <div className='titlepopup2'>
+        <div className={`titlepopup2 ${variantClass}`}>
           <h1 className="titlepopuph1">{title}</h1>
            <button className='edit-form-close-btn' onClick={onClick}><img src={ClosePopupImg}/></button>
         </div>

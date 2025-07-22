@@ -15,7 +15,7 @@ import PopUp from "../../../components/popup-table/PopUp2";
 import EditLoanForm from "../../../components/loan-components/editloanform/EditLoanForm";
 import Return from "../../../components/loan-components/return/Return";
 import Renewe from "../../../components/loan-components/renewe/Renewe";
-
+import PopUpDelete from "../../../components/deletebtnComponent/PopUpDelete";
 export default function LoanSection() {
     const [popupDeleteLoan, setPopupDeleteLoan] = useState(false);
 
@@ -81,15 +81,15 @@ export default function LoanSection() {
                 <div className="loans">
                     <Table columns={columns} data={loans}>
                         {/* {popupDeleteLoan && <LoanDelete closePopup={() => setPopupDeleteLoan(false)}/>} */}
-                        {popupDeleteLoan && (
-                            <PopUp
-                                title={'¿Estás seguro de que quieres eliminar el préstamo?'}
-                                className={'delete-size-popup'}
-                                onClick={() => setPopupDeleteLoan(false)}
-                            >
-                                <LoanDelete closePopup={() => setPopupDeleteLoan(false)} />
-                            </PopUp>
-                        )}
+                     {popupDeleteLoan && (
+                                         <PopUp
+                                             className={'delete-size-popup'}
+                                             onClick={() => setPopupDeleteLoan(false)}
+                                             variant="delete"
+                                         >
+                                         <PopUpDelete  title={"Prestamo"} closePopup={() => setPopupDeleteLoan(false)} />
+                                         </PopUp>
+                                                   )}
 
                         {openEditLoanForm && (
                             <PopUp

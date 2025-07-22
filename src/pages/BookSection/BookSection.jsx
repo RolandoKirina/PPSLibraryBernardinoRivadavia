@@ -10,10 +10,12 @@ import  '../../components/Table/Table.css';
 import './BookSection.css';
 import PopUp from '../../components/popup-table/PopUp2.jsx';
 import FormEditBook from '../../components/formeditbook/formeditbook.jsx';
+import PopUpDelete from '../../components/deletebtnComponent/PopUpDelete.jsx';
 const BookSection = () => {
 
   const [PopUpEditBook,setPopupEditBook]=useState(false);
   const [PopUpAddBook,setPopupAddBook]=useState(false);
+  const [PopUpDeleteBook,setPopUpDeleteBook]=useState(false)
   const books = [
     { id: 1, title: 'El principito', code_inventory: 202, codeCDU: 108 },
     { id: 2, title: '1984', title: '1984', code_inventory: 203, codeCDU: 109 },
@@ -30,7 +32,7 @@ const BookSection = () => {
       header: 'Borrar',
       accessor: 'delete',
       render: (_, row) => (
-        <button className="button-table"onClick={() => console.log('Eliminar', row)}>
+        <button className="button-table"onClick={() => setPopUpDeleteBook(true)}>
           <img src={DeleteIcon} alt="Borrar" />
         </button>
       )
@@ -76,7 +78,16 @@ const BookSection = () => {
               <FormEditBook></FormEditBook>   
               </PopUp>
             )}
-  
+
+        {PopUpDeleteBook && (
+                    <PopUp
+                        className={'delete-size-popup'}
+                        onClick={() => setPopUpDeleteBook(false)}
+                        variant="delete"
+                    >
+                    <PopUpDelete  title={"Libro"} closePopup={() => setPopUpDeleteBook(false)} />
+                    </PopUp>
+                              )}
         </Table>
         
 
