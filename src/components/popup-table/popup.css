@@ -6,6 +6,7 @@
     position: relative; 
     height: 3em;
     width: 100%;
+   
     background-color: var(--primary-light-2);
 }
 .titlepopuph1{
@@ -46,3 +47,6 @@
   box-shadow: -2px 1px 6px 0px rgba(0,0,0,0.75);
 }
 
+.titlepopup2{
+  margin: 0;
+}

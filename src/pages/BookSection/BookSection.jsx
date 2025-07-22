@@ -13,7 +13,7 @@ import FormEditBook from '../../components/formeditbook/formeditbook.jsx';
 const BookSection = () => {
 
   const [PopUpEditBook,setPopupEditBook]=useState(false);
-  
+  const [PopUpAddBook,setPopupAddBook]=useState(false);
   const books = [
     { id: 1, title: 'El principito', code_inventory: 202, codeCDU: 108 },
     { id: 2, title: '1984', title: '1984', code_inventory: 203, codeCDU: 109 },
@@ -87,8 +87,22 @@ const BookSection = () => {
                     <Btn 
                     className="primary-btn"
                     text="Agregar libro" 
+                    onClick={()=> setPopupAddBook(true)}
                     icon={<img src={plusIcon} alt="Añadir" />} 
+                    
+                    
                   />  
+                  {PopUpAddBook && (
+                  <PopUp
+                  title="Agregar libro"
+                  className="popup-container"
+                  onClick={() => console.log(setPopupAddBook(false))}
+                  >
+                       <FormEditBook />
+
+                  </PopUp>
+                  )}
+               
                   </div>
 
                   <div>
