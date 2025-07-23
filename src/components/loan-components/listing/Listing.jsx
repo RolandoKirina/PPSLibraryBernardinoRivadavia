@@ -1,6 +1,6 @@
 import './Listing.css';
 import PrintIcon from '../../../assets/img/print-icon.svg';
-import {phoneListing, returnDateListing} from '../../../data/LoanListings';
+import {phoneListing, returnDateListing} from '../../../data/loan/LoanListings';
 import { Table } from '../../table/Table';
 
 export default function Listing({type}) {

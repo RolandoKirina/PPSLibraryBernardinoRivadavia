@@ -1,14 +1,14 @@
 import './ShowDetails.css';
-import ClosePopupImg from '../../assets/img/close-popup-btn.svg';
+import ClosePopupImg from '../../../assets/img/close-popup-btn.svg';
 import { useState } from 'react';
-import ToggleIcon from '../../assets/img/toggle-icon.svg';
+import ToggleIcon from '../../../assets/img/toggle-icon.svg';
 
 
 export default function ShowDetails({isPopup, detailsData, titleText}) {
 
     function toggleDrowMenu(id) {
         const updatedMenus = detailsMenus.map(menu => 
-            menu.id === id ? {...menu, active: !menu.active } : menu
+            menu.id === id ? {...menu, active: !menu.active } : {...menu, active: false}
         )
         setDetailsMenus(updatedMenus);
 

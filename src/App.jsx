@@ -1,16 +1,16 @@
 import RegisterEmployee from './pages/RegisterEmployee/RegisterEmployee';
 import BookSection from './pages/BookSection/BookSection.jsx';
 import Layout from './layout/Layout';
-// import Header from './components/header/Header';
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
-import LoanSection from './pages/loan-pages/LoanSection/LoanSection';
-import AddLendBook from './pages/loan-pages/AddLendbook/AddLendBook.jsx';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import LoanSection from './pages/LoanSection/LoanSection';
 import Content from './components/content/Content.jsx';
-import ShowDetails from './components/showdetails/ShowDetails.jsx';
-import { lendBooksDetails, lendBooksReturnDetails, reneweDetails } from './data/LoanDetails.js';
-import LoanDelete from './components/loan-components/loandelete/LoanDelete.jsx';
+import ShowDetails from './components/generic/ShowDetails/ShowDetails.jsx';
 import Listing from './components/loan-components/listing/Listing.jsx';
 import AddReneweForm from './components/loan-components/addreneweform/AddReneweForm.jsx';
+import GenericForm from './components/generic/GenericForm/GenericForm.jsx';
+
+//rutas importadas para evitar llenar todo de rutas similares
+import { loanFormRoutes, detailsRoutes, listingRoutes } from './data/loan/LoanRoutes.js'; 
 
 function App() {
 
@@ -22,47 +22,52 @@ function App() {
             <Route path='/register' element={<RegisterEmployee/>}/>
             <Route path='/loans' element={<LoanSection/>}/>
             <Route path='/books' element={<BookSection/>}/>
-            <Route path='/loans/add-book-lend' element={<Content>
-              <AddLendBook method={'add'}/>
-            </Content>}/>
 
-            <Route path='/loans/book-on-loan-edit' element={<Content>
-              <AddLendBook method={'update'}/>
-            </Content>}/>
+            {loanFormRoutes.map(({ path, title, fields }, idx) => ( //rutas de formularios independientes(no son popup) de préstamo(u otras secciones
+              <Route
+                key={idx}
+                path={path}
+                element={
+                  <Content>
+                    <GenericForm
+                      title={title}
+                      fields={fields}
+                      onSubmit={(data) => console.log('Formulario enviado:', data)}
+                    />
+                  </Content>
+                }
+              />
+            ))}
 
-            <Route path='/loans/book-on-loan-details' element={<Content>
-              <ShowDetails titleText={'Detalles de libro en préstamo'} isPopup={false} detailsData={lendBooksDetails}/>
-            </Content>}/>
+            {detailsRoutes.map(({ path, titleText, data }, idx) => ( //rutas de ver detalles independientes(no son popup) de tablas en préstamo(u otras secciones)
+              <Route
+                key={idx}
+                path={path}
+                element={
+                  <Content>
+                    <ShowDetails titleText={titleText} isPopup={false} detailsData={data} />
+                  </Content>
+                }
+              />
+            ))}
 
-            <Route path='/loans/book-on-loan-delete' element={<Content>
-               <LoanDelete isPopup={false} />
-            </Content>}/>
+            {listingRoutes.map((type, idx) => ( //rutas de listados de informacion independientes(no son popup) de préstamo
+              <Route
+                key={idx}
+                path={`/loans/listening/${type}`}
+                element={
+                  <Content>
+                    <Listing type={type} />
+                  </Content>
+                }
+              />
+            ))}
 
-            <Route path='/loans/book-on-loan-returns-details' element={<Content>
-              <ShowDetails titleText={'Detalles de libro prestado'} isPopup={false} detailsData={lendBooksReturnDetails}/>
-            </Content>}/>
-
-            <Route path='/loans/renewe-details' element={<Content>
-              <ShowDetails titleText={'Detalles de reserva'} isPopup={false} detailsData={reneweDetails}/>
-            </Content>}/>
-
-            <Route path='/loans/add-renewe' element={<Content>
-              <AddReneweForm />
-            </Content>}/>
-
-            <Route path='/loans/listening/return-date' element={<Content>
-              <Listing type={'return-date'}/>
-            </Content>}/>
-
-            <Route path='/loans/listening/phone' element={<Content>
-              <Listing type={'phone'}/>
-            </Content>}/>
-
-            <Route path='/loans/listening/loans-per-partner' element={<Content>
-              <Listing type={'loans-per-partner'}/>
-            </Content>}/>
-
-            
+            <Route path='/loans/add-renewe' element={
+              <Content>
+                <AddReneweForm />
+              </Content>
+            }/>
 
           </Route>
         </Routes>
