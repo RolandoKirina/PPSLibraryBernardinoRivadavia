@@ -97,8 +97,8 @@ a {
 .secondary-btn{
   background-color: var(--primary-dark-2);
   color: var(--white);
-  height: 3em;
-  width: auto;
+  height: 6em;
+  width: 11em;
   padding: 0.8em;
   border: solid 2px  var(--primary);
   

@@ -11,6 +11,7 @@ import './BookSection.css';
 import PopUp from '../../components/popup-table/PopUp2.jsx';
 import FormEditBook from '../../components/formeditbook/formeditbook.jsx';
 import PopUpDelete from '../../components/deletebtnComponent/PopUpDelete.jsx';
+import FormAddBook from '../../components/FormAddbook/FormAddBook.jsx';
 const BookSection = () => {
 
   const [PopUpEditBook,setPopupEditBook]=useState(false);
@@ -109,8 +110,8 @@ const BookSection = () => {
                   className="popup-container"
                   onClick={() => console.log(setPopupAddBook(false))}
                   >
-                       <FormEditBook />
-
+                       <FormAddBook />
+                        
                   </PopUp>
                   )}
                
