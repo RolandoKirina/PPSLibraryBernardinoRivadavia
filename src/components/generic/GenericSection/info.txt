@@ -1,0 +1,129 @@
+estando en una seccion de pages, ejemplo LoanSection. se importa GenericSection, se pone solo eso en el jsx y se le pasan las propiedades.
+(se debe definir en cualquier section los useState (ej: PopUpEditBook), e importar los iconos que se usen)
+
+<GenericSection title={'Listado de préstamos'} filters={<LoanFilter />} columns={columns} data={loans} popups={loanPopups}
+            actions={
+                 <LoanButtons
+                  displayLoanform={() => setOpenLoanForm(true)}
+                  displayReturnForm={() => setOpenReturnForm(true)}
+                  displayListingsPopup={() => setOpenListingsPopup(true)}
+                  displayRenewe={() => setOpenRenewe(true)}
+                 />
+}/>
+
+propiedades:
+
+title: Nombre de la seccion, por ejemplo Listado de libros, Listado de autores, Listado de cuotas, Ranking de libros, etc 
+
+filters: se puede pasar por propiedad un componente de filtros como el de books o loans, si no hay ninguno filtro en x seccion no se colocará nada.
+
+actions: se pueden pasar los botones que tenga la seccion debajo de paginacion. ej: añadir libro, duplicar libro, agregar nuevo prestamo, etc.
+  <GenericSection title={'Listado de préstamos'} filters={<LoanFilter />} columns={columns} data={loans} popups={loanPopups}
+      actions={
+        <div>
+                    <div className="listbtns">
+                      <div>
+                        
+                        <Btn 
+                        className="primary-btn"
+                        text="Agregar libro" 
+                        icon={<img src={plusIcon} alt="Añadir" />} 
+                      />  
+                      </div>
+
+                      <div>
+                        <Btn 
+                        className="primary-btn"
+                          text="Duplicar libro" 
+                          icon={<img src={plusIcon} alt="duplicar"
+                          />} 
+                        />
+                      </div>
+                    </div>
+                  </div>
+         </div>
+      } />
+
+popups: objeto con la informacion de cuantos popups existen dentro de la seccion (eliminar, editar, añadir)
+
+ejemplo:
+
+const bookPopups = [
+  {
+    key: 'popupEditBook',
+    title: 'Editar libro',
+    className: 'popup-container',
+    content: <FormEditBook />,
+    close: () => setPopupEditBook(false),
+    condition: popupEditBook
+  }
+];
+
+o en prestamos:
+
+const loanPopups = [
+  {
+    key: 'popupDeleteLoan',
+    title: '¿Estás seguro de que quieres eliminar el préstamo?', 
+    className: 'delete-size-popup',
+    content: <LoanDelete closePopup={() => setPopupDeleteLoan(false)} />,
+    close: () => setPopupDeleteLoan(false),
+    condition: popupDeleteLoan
+  },
+  {
+    key: 'openEditLoanForm',
+    title: 'Editar préstamo',
+    content: <EditLoanForm />,
+    close: () => setOpenEditLoanForm(false),
+    condition: openEditLoanForm
+  },
+  // ...y así con cada popup
+];
+
+
+
+columns: columnas de la tabla personalizada segun la seccion
+data: objeto con la info personalizada segun la seccion, que debe coincidir con los accesors de la tabla en sus columnas
+
+ejemplo data:
+
+const books = [
+    { id: 1, title: 'El principito', code_inventory: 202, codeCDU: 108 },
+    { id: 2, title: '1984', title: '1984', code_inventory: 203, codeCDU: 109 },
+  ];
+
+  ejemplo columns:
+
+  const columns = [
+    { header: 'Título', accessor: 'title' },
+    { header: 'Código de inventario', accessor: 'code_inventory' },
+    { header: 'Codigo de CDU', accessor: 'codeCDU' },
+    {
+      header: 'Borrar',
+      accessor: 'delete',
+      render: (_, row) => (
+        <button className="button-table"onClick={() => console.log('Eliminar', row)}>
+          <img src={DeleteIcon} alt="Borrar" />
+        </button>
+      )
+    },
+    {
+      header: 'Editar',
+      accessor: 'edit',
+
+      render: (_, row) => (
+        <button className="button-table"  onClick={() => setPopupEditBook(true)}>
+          <img src={EditIcon} alt="Editar" />
+        </button>
+      )
+    },
+    {
+      header: 'Ver detalle',
+      accessor: 'details',
+      render: (_, row) => (
+        <button className="button-table" onClick={() => console.log('Ver detalle', row)}>
+          <img src={DetailsIcon} alt="Detalles" />
+        </button>
+      )
+    }
+  ];
