@@ -107,3 +107,9 @@ a {
   input {
     padding-left: 0.75rem; 
   }
+
+
+/*buena estrategia para saber que elemento causa scroll horizontal*/
+/*  * {
+  outline: 1px solid red;
+}*

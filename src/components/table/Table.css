@@ -27,7 +27,6 @@
 }
 .table thead {
   height: 5em;
-    margin: 1em;
     background-color: var(--table-color-2);
 }
 .table th {
