@@ -7,8 +7,15 @@ import ReturnIcon from '../../../assets/img/return-icon.svg';
 import ReneweIcon from '../../../assets/img/renewe-icon.svg';
 import AddBookIcon from '../../../assets/img/add-book-icon.svg';
 import SaveIcon from '../../../assets/img/save-icon.svg';
+import PopUp from '../../popup-table/PopUp2';
+import PopUpDelete from '../../deletebtnComponent/PopUpDelete';
+import { useState } from 'react';
 
 export default function LendBooks({method}) {
+        const [deletePopup, setDeletePopup] = useState(false);
+        const [addPopup, setAddPopup] = useState(false);
+        const [editPopup, setEditPopup] = useState(false);
+        const [detailsPopup, setDetailsPopup] = useState(false);
 
         // const loans = [
         // { id: 1, book_code: 'BK-202', title: 'Orgullo y prejuicio', return: 'si' },
@@ -30,7 +37,7 @@ export default function LendBooks({method}) {
             header: 'Borrar',
             accessor: 'delete',
             render: (_, row) => (
-             <button type='button' className="button-table" onClick={() => window.open(`${window.location.origin}/loans/book-on-loan-delete`, '_blank')}>
+             <button type='button' className="button-table" onClick={() => setDeletePopup(true)}>
                 <img src={DeleteIcon} alt="Borrar" />
             </button>
             )
@@ -123,6 +130,18 @@ export default function LendBooks({method}) {
                 <div className='save-changes-lend-books'>
                     <button><img src={SaveIcon}/><a href='/save' target='_blank'>Guardar</a></button>
                 </div>
+
+                
+                {deletePopup && (
+                    <PopUp
+                        className={'delete-size-popup'}
+                        onClick={() => setDeletePopup(false)}
+                        variant="delete"
+                    >
+                    <PopUpDelete  title={"Libro"} closePopup={() => setDeletePopup(false)} />
+                    </PopUp>
+                )
+                }
             </div>  
         </>
     )

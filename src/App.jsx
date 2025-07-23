@@ -6,7 +6,6 @@ import LoanSection from './pages/LoanSection/LoanSection';
 import Content from './components/content/Content.jsx';
 import ShowDetails from './components/generic/ShowDetails/ShowDetails.jsx';
 import Listing from './components/loan-components/listing/Listing.jsx';
-import AddReneweForm from './components/loan-components/addreneweform/AddReneweForm.jsx';
 import GenericForm from './components/generic/GenericForm/GenericForm.jsx';
 
 //rutas importadas para evitar llenar todo de rutas similares
@@ -62,12 +61,6 @@ function App() {
                 }
               />
             ))}
-
-            <Route path='/loans/add-renewe' element={
-              <Content>
-                <AddReneweForm />
-              </Content>
-            }/>
 
           </Route>
         </Routes>

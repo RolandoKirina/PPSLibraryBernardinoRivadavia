@@ -1,5 +1,5 @@
 import { lendBooksDetails, lendBooksReturnDetails, reneweDetails } from './LoanDetails.js';
-import { updateLendBookFields, addLendBookFields } from './LoanForms.js';
+import { updateLendBookFields, addLendBookFields, renewLoanFields } from './LoanForms.js';
 
 export const loanFormRoutes = [
   {
@@ -11,7 +11,18 @@ export const loanFormRoutes = [
     path: '/loans/book-on-loan-edit',
     title: 'Editar Libro en Prestamo',
     fields: updateLendBookFields
-  }
+  },
+  {
+    path: '/loans/renewe-add',
+    title: 'Agregar reserva',
+    fields: renewLoanFields
+  },
+  {
+    path: '/loans/renewe-edit',
+    title: 'Editar reserva',
+    fields: renewLoanFields
+  },
+
 ];
 
 export const detailsRoutes = [

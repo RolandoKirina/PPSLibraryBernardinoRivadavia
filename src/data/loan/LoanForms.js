@@ -97,3 +97,26 @@ export const editLoanformFields = [
         type: 'text'
     }
     ];
+
+export const renewLoanFields = [
+  {
+    label: 'Fecha de Retiro',
+    name: 'date_out',
+    type: 'date'
+  },
+  {
+    label: 'Fecha Prevista',
+    name: 'expected_return',
+    type: 'date'
+  },
+  {
+    label: 'Fecha de Devolución',
+    name: 'actual_return',
+    type: 'date'
+  },
+  {
+    label: 'Empleado Responsable',
+    name: 'employee',
+    type: 'text'
+  }
+];

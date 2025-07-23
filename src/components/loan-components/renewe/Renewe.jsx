@@ -5,13 +5,28 @@ import EditIcon from '../../../assets/img/edit-icon.svg';
 import DetailsIcon from '../../../assets/img/details-icon.svg';
 import Btn from '../../btn/Btn';
 import PlusIcon from '../../../assets/img/plus-icon.svg';
+import PopUp from '../../popup-table/PopUp2';
+import PopUpDelete from '../../deletebtnComponent/PopUpDelete';
 import { useState } from 'react';
 
 export default function Renewe() {
-    const [renewDetails, setReneweDetails] = useState(false);
+    const [deletePopup, setDeletePopup] = useState(false);
 
-    function redirectToAddRenewe() {
-        window.open(`${window.location.origin}/loans/add-renewe`, '_blank');
+    function redirect(action) {
+        switch(action) {
+            case 'add': {
+                window.open(`${window.location.origin}/loans/renewe-add`, '_blank');
+                break;
+            }
+            case 'edit': {  
+                window.open(`${window.location.origin}/loans/renewe-edit`, '_blank');
+                break;
+            }
+            case 'details': {
+                window.open(`${window.location.origin}/loans/renewe-details`, '_blank');
+                break;
+            }
+        }
     }
 
     const renewes = [
@@ -25,7 +40,7 @@ export default function Renewe() {
             header: 'Borrar',
             accessor: 'delete',
             render: (_, row) => (
-            <button className="button-table" onClick={() => redirectToAddRenewe()}>
+            <button className="button-table" onClick={() => setDeletePopup(true)}>
                 <img src={DeleteIcon} alt="Borrar" />
             </button>
             )
@@ -35,7 +50,7 @@ export default function Renewe() {
             accessor: 'edit',
     
             render: (_, row) => (
-            <button className="button-table"  onClick={() => setReneweDetails(true)}>
+            <button className="button-table"  onClick={() => redirect('edit')}>
                 <img src={EditIcon} alt="Editar" />
             </button>
             )
@@ -44,7 +59,7 @@ export default function Renewe() {
             header: 'Ver detalle',
             accessor: 'details',
             render: (_, row) => (
-            <button className="button-table" onClick={() => window.open(`${window.location.origin}/loans/renewe-details`, '_blank')}>
+            <button className="button-table" onClick={() => redirect('details')}>
                 <img src={DetailsIcon} alt="Detalles" />
             </button>
             )
@@ -78,9 +93,20 @@ export default function Renewe() {
 
                     <Table columns={columns} data={renewes}>
                         <div className='add-renew-btn'>
-                            <Btn text={'Nueva reserva'} icon={<img src={PlusIcon} alt={PlusIcon} onClick={() => redirectToAddRenewe()}/>}/>
+                            <Btn text={'Nueva reserva'}  onClick={() => redirect('add')} icon={<img src={PlusIcon} alt={PlusIcon}/>}/>
                         </div>
                     </Table>
+
+                    {deletePopup && (
+                        <PopUp
+                            className={'delete-size-popup'}
+                            onClick={() => setDeletePopup(false)}
+                            variant="delete"
+                        >
+                        <PopUpDelete title={"Reserva"} closePopup={() => setDeletePopup(false)} />
+                        </PopUp>
+                    )
+                    }
                 </div>
               
                 
