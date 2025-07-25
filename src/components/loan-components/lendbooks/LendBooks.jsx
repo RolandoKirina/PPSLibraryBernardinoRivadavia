@@ -10,20 +10,63 @@ import SaveIcon from '../../../assets/img/save-icon.svg';
 import PopUp from '../../popup-table/PopUp2';
 import PopUpDelete from '../../deletebtnComponent/PopUpDelete';
 import { useState } from 'react';
+import Btn from '../../btn/Btn';
+import ConfirmMessage from '../../confirmMessage/ConfirmMessage';
 
 export default function LendBooks({method}) {
         const [deletePopup, setDeletePopup] = useState(false);
-        const [addPopup, setAddPopup] = useState(false);
-        const [editPopup, setEditPopup] = useState(false);
-        const [detailsPopup, setDetailsPopup] = useState(false);
+        const [confirmReturnPopup, setConfirmReturnPopup] = useState(false);
+        const [confirmRenewePopup, setConfirmRenewePopup] = useState(false);
+        const [confirmReturnAllPopup, setConfirmReturnAllPopup] = useState(false);
+        const [confirmSaveChangesPopup, setConfirmSaveChangesPopup] = useState(false);
 
-        // const loans = [
-        // { id: 1, book_code: 'BK-202', title: 'Orgullo y prejuicio', return: 'si' },
-        // { id: 2, book_code: 'BK-203', title: 'Don Quijote de la Mancha', return: 'no' },
-        // { id: 3, book_code: 'BK-204', title: 'La tregua', return: 'si' },
-        // { id: 4, book_code: 'BK-205', title: 'Sobre héroes y tumbas', return: 'si' },
-        // { id: 5, book_code: 'BK-206', title: 'Pedro Páramo', return: 'no' }
-        // ];
+        const lendBooksPopups = [
+            {
+                key: 'deletePopup',
+                title: 'Borrar prestamo',
+                className: 'delete-size-popup',
+                content: <PopUpDelete  title={"Libro"} closePopup={() => setDeletePopup(false)} />,
+                close: () => setDeletePopup(false),
+                condition: deletePopup,
+                variant: 'delete'
+            },
+            {
+                key: 'confirmReturnPopup',
+                title: 'Confirmar devolucion',
+                className: '',
+                content: <ConfirmMessage text={'¿Esta seguro de realizar la devolución?'} closePopup={() => setConfirmReturnPopup(false)}/>,
+                close: () => setConfirmReturnPopup(false),
+                condition: confirmReturnPopup
+            },
+            {
+                key: 'confirmRenewePopup',
+                title: 'Confirmar Renovación',
+                className: '',
+                content: <ConfirmMessage text={'¿Esta seguro de realizar la renovación?'} closePopup={() => setConfirmRenewePopup(false)}/>,
+                close: () => setConfirmRenewePopup(false),
+                condition: confirmRenewePopup
+            },
+            {
+                key: 'confirmReturnAllPopup',
+                title: 'Confirmar Devolución de todos los libros',
+                className: '',
+                content: <ConfirmMessage text={'¿Esta seguro de devolver todos los libros?'} closePopup={() => setConfirmReturnAllPopup(false)}/>,
+                close: () => setConfirmReturnAllPopup(false),
+                condition: confirmReturnAllPopup
+            },
+            {
+                key: 'confirmSaveChangesPopup',
+                title: 'Confirmar Cambios',
+                className: '',
+                content: <ConfirmMessage text={'¿Esta seguro de confirmar los cambios?'} closePopup={() => setConfirmSaveChangesPopup(false)}/>,
+                close: () => setConfirmSaveChangesPopup(false),
+                condition: confirmSaveChangesPopup
+            }
+    ];
+
+        function redirect(routeName) {
+            window.open(`${window.location.origin}/${routeName}`, '_blank');
+        }
 
        const loans = [
         { id: 1, book_code: '23123', title: 'SADASDSADSADSADsdasdsadsadsadsadasddsadsad', returned: 'si' },
@@ -64,7 +107,7 @@ export default function LendBooks({method}) {
             header: 'Devolver',
             accessor: 'return',
             render: (_, row) => (
-            <button type='button' className="button-table" onClick={() => window.open(`${window.location.origin}/---`, '_blank')}>
+            <button type='button' className="button-table" onClick={() => setConfirmReturnPopup(true)}>
                 <img src={ReturnIcon} alt="Devolver" />
             </button>
             )
@@ -73,7 +116,7 @@ export default function LendBooks({method}) {
             header: 'Renovar',
             accessor: 'renewe',
             render: (_, row) => (
-            <button type='button' className="button-table" onClick={() => window.open(`${window.location.origin}/---`, '_blank')}>
+            <button type='button' className="button-table" onClick={() => setConfirmRenewePopup(true)}>
                 <img src={ReneweIcon} alt="Renovar" />
             </button>
             )
@@ -97,7 +140,7 @@ export default function LendBooks({method}) {
             header: 'Devolver',
             accessor: 'return',
             render: (_, row) => (
-            <button type='button' className="button-table" onClick={() => window.open(`${window.location.origin}/---`, '_blank')}>
+            <button type='button' className="button-table" onClick={() => setConfirmReturnPopup(true)}>
                 <img src={ReturnIcon} alt="Devolver" />
             </button>
             )
@@ -106,14 +149,12 @@ export default function LendBooks({method}) {
             header: 'Renovar',
             accessor: 'renewe',
             render: (_, row) => (
-            <button type='button' className="button-table" onClick={() => window.open(`${window.location.origin}/---`, '_blank')}>
+            <button type='button' className="button-table" onClick={() => setConfirmRenewePopup(true)}>
                 <img src={ReneweIcon} alt="Renovar" />
             </button>
             )
         }
-        ];
-
-
+    ];
 
     return (
         <>
@@ -124,24 +165,31 @@ export default function LendBooks({method}) {
                 {method==='return' && <Table columns={columnsReturnForm} data={loans} popupLength='popup-length'/>}
 
                 <div className='add-book-to-lend'>
-                    {method==='add' && <button type='button'><img src={AddBookIcon}/><a href='/loans/add-book-lend' target='_blank'>Agregar libro</a></button>}
-                    {method==='return' && <button type='button'><a href='#' target='_blank'>Devolver todos</a></button>}
+
+                    {method === 'add' && (
+                        <Btn text={'Agregar Libro'} onClick={() => redirect('loans/add-book-lend')} icon={<img src={AddBookIcon} alt='addBookIconButton'/> }/>
+                    )}
+
+                    {method === 'return' && ( 
+                        <Btn text={'Devolver todos'} onClick={() => setConfirmReturnAllPopup(true)} /> 
+                    )}
+
                 </div>
                 <div className='save-changes-lend-books'>
-                    <button><img src={SaveIcon}/><a href='/save' target='_blank'>Guardar</a></button>
+                    <Btn text={'Guardar'} onClick={() => setConfirmSaveChangesPopup(true)} icon={<img src={SaveIcon} alt='saveIconButton'/> }/>
                 </div>
 
+                {lendBooksPopups.map(({ condition, title, className, content, close, variant }, idx) => (
+                                        condition && (
+                                            <PopUp key={idx} title={title} className={className || ''} onClick={close} {...(variant === 'delete' && { variant: 'delete' })}>
+                                            {content}
+                                            </PopUp>
+                                        )
+                ))}
                 
-                {deletePopup && (
-                    <PopUp
-                        className={'delete-size-popup'}
-                        onClick={() => setDeletePopup(false)}
-                        variant="delete"
-                    >
-                    <PopUpDelete  title={"Libro"} closePopup={() => setDeletePopup(false)} />
-                    </PopUp>
-                )
-                }
+
+
+                
             </div>  
         </>
     )

@@ -10,6 +10,9 @@ import GenericForm from './components/generic/GenericForm/GenericForm.jsx';
 
 //rutas importadas para evitar llenar todo de rutas similares
 import { loanFormRoutes, detailsRoutes, listingRoutes } from './data/loan/LoanRoutes.js'; 
+import PartnerMemo from './components/loan-components/partnermemo/PartnerMemo.jsx';
+import UnpaidQuotes from './components/loan-components/unpaidquotes/UnpaidQuotes.jsx';
+import PendientBooks from './components/loan-components/pendientbooks/PendientBooks.jsx';
 
 function App() {
 
@@ -61,6 +64,14 @@ function App() {
                 }
               />
             ))}
+
+            <Route path='/loans/partner/quotes' element={<Content>
+              <UnpaidQuotes />
+            </Content>}/>
+
+            <Route path='/loans/partner/pendient-books' element={<Content>
+              <PendientBooks />
+            </Content>}/>
 
           </Route>
         </Routes>

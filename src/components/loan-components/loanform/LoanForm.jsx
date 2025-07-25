@@ -1,8 +1,11 @@
 import './LoanForm.css';
 import SearchPartner from '../searchpartner/SearchPartner';
 import LendBooks from '../lendbooks/LendBooks';
+import { useState } from 'react';
 
 export default function LoanForm() {
+    const [loanType, setLoanType] = useState('in_room');
+
     return (
         <>      
             <div className='add-loan-form-content'>
@@ -12,11 +15,11 @@ export default function LoanForm() {
                                 <h4>Tipo de Prestamo</h4>
                                 <div>
                                     <label>
-                                    <input type='radio'/>
+                                    <input type='radio' name='laon-type' value={'in_room'} checked={loanType === 'in_room'}  onChange={(e) => setLoanType(e.target.value)}/>
                                     En sala
                                     </label>
                                     <label>
-                                        <input type='radio'/>
+                                        <input type='radio' name='laon-type' value={'retired'} checked={loanType === 'retired'} onChange={(e) => setLoanType(e.target.value)}/>
                                         Retirado
                                     </label>
                                 </div>

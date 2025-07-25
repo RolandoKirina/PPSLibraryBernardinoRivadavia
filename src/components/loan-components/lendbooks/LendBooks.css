@@ -19,7 +19,6 @@
 }
 
 .add-book-to-lend button, .save-changes-lend-books button {
-    height: 2.5em;
     display: flex;
     align-items: center;
     justify-content: space-evenly;
@@ -42,9 +41,9 @@
     margin-left: 0.25em;
 }
 
-.save-changes-lend-books button img {
+.save-changes-lend-books button span img {
     height: 60%;
-     margin-right: 0.3em;
+    margin-right: 0.3em;
     margin-left: 0.3em;
 }
 
@@ -52,7 +51,9 @@
     border: 0.15em solid var(--sucess);
 }
 
+
 .add-book-to-lend button a, .save-changes-lend-books button a {
     color: var(--white);
     text-decoration: none;
 }
+

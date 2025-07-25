@@ -1,6 +1,16 @@
 import './SearchPartner.css';
+import Btn from '../../btn/Btn';
+import { useState } from 'react';
+import PopUp from '../../popup-table/PopUp2';
+import PartnerMemo from '../partnermemo/PartnerMemo';
 
 export default function SearchPartner() {
+    const [memoPopup, setMemoPopup] = useState(false);
+
+    function redirect(routeName) {
+        window.open(`${window.location.origin}/${routeName}`, '_blank');
+    }
+
     return (
         <>
             <div className='search-partner-container'>
@@ -20,10 +30,16 @@ export default function SearchPartner() {
                     </div>
                 </div>
                 <div className='search-partner-buttons'>
-                    <button>Cuotas Impagas</button>
-                    <button>Libros Pendientes</button>
-                    <button>Memo del Socio</button>
+                    <Btn text={'Cuotas Impagas'} onClick={() => redirect('loans/partner/quotes')}/>
+                    <Btn text={'Libros Pendientes'} onClick={() => redirect('loans/partner/pendient-books')}/>
+                    <Btn text={'Memo del Socio'} onClick={() => setMemoPopup(true)}/>
                 </div>
+
+                {memoPopup && (
+                    <PopUp title={'Memo del Socio'} className={'popup-memo-size'} onClick={() => setMemoPopup(false)}>
+                        <PartnerMemo />
+                    </PopUp>
+                )}
             </div>
         </>
     )
