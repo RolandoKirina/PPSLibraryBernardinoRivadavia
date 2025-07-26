@@ -38,8 +38,20 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  
+
 } 
+
+.bordepopup{
+ opacity: 0;
+  visibility: hidden;
+  transform: scale(0.95);
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+}
+.popup-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+}
 
 .bordepopup{
   border: 1px solid var(--black);

@@ -3,6 +3,15 @@ import Btn from "../btn/Btn.jsx";
 import SaveIcon from '../../assets/img/save-icon.svg';
 
 export default function FormEditBook(){
+
+    let title ="Libros";
+    function redirect(action){
+         switch(action){
+            case 'renewed':{
+                window.open(`${window.location.origin}/books/renewes`, '_blank',title);
+            }
+        }
+    }
     return(
         <>
         <form className="formeditbook">
@@ -151,7 +160,7 @@ export default function FormEditBook(){
                 
                     <div>
                         <Btn text="Autores del libro" className="secondary-btn" />
-                        <Btn text="Ver reservas" className="secondary-btn" />
+                        <Btn text="Ver reservas" className="secondary-btn" onClick={() => redirect('renewed')} />
                     </div>
                     <div>
                         <Btn text="Calcular signatura" className="secondary-btn" />

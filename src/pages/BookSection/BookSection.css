@@ -49,19 +49,6 @@
 }
 
 
-.listbtns{
-  display: flex;
-  width:80%;
-  height: 100%;
-  justify-content: flex-start;
-  margin-bottom: 1em;
-  align-items: center;
-  margin-left: 0.7em;
-
-}
-.listbtns div button{
-  margin:1em 1em 0 0;
-}
 .primary-btn{
   background-color: var(--primary-light-2);
 }
@@ -74,10 +61,19 @@
     margin-top: 3em;   
     height: auto;
     max-height: 100vh;
-
-  }
+}
 
 .input{
   display: flex;
   flex-direction: column;
+}
+
+
+.popupduplicate{
+  background: var(--primary-dark-2);
+  border-radius: 10px;
+  width: 50em;   
+  margin-top: 3em;   
+  height: auto;
+  max-height: 100vh;
 }

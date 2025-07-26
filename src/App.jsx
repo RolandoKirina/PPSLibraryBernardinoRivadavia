@@ -13,6 +13,7 @@ import { loanFormRoutes, detailsRoutes, listingRoutes } from './data/loan/LoanRo
 import PartnerMemo from './components/loan-components/partnermemo/PartnerMemo.jsx';
 import UnpaidQuotes from './components/loan-components/unpaidquotes/UnpaidQuotes.jsx';
 import PendientBooks from './components/loan-components/pendientbooks/PendientBooks.jsx';
+import Renewe from './components/loan-components/renewe/Renewe.jsx';
 
 function App() {
 
@@ -73,6 +74,9 @@ function App() {
               <PendientBooks />
             </Content>}/>
 
+              <Route path='/books/renewes' element={<Content>
+              <Renewe title="Listado de reservas" />
+            </Content>}/>
           </Route>
         </Routes>
       </BrowserRouter>

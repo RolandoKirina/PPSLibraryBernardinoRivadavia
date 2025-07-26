@@ -1,6 +1,6 @@
 isPopup: si es true, se mostrara con el titulo definido en el componente popup, si no lo es, se mostrara el titulo interior definido con 'titleText' ya que no tiene el que otorga el componente Popup padre.
 
-detailsData: objeto importado desde un js con la informacion de todos los menus.
+detailsData: arreglo importado desde un js con la informacion de todos los menus.
 
 ej:
 

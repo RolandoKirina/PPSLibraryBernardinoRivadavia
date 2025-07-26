@@ -3,6 +3,15 @@ import Btn from "../btn/Btn.jsx";
 import SaveIcon from '../../assets/img/save-icon.svg';
 
 export default function FormEditBook(){
+
+
+    function redirect(action){
+        switch(action){
+            case 'renewed':{
+                window.open(`${window.location.origin}/books/renewes`, '_blank');
+            }
+        }
+    }
     return(
         <>
         <form className="formeditbook">
@@ -146,19 +155,25 @@ export default function FormEditBook(){
                         <label htmlFor="pages" >Páginas</label>
                         <input id="pages" type="text" />
                 </div>
+
+
+                      <div className="btns-form-edit">
+                        <div className="btn-left">
+                            <Btn text="Ver reservas" className="secondary-btn" onClick={() => redirect('renewed')}></Btn>   
+                            <Btn text="Ver autores" className="secondary-btn"></Btn>
+                        </div>
+                        <div className="btnright">
+                            <Btn text="Guardar" className="changes btn" icon={<div className="img-ico"><img src={SaveIcon} alt="Guardar"  /></div> } ></Btn>
+
+                        </div>
+
+                       </div>
             </div>
 
           
                 
         </form>
-           <div className="btns-form">
-                    <div className="btn-left">
-                        <Btn text="Ver reservas" className="secondary-btn"></Btn>   
-                        <Btn text="Ver autores" className="secondary-btn"></Btn>
-                    </div>
-                        <Btn text="Guardar" className="changes btn" icon={<div className="img-ico"><img src={SaveIcon} alt="Guardar"  /></div> } ></Btn>
-
-                </div>
+     
         </>
     )
 

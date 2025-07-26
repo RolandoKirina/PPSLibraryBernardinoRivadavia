@@ -110,6 +110,6 @@ a {
 
 
 /*buena estrategia para saber que elemento causa scroll horizontal*/
-/*  * {
+/** * {
   outline: 1px solid red;
-}*
+}*/

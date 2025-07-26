@@ -1,5 +1,4 @@
 import './ShowDetails.css';
-import ClosePopupImg from '../../../assets/img/close-popup-btn.svg';
 import { useState } from 'react';
 import ToggleIcon from '../../../assets/img/toggle-icon.svg';
 
@@ -36,6 +35,7 @@ export default function ShowDetails({isPopup, detailsData, titleText}) {
                         </div>
 
                         {menu.active && (
+                        
                         <div className='detailsInfoMenu'>
                             {menu.rows.map((row, rowIndex) => (
                             <div className='items-info-details' key={rowIndex}>

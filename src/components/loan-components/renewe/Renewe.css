@@ -1,23 +1,45 @@
 .renewe-container {
-    width: 60em;
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: var(--primary-dark-2);
+    color: var(--white);
+    background-color: var(--primary-dark-1);
+}
+
+.renewe-input {
+  display: flex;
+  gap: 2em;
+  align-items: end; /* los inputs van a quedar alineados entre sí */
 }
 
 .renewe-inputs-items {
-    width: 95%;
+
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 🟢 Centra todo lo que haya dentro, incluida la tabla */
+  justify-content: space-between;
 }
 
+
+.renewe-inputs-container{
+    width: auto;
+    display: flex;
+    flex-direction: column; 
+    padding: 1em 2em;
+        align-items: center;
+
+}
 .renewe-inputs-items .renewe-input {
-    height: 100%;
+    height: auto;
     width: 100%;
     display: flex;
     justify-content: space-between;
-    margin-bottom: 1em;
 }
-
+.renewe-input div{
+    width: 48%;
+}
 .renewe-inputs-items .renewe-input div {
     height: 100%;
     display: flex;

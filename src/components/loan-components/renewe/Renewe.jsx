@@ -8,9 +8,10 @@ import PlusIcon from '../../../assets/img/plus-icon.svg';
 import PopUp from '../../popup-table/PopUp2';
 import PopUpDelete from '../../deletebtnComponent/PopUpDelete';
 import { useState } from 'react';
+import GenericSection from '../../generic/GenericSection/GenericSection.jsx';
 
-export default function Renewe() {
-    const [deletePopup, setDeletePopup] = useState(false);
+export default function Renewe({title}) {
+    const [popUpAddRenewe, setPopUpAddRenewe] = useState(false);
 
     function redirect(action) {
         switch(action) {
@@ -29,6 +30,17 @@ export default function Renewe() {
         }
     }
 
+
+    const renewespopup= [
+    {
+        key: 'addRenewes',
+            title: 'Añadir reserva',
+            className: 'popup-container',
+            content: <PopUp  title={"Añadir reserva"} closePopup={() => setPopUpAddRenewe(false)} />,
+            close: () => setPopUpAddRenewe(false),
+            condition: popUpAddRenewe,
+            variant: 'delete'
+    }];
     const renewes = [
         { id: 1, partner_number: 123, partner: 'Carlos ruíz' },
         ];
@@ -68,9 +80,18 @@ export default function Renewe() {
 
     return (
         <>
-            <div className='renewe-container'>
+        <GenericSection title={title} columns={columns} data={renewes} popups={renewespopup}>
+
+        </GenericSection>
+         <div className='add-renew-btn'>
+            <Btn text={'Nueva reserva'}  onClick={() => setPopUpAddRenewe(true) }icon={<img src={PlusIcon} alt={PlusIcon}/>}/>
+        </div>
+        
+            {/*<div className='renewe-container'>
+                {title && <h2>{title}</h2>}
                 <div className='renewe-inputs-items'>
-                    <div className='renewe-input'>
+                    <div className='renewe-inputs-container'>
+                         <div className='renewe-input'>
                         <div>
                             <label>Codigo libro</label>
                             <input type='number' />
@@ -82,19 +103,19 @@ export default function Renewe() {
                     </div>
                     <div className='renewe-input'>
                         <div>
-                            <label>Fecha prevista devolución</label>
+                            <label>Fecha de devolución</label>
                             <input type='date' />
                         </div>
-                             <div>
+                        <div>
                             <label>Fecha reserva</label>
                             <input type='date' />
                         </div>   
                     </div>
+                    </div>
+                   
 
                     <Table columns={columns} data={renewes}>
-                        <div className='add-renew-btn'>
-                            <Btn text={'Nueva reserva'}  onClick={() => redirect('add')} icon={<img src={PlusIcon} alt={PlusIcon}/>}/>
-                        </div>
+                       
                     </Table>
 
                     {deletePopup && (
@@ -110,7 +131,7 @@ export default function Renewe() {
                 </div>
               
                 
-            </div>
+            </div>*/}
         </>
     )
 }
