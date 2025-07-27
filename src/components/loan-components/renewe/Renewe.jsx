@@ -10,7 +10,7 @@ import PopUpDelete from '../../deletebtnComponent/PopUpDelete';
 import { useState } from 'react';
 import GenericSection from '../../generic/GenericSection/GenericSection.jsx';
 
-export default function Renewe({title}) {
+export default function Renewe({title, isPopup}) {
     const [popUpAddRenewe, setPopUpAddRenewe] = useState(false);
 
     function redirect(action) {
@@ -80,12 +80,13 @@ export default function Renewe({title}) {
 
     return (
         <>
-        <GenericSection title={title} columns={columns} data={renewes} popups={renewespopup}>
-
+        
+        <GenericSection title={title} columns={columns} data={renewes} popups={renewespopup} actions={(<div className='add-renew-btn'>
+                <Btn text={'Nueva reserva'}  onClick={() => setPopUpAddRenewe(true) }icon={<img src={PlusIcon} alt={PlusIcon}/>}/>
+            </div>)}>
+            
         </GenericSection>
-         <div className='add-renew-btn'>
-            <Btn text={'Nueva reserva'}  onClick={() => setPopUpAddRenewe(true) }icon={<img src={PlusIcon} alt={PlusIcon}/>}/>
-        </div>
+    
         
             {/*<div className='renewe-container'>
                 {title && <h2>{title}</h2>}

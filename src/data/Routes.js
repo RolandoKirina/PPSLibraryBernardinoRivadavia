@@ -1,5 +1,7 @@
-import { lendBooksDetails, lendBooksReturnDetails, reneweDetails } from './LoanDetails.js';
-import { updateLendBookFields, addLendBookFields, renewLoanFields } from './LoanForms.js';
+import { authorBooksDetails } from './author/AuthorDetails.js';
+import { editAuthorBookFormFields } from './author/AuthorForms.js';
+import { lendBooksDetails, lendBooksReturnDetails, reneweDetails } from './loan/LoanDetails.js';
+import { updateLendBookFields, addLendBookFields, reneweLoanFields } from './loan/LoanForms.js';
 
 export const loanFormRoutes = [
   {
@@ -15,13 +17,19 @@ export const loanFormRoutes = [
   {
     path: '/loans/renewe-add',
     title: 'Agregar reserva',
-    fields: renewLoanFields
+    fields: reneweLoanFields
   },
   {
     path: '/loans/renewe-edit',
     title: 'Editar reserva',
-    fields: renewLoanFields
+    fields: reneweLoanFields
   },
+  //authors
+  {
+    path: '/authors/author-books-edit',
+    title: 'Editar Libro en autor',
+    fields: editAuthorBookFormFields
+  }
 
 ];
 
@@ -40,7 +48,13 @@ export const detailsRoutes = [
     path: '/loans/renewe-details',
     titleText: 'Detalles de reserva',
     data: reneweDetails
-  }
+  },
+  //authors
+   {
+    path: '/authors/author-books-details',
+    titleText: 'Detalles de libro de autor',
+    data: authorBooksDetails
+  },
 ];
 
 export const listingRoutes = [
