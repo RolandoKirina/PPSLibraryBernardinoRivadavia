@@ -98,7 +98,7 @@ export const editLoanformFields = [
     }
     ];
 
-export const renewLoanFields = [
+export const reneweLoanFields = [
   {
     label: 'Fecha de Retiro',
     name: 'date_out',

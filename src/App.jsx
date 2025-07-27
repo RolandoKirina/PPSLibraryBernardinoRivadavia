@@ -7,12 +7,12 @@ import Content from './components/content/Content.jsx';
 import ShowDetails from './components/generic/ShowDetails/ShowDetails.jsx';
 import Listing from './components/loan-components/listing/Listing.jsx';
 import GenericForm from './components/generic/GenericForm/GenericForm.jsx';
-
 //rutas importadas para evitar llenar todo de rutas similares
-import { loanFormRoutes, detailsRoutes, listingRoutes } from './data/loan/LoanRoutes.js'; 
+import { loanFormRoutes, detailsRoutes, listingRoutes } from './data/Routes.js'; 
 import PartnerMemo from './components/loan-components/partnermemo/PartnerMemo.jsx';
 import UnpaidQuotes from './components/loan-components/unpaidquotes/UnpaidQuotes.jsx';
 import PendientBooks from './components/loan-components/pendientbooks/PendientBooks.jsx';
+import AuthorSection from './pages/AuthorSection/AuthorSection.jsx';
 
 function App() {
 
@@ -24,6 +24,11 @@ function App() {
             <Route path='/register' element={<RegisterEmployee/>}/>
             <Route path='/loans' element={<LoanSection/>}/>
             <Route path='/books' element={<BookSection/>}/>
+            <Route path='/authors' element={<AuthorSection/>}/>
+
+            <Route path='/books/add-book' element={<Content>
+              {/* <FormEditBook /> */}
+            </Content>}/>
 
             {loanFormRoutes.map(({ path, title, fields }, idx) => ( //rutas de formularios independientes(no son popup) de préstamo(u otras secciones
               <Route

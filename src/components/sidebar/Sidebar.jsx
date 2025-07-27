@@ -32,7 +32,7 @@ export default function Sidebar({ isOpen }) {
                     <ul className="listsidebar">
                         <li><div className='iconssidebar'><img src={loan} alt="Prestamos" /></div> <a href="/loans">Prestamos</a></li>
                         <li><div className='iconssidebar'><img src={book} alt="Libros" /></div> <a href="/books">Libros</a></li>
-                        <li><div className='iconssidebar' ><img src={author} alt="Autor" /></div> <a href="">Autor</a></li>
+                        <li><div className='iconssidebar' ><img src={author} alt="Autor" /></div> <a href="/authors">Autor</a></li>
                         <li><div className='iconssidebar'><img src={partner} alt="Socio" /></div> <a href="">Socios </a></li>
                         <li><div className='iconssidebar'><img src={fee} alt="Socio" /></div> <a href="">Cuotas</a></li>
                         <li><div className='iconssidebar'><img src={options} alt="Opciones" /></div> <a href="">Opciones</a></li>
