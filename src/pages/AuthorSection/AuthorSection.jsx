@@ -78,7 +78,16 @@ export default function AuthorSection() {
         <>
             <GenericSection title={'Listado de autores'} columns={columns} data={authors} popups={authorsPopups} 
             actions={
-                <Btn text={'Nuevo'}  onClick={() => setAddPopup(true)} className='new-btn' icon={<img src={PlusIcon} alt='plusIconBtn'/>}/> 
+                <>
+                <div className='author-actions'>
+                    <Btn text={'Nuevo'}  onClick={() => setAddPopup(true)} className='new-btn' icon={<img src={PlusIcon} alt='plusIconBtn'/>}/> 
+                    <div className='author-filter'>
+                        <label>Filtro por nombre: </label>
+                        <input type='text' name='author-name' />
+                    </div>
+                </div>
+                
+                </>
             }
             />
         </>

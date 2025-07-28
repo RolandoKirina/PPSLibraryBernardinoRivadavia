@@ -14,8 +14,22 @@ import { authorBooksDetails } from '../../../data/author/AuthorDetails';
 import ConfirmMessage from '../../../components/confirmMessage/ConfirmMessage';
 
 export default function AuthorBooks() {
+    const [seeAllButton, setSeeAllButton] = useState('Ver todos');
     const [deletePopup, setDeletePopup] = useState(false);
     const [confirmPopup, setConfirmPopup] = useState(false);
+
+    function handleSetAllbutton() {
+        let seeAllValue = 'Ver todos';
+        if(seeAllButton === seeAllValue) {
+            setSeeAllButton('Todos');
+        }
+        else {
+            setSeeAllButton(seeAllValue);
+        }
+
+        //segun el valor, actualizar tabla con filtro
+
+    }
 
     const authorBooks = [
         { id: 1, book_code: '23123', title: 'SADASDSADSADSADsdasdsadsadsadsadasddsadsad' },
@@ -81,6 +95,7 @@ export default function AuthorBooks() {
                 <Table columns={columns} data={authorBooks}>
                     <div className='author-books-add-btn'>
                         <Btn onClick={() => window.open(`${window.location.origin}/books/add-book`, '_blank')} text={'Agregar libro'} icon={<img src={AddBookIcon} alt='addBookIcon'/>} />
+                        <Btn className='seeAllBtn' onClick={() => handleSetAllbutton()} text={seeAllButton} />
                     </div>
                     <div className='author-books-save-btn'>
                         <Btn text={'Guardar'} onClick={() => setConfirmPopup(true)} icon={<img src={AddBookIcon} alt='addBookIcon'/>} />

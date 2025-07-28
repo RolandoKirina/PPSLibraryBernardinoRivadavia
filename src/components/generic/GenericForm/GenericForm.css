@@ -1,5 +1,4 @@
 .generic-form-container {
-  width: 25em;
   background-color: var(--primary-dark-2);
   border: 0.15em solid var(--primary-light-2);
   display: flex;

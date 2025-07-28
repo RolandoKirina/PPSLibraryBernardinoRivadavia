@@ -8,8 +8,14 @@
     width: 100%;
     background-color: var(--primary-light-2);
 }
+
+.titlepopup-delete {
+  background-color: var(--error);
+}
+
 .titlepopuph1{
    margin: 0;
+   min-width: 18em;
 }
 
 .edit-form-close-btn {

@@ -124,7 +124,7 @@ export default function LoanSection() {
             key: 'renewePopup',
             title: 'Listado de reservas',
             className: 'loan-listings-size',
-            content: <Renewe />,
+            content: <Renewe isPopup={true}/>,
             close: () => setRenewePopup(false),
             condition: renewePopup
         }

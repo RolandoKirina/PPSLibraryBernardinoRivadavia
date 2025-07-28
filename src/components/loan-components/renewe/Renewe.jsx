@@ -11,12 +11,14 @@ import { useState } from 'react';
 import GenericSection from '../../generic/GenericSection/GenericSection.jsx';
 
 export default function Renewe({title, isPopup}) {
-    const [popUpAddRenewe, setPopUpAddRenewe] = useState(false);
+    const [addRenewe, setAddRenewe] = useState(false);
+    const [deletePopup, setDeletePopup] = useState(false);
 
     function redirect(action) {
         switch(action) {
             case 'add': {
-                window.open(`${window.location.origin}/loans/renewe-add`, '_blank');
+                let title = 'Añadir reserva'
+                window.open(`${window.location.origin}/loans/renewe-add`, '_blank',title);
                 break;
             }
             case 'edit': {  
@@ -32,18 +34,24 @@ export default function Renewe({title, isPopup}) {
 
 
     const renewespopup= [
-    {
-        key: 'addRenewes',
-            title: 'Añadir reserva',
-            className: 'popup-container',
-            content: <PopUp  title={"Añadir reserva"} closePopup={() => setPopUpAddRenewe(false)} />,
-            close: () => setPopUpAddRenewe(false),
-            condition: popUpAddRenewe,
+        {
+            key: 'deletePopup',
+            title: 'Borrar reserva',
+            className: 'delete-size-popup',
+            content: <PopUpDelete  title={"Reserva"} closePopup={() => setDeletePopup(false)} />,
+            close: () => setDeletePopup(false),
+            condition: deletePopup,
             variant: 'delete'
-    }];
+        },
+    ];
+
     const renewes = [
         { id: 1, partner_number: 123, partner: 'Carlos ruíz' },
-        ];
+        { id: 1, partner_number: 123, partner: 'Carlos ruíz' },
+        { id: 1, partner_number: 123, partner: 'Carlos ruíz' },
+        { id: 1, partner_number: 123, partner: 'Carlos ruíz' },
+        { id: 1, partner_number: 123, partner: 'Carlos ruíz' },
+    ];
     
         const columns = [
         { header: 'Número socio', accessor: 'partner_number' },
@@ -81,14 +89,8 @@ export default function Renewe({title, isPopup}) {
     return (
         <>
         
-        <GenericSection title={title} columns={columns} data={renewes} popups={renewespopup} actions={(<div className='add-renew-btn'>
-                <Btn text={'Nueva reserva'}  onClick={() => setPopUpAddRenewe(true) }icon={<img src={PlusIcon} alt={PlusIcon}/>}/>
-            </div>)}>
-            
-        </GenericSection>
-    
-        
-            {/*<div className='renewe-container'>
+        {isPopup ? (
+            <div className='renewe-container'>
                 {title && <h2>{title}</h2>}
                 <div className='renewe-inputs-items'>
                     <div className='renewe-inputs-container'>
@@ -116,23 +118,33 @@ export default function Renewe({title, isPopup}) {
                    
 
                     <Table columns={columns} data={renewes}>
-                       
+                       <div className='add-renew-btn'>
+                        <Btn text={'Nueva reserva'}  onClick={() => redirect('add')} icon={<img src={PlusIcon} alt={PlusIcon}/>}/>
+                       </div>
                     </Table>
 
-                    {deletePopup && (
-                        <PopUp
-                            className={'delete-size-popup'}
-                            onClick={() => setDeletePopup(false)}
-                            variant="delete"
-                        >
-                        <PopUpDelete title={"Reserva"} closePopup={() => setDeletePopup(false)} />
+                    {renewespopup.map(({ condition, title, className, content, close, variant }, idx) => (
+                    condition && (
+                        <PopUp key={idx} title={title} className={className || ''} onClick={close} {...(variant === 'delete' && { variant: 'delete' })}>
+                        {content}
                         </PopUp>
                     )
-                    }
+                    ))}
+
+
                 </div>
               
                 
-            </div>*/}
+            </div>
+        ): (
+                 <GenericSection title={title} columns={columns} data={renewes} popups={renewespopup} actions={
+                    (<div className='add-renew-btn'>
+                         <Btn text={'Nueva reserva'}  onClick={() => redirect('add') }icon={<img src={PlusIcon} alt={PlusIcon}/>}/>
+                     </div>)}>
+                 </GenericSection>
+        )}
+        
+            
         </>
     )
 }

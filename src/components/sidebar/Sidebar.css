@@ -13,6 +13,7 @@ body.sidebar-open { /* bloquear scroll al abrir sidebar */
     transform: translateX(-100%);
     opacity: 0;
     transition: transform 0.4s ease, opacity 0.4s ease;
+    top: 100px; 
 }
 
 .sidebar-active {

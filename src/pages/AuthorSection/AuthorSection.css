@@ -1,5 +1,24 @@
 .new-btn {
     background-color: var(--primary-light-2);
     margin-top: 1em;
+    margin-right: 1em;
     margin-bottom: 1em;
+}
+
+.author-filter {
+    display: flex;
+    color: var(--black);
+    margin-top: 1em;
+
+}
+
+.author-filter label {
+    margin-right: 0.5em;
+    margin-top: 0;
+    margin-bottom: 1em;
+}
+
+.author-actions {
+    display: flex;
+    align-items: center;
 }
