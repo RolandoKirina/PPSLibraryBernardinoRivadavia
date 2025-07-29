@@ -5,7 +5,7 @@ import { useState } from 'react';
 import BookFilter from  '../../components/bookfilter/BookFilter.jsx';
 import  '../../components/Table/Table.css';
 import './BookSection.css';
-import FormEditBook from '../../components/formeditbook/formeditbook.jsx';
+import FormEditBook from '../../components/formeditbook/FormEditbook.jsx';
 import PopUpDelete from '../../components/deletebtnComponent/PopUpDelete.jsx';
 import FormAddBook from '../../components/FormAddbook/FormAddBook.jsx';
 import {duplicateBook} from '../../data/book/BookForms.js';
@@ -122,80 +122,7 @@ const BookSection = () => {
 
 
 
-    {/*<section className='booksection'>
-      <BookFilter/>
-      <div className="bookinf">
-        <div className="book-title">
-              <h2>Listado de libros</h2>
-          </div>
-        <Table columns={columns} data={books}>
-
-            {PopUpEditBook && (
-              <PopUp
-                title="Editar libro"
-                className="popup-container"
-                onClick={() => setPopupEditBook(false)}
-              > 
-              <FormEditBook></FormEditBook>   
-              </PopUp>
-            )}
-
-        {PopUpDeleteBook && (
-                    <PopUp
-                        className={'delete-size-popup'}
-                        onClick={() => setPopUpDeleteBook(false)}
-                        variant="delete"
-                    >
-                    <PopUpDelete  title={"Libro"} closePopup={() => setPopUpDeleteBook(false)} />
-                    </PopUp>
-                              )}
-        </Table>
-        
-
-      <div>
-        <div className="listbtns">
-                  <div>
-                    
-                    <Btn 
-                    className="primary-btn"
-                    text="Agregar libro" 
-                    onClick={()=> setPopupAddBook(true)}
-                    icon={<img src={plusIcon} alt="Añadir" />} />
-
-
-                    {PopUpAddBook && (
-                    <PopUp
-                    title="Agregar libro"
-                    className="popup-container"
-                    >
-                          <FormAddBook />
-                          
-                    </PopUp>
-                    )}
-               
-                  </div>
-
-                  <div>
-                    <Btn 
-                    className="primary-btn"
-                    text="Duplicar libro" 
-                    icon={<img src={plusIcon} alt="duplicar"/>} />
-
-                      <PopUp
-                      title="Duplicar libro"
-                      className="popupduplicate"
-                      >
-                       GenericForm
-                      </PopUp>
-                  </div>
-                </div>
-              </div>
-      </div>
-   
-    </section>
-  
-   
-    */}
+    
     </>
   );
 };

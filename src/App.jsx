@@ -19,6 +19,8 @@ import LoanMaterialSection from './pages/options/LoanMaterial/LoanMaterialSectio
 import RemovePartnerReasonSection from './pages/options/RemovePartnerReason/RemovePartnerReasonSection.jsx';
 import LoanAmountSection from './pages/options/LoanAmount/LoanAmountSection.jsx';
 import EmployeeSection from './pages/options/EmployeeSection/EmployeeSection.jsx';
+import BooksAuthor from './components/author-components/BooksAuthor/BooksAuthor.jsx';
+import Signature from './components/signature/Signature.jsx';
 
 function App() {
 
@@ -94,8 +96,19 @@ function App() {
               <Renewe isPopup={false} title="Listado de reservas" />
             </Content>}/> 
 
+            <Route path='/books/authors' element={<Content>
+              <AuthorSection/>
+            </Content>}/> 
+
+              
+            <Route path='/books/booksauthor' element={<Content>
+              <BooksAuthor />
+            </Content>}/> 
 
 
+            <Route path='/books/signature' element={<Content>
+              <Signature  />
+            </Content>}/> 
 
           </Route>
         </Routes>

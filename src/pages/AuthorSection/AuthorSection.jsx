@@ -15,6 +15,7 @@ export default function AuthorSection() {
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
 
+    
     const authorsPopups = [
             {
                 key: 'deletePopup',

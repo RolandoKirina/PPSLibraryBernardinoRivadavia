@@ -10,7 +10,16 @@ export default function FormEditBook(){
             case 'renewed':{
                 window.open(`${window.location.origin}/books/renewes`, '_blank',title);
             }
-        }
+            case 'authors':{
+                window.open(`${window.location.origin}/books/authors`, '_blank',title)
+            }
+            case 'booksauthor':{
+                window.open(`${window.location.origin}/books/booksauthor`, '_blank',title)
+            }
+            case 'signature':{
+                window.open(`${window.location.origin}/books/signature`, '_blank',title)
+            }
+        }   
     }
     return(
         <>
@@ -159,12 +168,12 @@ export default function FormEditBook(){
                 <div className="btns-form">
                 
                     <div>
-                        <Btn text="Autores del libro" className="secondary-btn" />
+                        <Btn text="Autores del libro" className="secondary-btn" onClick={() => redirect('booksauthor')}  />
                         <Btn text="Ver reservas" className="secondary-btn" onClick={() => redirect('renewed')} />
                     </div>
                     <div>
-                        <Btn text="Calcular signatura" className="secondary-btn" />
-                        <Btn text="Ver autores" className="secondary-btn" />
+                        <Btn text="Calcular signatura" className="secondary-btn" onClick={()=> redirect('signature')} />
+                        <Btn text="Ver autores" className="secondary-btn" onClick={() => redirect('authors')} />
                     </div>
                 </div>
 

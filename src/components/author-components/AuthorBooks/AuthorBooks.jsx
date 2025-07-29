@@ -5,12 +5,9 @@ import DeleteIcon from '../../../assets/img/delete-icon.svg';
 import EditIcon from '../../../assets/img/edit-icon.svg';
 import DetailsIcon from '../../../assets/img/details-icon.svg';
 import AddBookIcon from '../../../assets/img/add-book-icon.svg';
-import SaveIcon from '../../../assets/img/add-book-icon.svg';
 import Btn from '../../btn/Btn';
 import PopUpDelete from '../../deletebtnComponent/PopUpDelete';
 import PopUp from '../../popup-table/PopUp2';
-import confirmMessage from '../../../components/confirmMessage/ConfirmMessage';
-import { authorBooksDetails } from '../../../data/author/AuthorDetails';
 import ConfirmMessage from '../../../components/confirmMessage/ConfirmMessage';
 
 export default function AuthorBooks() {

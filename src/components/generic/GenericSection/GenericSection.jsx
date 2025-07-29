@@ -16,15 +16,19 @@ export default function GenericSection({title, filters, columns, data, popups, a
                     </div>
 
                     <Table columns={columns} data={data}>
-            
-                        {popups.map(({ condition, title, className, content, close, variant }, idx) => (
-                        condition && (
-                            <PopUp key={idx} title={title} className={className || ''} onClick={close} {...(variant === 'delete' && { variant: 'delete' })}>
-                            {content}
-                            </PopUp>
-                        )
-                        ))}
-                        
+                    {popups && popups.map(({ condition, title, className, content, close, variant }, idx) => (
+                    condition && (
+                        <PopUp
+                        key={idx}
+                        title={title}
+                        className={className || ''}
+                        onClick={close}
+                        {...(variant === 'delete' && { variant: 'delete' })}
+                        >
+                        {content}
+                        </PopUp>
+                    )
+                    ))}
                         <div className='actions'>
                             {actions && actions}
                         </div>
