@@ -32,7 +32,8 @@ function App() {
             <Route path='/employee' element={<EmployeeSection/>}/>
             <Route path='/employee/register' element={<RegisterEmployee mode={'add'}/>}/>
             <Route path='/employee/edit-employee' element={<RegisterEmployee mode={'edit'}/>}/>
-            <Route path='/loans' element={<LoanSection/>}/>
+            <Route path='/loans' element={<LoanSection openRenewes={false}/>}/>
+            <Route path='/loans/renewes' element={<LoanSection openRenewes={true}/>}/>
             <Route path='/books' element={<BookSection/>}/>
             <Route path='/authors' element={<AuthorSection/>}/>
             <Route path='/options/partner-categories' element={<PartnerCategorySection/>}/>

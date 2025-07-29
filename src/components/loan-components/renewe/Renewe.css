@@ -5,7 +5,8 @@
     align-items: center;
     color: var(--white);
     background-color: var(--primary-dark-1);
-
+    width: 50em;
+    min-height: 40em;
 }
 
 .renewe-input {

@@ -8,7 +8,7 @@ export default function FormEditBook(){
     function redirect(action){
         switch(action){
             case 'renewed':{
-                window.open(`${window.location.origin}/books/renewes`, '_blank');
+                window.open(`${window.location.origin}/loans/renewes`, '_blank');
             }
         }
     }

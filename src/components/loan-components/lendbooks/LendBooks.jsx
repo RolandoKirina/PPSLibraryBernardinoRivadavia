@@ -13,7 +13,7 @@ import { useState } from 'react';
 import Btn from '../../btn/Btn';
 import ConfirmMessage from '../../confirmMessage/ConfirmMessage';
 
-export default function LendBooks({method}) {
+export default function LendBooks({menu, method}) {
         const [deletePopup, setDeletePopup] = useState(false);
         const [confirmReturnPopup, setConfirmReturnPopup] = useState(false);
         const [confirmRenewePopup, setConfirmRenewePopup] = useState(false);
@@ -89,7 +89,10 @@ export default function LendBooks({method}) {
             header: 'Editar',
             accessor: 'edit',
             render: (_, row) => (
-            <button type='button' className="button-table" onClick={() => window.open(`${window.location.origin}/loans/book-on-loan-edit`, '_blank')}>
+            // <button type='button' className="button-table" onClick={() => window.open(`${window.location.origin}/loans/book-on-loan-edit`, '_blank')}>
+            //     <img src={EditIcon} alt="Editar" />
+            // </button>
+            <button type='button' className="button-table" onClick={() => menu('editForm')}>
                 <img src={EditIcon} alt="Editar" />
             </button>
             )
@@ -98,9 +101,13 @@ export default function LendBooks({method}) {
             header: 'Ver detalle',
             accessor: 'details',
             render: (_, row) => (
-            <button type='button' className="button-table" onClick={() => window.open(`${window.location.origin}/loans/book-on-loan-details`, '_blank')}>
+            // <button type='button' className="button-table" onClick={() => window.open(`${window.location.origin}/loans/book-on-loan-details`, '_blank')}>
+            //     <img src={DetailsIcon} alt="Detalles" />
+            // </button>
+            <button type='button' className="button-table" onClick={() => menu('details')}>
                 <img src={DetailsIcon} alt="Detalles" />
             </button>
+            
             )
         },
         {
@@ -131,7 +138,7 @@ export default function LendBooks({method}) {
             header: 'Detalles',
             accessor: 'details',
             render: (_, row) => (
-             <button type='button' className="button-table" onClick={() => window.open(`${window.location.origin}/loans/book-on-loan-returns-details`, '_blank')}>
+            <button type='button' className="button-table" onClick={() => menu('details')}>
                 <img src={DetailsIcon} alt="Detalles" />
             </button>
             )
@@ -167,7 +174,7 @@ export default function LendBooks({method}) {
                 <div className='add-book-to-lend'>
 
                     {method === 'add' && (
-                        <Btn text={'Agregar Libro'} onClick={() => redirect('loans/add-book-lend')} icon={<img src={AddBookIcon} alt='addBookIconButton'/> }/>
+                        <Btn text={'Agregar Libro'} onClick={() => menu('addBook')} icon={<img src={AddBookIcon} alt='addBookIconButton'/> }/>
                     )}
 
                     {method === 'return' && ( 

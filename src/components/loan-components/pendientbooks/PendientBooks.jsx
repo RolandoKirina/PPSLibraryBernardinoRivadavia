@@ -1,8 +1,11 @@
 import './PendientBooks.css';
 import { Table } from '../../table/Table';
+import { useState } from 'react';
 import DetailsIcon from '../../../assets/img/details-icon.svg';
 
 export default function PendientBooks() {
+    const [popupView, setPopupView] = useState("default");
+
     const pendientBooks = [
        { id: 1, title: 'El principito', code_inventory: 202, codeCDU: 108 },
        { id: 2, title: '1984', title: '1984', code_inventory: 203, codeCDU: 109 },
@@ -15,15 +18,6 @@ export default function PendientBooks() {
        { header: 'Título', accessor: 'title' },
        { header: 'Código de inventario', accessor: 'code_inventory' },
        { header: 'Codigo de CDU', accessor: 'codeCDU' },
-       {
-         header: 'Ver detalle',
-         accessor: 'details',
-         render: (_, row) => (
-           <button className="button-table" onClick={() => console.log('Ver detalle', row)}>
-             <img src={DetailsIcon} alt="Detalles" />
-           </button>
-         )
-       }
      ];
     
         return (

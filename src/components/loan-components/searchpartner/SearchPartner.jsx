@@ -4,7 +4,7 @@ import { useState } from 'react';
 import PopUp from '../../popup-table/PopUp2';
 import PartnerMemo from '../partnermemo/PartnerMemo';
 
-export default function SearchPartner() {
+export default function SearchPartner({menu}) {
     const [memoPopup, setMemoPopup] = useState(false);
 
     function redirect(routeName) {
@@ -30,8 +30,8 @@ export default function SearchPartner() {
                     </div>
                 </div>
                 <div className='search-partner-buttons'>
-                    <Btn text={'Cuotas Impagas'} onClick={() => redirect('loans/partner/quotes')}/>
-                    <Btn text={'Libros Pendientes'} onClick={() => redirect('loans/partner/pendient-books')}/>
+                    <Btn text={'Cuotas Impagas'} onClick={() => menu('unpaidQuotes')}/>
+                    <Btn text={'Libros Pendientes'} onClick={() => menu('pendientBooks')}/>
                     <Btn text={'Memo del Socio'} onClick={() => setMemoPopup(true)}/>
                 </div>
 

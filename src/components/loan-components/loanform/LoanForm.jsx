@@ -1,15 +1,27 @@
 import './LoanForm.css';
 import SearchPartner from '../searchpartner/SearchPartner';
 import LendBooks from '../lendbooks/LendBooks';
+import GenericForm from '../../generic/GenericForm/GenericForm';
+import { updateLendBookFields } from '../../../data/loan/LoanForms';
+import { addLendBookFields } from '../../../data/loan/LoanForms';
 import { useState } from 'react';
+import Btn from '../../btn/Btn';
+import LeftArrow from '../../../assets/img/left-arrow.svg';
+import BackviewBtn from '../../backviewbtn/BackviewBtn';
+import { lendBooksDetails } from '../../../data/loan/LoanDetails';
+import ShowDetails from '../../generic/ShowDetails/ShowDetails';
+import UnpaidQuotes from '../unpaidquotes/UnpaidQuotes';
+import PendientBooks from '../pendientbooks/PendientBooks';
 
 export default function LoanForm() {
     const [loanType, setLoanType] = useState('in_room');
+    const [popupView, setPopupView] = useState("default");
 
     return (
         <>      
             <div className='add-loan-form-content'>
-                <form>
+                {popupView === 'default' && (
+                    <form>
                         <div className='add-loan-form-inputs'>
                             <div>
                                 <h4>Tipo de Prestamo</h4>
@@ -34,9 +46,41 @@ export default function LoanForm() {
                             </div>
                             
                         </div>
-                        <SearchPartner />
-                        <LendBooks method={'add'}/>
-                </form>
+                        <SearchPartner menu={setPopupView} />
+                        <LendBooks menu={setPopupView} method={'add'}/>
+                    </form>
+                )}
+                {popupView === 'editForm' && (
+                    <>
+                        <BackviewBtn menu={'default'} changeView={setPopupView} />
+                        <GenericForm title={'Editar Libro en Prestamo'} fields={updateLendBookFields} onSubmit={(data) => console.log('Formulario enviado:', data)}/>
+                    </>
+                )}
+                {popupView === 'details' && (
+                    <>
+                        <BackviewBtn menu={'default'} changeView={setPopupView} />
+                        <ShowDetails insidePopup={true} titleText={'Detalles de libro en préstamo'} isPopup={false} detailsData={lendBooksDetails} />
+                    </>
+                )}
+                {popupView === 'addBook' && (
+                    <>
+                        <BackviewBtn menu={'default'} changeView={setPopupView} />
+                        <GenericForm title={'Agregar Libro en Prestamo'} fields={addLendBookFields} onSubmit={(data) => console.log('Formulario enviado:', data)}/>
+                    </>
+                )}
+                {popupView === 'unpaidQuotes' && (
+                    <>
+                        <BackviewBtn menu={'default'} changeView={setPopupView} />
+                        <UnpaidQuotes />
+                    </>
+                )}
+                {popupView === 'pendientBooks' && (
+                    <>
+                        <BackviewBtn menu={'default'} changeView={setPopupView} />
+                        <PendientBooks />
+                    </>
+                )}
+                
             </div> 
                      
         </>

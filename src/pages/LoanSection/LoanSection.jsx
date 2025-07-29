@@ -15,8 +15,9 @@ import GenericSection from "../../components/generic/GenericSection/GenericSecti
 import GenericForm from "../../components/generic/GenericForm/GenericForm";
 import { editLoanformFields } from "../../data/loan/LoanForms";
 import PopUpDelete from '../../components/deletebtnComponent/PopUpDelete';
+import { useEffect } from "react";
 
-export default function LoanSection() {
+export default function LoanSection({openRenewes}) {
     const [deletePopup, setDeletePopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
@@ -24,6 +25,12 @@ export default function LoanSection() {
     const [returnsPopup, setReturnsPopup] = useState(false);
     const [listingsPopup, setListingsPopup] = useState(false);
     const [renewePopup, setRenewePopup] = useState(false);
+
+    useEffect(() => {
+        if (openRenewes) {
+            setRenewePopup(true);
+        }
+    }, [openRenewes]);
 
     //data tabla principal prestamos
     const loans = [

@@ -8,7 +8,7 @@ export default function FormEditBook(){
     function redirect(action){
          switch(action){
             case 'renewed':{
-                window.open(`${window.location.origin}/books/renewes`, '_blank',title);
+                window.open(`${window.location.origin}/loans/renewes`, '_blank',title);
             }
             case 'authors':{
                 window.open(`${window.location.origin}/books/authors`, '_blank',title)

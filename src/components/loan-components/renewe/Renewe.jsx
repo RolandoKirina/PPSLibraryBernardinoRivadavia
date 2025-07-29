@@ -9,10 +9,16 @@ import PopUp from '../../popup-table/PopUp2';
 import PopUpDelete from '../../deletebtnComponent/PopUpDelete';
 import { useState } from 'react';
 import GenericSection from '../../generic/GenericSection/GenericSection.jsx';
+import BackviewBtn from '../../backviewbtn/BackviewBtn.jsx';
+import GenericForm from '../../generic/GenericForm/GenericForm.jsx';
+import { reneweLoanFields } from '../../../data/loan/LoanForms.js';
+import ShowDetails from '../../generic/ShowDetails/ShowDetails.jsx';
+import { reneweDetails } from '../../../data/loan/LoanDetails.js';
 
 export default function Renewe({title, isPopup}) {
     const [addRenewe, setAddRenewe] = useState(false);
     const [deletePopup, setDeletePopup] = useState(false);
+    const [popupView, setPopupView] = useState("default");
 
     function redirect(action) {
         switch(action) {
@@ -70,7 +76,7 @@ export default function Renewe({title, isPopup}) {
             accessor: 'edit',
     
             render: (_, row) => (
-            <button className="button-table"  onClick={() => redirect('edit')}>
+            <button className="button-table"  onClick={() => setPopupView('editForm')}>
                 <img src={EditIcon} alt="Editar" />
             </button>
             )
@@ -79,7 +85,7 @@ export default function Renewe({title, isPopup}) {
             header: 'Ver detalle',
             accessor: 'details',
             render: (_, row) => (
-            <button className="button-table" onClick={() => redirect('details')}>
+            <button className="button-table" onClick={() => setPopupView('details')}>
                 <img src={DetailsIcon} alt="Detalles" />
             </button>
             )
@@ -88,62 +94,70 @@ export default function Renewe({title, isPopup}) {
 
     return (
         <>
-        
-        {isPopup ? (
             <div className='renewe-container'>
-                {title && <h2>{title}</h2>}
-                <div className='renewe-inputs-items'>
-                    <div className='renewe-inputs-container'>
-                         <div className='renewe-input'>
-                        <div>
-                            <label>Codigo libro</label>
-                            <input type='number' />
+                {popupView === 'default' && (
+                    <div className='renewe-inputs-items'>
+                        <div className='renewe-inputs-container'>
+                            <div className='renewe-input'>
+                            <div>
+                                <label>Codigo libro</label>
+                                <input type='number' />
+                            </div>
+                                <div>
+                                <label>Título libro</label>
+                                <input type='text' />
+                            </div>   
                         </div>
-                             <div>
-                            <label>Título libro</label>
-                            <input type='text' />
-                        </div>   
-                    </div>
-                    <div className='renewe-input'>
-                        <div>
-                            <label>Fecha de devolución</label>
-                            <input type='date' />
+                        <div className='renewe-input'>
+                            <div>
+                                <label>Fecha de devolución</label>
+                                <input type='date' />
+                            </div>
+                            <div>
+                                <label>Fecha reserva</label>
+                                <input type='date' />
+                            </div>   
                         </div>
-                        <div>
-                            <label>Fecha reserva</label>
-                            <input type='date' />
-                        </div>   
+                        </div>
+                    
+
+                        <Table columns={columns} data={renewes}>
+                        <div className='add-renew-btn'>
+                            <Btn text={'Nueva reserva'}  onClick={() => setPopupView('addRenewe')} icon={<img src={PlusIcon} alt={PlusIcon}/>}/>
+                        </div>
+                        </Table>
+
+                        {renewespopup.map(({ condition, title, className, content, close, variant }, idx) => (
+                        condition && (
+                            <PopUp key={idx} title={title} className={className || ''} onClick={close} {...(variant === 'delete' && { variant: 'delete' })}>
+                            {content}
+                            </PopUp>
+                        )
+                        ))}
+
+
                     </div>
-                    </div>
-                   
-
-                    <Table columns={columns} data={renewes}>
-                       <div className='add-renew-btn'>
-                        <Btn text={'Nueva reserva'}  onClick={() => redirect('add')} icon={<img src={PlusIcon} alt={PlusIcon}/>}/>
-                       </div>
-                    </Table>
-
-                    {renewespopup.map(({ condition, title, className, content, close, variant }, idx) => (
-                    condition && (
-                        <PopUp key={idx} title={title} className={className || ''} onClick={close} {...(variant === 'delete' && { variant: 'delete' })}>
-                        {content}
-                        </PopUp>
-                    )
-                    ))}
-
-
-                </div>
-              
+                )}
+                {popupView === 'editForm' && (
+                    <>
+                    <BackviewBtn menu={'default'} changeView={setPopupView} />
+                    <GenericForm title={'Editar Reserva'} fields={reneweLoanFields} onSubmit={(data) => console.log('Formulario enviado:', data)}/>
+                    </>
+                )}
+                {popupView === 'addRenewe' && (
+                    <>
+                    <BackviewBtn menu={'default'} changeView={setPopupView} />
+                    <GenericForm title={'Agregar Reserva'} fields={reneweLoanFields} onSubmit={(data) => console.log('Formulario enviado:', data)}/>
+                    </>
+                )}
+                {popupView === 'details' && (
+                    <>
+                        <BackviewBtn menu={'default'} changeView={setPopupView} />
+                        <ShowDetails insidePopup={true} titleText={'Detalles de reserva'} isPopup={false} detailsData={reneweDetails} />
+                    </>
+                )}
                 
             </div>
-        ): (
-                 <GenericSection title={title} columns={columns} data={renewes} popups={renewespopup} actions={
-                    (<div className='add-renew-btn'>
-                         <Btn text={'Nueva reserva'}  onClick={() => redirect('add') }icon={<img src={PlusIcon} alt={PlusIcon}/>}/>
-                     </div>)}>
-                 </GenericSection>
-        )}
-        
             
         </>
     )
