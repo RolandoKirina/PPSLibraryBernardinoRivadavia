@@ -69,7 +69,7 @@ export default function LendBooks({menu, method}) {
         }
 
        const loans = [
-        { id: 1, book_code: '23123', title: 'SADASDSADSADSADsdasdsadsadsadsadasddsadsad', returned: 'si' },
+        { id: 1, book_code: '0000006828', title: '100 gramos de ejecutivos', returned: '4' },
         ];
 
        const columns = [
@@ -166,7 +166,7 @@ export default function LendBooks({menu, method}) {
     return (
         <>
             <div className='lend-books-container'>
-                <h2>Libros a Prestar</h2>
+                <h2 className='lend-books-title'>Libros a Prestar</h2>
                 
                 {method==='add' && <Table columns={columns} data={loans} popupLength='popup-length'/>}
                 {method==='return' && <Table columns={columnsReturnForm} data={loans} popupLength='popup-length'/>}

@@ -17,7 +17,7 @@ import { editLoanformFields } from "../../data/loan/LoanForms";
 import PopUpDelete from '../../components/deletebtnComponent/PopUpDelete';
 import { useEffect } from "react";
 
-export default function LoanSection({openRenewes}) {
+export default function LoanSection({openRenewes, pendientBooks}) {
     const [deletePopup, setDeletePopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);

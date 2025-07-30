@@ -10,7 +10,7 @@ import PopUpDelete from '../../deletebtnComponent/PopUpDelete';
 import PopUp from '../../popup-table/PopUp2';
 import ConfirmMessage from '../../../components/confirmMessage/ConfirmMessage';
 
-export default function AuthorBooks() {
+export default function AuthorBooks({menu}) {
     const [seeAllButton, setSeeAllButton] = useState('Ver todos');
     const [deletePopup, setDeletePopup] = useState(false);
     const [confirmPopup, setConfirmPopup] = useState(false);
@@ -48,7 +48,7 @@ export default function AuthorBooks() {
                 header: 'Editar',
                 accessor: 'edit',
                 render: (_, row) => (
-                <button type='button' className="button-table" onClick={() => window.open(`${window.location.origin}/authors/author-books-edit`, '_blank')}>
+                <button type='button' className="button-table" onClick={() => menu('editForm')}>
                     <img src={EditIcon} alt="Editar" />
                 </button>
                 )
@@ -57,7 +57,7 @@ export default function AuthorBooks() {
                 header: 'Ver detalle',
                 accessor: 'details',
                 render: (_, row) => (
-                <button type='button' className="button-table" onClick={() => window.open(`${window.location.origin}/authors/author-books-details`, '_blank')}>
+                <button type='button' className="button-table" onClick={() => menu('details')}>
                     <img src={DetailsIcon} alt="Detalles" />
                 </button>
                 )
@@ -91,7 +91,7 @@ export default function AuthorBooks() {
 
                 <Table columns={columns} data={authorBooks}>
                     <div className='author-books-add-btn'>
-                        <Btn onClick={() => window.open(`${window.location.origin}/books/add-book`, '_blank')} text={'Agregar libro'} icon={<img src={AddBookIcon} alt='addBookIcon'/>} />
+                        <Btn onClick={() => menu('addForm')} text={'Agregar libro'} icon={<img src={AddBookIcon} alt='addBookIcon'/>} />
                         <Btn className='seeAllBtn' onClick={() => handleSetAllbutton()} text={seeAllButton} />
                     </div>
                     <div className='author-books-save-btn'>

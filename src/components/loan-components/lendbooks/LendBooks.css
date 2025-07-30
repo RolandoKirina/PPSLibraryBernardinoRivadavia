@@ -3,7 +3,7 @@
     margin-top: 2em;
 }
 
-.lend-books-container h2:first {
+.lend-books-title {
     color: var(--secondary-light-2);
 }
 

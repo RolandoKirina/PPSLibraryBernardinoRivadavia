@@ -31,7 +31,7 @@ export default function SearchPartner({menu}) {
                 </div>
                 <div className='search-partner-buttons'>
                     <Btn text={'Cuotas Impagas'} onClick={() => menu('unpaidQuotes')}/>
-                    <Btn text={'Libros Pendientes'} onClick={() => menu('pendientBooks')}/>
+                    <Btn text={'Libros Pendientes'} onClick={() => redirect('loans/filters/partner')}/>
                     <Btn text={'Memo del Socio'} onClick={() => setMemoPopup(true)}/>
                 </div>
 

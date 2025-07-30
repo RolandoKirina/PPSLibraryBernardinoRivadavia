@@ -11,7 +11,8 @@ import BackviewBtn from '../../backviewbtn/BackviewBtn';
 import { lendBooksDetails } from '../../../data/loan/LoanDetails';
 import ShowDetails from '../../generic/ShowDetails/ShowDetails';
 import UnpaidQuotes from '../unpaidquotes/UnpaidQuotes';
-import PendientBooks from '../pendientbooks/PendientBooks';
+import Reader from '../reader/Reader';
+import SearchBooks from '../searchBooks/searchBooks';
 
 export default function LoanForm() {
     const [loanType, setLoanType] = useState('in_room');
@@ -39,6 +40,7 @@ export default function LoanForm() {
                             <div className='add-loan-code-employee'>
                                 <label>Codigo Empleado</label>
                                 <input type='number'/>
+                                <span className='found'>Fortunato, Jorge</span>
                             </div>
                             <div className='add-loan-retire-date'>
                                 <label>Fecha de retiro</label>
@@ -46,14 +48,21 @@ export default function LoanForm() {
                             </div>
                             
                         </div>
-                        <SearchPartner menu={setPopupView} />
+                        {loanType === 'retired' ? (
+                            <SearchPartner menu={setPopupView} />
+                        ) : (
+                            <Reader menu={setPopupView}  />
+                        )} 
+                        
                         <LendBooks menu={setPopupView} method={'add'}/>
                     </form>
                 )}
                 {popupView === 'editForm' && (
                     <>
                         <BackviewBtn menu={'default'} changeView={setPopupView} />
-                        <GenericForm title={'Editar Libro en Prestamo'} fields={updateLendBookFields} onSubmit={(data) => console.log('Formulario enviado:', data)}/>
+                        <GenericForm title={'Editar Libro en Prestamo'} fields={addLendBookFields} onSubmit={(data) => console.log('Formulario enviado:', data)}>
+                            <Btn className='search-book-btn' text={'Buscar libro'} onClick={() => setPopupView('searchBook')}/>
+                        </GenericForm>
                     </>
                 )}
                 {popupView === 'details' && (
@@ -64,23 +73,34 @@ export default function LoanForm() {
                 )}
                 {popupView === 'addBook' && (
                     <>
+                        
                         <BackviewBtn menu={'default'} changeView={setPopupView} />
-                        <GenericForm title={'Agregar Libro en Prestamo'} fields={addLendBookFields} onSubmit={(data) => console.log('Formulario enviado:', data)}/>
+                        <GenericForm title={'Agregar Libro en Prestamo'} fields={addLendBookFields} onSubmit={(data) => console.log('Formulario enviado:', data)}>
+                            <Btn className='search-book-btn' text={'Buscar libro'} onClick={() => setPopupView('searchBook')}/>
+                        </GenericForm>
+                    </>
+                )}
+                {popupView === 'searchBook' && (
+                    <>
+                        <BackviewBtn menu={'addBook'} changeView={setPopupView} />
+                        <SearchBooks />
                     </>
                 )}
                 {popupView === 'unpaidQuotes' && (
                     <>
                         <BackviewBtn menu={'default'} changeView={setPopupView} />
-                        <UnpaidQuotes />
+                        <UnpaidQuotes changeView={setPopupView}/>
                     </>
                 )}
-                {popupView === 'pendientBooks' && (
+                {popupView === 'editUnpaidQuote' && (
                     <>
-                        <BackviewBtn menu={'default'} changeView={setPopupView} />
-                        <PendientBooks />
+                        <BackviewBtn menu={'unpaidQuotes'} changeView={setPopupView} />
+                        <GenericForm title={'Editar cuota pendiente'} fields={addLendBookFields} onSubmit={(data) => console.log('Formulario enviado:', data)} />
                     </>
                 )}
                 
+
+
             </div> 
                      
         </>

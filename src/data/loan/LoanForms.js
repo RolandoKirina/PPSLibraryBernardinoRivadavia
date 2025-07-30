@@ -42,37 +42,43 @@ export const updateLendBookFields = [
 ];
 
 export const addLendBookFields = [
-        {
-            label: 'Código de Libro',
-            name: 'bookCode',
-            type: 'text'
-        },
-        {
-            label: 'Título',
-            name: 'title',
-            type: 'text'
-        },
-        {
-            label: 'Fecha Prevista',
-            name: 'expectedDate',
-            type: 'date'
-        },
-        {
-            label: 'Fecha de Devolución',
-            name: 'returnDate',
-            type: 'date'
-        },
-        {
-            label: 'Devuelto',
-            name: 'returned',
-            type: 'checkbox'
-        },
-        {
-            label: 'Renovación',
-            name: 'renewal',
-            type: 'checkbox'
-        }
+  {
+    label: 'Código de Libro',
+    name: 'bookCode',
+    type: 'text'
+  },
+  {
+    label: 'Título',
+    name: 'title',
+    type: 'text'
+  },
+  {
+    label: 'Fecha Prevista',
+    name: 'expectedDate',
+    type: 'date'
+  },
+  {
+    label: 'Fecha de Devolución',
+    name: 'returnDate',
+    type: 'date'
+  },
+  {
+    label: 'Devuelto',
+    name: 'returned',
+    type: 'checkbox'
+  },
+  {
+    label: 'Renovación',
+    name: 'renewal',
+    type: 'checkbox'
+  },
+  {
+    label: 'Cantidad Renovaciones',
+    name: 'renewalCount',
+    type: 'counter'
+  }
 ];
+
 
 
 export const editLoanformFields = [
@@ -99,24 +105,66 @@ export const editLoanformFields = [
     ];
 
 export const reneweLoanFields = [
+   {
+    label: 'Numero',
+    name: 'partner_number',
+    type: 'number'
+  },
   {
-    label: 'Fecha de Retiro',
+    label: 'Apellido, Nombre',
+    name: 'fullname',
+    type: 'text'
+  },
+  {
+    label: 'Fecha de Reserva',
     name: 'date_out',
     type: 'date'
   },
   {
-    label: 'Fecha Prevista',
+    label: 'Fecha Promesa',
     name: 'expected_return',
     type: 'date'
   },
   {
-    label: 'Fecha de Devolución',
-    name: 'actual_return',
-    type: 'date'
+    label: 'Titulo libro',
+    name: 'title',
+    type: 'text'
+  },
+
+
+];
+
+
+export const editPendingQuoteFields = [
+  {
+    label: 'Mes',
+    name: 'month',
+    type: 'text'
   },
   {
-    label: 'Empleado Responsable',
-    name: 'employee',
-    type: 'text'
+    label: 'Año',
+    name: 'year',
+    type: 'number'
+  },
+  {
+    label: 'Monto',
+    name: 'amount',
+    type: 'number'
+  },
+  {
+    label: 'Paga',
+    name: 'paid',
+    type: 'select',
+    options: [
+      { label: 'Sí/No', value: '' },
+      { label: 'Sí', value: 'yes' },
+      { label: 'No', value: 'no' }
+    ]
+  },
+  {
+    label: 'Fecha Pago',
+    name: 'payment_date',
+    type: 'date'
   }
 ];
+

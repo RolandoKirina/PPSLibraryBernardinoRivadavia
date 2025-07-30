@@ -3,10 +3,11 @@ import SearchPartner from '../searchpartner/SearchPartner';
 import LendBooks from '../lendbooks/LendBooks';
 import BackviewBtn from '../../backviewbtn/BackviewBtn';
 import UnpaidQuotes from '../unpaidquotes/UnpaidQuotes';
-import PendientBooks from '../pendientbooks/PendientBooks';
 import ShowDetails from '../../generic/ShowDetails/ShowDetails';
 import { lendBooksReturnDetails } from '../../../data/loan/LoanDetails';
 import { useState } from 'react';
+import GenericForm from '../../generic/GenericForm/GenericForm';
+import { editPendingQuoteFields } from '../../../data/loan/LoanForms';
 
 export default function Return() {
     const [popupView, setPopupView] = useState("default");
@@ -16,8 +17,8 @@ export default function Return() {
             <div className='return-form-content'>
                 {popupView === 'default' && (
                     <form>
-                            <SearchPartner menu={setPopupView}/>
-                            <LendBooks menu={setPopupView} method={'return'}/>
+                        <SearchPartner menu={setPopupView}/>
+                        <LendBooks menu={setPopupView} method={'return'}/>
                     </form>
                 )}
                 {popupView === 'details' && (
@@ -29,16 +30,15 @@ export default function Return() {
                 {popupView === 'unpaidQuotes' && (
                     <>
                         <BackviewBtn menu={'default'} changeView={setPopupView} />
-                        <UnpaidQuotes />
+                        <UnpaidQuotes changeView={setPopupView}/>
                     </>
                 )}
-                {popupView === 'pendientBooks' && (
+                {popupView === 'editUnpaidQuote' && (
                     <>
-                        <BackviewBtn menu={'default'} changeView={setPopupView} />
-                        <PendientBooks />
+                        <BackviewBtn menu={'unpaidQuotes'} changeView={setPopupView} />
+                        <GenericForm title={'Editar cuota pendiente'} fields={editPendingQuoteFields} onSubmit={(data) => console.log('Formulario enviado:', data)} />
                     </>
                 )}
-
                     
                 </div> 
         </>

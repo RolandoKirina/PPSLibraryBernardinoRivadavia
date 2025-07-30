@@ -81,10 +81,10 @@ export const lendBooksDetails = [
     active: false,
     rows: [
       [
-        { label: 'Código de libro', value: 'información' }
+        { label: 'Código de libro', value: '000006828' }
       ],
       [
-        { label: 'Título', value: 'información' }
+        { label: 'Título', value: '100 gramos de ejecutivos' }
       ]
     ]
   },
@@ -94,10 +94,10 @@ export const lendBooksDetails = [
     active: false,
     rows: [
       [
-        { label: 'Fecha prevista', value: 'información' }
+        { label: 'Fecha prevista', value: '14/08/25' }
       ],
       [
-        { label: 'Fecha devolución', value: 'información' }
+        { label: 'Fecha devolución', value: '12/08/25' }
       ]
     ]
   },
@@ -107,8 +107,8 @@ export const lendBooksDetails = [
     active: false,
     rows: [
       [
-        { label: 'Renovación', value: 'Si/No' },
-        { label: 'Devuelto', value: 'Si/No' }
+        { label: 'Renovación', value: '4' },
+        { label: 'Devuelto', value: 'No' }
       ]
     ]
   }
@@ -162,7 +162,8 @@ export const reneweDetails = [
     active: false,
     rows: [
       [
-        { label: 'Título', value: 'información' }
+        { label: 'Título', value: 'información' },
+        { label: 'Codigo', value: 'información' },
       ]
     ]
   },

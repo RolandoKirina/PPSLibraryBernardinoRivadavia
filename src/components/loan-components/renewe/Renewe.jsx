@@ -141,12 +141,15 @@ export default function Renewe({title, isPopup}) {
                 {popupView === 'editForm' && (
                     <>
                     <BackviewBtn menu={'default'} changeView={setPopupView} />
+                    {/* CAMBIAR - AÑADIR TABLA */}
                     <GenericForm title={'Editar Reserva'} fields={reneweLoanFields} onSubmit={(data) => console.log('Formulario enviado:', data)}/>
                     </>
                 )}
                 {popupView === 'addRenewe' && (
                     <>
                     <BackviewBtn menu={'default'} changeView={setPopupView} />
+                    
+                    {/* CAMBIAR - AÑADIR TABLA */}
                     <GenericForm title={'Agregar Reserva'} fields={reneweLoanFields} onSubmit={(data) => console.log('Formulario enviado:', data)}/>
                     </>
                 )}
