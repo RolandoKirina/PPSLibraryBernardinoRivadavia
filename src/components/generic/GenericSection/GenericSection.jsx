@@ -2,7 +2,7 @@ import './GenericSection.css';
 import PopUp from '../../popup-table/PopUp2';
 import { Table } from '../../table/Table';
 
-export default function GenericSection({title, filters, columns, data, popups, actions}) {
+export default function GenericSection({title, filters, columns, data, popups, actions, children}) {
     return (
         <>
             <section className='genericsection'>
@@ -14,9 +14,13 @@ export default function GenericSection({title, filters, columns, data, popups, a
                     <div className="generic-title">
                             <h2>{title}</h2> 
                     </div>
+                    {children}
+        {columns && (
+        <Table columns={columns} data={data}>
+         
+                      
 
-                    <Table columns={columns} data={data}>
-                    {popups && popups.map(({ condition, title, className, content, close, variant }, idx) => (
+            {popups && popups.map(({ condition, title, className, content, close, variant }, idx) => (
                     condition && (
                         <PopUp
                         key={idx}
@@ -34,7 +38,7 @@ export default function GenericSection({title, filters, columns, data, popups, a
                         </div>
 
                     </Table>
-                        
+        )}       
                 </div>
                
             </section>

@@ -140,9 +140,12 @@ margin-bottom: 0;
   align-self: flex-end;
 }
 
-.btns-form {
+.btns-form div button {
+    padding: 1em;
+    margin: 0.5em;
+}
+.btns-form{
     display: flex;
     width: 100%;
-    padding: 0;
     margin: 2em 0 2em 0;
 }

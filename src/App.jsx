@@ -19,6 +19,7 @@ import LoanMaterialSection from './pages/options/LoanMaterial/LoanMaterialSectio
 import RemovePartnerReasonSection from './pages/options/RemovePartnerReason/RemovePartnerReasonSection.jsx';
 import LoanAmountSection from './pages/options/LoanAmount/LoanAmountSection.jsx';
 import EmployeeSection from './pages/options/EmployeeSection/EmployeeSection.jsx';
+import Dashboard from './components/dashboard/Dashboard.jsx';
 import BooksAuthor from './components/author-components/BooksAuthor/BooksAuthor.jsx';
 import Signature from './components/signature/Signature.jsx';
 
@@ -29,6 +30,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<Layout />}> 
+             <Route path='/dashboard' element={<Dashboard/>}/>
             <Route path='/employee' element={<EmployeeSection/>}/>
             <Route path='/employee/register' element={<RegisterEmployee mode={'add'}/>}/>
             <Route path='/employee/edit-employee' element={<RegisterEmployee mode={'edit'}/>}/>
