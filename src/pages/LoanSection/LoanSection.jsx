@@ -90,7 +90,7 @@ export default function LoanSection({openRenewes, pendientBooks}) {
             key: 'editPopup',
             title: 'Editar préstamo',
             className: '',
-            content: <GenericForm fields={editLoanformFields} onSubmit={(data) => console.log('Formulario enviado:', data)}/>,
+            content: <LoanForm />,
             close: () => setEditPopup(false),
             condition: editPopup
         },
@@ -130,7 +130,7 @@ export default function LoanSection({openRenewes, pendientBooks}) {
         {
             key: 'renewePopup',
             title: 'Listado de reservas',
-            className: 'loan-listings-size',
+            className: 'loan-renews-size',
             content: <Renewe isPopup={true}/>,
             close: () => setRenewePopup(false),
             condition: renewePopup

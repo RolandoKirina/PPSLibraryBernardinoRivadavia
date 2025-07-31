@@ -22,3 +22,7 @@
     display: flex;
     align-items: center;
 }
+
+.author-books-background {
+    background-color: var(--primary-dark-2);
+}

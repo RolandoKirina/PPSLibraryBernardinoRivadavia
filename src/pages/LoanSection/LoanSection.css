@@ -37,4 +37,10 @@ main {
     border-radius: 10px;
     width: 50em;      /* ancho total */
     height: 40em;
+      overflow-y: auto;
+}
+
+.loan-renews-size {
+  width: 100%;
+  max-width: 960px;
 }

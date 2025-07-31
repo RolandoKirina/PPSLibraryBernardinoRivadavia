@@ -41,11 +41,7 @@ function App() {
             <Route path='/options/partner-categories' element={<PartnerCategorySection/>}/>
             <Route path='/options/loan-materials' element={<LoanMaterialSection/>}/>
             <Route path='/options/remove-partner-reasons' element={<RemovePartnerReasonSection chooseMode={false}/>}/>
-            <Route path='/options/loan-amount' element={<LoanAmountSection/>}/> 
-
-            <Route path='/books/add-book' element={<Content>
-              {/* <FormEditBook /> */}
-            </Content>}/>
+            <Route path='/options/loan-amount-group' element={<LoanAmountSection/>}/> 
 
             {loanFormRoutes.map(({ path, title, fields }, idx) => ( //rutas de formularios independientes(no son popup) de préstamo(u otras secciones
               <Route

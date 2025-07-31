@@ -1,19 +1,21 @@
 import './AuthorSection.css';
 import GenericSection from '../../components/generic/GenericSection/GenericSection';
 import PopUpDelete from '../../components/deletebtnComponent/PopUpDelete';
-import { editAuthorFormFields, addAuthorFormFields } from '../../data/author/AuthorForms';
+import { editAuthorFormFields } from '../../data/author/AuthorForms';
 import GenericForm from '../../components/generic/GenericForm/GenericForm';
 import DeleteIcon from '../../assets/img/delete-icon.svg';
 import EditIcon from '../../assets/img/edit-icon.svg';
 import { useState } from 'react';
 import Btn from '../../components/btn/Btn';
 import PlusIcon from '../../assets/img/plus-icon.svg';
-import AuthorForm from '../../components/author-components/AuthorForm/AuthorForm';
+import BookIcon from '../../assets/img/add-book-icon.svg';
+import AuthorBooks from '../../components/author-components/AuthorBooks/AuthorBooks';
 
 export default function AuthorSection() {
     const [deletePopup, setDeletePopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
+    const [booksPopup, setBooksPopup] = useState(false);
 
     
     const authorsPopups = [
@@ -30,15 +32,15 @@ export default function AuthorSection() {
                 key: 'editPopup',
                 title: 'Editar autor',
                 className: '',
-                content: <GenericForm fields={editAuthorFormFields} onSubmit={(data) => console.log('Formulario enviado:', data)}/>,
+                content: <AuthorBooks />,
                 close: () => setEditPopup(false),
                 condition: editPopup
             },
             {
                 key: 'addPopup',
                 title: 'Agregar autor',
-                className: '',
-                content: <AuthorForm />,
+                className: 'author-books-background',
+                content: <AuthorBooks />,
                 close: () => setAddPopup(false),
                 condition: addPopup
             }

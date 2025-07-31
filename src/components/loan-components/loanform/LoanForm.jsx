@@ -23,6 +23,9 @@ export default function LoanForm() {
             <div className='add-loan-form-content'>
                 {popupView === 'default' && (
                     <form>
+                        <div className='type-loan-title'>
+                            <h2>Datos del prestamo</h2>
+                        </div>
                         <div className='add-loan-form-inputs'>
                             <div>
                                 <h4>Tipo de Prestamo</h4>

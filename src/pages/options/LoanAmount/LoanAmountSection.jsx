@@ -8,13 +8,16 @@ import { useState } from 'react';
 import Btn from '../../../components/btn/Btn';
 import DeleteIcon from '../../../assets/img/delete-icon.svg';
 import EditIcon from '../../../assets/img/edit-icon.svg';
+import { loanMaterialsGroupFields } from '../../../data/options/loan-materials/LoanMaterialsForms';
+import { Table } from '../../../components/table/Table';
+import AddMaterialGroup from '../../../components/addmaterialgroup/AddMaterialGroup';
 
 export default function LoanAmountSection() {
     const [deletePopup, setDeletePopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
 
-    const loanMaterials = [
+    const loanMaterialsTable = [
     { id: 1, description: 'Descripción 1', loanDays: '10' },
     { id: 1, description: 'Descripción 1', loanDays: '10' },
     { id: 1, description: 'Descripción 1', loanDays: '10' },
@@ -25,33 +28,41 @@ export default function LoanAmountSection() {
      const loanMaterialsPopups = [
                 {
                     key: 'deletePopup',
-                    title: 'Borrar material de préstamo',
+                    title: 'Borrar Grupo de tipo de material',
                     className: 'delete-size-popup',
-                    content: <PopUpDelete title={"Material de préstamo"} closePopup={() => setDeletePopup(false)} />,
+                    content: <PopUpDelete title={"Grupo de tipo de material"} closePopup={() => setDeletePopup(false)} />,
                     close: () => setDeletePopup(false),
                     condition: deletePopup,
                     variant: 'delete'
                 },
                 {
                     key: 'editPopup',
-                    title: 'Editar material de préstamo',
-                    className: '',
-                    content: <GenericForm fields={loanMaterialsFields} onSubmit={(data) => console.log('Formulario enviado:', data)}/>,
+                    title: 'Editar Grupo de tipo de material',
+                    className: 'add-material-group-background',
+                    content: <AddMaterialGroup />,
                     close: () => setEditPopup(false),
                     condition: editPopup
                 },
                 {
                     key: 'addPopup',
-                    title: 'Agregar material de préstamo',
-                    className: '',
-                    content: <GenericForm fields={loanMaterialsFields} onSubmit={(data) => console.log('Formulario enviado:', data)}/>,
+                    title: 'Agregar Grupo de tipo de material',
+                    className: 'add-material-group-background',
+                    content: 
+                    <>
+                        <AddMaterialGroup />
+                    </>,
                     close: () => setAddPopup(false),
                     condition: addPopup
                 }
     ];
 
+    const columnsMaterials = [
+        { header: 'Descripción grupo', accessor: 'description' },
+
+    ]
+
     const columns = [
-        { header: 'Descripción', accessor: 'description' },
+        { header: 'Descripción grupo', accessor: 'description' },
         { header: 'Días préstamo', accessor: 'loanDays' },
         {
             header: 'Borrar',
@@ -75,7 +86,7 @@ export default function LoanAmountSection() {
 
     return (
         <>
-            <GenericSection title={'Configurar cantidad maxima de prestamos'} columns={columns} data={loanMaterials} popups={loanMaterialsPopups} actions={
+            <GenericSection title={'Configurar grupos para cantidad maxima de prestamos'} columns={columns} data={loanMaterialsTable} popups={loanMaterialsPopups} actions={
                 <Btn className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg'/>}/>
             }/>
         </>

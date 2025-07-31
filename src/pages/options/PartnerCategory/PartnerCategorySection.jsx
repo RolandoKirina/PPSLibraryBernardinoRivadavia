@@ -15,11 +15,11 @@ export default function PartnerCategorySection() {
     const [addPopup, setAddPopup] = useState(false);
 
     const partnerCategories = [
-    { id: 1, category: 'Category 1', import: '$1000' },
-    { id: 1, category: 'Category 1', import: '$1000' },
-    { id: 1, category: 'Category 1', import: '$1000' },
-    { id: 1, category: 'Category 1', import: '$1000' },
-    { id: 1, category: 'Category 1', import: '$1000' },
+    { id: 1, category: 'Honorario', import: '$3500' },
+    { id: 1, category: 'Honorario', import: '$3500' },
+    { id: 1, category: 'Honorario', import: '$3500' },
+    { id: 1, category: 'Honorario', import: '$3500' },
+    { id: 1, category: 'Honorario', import: '$3500' },
     ];
 
      const authorsPopups = [

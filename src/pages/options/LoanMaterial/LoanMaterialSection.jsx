@@ -15,11 +15,12 @@ export default function LoanMaterialSection() {
     const [addPopup, setAddPopup] = useState(false);
 
     const loanMaterials = [
-    { id: 1, description: 'Descripción 1', loanDays: '10' },
-    { id: 1, description: 'Descripción 1', loanDays: '10' },
-    { id: 1, description: 'Descripción 1', loanDays: '10' },
-    { id: 1, description: 'Descripción 1', loanDays: '10' },
-    { id: 1, description: 'Descripción 1', loanDays: '10' },
+    { id: 1, description: 'Libro', loanDays: '15' },
+    { id: 1, description: 'Video', loanDays: '10' },
+    { id: 1, description: 'Video', loanDays: '10' },
+    { id: 1, description: 'Video', loanDays: '10' },
+    { id: 1, description: 'Video', loanDays: '10' },
+
     ];
 
      const loanMaterialsPopups = [

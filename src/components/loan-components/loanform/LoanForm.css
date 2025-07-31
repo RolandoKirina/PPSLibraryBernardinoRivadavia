@@ -28,6 +28,7 @@
     display: flex;
     justify-content: space-between;
     width: 80%;
+    margin-top: 1em;
 }
 
 .add-loan-form-inputs div, .edit-loan-form-inputs div  {
@@ -87,4 +88,9 @@
     background-color: var(--primary-light-2);
     margin-top: 1em;
     height: 2em;
+}
+
+.type-loan-title {
+    width: 80%;
+    color: var(--secondary-light-2);
 }

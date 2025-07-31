@@ -1,0 +1,21 @@
+.choosed {
+    background-color: var(--black);
+}
+
+.materials-group {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.group-table {
+    width: 100%;
+}
+
+.add-material-container {
+    width: 40em;
+}
+
+.add-material-group-background {
+    background-color: var(--primary-dark-2);
+}

@@ -163,7 +163,6 @@ export const reneweDetails = [
     rows: [
       [
         { label: 'Título', value: 'información' },
-        { label: 'Codigo', value: 'información' },
       ]
     ]
   },

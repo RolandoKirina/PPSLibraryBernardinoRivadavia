@@ -10,3 +10,17 @@ export const loanMaterialsFields = [
         type: 'number'
     }
 ];
+
+export const loanMaterialsGroupFields = [
+    {
+        label: 'Grupo',
+        name: 'group',
+        type: 'text'
+    },
+    {
+        label: 'Días préstamo',
+        name: 'loan-days',
+        type: 'number'
+    }
+
+];
