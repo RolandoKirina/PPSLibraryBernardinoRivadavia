@@ -1,17 +1,17 @@
-export const loanDetailsMenus = [
+export const loanDetailsInfo = [
   {
     id: 1,
     title: 'Datos del Libro',
     active: false,
     rows: [
       [
-        { label: 'Código de Libro', value: 'información' }
+        { label: 'Código de Libro', value: 'información', attribute: 'bookCode' }
       ],
       [
-        { label: 'Título', value: 'información' }
+        { label: 'Título', value: 'información', attribute: 'bookTitle' }
       ],
       [
-        { label: 'Descripción', value: 'información' }
+        { label: 'Descripción', value: 'información', attribute: 'bookDescription' } // Solo si lo añadís en mockLoans
       ]
     ]
   },
@@ -21,15 +21,15 @@ export const loanDetailsMenus = [
     active: false,
     rows: [
       [
-        { label: 'Nombre', value: 'información' },
-        { label: 'DNI', value: 'información' }
+        { label: 'Nombre', value: 'información', attribute: 'partnerName' },
+        { label: 'DNI', value: 'información', attribute: 'partnerDni' } // Este campo no está en mockLoans actualmente
       ],
       [
-        { label: 'Número de Socio', value: 'información' },
-        { label: 'Teléfono', value: 'información' }
+        { label: 'Número de Socio', value: 'información', attribute: 'partnerNumber' },
+        { label: 'Teléfono', value: 'información', attribute: 'phone' }
       ],
       [
-        { label: 'Dirección', value: 'información' }
+        { label: 'Dirección', value: 'información', attribute: 'address' }
       ]
     ]
   },
@@ -38,13 +38,13 @@ export const loanDetailsMenus = [
     title: 'Datos del socio',
     active: false,
     rows: [
-        [
-            { label: 'Número de socio', value: 'información' }
-        ],
-        [
-            { label: 'Nombre', value: 'información' },
-            { label: 'Apellido', value: 'información' }
-        ]
+      [
+        { label: 'Número de socio', value: 'información', attribute: 'partnerNumber' }
+      ],
+      [
+        { label: 'Nombre', value: 'información', attribute: 'partnerName' },
+        { label: 'Apellido', value: 'información', attribute: 'partnerLastname' }
+      ]
     ]
   },
   {
@@ -52,14 +52,14 @@ export const loanDetailsMenus = [
     title: 'Fechas del préstamo',
     active: false,
     rows: [
-        [
-            { label: 'Fecha de retiro', value: 'información' },
-            { label: 'Hora de Retiro', value: 'información' }
-        ],
-        [
-            { label: 'Fecha prevista', value: 'información' },
-            { label: 'Fecha Devolución', value: 'información' }
-        ]
+      [
+        { label: 'Fecha de retiro', value: 'información', attribute: 'retiredDate' },
+        { label: 'Hora de Retiro', value: 'información', attribute: 'retiredHour' }
+      ],
+      [
+        { label: 'Fecha prevista', value: 'información', attribute: 'plannedDate' },
+        { label: 'Fecha Devolución', value: 'información', attribute: 'returnedDate' }
+      ]
     ]
   },
   {
@@ -67,12 +67,15 @@ export const loanDetailsMenus = [
     title: 'Empleado responsable',
     active: false,
     rows: [
-        [
-            { label: 'Empleado', value: 'información' }
-        ]
+      [
+        { label: 'Empleado', value: 'información', attribute: 'employee' }
+      ]
     ]
   }
 ];
+
+
+
 
 export const lendBooksDetails = [
   {

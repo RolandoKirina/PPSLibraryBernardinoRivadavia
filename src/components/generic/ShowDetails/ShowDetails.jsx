@@ -2,8 +2,18 @@ import './ShowDetails.css';
 import { useState } from 'react';
 import ToggleIcon from '../../../assets/img/toggle-icon.svg';
 
-
-export default function ShowDetails({isPopup, detailsData, titleText}) {
+export default function ShowDetails({data, isPopup, detailsData, titleText, itemId}) {
+    function fillDetailsWithData(detailsData, data) {
+    return detailsData.map(menu => ({
+        ...menu,
+        rows: menu.rows.map(row =>
+        row.map(item => ({
+            ...item,
+            value: item.attribute ? data[item.attribute] ?? '—' : item.value
+        }))
+        )
+    }));
+    }
 
     function toggleDrowMenu(id) {
         const updatedMenus = detailsMenus.map(menu => 
@@ -13,7 +23,7 @@ export default function ShowDetails({isPopup, detailsData, titleText}) {
 
     }   
 
-    const [detailsMenus, setDetailsMenus] = useState(detailsData);
+    const [detailsMenus, setDetailsMenus] = useState(() => fillDetailsWithData(detailsData, data));
 
     return (
         <>

@@ -6,7 +6,6 @@ import DetailsIcon from '../../assets/img/details-icon.svg';
 import LoanButtons from "../../components/loan-components/loanbuttons/LoanButtons";
 import { useState } from "react";
 import LoanForm from "../../components/loan-components/loanform/LoanForm";
-import {loanDetailsMenus} from '../../data/loan/LoanDetails';
 import LoanListings from "../../components/loan-components/loanlistings/LoanListings";
 import Return from "../../components/loan-components/return/Return";
 import Renewe from "../../components/loan-components/renewe/Renewe";
@@ -14,10 +13,18 @@ import ShowDetails from "../../components/generic/ShowDetails/ShowDetails";
 import GenericSection from "../../components/generic/GenericSection/GenericSection";
 import GenericForm from "../../components/generic/GenericForm/GenericForm";
 import { editLoanformFields } from "../../data/loan/LoanForms";
+import {loanDetailsInfo} from '../../data/loan/LoanDetails';
 import PopUpDelete from '../../components/deletebtnComponent/PopUpDelete';
 import { useEffect } from "react";
+import { mockLoans } from "../../data/mocks/loans";
+import { useLoanManager } from "../../hooks/useLoanManager";
+
 
 export default function LoanSection({openRenewes, pendientBooks}) {
+    const { loans, getLoan, createLoan, updateLoan, deleteLoan } = useLoanManager(mockLoans);
+
+    const [selectedLoan, setSelectedLoan] = useState(null);
+    const [loanDetailsData, setLoanDetailsData] = useState(null);
     const [deletePopup, setDeletePopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
@@ -30,26 +37,28 @@ export default function LoanSection({openRenewes, pendientBooks}) {
         if (openRenewes) {
             setRenewePopup(true);
         }
+        localStorage.removeItem('loans');
     }, [openRenewes]);
 
-    //data tabla principal prestamos
-    const loans = [
-    { id: 1, reader_name: 'Carolina Gómez', title: 'La sombra del viento' },
-    { id: 2, reader_name: 'Martín Rodríguez', title: 'El Principito' },
-    { id: 3, reader_name: 'Lucía Méndez', title: 'Rayuela' },
-    { id: 4, reader_name: 'Gabriel Pérez', title: 'Cien años de soledad' },
-    { id: 5, reader_name: 'Ana Torres', title: 'Fahrenheit 451' }
-    ];
+    function getLoanDetails(loan) {
+        let loanData = getLoan(loan.loanId);
+        setLoanDetailsData(loanData);
+    }
+
 
     //columnas y acciones - tabla principal prestamos
     const columns = [
-    { header: 'Nombre Lector', accessor: 'reader_name' },
-    { header: 'Titulo', accessor: 'title' },
+    { header: 'Codigo', accessor: 'bookCode' },
+    { header: 'Título', accessor: 'bookTitle' },
+    { header: 'Nombre Socio', accessor: 'partnerName' },
     {
         header: 'Borrar',
         accessor: 'delete',
         render: (_, row) => (
-        <button className="button-table" onClick={() => setDeletePopup(true)}>
+        <button className="button-table" onClick={() => {
+            setDeletePopup(true)
+            setSelectedLoan(row)
+            }}>
             <img src={DeleteIcon} alt="Borrar" />
         </button>
         )
@@ -59,7 +68,10 @@ export default function LoanSection({openRenewes, pendientBooks}) {
         accessor: 'edit',
 
         render: (_, row) => (
-        <button className="button-table"  onClick={() => setEditPopup(true)}>
+        <button className="button-table"  onClick={() => {
+            setEditPopup(true)
+            setSelectedLoan(row)
+            }}>
             <img src={EditIcon} alt="Editar" />
         </button>
         )
@@ -68,7 +80,11 @@ export default function LoanSection({openRenewes, pendientBooks}) {
         header: 'Ver detalle',
         accessor: 'details',
         render: (_, row) => (
-        <button className="button-table" onClick={() => setDetailsPopup(true)}>
+        <button className="button-table" onClick={() => {
+            setDetailsPopup(true)
+            setSelectedLoan(row)
+            getLoanDetails(row)
+            }}>
             <img src={DetailsIcon} alt="Detalles" />
         </button>
         )
@@ -81,7 +97,12 @@ export default function LoanSection({openRenewes, pendientBooks}) {
             key: 'deletePopup',
             title: 'Borrar prestamo',
             className: 'delete-size-popup',
-            content: <PopUpDelete  title={"Prestamo"} closePopup={() => setDeletePopup(false)} />,
+            content: <PopUpDelete  title={"Prestamo"} onConfirm={
+                () => {
+                    deleteLoan(selectedLoan.loanId)
+                    setDeletePopup(false)
+                }
+            } closePopup={() => setDeletePopup(false)} />,
             close: () => setDeletePopup(false),
             condition: deletePopup,
             variant: 'delete'
@@ -107,7 +128,7 @@ export default function LoanSection({openRenewes, pendientBooks}) {
             key: 'detailsPopup',
             title: 'Detalles del préstamo',
             className: '',
-            content: <ShowDetails detailsData={loanDetailsMenus} isPopup={true} />,
+            content: <ShowDetails data={loanDetailsData} detailsData={loanDetailsInfo} isPopup={true} />,
             close: () => setDetailsPopup(false),
             condition: detailsPopup
         },

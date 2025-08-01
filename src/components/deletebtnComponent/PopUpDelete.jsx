@@ -3,7 +3,7 @@
 import './PopUpDelete.css';
 import Btn from '../btn/Btn';
 
-export default function PopUpDelete ({title,closePopup}) {
+export default function PopUpDelete ({title,closePopup, onConfirm}) {
 
     return (
         <>
@@ -14,7 +14,7 @@ export default function PopUpDelete ({title,closePopup}) {
                     </div>
                     <div className='delete-btns'>
                         <Btn text={'Cancelar'} className={'cancel-btn'} onClick={() => closePopup()}/>
-                        <Btn text={'Eliminar'} className={'delete-btn'} onClick={() => closePopup()}/>
+                        <Btn text={'Eliminar'} className={'delete-btn'} onClick={onConfirm}/>
                     </div>
                 </div>
             </div>
