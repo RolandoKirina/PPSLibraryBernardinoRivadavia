@@ -10,12 +10,16 @@ import Btn from '../../components/btn/Btn';
 import PlusIcon from '../../assets/img/plus-icon.svg';
 import BookIcon from '../../assets/img/add-book-icon.svg';
 import AuthorBooks from '../../components/author-components/AuthorBooks/AuthorBooks';
+import { useAuthorManager } from '../../hooks/useAuthorManager';
+import { mockAuthors } from '../../data/mocks/authors';
 
 export default function AuthorSection() {
     const [deletePopup, setDeletePopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
+    const [selectedAuhor, setSelectedAuthor] = useState(false);
     const [booksPopup, setBooksPopup] = useState(false);
+    const { authors, getAuthor, createAuthor, updateAuthor, deleteAuthor } = useAuthorManager(mockAuthors);
 
     
     const authorsPopups = [
@@ -23,7 +27,12 @@ export default function AuthorSection() {
                 key: 'deletePopup',
                 title: 'Borrar autor',
                 className: 'delete-size-popup',
-                content: <PopUpDelete title={"Autor"} closePopup={() => setDeletePopup(false)} />,
+                content: <PopUpDelete title={"Autor"} closePopup={() => setDeletePopup(false)} onConfirm={
+                () => {
+                    deleteAuthor(selectedAuhor.authorId)
+                    setDeletePopup(false)
+                }
+            } />,
                 close: () => setDeletePopup(false),
                 condition: deletePopup,
                 variant: 'delete'
@@ -46,22 +55,25 @@ export default function AuthorSection() {
             }
     ];
 
-    const authors = [
-    { id: 1, name: 'Carolina Gómez', nationality: 'Argentino' },
-    { id: 1, name: 'Carolina Gómez', nationality: 'Argentino' },
-    { id: 1, name: 'Carolina Gómez', nationality: 'Argentino' },
-    { id: 1, name: 'Carolina Gómez', nationality: 'Argentino' },
-    { id: 1, name: 'Carolina Gómez', nationality: 'Argentino' }
-    ];
+    // const authors = [
+    // { id: 1, name: 'Carolina Gómez', nationality: 'Argentino' },
+    // { id: 1, name: 'Carolina Gómez', nationality: 'Argentino' },
+    // { id: 1, name: 'Carolina Gómez', nationality: 'Argentino' },
+    // { id: 1, name: 'Carolina Gómez', nationality: 'Argentino' },
+    // { id: 1, name: 'Carolina Gómez', nationality: 'Argentino' }
+    // ];
 
     const columns = [
-        { header: 'Nombre', accessor: 'name' },
+        { header: 'Nombre', accessor: 'authorName' },
         { header: 'Nacionalidad', accessor: 'nationality' },
         {
             header: 'Borrar',
             accessor: 'delete',
             render: (_, row) => (
-            <button className="button-table" onClick={() => setDeletePopup(true)}>
+            <button className="button-table" onClick={() => {
+                setDeletePopup(true)
+                setSelectedAuthor(row)
+                }}>
                 <img src={DeleteIcon} alt="Borrar" />
             </button>
             )

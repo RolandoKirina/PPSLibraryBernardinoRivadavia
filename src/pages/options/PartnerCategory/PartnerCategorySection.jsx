@@ -9,25 +9,34 @@ import Btn from '../../../components/btn/Btn';
 import DeleteIcon from '../../../assets/img/delete-icon.svg';
 import EditIcon from '../../../assets/img/edit-icon.svg';
 
+
+
 export default function PartnerCategorySection() {
     const [deletePopup, setDeletePopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
+    const [selectedPartnerCategory, setSelectedPartnerCategory] = useState(null);
+    const { partnerCategories, getPartnerCategory, createPartnerCategory, updatePartnerCategory, deletePartnerCategory } = usePartnerCategoryManager(mockPartnerCategories);
 
-    const partnerCategories = [
-    { id: 1, category: 'Honorario', import: '$3500' },
-    { id: 1, category: 'Honorario', import: '$3500' },
-    { id: 1, category: 'Honorario', import: '$3500' },
-    { id: 1, category: 'Honorario', import: '$3500' },
-    { id: 1, category: 'Honorario', import: '$3500' },
-    ];
+    // const partnerCategories = [
+    // { id: 1, category: 'Honorario', import: '$3500' },
+    // { id: 1, category: 'Honorario', import: '$3500' },
+    // { id: 1, category: 'Honorario', import: '$3500' },
+    // { id: 1, category: 'Honorario', import: '$3500' },
+    // { id: 1, category: 'Honorario', import: '$3500' },
+    // ];
 
      const authorsPopups = [
                 {
                     key: 'deletePopup',
                     title: 'Borrar categoria de socio',
                     className: 'delete-size-popup',
-                    content: <PopUpDelete title={"Categoria de socio"} closePopup={() => setDeletePopup(false)} />,
+                    content: <PopUpDelete title={"Categoria de socio"} closePopup={() => setDeletePopup(false)} onConfirm={
+                () => {
+                    deletePartnerCategory(selectedPartnerCategory.partnerCategoryId)
+                    setDeletePopup(false)
+                }
+            } />,
                     close: () => setDeletePopup(false),
                     condition: deletePopup,
                     variant: 'delete'
@@ -51,13 +60,16 @@ export default function PartnerCategorySection() {
     ];
 
     const columns = [
-        { header: 'Categoria', accessor: 'category' },
-        { header: 'Importe', accessor: 'import' },
+        { header: 'Categoria', accessor: 'partnerCategory' },
+        { header: 'Importe', accessor: 'amount' },
         {
             header: 'Borrar',
             accessor: 'delete',
             render: (_, row) => (
-            <button className="button-table" onClick={() => setDeletePopup(true)}>
+            <button className="button-table" onClick={() => {
+                setDeletePopup(true)
+                setSelectedPartnerCategory(row)
+                }}>
                 <img src={DeleteIcon} alt="Borrar" />
             </button>
             )

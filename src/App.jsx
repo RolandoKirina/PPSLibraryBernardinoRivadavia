@@ -22,8 +22,8 @@ import Dashboard from './components/dashboard/Dashboard.jsx';
 import BooksAuthor from './components/author-components/BooksAuthor/BooksAuthor.jsx';
 import Signature from './components/signature/Signature.jsx';
 import PartnerSection from './pages/PartnerSection/PartnerSection.jsx';
-function App() {
 
+function App() {
   return (
     <>
       <BrowserRouter>

@@ -9,18 +9,23 @@ import EditIcon from '../../../assets/img/edit-icon.svg';
 import { employeeDetails } from '../../../data/options/employee/EmployeeDetails';
 import DetailsIcon from '../../../assets/img/details-icon.svg';
 import ShowDetails from '../../../components/generic/ShowDetails/ShowDetails';
+import { useEmployeeManager } from '../../../hooks/useEmployeeManager';
+import { mockEmployees } from '../../../data/mocks/employee';
 
 export default function EmployeeSection() {
     const [deletePopup, setDeletePopup] = useState(false);
     const [detailsPopup, setDetailsPopup] = useState(false);
+    const [selectedEmployee, setSelectedEmployee] = useState(false);
+    const { employees, getEmployee, createEmployee, updateEmployee, deleteEmployee } = useEmployeeManager(mockEmployees);
+    
 
-    const employees = [
-    { id: 1, employeeName: 'juan carlos', code: '10'},
-    { id: 1, employeeName: 'juan carlos', code: '10'},
-    { id: 1, employeeName: 'juan carlos', code: '10'},
-    { id: 1, employeeName: 'juan carlos', code: '10'},
-    { id: 1, employeeName: 'juan carlos', code: '10'},
-    ];
+    // const employees = [
+    // { id: 1, employeeName: 'juan carlos', code: '10'},
+    // { id: 1, employeeName: 'juan carlos', code: '10'},
+    // { id: 1, employeeName: 'juan carlos', code: '10'},
+    // { id: 1, employeeName: 'juan carlos', code: '10'},
+    // { id: 1, employeeName: 'juan carlos', code: '10'},
+    // ];
 
     function redirect(action){
          switch(action){
@@ -42,7 +47,12 @@ export default function EmployeeSection() {
                     key: 'deletePopup',
                     title: 'Borrar empleado',
                     className: 'delete-size-popup',
-                    content: <PopUpDelete title={"Empleado"} closePopup={() => setDeletePopup(false)} />,
+                    content: <PopUpDelete title={"Empleado"} closePopup={() => setDeletePopup(false)} onConfirm={
+                () => {
+                    deleteEmployee(selectedEmployee.employeeId)
+                    setDeletePopup(false)
+                }
+            }  />,
                     close: () => setDeletePopup(false),
                     condition: deletePopup,
                     variant: 'delete'
@@ -61,13 +71,16 @@ export default function EmployeeSection() {
     ];
 
     const columns = [
-        { header: 'Nombre', accessor: 'employeeName' },
-        { header: 'Codigo', accessor: 'code' },
+        { header: 'Nombre', accessor: 'fullname' },
+        { header: 'Codigo', accessor: 'employeeCode' },
         {
             header: 'Borrar',
             accessor: 'delete',
             render: (_, row) => (
-            <button className="button-table" onClick={() => setDeletePopup(true)}>
+            <button className="button-table" onClick={() => {
+                setDeletePopup(true)
+                setSelectedEmployee(row)
+                }}>
                 <img src={DeleteIcon} alt="Borrar" />
             </button>
             )

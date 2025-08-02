@@ -9,9 +9,6 @@ export const loanDetailsInfo = [
       ],
       [
         { label: 'Título', value: 'información', attribute: 'bookTitle' }
-      ],
-      [
-        { label: 'Descripción', value: 'información', attribute: 'bookDescription' } // Solo si lo añadís en mockLoans
       ]
     ]
   },

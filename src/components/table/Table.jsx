@@ -5,6 +5,7 @@ import Pagination from "../pagination/Pagination";
 export const Table = ({ columns =[], data=[], children, popupLength }) => {
   return (
     <div className="content-table">
+
       <table className={`table ${popupLength ? popupLength : ''}`}>
           <thead>
             <tr>
