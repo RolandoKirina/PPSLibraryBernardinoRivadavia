@@ -1,4 +1,4 @@
-import LoanFilter from "../../components/loan-components/loanfilter/LoanFilter";
+import LoanFilter from "../../components/filter/loanfilter/LoanFilter";
 import './LoanSection.css';
 import DeleteIcon from '../../assets/img/delete-icon.svg';
 import EditIcon from '../../assets/img/edit-icon.svg';
