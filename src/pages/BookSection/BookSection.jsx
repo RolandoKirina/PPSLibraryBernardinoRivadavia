@@ -14,21 +14,20 @@ import {BookDetail} from '../../data/book/BookDetail.js';
 import GenericSection from '../../components/generic/GenericSection/GenericSection.jsx';
 import BookButtons from '../../components/BookButtons/BookButtons.jsx';
 import ShowDetails from '../../components/generic/ShowDetails/ShowDetails.jsx';
-
+import {books }from '../../data/mocks/books.js';
+import{ useEntityManager} from '../../hooks/useEntityManager.js';
 const BookSection = () => {
 
-  const [PopUpEditBook,setPopupEditBook]=useState(false);
-  const [PopUpAddBook,setPopupAddBook]=useState(false);
-  const [PopUpDeleteBook,setPopUpDeleteBook]=useState(false);
-  const [PopUpDuplicateBook,setPopUpDuplicateBook]=useState(false);
-  const [PopUpDetailBook,setPopUpDetailBook]=useState(false);
-  const books = [
-    { id: 1, title: 'El principito', code_inventory: 202, codeCDU: 108 },
-    { id: 2, title: '1984', title: '1984', code_inventory: 203, codeCDU: 109 },
-    { id: 3, title: 'Cien años de soledad', code_inventory: 204, codeCDU: 110 },
-    { id: 4, title: 'Fahrenheit 451', code_inventory: 205, codeCDU: 111 },
-    { id: 5, title: 'Crónica de una muerte anunciada', code_inventory: 206, codeCDU: 112 }
-  ];
+  
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [PopUpEdit,setPopupEdit]=useState(false);
+  const [PopUpAdd,setPopupAdd]=useState(false);
+  const [PopUpDeleteBook,setPopUpDelete]=useState(false);
+  const [PopUpDuplicate,setPopUpDuplicate]=useState(false);
+  const [PopUpDetail,setPopUpDetail]=useState(false);
+
+
+  const {items,getItem,createItem,updateItem,deleteItem} = useEntityManager(books, "books");
 
   const columns = [
     { header: 'Título', accessor: 'title' },
@@ -38,7 +37,12 @@ const BookSection = () => {
       header: 'Borrar',
       accessor: 'delete',
       render: (_, row) => (
-        <button className="button-table"onClick={() => setPopUpDeleteBook(true)}>
+        <button className="button-table"
+          onClick={() => {
+            setPopUpDelete(true)
+            setSelectedItem(row)
+        }}>
+        
           <img src={DeleteIcon} alt="Borrar" />
         </button>
       )
@@ -48,7 +52,13 @@ const BookSection = () => {
       accessor: 'edit',
 
       render: (_, row) => (
-        <button className="button-table"  onClick={() => setPopupEditBook(true)}>
+        <button className="button-table"  
+        onClick={() =>{
+          setPopupEdit(true)
+          setSelectedItem(row)
+          }}
+       
+       >
           <img src={EditIcon} alt="Editar" />
         </button>
       )
@@ -69,8 +79,14 @@ const BookSection = () => {
         key: 'deletePopup',
         title: 'Borrar Libro',
         className: 'delete-size-popup',
-        content: <PopUpDelete title="Libro"/>,
-        close: () => setPopUpDeleteBook(false),
+        content: <PopUpDelete
+                  title={"Ítem"}
+                  onConfirm={() => {
+                    deleteItem(selectedItem.id);
+                    setPopUpDelete(false);
+                  }}
+                      closePopup={() => setPopUpDelete(false)}/>,
+        close: () => setPopUpDelete(false),
         condition: PopUpDeleteBook,
         variant: 'delete'
     },
@@ -79,41 +95,58 @@ const BookSection = () => {
       title: 'Editar Libro',
       className: 'popup-container',
       content: <FormEditBook/>,
-      close: () => setPopupEditBook(false),
-      condition: PopUpEditBook
+      close: () => setPopupEdit(false),
+      condition: PopUpEdit
     },
     {
       key: 'AddPopup',
       title: 'Agregar Libro',
       className: 'popup-container',
       content: <FormAddBook/>,
-      close: () => setPopupAddBook(false),
-      condition: PopUpAddBook
+      close: () => setPopupAdd(false),
+      condition: PopUpAdd
     },
     {
-      key: 'DuplicatePopUp',
-      title: 'Duplicar Libro',
-      content: <GenericForm fields={duplicateBook} onSubmit={(data) => console.log('Formulario enviado:', data)}/>,
-      close: () => setPopUpDuplicateBook(false),
-      condition: PopUpDuplicateBook
-    },
-    {
+    key: 'DuplicatePopUp',
+    title: 'Duplicar Libro',
+    className: 'fade-popup', 
+    content: (
+      <GenericForm 
+        fields={duplicateBook} 
+        onSubmit={(data) => {
+          duplicateBooks(data);
+          setPopUpDuplicate(false);
+        }} 
+      />
+    ),
+    close: () => setPopUpDuplicate(false),
+    condition: PopUpDuplicate
+  },
+
+  {
       key: 'SeeDetail',
       title: 'Ver detalle',
       content: <ShowDetails isPopup={true} detailsData={BookDetail}/>,
-      close: () => setPopUpDetailBook(false),
-      condition: PopUpDetailBook
+      close: () => setPopUpDetail(false),
+      condition: PopUpDetail
     }
   ]
 
+  function duplicateBooks(data){
+    let bookData = getItem(data.id);
+     const maxId = Math.max(...items.map(b => b.id), 0);
+    const newId = maxId + 1;
+    const duplicatedBook = { ...bookData, id: newId };
+    createItem(duplicatedBook);
+  }
   return (
     <>
     
       <GenericSection title="Listado de libros" filters={<BookFilter/>} 
-      columns={columns} data={books} popups={booksPopUp}
+      columns={columns} data={items} popups={booksPopUp}
       actions={
-          <BookButtons  addBook={() => setPopupAddBook(true)} 
-                        duplicateBook={() => setPopUpDuplicateBook(true)}></BookButtons>
+          <BookButtons  addBook={() => setPopupAdd(true)} 
+                        duplicateBook={() => setPopUpDuplicate(true)}></BookButtons>
       } 
       
       ></GenericSection>

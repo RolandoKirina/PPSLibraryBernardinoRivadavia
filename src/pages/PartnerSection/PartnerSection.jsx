@@ -10,7 +10,6 @@ import DetailsIcon from '../../assets/img/details-icon.svg';
 import { FormEditPartner } from '../../components/formeditpartner/FormEditPartner.jsx';
 
 import PopUpDelete from '../../components/deletebtnComponent/PopUpDelete.jsx';
-import FormAddBook from '../../components/FormAddBook/FormAddBook.jsx';
 import { useEntityManager } from '../../hooks/useEntityManager.js';
 import ShowDetails from '../../components/generic/ShowDetails/ShowDetails.jsx';
 export default function PartnerSection(){
@@ -24,13 +23,7 @@ export default function PartnerSection(){
 
 
 
-    const {
-      items,
-      getItem,
-      createItem,
-      updateItem,
-      deleteItem
-    } = useEntityManager(partners, "partners");
+    const {items,getItem,createItem,updateItem,deleteItem} = useEntityManager(partners, "partners");
 
 
      const [selectedItem, setSelectedItem] = useState(null);
@@ -57,7 +50,8 @@ export default function PartnerSection(){
           header: 'Borrar',
           accessor: 'delete',
           render: (_, row) => (
-            <button className="button-table"onClick={() => {
+            <button className="button-table"
+            onClick={() => {
             setPopUpDelete(true)
             setSelectedItem(row)
             }}>
@@ -70,7 +64,8 @@ export default function PartnerSection(){
         accessor: 'edit',
 
         render: (_, row) => (
-          <button className="button-table"  onClick={() =>{
+          <button className="button-table"  
+          onClick={() =>{
           setPopupEdit(true)
           setSelectedItem(row)
           }}>
@@ -108,7 +103,6 @@ export default function PartnerSection(){
               onConfirm={() => {
                 deleteItem(selectedItem.id);
                 setPopUpDelete(false);
-                console.log(selectedItem.id)
               }}
               closePopup={() => setPopUpDelete(false)}
             />
@@ -131,7 +125,7 @@ export default function PartnerSection(){
             key: 'AddPopup',
             title: 'Agregar Socio',
             className: 'popup-container',
-            content: <FormAddBook/>,
+            //content: <FormAddBook/>,
             close: () => setPopUpAdd(false),
             condition: PopUpAdd
       },
