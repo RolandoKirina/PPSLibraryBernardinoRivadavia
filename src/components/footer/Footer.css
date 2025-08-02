@@ -86,3 +86,6 @@
 }
 
 
+.maintitlefooter h3:first-of-type {
+  color: var(--secondary-light-2); /* o lo que quieras aplicar */
+}

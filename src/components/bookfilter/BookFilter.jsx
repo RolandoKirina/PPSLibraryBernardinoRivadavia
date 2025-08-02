@@ -1,9 +1,6 @@
-import { useState } from 'react';
 import './BookFilter.css';
 
 export default function BookFilter() {
-  const [type, setType] = useState('room');
-  const [state, setState] = useState('current');
 
   return (
     <aside className="book-filter-aside">

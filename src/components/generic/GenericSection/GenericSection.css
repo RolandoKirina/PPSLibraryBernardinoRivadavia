@@ -18,14 +18,12 @@
 .generic-title {
   height: 6em;
   display: flex;
+  width: 100%;
+  padding: 1em;
   align-items: center;
   background-color: var(--primary-light);
 }
 
-.generic-title h2 {
-  margin-left: 1em;
-  color: var(--white);
-}
 
 .popup-container {
   background: var(--primary-dark-2);
@@ -60,5 +58,10 @@
 }
 
 .actions {
-    width: 98%;
+    width: 100%;
+    height: 5em;
+}
+
+.actions button{
+  margin: 0.3em;
 }

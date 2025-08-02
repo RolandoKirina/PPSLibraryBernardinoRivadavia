@@ -21,7 +21,7 @@ import EmployeeSection from './pages/options/EmployeeSection/EmployeeSection.jsx
 import Dashboard from './components/dashboard/Dashboard.jsx';
 import BooksAuthor from './components/author-components/BooksAuthor/BooksAuthor.jsx';
 import Signature from './components/signature/Signature.jsx';
-
+import PartnerSection from './pages/PartnerSection/PartnerSection.jsx';
 function App() {
 
   return (
@@ -37,6 +37,7 @@ function App() {
             <Route path='/loans/renewes' element={<LoanSection openRenewes={true}/>}/>
             <Route path='/loans/filters/partner' element={<LoanSection openRenewes={false} pendientBooks={true}/>}/>
             <Route path='/books' element={<BookSection/>}/>
+            <Route path='/partners' element={<PartnerSection/>}/>
             <Route path='/authors' element={<AuthorSection/>}/>
             <Route path='/options/partner-categories' element={<PartnerCategorySection/>}/>
             <Route path='/options/loan-materials' element={<LoanMaterialSection/>}/>
