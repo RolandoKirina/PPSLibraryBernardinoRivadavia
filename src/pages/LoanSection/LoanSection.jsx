@@ -17,11 +17,10 @@ import {loanDetailsInfo} from '../../data/loan/LoanDetails';
 import PopUpDelete from '../../components/deletebtnComponent/PopUpDelete';
 import { useEffect } from "react";
 import { mockLoans } from "../../data/mocks/loans";
-import { useLoanManager } from "../../hooks/useLoanManager";
-
+import { useEntityManager } from "../../hooks/useEntityManager";
 
 export default function LoanSection({openRenewes, pendientBooks}) {
-    const { loans, getLoan, createLoan, updateLoan, deleteLoan } = useLoanManager(mockLoans);
+    const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockLoans, 'loans');
 
     const [selectedLoan, setSelectedLoan] = useState(null);
     const [loanDetailsData, setLoanDetailsData] = useState(null);
@@ -41,7 +40,7 @@ export default function LoanSection({openRenewes, pendientBooks}) {
     }, [openRenewes]);
 
     function getLoanDetails(loan) {
-        let loanData = getLoan(loan.loanId);
+        let loanData = getItem(loan.id);
         setLoanDetailsData(loanData);
     }
 
@@ -58,6 +57,7 @@ export default function LoanSection({openRenewes, pendientBooks}) {
         <button className="button-table" onClick={() => {
             setDeletePopup(true)
             setSelectedLoan(row)
+            console.log(row)
             }}>
             <img src={DeleteIcon} alt="Borrar" />
         </button>
@@ -99,7 +99,7 @@ export default function LoanSection({openRenewes, pendientBooks}) {
             className: 'delete-size-popup',
             content: <PopUpDelete  title={"Prestamo"} onConfirm={
                 () => {
-                    deleteLoan(selectedLoan.loanId)
+                    deleteItem(selectedLoan.id)
                     setDeletePopup(false)
                 }
             } closePopup={() => setDeletePopup(false)} />,
@@ -160,7 +160,7 @@ export default function LoanSection({openRenewes, pendientBooks}) {
 
     return (     
         <>
-            <GenericSection title={'Listado de préstamos'} filters={<LoanFilter />} columns={columns} data={loans} popups={loanPopups}
+            <GenericSection title={'Listado de préstamos'} filters={<LoanFilter />} columns={columns} data={items} popups={loanPopups}
             actions={
                  <LoanButtons
                   displayLoanform={() => setAddPopup(true)}

@@ -10,13 +10,15 @@ import { employeeDetails } from '../../../data/options/employee/EmployeeDetails'
 import DetailsIcon from '../../../assets/img/details-icon.svg';
 import ShowDetails from '../../../components/generic/ShowDetails/ShowDetails';
 import { useEmployeeManager } from '../../../hooks/useEmployeeManager';
+import { useEntityManager } from '../../../hooks/useEntityManager';
 import { mockEmployees } from '../../../data/mocks/employee';
 
 export default function EmployeeSection() {
     const [deletePopup, setDeletePopup] = useState(false);
     const [detailsPopup, setDetailsPopup] = useState(false);
     const [selectedEmployee, setSelectedEmployee] = useState(false);
-    const { employees, getEmployee, createEmployee, updateEmployee, deleteEmployee } = useEmployeeManager(mockEmployees);
+    const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockEmployees, 'employees');
+    
     
 
     // const employees = [
@@ -49,7 +51,7 @@ export default function EmployeeSection() {
                     className: 'delete-size-popup',
                     content: <PopUpDelete title={"Empleado"} closePopup={() => setDeletePopup(false)} onConfirm={
                 () => {
-                    deleteEmployee(selectedEmployee.employeeId)
+                    deleteItem(selectedEmployee.id)
                     setDeletePopup(false)
                 }
             }  />,
@@ -108,7 +110,7 @@ export default function EmployeeSection() {
 
     return (
         <>
-            <GenericSection title={'Listado de empleados'} columns={columns} data={employees} popups={employeePopups} actions={
+            <GenericSection title={'Listado de empleados'} columns={columns} data={items} popups={employeePopups} actions={
                 <Btn className='new-btn' onClick={() => redirect('add')} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg'/>}/>
             }/>
         </>

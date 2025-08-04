@@ -1,6 +1,6 @@
 export const mockEmployees = [
   {
-    employeeId: 1,
+    id: 1,
     employeeCode: 'E-001',
     username: 'jfortuna',
     fullname: 'Jorge Fortunato',
@@ -9,7 +9,7 @@ export const mockEmployees = [
     rol: 'Bibliotecario'
   },
   {
-    employeeId: 2,
+    id: 2,
     employeeCode: 'E-002',
     username: 'mfernandez',
     fullname: 'Marcelo Fernández',
@@ -18,7 +18,7 @@ export const mockEmployees = [
     rol: 'Administrador'
   },
   {
-    employeeId: 3,
+    id: 3,
     employeeCode: 'E-003',
     username: 'lruiz',
     fullname: 'Laura Ruiz',
@@ -27,7 +27,7 @@ export const mockEmployees = [
     rol: 'Recepción'
   },
   {
-    employeeId: 4,
+    id: 4,
     employeeCode: 'E-004',
     username: 'agomez',
     fullname: 'Aldana Gómez',
@@ -36,7 +36,7 @@ export const mockEmployees = [
     rol: 'Auxiliar'
   },
   {
-    employeeId: 5,
+    id: 5,
     employeeCode: 'E-005',
     username: 'fperez',
     fullname: 'Federico Pérez',

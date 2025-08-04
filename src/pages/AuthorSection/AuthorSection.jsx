@@ -10,7 +10,7 @@ import Btn from '../../components/btn/Btn';
 import PlusIcon from '../../assets/img/plus-icon.svg';
 import BookIcon from '../../assets/img/add-book-icon.svg';
 import AuthorBooks from '../../components/author-components/AuthorBooks/AuthorBooks';
-import { useAuthorManager } from '../../hooks/useAuthorManager';
+import { useEntityManager } from '../../hooks/useEntityManager';
 import { mockAuthors } from '../../data/mocks/authors';
 
 export default function AuthorSection() {
@@ -19,8 +19,7 @@ export default function AuthorSection() {
     const [addPopup, setAddPopup] = useState(false);
     const [selectedAuhor, setSelectedAuthor] = useState(false);
     const [booksPopup, setBooksPopup] = useState(false);
-    const { authors, getAuthor, createAuthor, updateAuthor, deleteAuthor } = useAuthorManager(mockAuthors);
-
+    const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockAuthors, 'authors');
     
     const authorsPopups = [
             {
@@ -29,7 +28,7 @@ export default function AuthorSection() {
                 className: 'delete-size-popup',
                 content: <PopUpDelete title={"Autor"} closePopup={() => setDeletePopup(false)} onConfirm={
                 () => {
-                    deleteAuthor(selectedAuhor.authorId)
+                    deleteItem(selectedAuhor.id)
                     setDeletePopup(false)
                 }
             } />,
@@ -91,7 +90,7 @@ export default function AuthorSection() {
 
     return (
         <>
-            <GenericSection title={'Listado de autores'} columns={columns} data={authors} popups={authorsPopups} 
+            <GenericSection title={'Listado de autores'} columns={columns} data={items} popups={authorsPopups} 
             actions={
                 <>
                 <div className='author-actions'>

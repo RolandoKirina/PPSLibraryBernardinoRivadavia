@@ -8,7 +8,8 @@ import { useState } from 'react';
 import Btn from '../../../components/btn/Btn';
 import DeleteIcon from '../../../assets/img/delete-icon.svg';
 import EditIcon from '../../../assets/img/edit-icon.svg';
-
+import { useEntityManager } from '../../../hooks/useEntityManager';
+import { mockPartnersCategory } from '../../../data/mocks/partnersCategory';
 
 
 export default function PartnerCategorySection() {
@@ -16,7 +17,7 @@ export default function PartnerCategorySection() {
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
     const [selectedPartnerCategory, setSelectedPartnerCategory] = useState(null);
-    const { partnerCategories, getPartnerCategory, createPartnerCategory, updatePartnerCategory, deletePartnerCategory } = usePartnerCategoryManager(mockPartnerCategories);
+    const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockPartnersCategory, 'partnersCategory');
 
     // const partnerCategories = [
     // { id: 1, category: 'Honorario', import: '$3500' },
@@ -33,7 +34,7 @@ export default function PartnerCategorySection() {
                     className: 'delete-size-popup',
                     content: <PopUpDelete title={"Categoria de socio"} closePopup={() => setDeletePopup(false)} onConfirm={
                 () => {
-                    deletePartnerCategory(selectedPartnerCategory.partnerCategoryId)
+                    deleteItem(selectedPartnerCategory.id)
                     setDeletePopup(false)
                 }
             } />,
@@ -69,6 +70,7 @@ export default function PartnerCategorySection() {
             <button className="button-table" onClick={() => {
                 setDeletePopup(true)
                 setSelectedPartnerCategory(row)
+                {console.log(row)}
                 }}>
                 <img src={DeleteIcon} alt="Borrar" />
             </button>
@@ -87,7 +89,7 @@ export default function PartnerCategorySection() {
 
     return (
         <>
-            <GenericSection title={'Listado de categorias de socios'} columns={columns} data={partnerCategories} popups={authorsPopups} actions={
+            <GenericSection title={'Listado de categorias de socios'} columns={columns} data={items} popups={authorsPopups} actions={
                 <Btn className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg'/>}/>
             }/>
         </>

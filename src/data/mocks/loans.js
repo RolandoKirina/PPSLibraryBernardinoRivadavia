@@ -1,6 +1,6 @@
 export const mockLoans = [
   {
-    loanId: '1',
+    id: '1',
     bookCode: 'BK-1023',
     bookTitle: 'Cien años de soledad',
     partnerNumber: 'P-001',
@@ -15,7 +15,7 @@ export const mockLoans = [
     phone: '2494-556677'
   },
   {
-    loanId: '2',
+    id: '2',
     bookCode: 'BK-2081',
     bookTitle: 'El principito',
     partnerNumber: 'P-002',
@@ -30,7 +30,7 @@ export const mockLoans = [
     phone: '2494-338899'
   },
   {
-    loanId: '3',
+    id: '3',
     bookCode: 'BK-3329',
     bookTitle: 'Rayuela',
     partnerNumber: 'P-003',
@@ -45,7 +45,7 @@ export const mockLoans = [
     phone: '2494-223344'
   },
   {
-    loanId: '4',
+    id: '4',
     bookCode: 'BK-1197',
     bookTitle: 'Martín Fierro',
     partnerNumber: 'P-004',
@@ -60,7 +60,7 @@ export const mockLoans = [
     phone: '2494-667788'
   },
   {
-    loanId: '5',
+    id: '5',
     bookCode: 'BK-4015',
     bookTitle: 'Don Quijote de la Mancha',
     partnerNumber: 'P-005',
