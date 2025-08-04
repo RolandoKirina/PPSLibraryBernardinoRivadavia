@@ -62,6 +62,17 @@
 .bordepopup{
   border: 1px solid var(--black);
   box-shadow: -2px 1px 6px 0px rgba(0,0,0,0.75);
+  
+}
+
+.bordepopup.popup-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.bordepopup.popup-exit {
+  opacity: 0;
+  transform: scale(0.95);
 }
 
 .titlepopup2{

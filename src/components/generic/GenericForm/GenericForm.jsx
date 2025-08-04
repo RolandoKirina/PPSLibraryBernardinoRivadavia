@@ -104,7 +104,7 @@ export default function GenericForm({ fields, onSubmit, title, children }) {
         </div>
 
         <div className="generic-btn-save">
-          <button onClick={() => onSubmit(formState)} alt="Guardar">
+          <button onClick={() => onSubmit(formState)} alt="Guardar" >
             <img src={SaveIcon} />
             Guardar
           </button>
