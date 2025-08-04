@@ -9,7 +9,6 @@ import Listing from './components/loan-components/listing/Listing.jsx';
 import GenericForm from './components/generic/GenericForm/GenericForm.jsx';
 //rutas importadas para evitar llenar todo de rutas similares
 import { loanFormRoutes, detailsRoutes, listingRoutes } from './data/Routes.js'; 
-import PartnerMemo from './components/loan-components/partnermemo/PartnerMemo.jsx';
 import UnpaidQuotes from './components/loan-components/unpaidquotes/UnpaidQuotes.jsx';
 import Renewe from './components/loan-components/renewe/Renewe.jsx';
 import AuthorSection from './pages/AuthorSection/AuthorSection.jsx';
@@ -22,6 +21,7 @@ import Dashboard from './components/dashboard/Dashboard.jsx';
 import BooksAuthor from './components/author-components/BooksAuthor/BooksAuthor.jsx';
 import Signature from './components/signature/Signature.jsx';
 import PartnerSection from './pages/PartnerSection/PartnerSection.jsx';
+import OptionSection from './pages/OptionSection/OptionSection.jsx';
 
 function App() {
   return (
@@ -30,15 +30,16 @@ function App() {
         <Routes>
           <Route path='/' element={<Layout />}> 
              <Route path='/dashboard' element={<Dashboard/>}/>
-            <Route path='/employee' element={<EmployeeSection/>}/>
-            <Route path='/employee/register' element={<RegisterEmployee mode={'add'}/>}/>
-            <Route path='/employee/edit-employee' element={<RegisterEmployee mode={'edit'}/>}/>
+            <Route path='/employees' element={<EmployeeSection/>}/>
+            <Route path='/employees/register' element={<RegisterEmployee mode={'add'}/>}/>
+            <Route path='/employees/edit-employee' element={<RegisterEmployee mode={'edit'}/>}/>
             <Route path='/loans' element={<LoanSection openRenewes={false}/>}/>
             <Route path='/loans/renewes' element={<LoanSection openRenewes={true}/>}/>
             <Route path='/loans/filters/partner' element={<LoanSection openRenewes={false} pendientBooks={true}/>}/>
             <Route path='/books' element={<BookSection/>}/>
             <Route path='/partners' element={<PartnerSection/>}/>
             <Route path='/authors' element={<AuthorSection/>}/>
+            <Route path='/options' element={<OptionSection />}/>
             <Route path='/options/partner-categories' element={<PartnerCategorySection/>}/>
             <Route path='/options/loan-materials' element={<LoanMaterialSection/>}/>
             <Route path='/options/remove-partner-reasons' element={<RemovePartnerReasonSection chooseMode={false}/>}/>

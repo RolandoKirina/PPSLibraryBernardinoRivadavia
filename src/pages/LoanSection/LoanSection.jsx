@@ -22,7 +22,7 @@ import { useEntityManager } from "../../hooks/useEntityManager";
 export default function LoanSection({openRenewes, pendientBooks}) {
     const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockLoans, 'loans');
 
-    const [selectedLoan, setSelectedLoan] = useState(null);
+    const [selected, setSelected] = useState(null);
     const [loanDetailsData, setLoanDetailsData] = useState(null);
     const [deletePopup, setDeletePopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
@@ -31,6 +31,20 @@ export default function LoanSection({openRenewes, pendientBooks}) {
     const [returnsPopup, setReturnsPopup] = useState(false);
     const [listingsPopup, setListingsPopup] = useState(false);
     const [renewePopup, setRenewePopup] = useState(false);
+
+    let initialData =  {
+        loanData: {
+
+        },
+        partnerData: {
+
+        },
+        lendBooksData: {
+
+        }
+    }
+
+    const [newData, setNewData] = useState(initialData);
 
     useEffect(() => {
         if (openRenewes) {
@@ -44,6 +58,23 @@ export default function LoanSection({openRenewes, pendientBooks}) {
         setLoanDetailsData(loanData);
     }
 
+    function addNewLoan() {
+
+    }
+
+    function getLoanDataForm(data) {
+
+    }
+
+    function getPartnerDataForm(data) {
+        
+    }
+
+    function getLendBooksData(data) {
+        
+    }
+
+
 
     //columnas y acciones - tabla principal prestamos
     const columns = [
@@ -56,7 +87,7 @@ export default function LoanSection({openRenewes, pendientBooks}) {
         render: (_, row) => (
         <button className="button-table" onClick={() => {
             setDeletePopup(true)
-            setSelectedLoan(row)
+            setSelected(row)
             console.log(row)
             }}>
             <img src={DeleteIcon} alt="Borrar" />
@@ -70,7 +101,7 @@ export default function LoanSection({openRenewes, pendientBooks}) {
         render: (_, row) => (
         <button className="button-table"  onClick={() => {
             setEditPopup(true)
-            setSelectedLoan(row)
+            setSelected(row)
             }}>
             <img src={EditIcon} alt="Editar" />
         </button>
@@ -82,7 +113,7 @@ export default function LoanSection({openRenewes, pendientBooks}) {
         render: (_, row) => (
         <button className="button-table" onClick={() => {
             setDetailsPopup(true)
-            setSelectedLoan(row)
+            setSelected(row)
             getLoanDetails(row)
             }}>
             <img src={DetailsIcon} alt="Detalles" />
@@ -99,7 +130,7 @@ export default function LoanSection({openRenewes, pendientBooks}) {
             className: 'delete-size-popup',
             content: <PopUpDelete  title={"Prestamo"} onConfirm={
                 () => {
-                    deleteItem(selectedLoan.id)
+                    deleteItem(selected.id)
                     setDeletePopup(false)
                 }
             } closePopup={() => setDeletePopup(false)} />,
@@ -118,8 +149,8 @@ export default function LoanSection({openRenewes, pendientBooks}) {
         {
             key: 'addPopup',
             title: 'Agregar préstamo',
-            className: '',
-            content: <LoanForm />,
+            className: 'loans-background',
+            content: <LoanForm saveLoanInfo={getLoanDataForm} savePartnerInfo={getPartnerDataForm} saveLendBooksInfo={getLendBooksData}/>,
             // content: <GenericForm fields={formFields} onSubmit={(data) => console.log('Formulario enviado:', data)}/>,
             close: () => setAddPopup(false),
             condition: addPopup

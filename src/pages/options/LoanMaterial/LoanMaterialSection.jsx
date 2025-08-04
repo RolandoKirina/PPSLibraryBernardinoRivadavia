@@ -8,27 +8,28 @@ import { useState } from 'react';
 import Btn from '../../../components/btn/Btn';
 import DeleteIcon from '../../../assets/img/delete-icon.svg';
 import EditIcon from '../../../assets/img/edit-icon.svg';
+import { useEntityManager } from '../../../hooks/useEntityManager';
+import { mockLoanMaterials } from '../../../data/mocks/loanMaterials';
 
 export default function LoanMaterialSection() {
     const [deletePopup, setDeletePopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
+    const [selected, setSelected] = useState(false);
+    const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockLoanMaterials, 'loamMaterials');
 
-    const loanMaterials = [
-    { id: 1, description: 'Libro', loanDays: '15' },
-    { id: 1, description: 'Video', loanDays: '10' },
-    { id: 1, description: 'Video', loanDays: '10' },
-    { id: 1, description: 'Video', loanDays: '10' },
-    { id: 1, description: 'Video', loanDays: '10' },
-
-    ];
 
      const loanMaterialsPopups = [
                 {
                     key: 'deletePopup',
                     title: 'Borrar material de préstamo',
                     className: 'delete-size-popup',
-                    content: <PopUpDelete title={"Material de préstamo"} closePopup={() => setDeletePopup(false)} />,
+                    content: <PopUpDelete title={"Material de préstamo"} closePopup={() => setDeletePopup(false)} onConfirm={
+                () => {
+                    deleteItem(selected.id)
+                    setDeletePopup(false)
+                }
+            }/>,
                     close: () => setDeletePopup(false),
                     condition: deletePopup,
                     variant: 'delete'
@@ -58,7 +59,10 @@ export default function LoanMaterialSection() {
             header: 'Borrar',
             accessor: 'delete',
             render: (_, row) => (
-            <button className="button-table" onClick={() => setDeletePopup(true)}>
+            <button className="button-table" onClick={() => {
+                setDeletePopup(true)
+                setSelected(row)
+                }}>
                 <img src={DeleteIcon} alt="Borrar" />
             </button>
             )
@@ -76,7 +80,7 @@ export default function LoanMaterialSection() {
 
     return (
         <>
-            <GenericSection title={'Listado de material en préstamo'} columns={columns} data={loanMaterials} popups={loanMaterialsPopups} actions={
+            <GenericSection title={'Listado de material en préstamo'} columns={columns} data={items} popups={loanMaterialsPopups} actions={
                 <Btn className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg'/>}/>
             }/>
         </>

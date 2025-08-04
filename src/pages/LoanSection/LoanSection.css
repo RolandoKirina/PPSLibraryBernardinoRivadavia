@@ -28,6 +28,9 @@ main {
     flex-direction: column;
 }
 
+.loans-background {
+    background: var(--primary-dark-2);
+}
 
 
 /* popups */

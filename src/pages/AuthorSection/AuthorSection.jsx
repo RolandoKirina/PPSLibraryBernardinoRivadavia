@@ -17,7 +17,7 @@ export default function AuthorSection() {
     const [deletePopup, setDeletePopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
-    const [selectedAuhor, setSelectedAuthor] = useState(false);
+    const [selected, setSelected] = useState(false);
     const [booksPopup, setBooksPopup] = useState(false);
     const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockAuthors, 'authors');
     
@@ -28,7 +28,7 @@ export default function AuthorSection() {
                 className: 'delete-size-popup',
                 content: <PopUpDelete title={"Autor"} closePopup={() => setDeletePopup(false)} onConfirm={
                 () => {
-                    deleteItem(selectedAuhor.id)
+                    deleteItem(selected.id)
                     setDeletePopup(false)
                 }
             } />,
@@ -71,7 +71,7 @@ export default function AuthorSection() {
             render: (_, row) => (
             <button className="button-table" onClick={() => {
                 setDeletePopup(true)
-                setSelectedAuthor(row)
+                setSelected(row)
                 }}>
                 <img src={DeleteIcon} alt="Borrar" />
             </button>

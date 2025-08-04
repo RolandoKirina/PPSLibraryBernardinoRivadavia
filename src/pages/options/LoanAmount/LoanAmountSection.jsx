@@ -11,26 +11,27 @@ import EditIcon from '../../../assets/img/edit-icon.svg';
 import { loanMaterialsGroupFields } from '../../../data/options/loan-materials/LoanMaterialsForms';
 import { Table } from '../../../components/table/Table';
 import AddMaterialGroup from '../../../components/addmaterialgroup/AddMaterialGroup';
+import { mockLoanAmountGroup } from '../../../data/mocks/loanAmount';
+import { useEntityManager } from '../../../hooks/useEntityManager';
 
 export default function LoanAmountSection() {
     const [deletePopup, setDeletePopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
-
-    const loanMaterialsTable = [
-    { id: 1, description: 'Descripción 1', loanDays: '10' },
-    { id: 1, description: 'Descripción 1', loanDays: '10' },
-    { id: 1, description: 'Descripción 1', loanDays: '10' },
-    { id: 1, description: 'Descripción 1', loanDays: '10' },
-    { id: 1, description: 'Descripción 1', loanDays: '10' },
-    ];
+    const [selected, setSelected] = useState(false);
+    const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockLoanAmountGroup, 'loanAmountGroups');
 
      const loanMaterialsPopups = [
                 {
                     key: 'deletePopup',
                     title: 'Borrar Grupo de tipo de material',
                     className: 'delete-size-popup',
-                    content: <PopUpDelete title={"Grupo de tipo de material"} closePopup={() => setDeletePopup(false)} />,
+                    content: <PopUpDelete title={"Grupo de tipo de material"} closePopup={() => setDeletePopup(false)} onConfirm={
+                () => {
+                    deleteItem(selected.id)
+                    setDeletePopup(false)
+                }
+            } />,
                     close: () => setDeletePopup(false),
                     condition: deletePopup,
                     variant: 'delete'
@@ -56,19 +57,17 @@ export default function LoanAmountSection() {
                 }
     ];
 
-    const columnsMaterials = [
-        { header: 'Descripción grupo', accessor: 'description' },
-
-    ]
-
     const columns = [
-        { header: 'Descripción grupo', accessor: 'description' },
+        { header: 'Descripción grupo', accessor: 'groupDescription' }, 
         { header: 'Días préstamo', accessor: 'loanDays' },
         {
             header: 'Borrar',
             accessor: 'delete',
             render: (_, row) => (
-            <button className="button-table" onClick={() => setDeletePopup(true)}>
+            <button className="button-table" onClick={() => {
+                setDeletePopup(true)
+                setSelected(row)
+                }}>
                 <img src={DeleteIcon} alt="Borrar" />
             </button>
             )
@@ -86,7 +85,7 @@ export default function LoanAmountSection() {
 
     return (
         <>
-            <GenericSection title={'Configurar grupos para cantidad maxima de prestamos'} columns={columns} data={loanMaterialsTable} popups={loanMaterialsPopups} actions={
+            <GenericSection title={'Configurar grupos para cantidad maxima de prestamos'} columns={columns} data={items} popups={loanMaterialsPopups} actions={
                 <Btn className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg'/>}/>
             }/>
         </>
