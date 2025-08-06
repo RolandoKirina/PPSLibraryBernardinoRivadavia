@@ -7,7 +7,7 @@ import { useState } from 'react';
 import DeleteIcon from '../../assets/img/delete-icon.svg';
 import EditIcon from '../../assets/img/edit-icon.svg';
 import DetailsIcon from '../../assets/img/details-icon.svg';
-import { FormEditPartner } from '../../components/formeditpartner/FormEditPartner.jsx';
+import FormEditPartner  from '../../components/formeditpartner/FormEditPartner.jsx';
 
 import PopUpDelete from '../../components/deletebtnComponent/PopUpDelete.jsx';
 import { useEntityManager } from '../../hooks/useEntityManager.js';
@@ -150,10 +150,9 @@ export default function PartnerSection(){
             //     duplicateBook={() => setPopUpDuplicateBook(true)}
             //   />
             // }
-          
           ></GenericSection>
     
-    
+          
     
     
     
