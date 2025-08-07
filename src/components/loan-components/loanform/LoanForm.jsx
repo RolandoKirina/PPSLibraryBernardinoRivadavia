@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './LoanForm.css';
 import SearchPartner from '../searchpartner/SearchPartner';
 import Reader from '../reader/Reader';
@@ -10,9 +10,16 @@ import GenericForm from '../../generic/GenericForm/GenericForm';
 import { addLendBookFields } from '../../../data/loan/LoanForms';
 import Btn from '../../btn/Btn';
 import SearchBooks from '../searchBooks/SearchBooks';
+import SaveIcon from '../../../assets/img/save-icon.svg';
+import { useEntityManager } from '../../../hooks/useEntityManager';
+import { mockBooksLoans } from '../../../data/mocks/loans';
+import PopUp from '../../popup-table/PopUp2';
+import ConfirmMessage from '../../confirmMessage/ConfirmMessage';
 
-export default function LoanForm() {
+export default function LoanForm({createLoanItem}) {
   const [popupView, setPopupView] = useState("default");
+  const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockBooksLoans, 'booksLoans');
+  const [confirmSaveChanges, setConfirmSaveChangesPopup] = useState(false);
 
   const [loanData, setLoanData] = useState({
     loanType: 'in_room',
@@ -66,6 +73,41 @@ const handleChange = (e) => {
     return updated;
   });
 };
+
+function addLoanItems(data) {
+  createItem(data);
+
+  if(data.loanType === 'retired') {
+    console.log(items);
+    items.forEach((lendBook) => {
+  createItem({
+    bookCode: lendBook.bookCode,
+    bookTitle: lendBook.bookTitle,
+    partnerNumber: data.partnerNumber,
+    partnerName: data.partnerName,
+    retiredDate: data.retiredDate,
+    employee: data.employeeCode,
+    // retiredHour: data.retiredHour, // si lo tenés
+    // address: data.partnerAddress, // si lo tenés
+    // phone: data.partnerPhone,     // si lo tenés
+  });
+});
+  }
+  else if(data.loanType === 'in_room') { //segun el tipo, cambiar columnas de tabla si se elige en el filtro
+     items.map((lendBook) => 
+      createItem({
+        bookCode: lendBook.bookCode,
+        bookTitle: lendBook.bookTitle,
+        retiredDate: data.retiredDate,
+        employee: data.employeeCode, //aqui deberia buscar el nombre por codigo
+        // adress:
+        // phone:
+        // retiredHour:
+      })
+    )
+  }
+  
+}
 
 
   return (
@@ -128,14 +170,58 @@ const handleChange = (e) => {
             </div>
 
             {loanData.loanType === 'retired' ? (
-              <SearchPartner menu={setPopupView} onDataChange={handleExtraData} loanType={'retired'}/>
+              <SearchPartner menu={setPopupView} onDataChange={handleExtraData} loanType={'retired'} 
+              partnerData={
+                {
+                  partnerName: loanData.partnerName,
+                  partnerNumber: loanData.partnerNumber,
+                  memoSearch: loanData.memoSearch 
+                }
+              }
+              />
             ) : (
-              <Reader menu={setPopupView} onDataChange={handleExtraData} loanType={'in_room'}/>
+              <Reader menu={setPopupView} onDataChange={handleExtraData} loanType={'in_room'}
+                 readerData={{
+                  readerDNI: loanData.readerDNI,
+                  readerName: loanData.readerName
+                }}
+              />
             )}
 
-            <LendBooks menu={setPopupView} method={'add'} onDataChange={handleExtraData} />
+            <LendBooks menu={setPopupView} method={'add'} onDataChange={handleExtraData} itemsData={items}
+  deleteItem={deleteItem} />
+
+            <div className='save-changes-lend-books'>
+                <Btn text={'Guardar'} onClick={() => {
+                  setConfirmSaveChangesPopup(true)
+
+                  }} icon={<img src={SaveIcon} alt='saveIconButton'/> }/>
+            </div>
+
           </form>
+
+          {confirmSaveChanges && (
+            <PopUp>
+              <ConfirmMessage text={'¿Está seguro de guardar el nuevo prestamo?'} closePopup={() => setConfirmSaveChangesPopup(false)} onConfirm={() => {
+                createLoanItem(loanData);
+                setConfirmSaveChangesPopup(false);
+                }}/>
+            </PopUp>
+          )}
         </div>
+      )}
+
+      {popupView === 'addBook' && (
+        <>
+          <BackviewBtn menu={'default'} changeView={setPopupView} />
+          <GenericForm title={'Agregar Libro en Prestamo'} fields={addLendBookFields} onSubmit={(data) => {
+            console.log(data);
+            addLoanItems(data);
+            setPopupView('default');
+            }}>
+            <Btn className='search-book-btn' text={'Buscar libro'} onClick={() => setPopupView('searchBook')} />
+          </GenericForm>
+        </>
       )}
 
       {popupView === 'editForm' && (
@@ -151,15 +237,6 @@ const handleChange = (e) => {
         <>
           <BackviewBtn menu={'default'} changeView={setPopupView} />
           <ShowDetails insidePopup={true} titleText={'Detalles de libro en préstamo'} isPopup={false} detailsData={lendBooksDetails} />
-        </>
-      )}
-
-      {popupView === 'addBook' && (
-        <>
-          <BackviewBtn menu={'default'} changeView={setPopupView} />
-          <GenericForm title={'Agregar Libro en Prestamo'} fields={addLendBookFields} onSubmit={(data) => console.log('Formulario enviado:', data)}>
-            <Btn className='search-book-btn' text={'Buscar libro'} onClick={() => setPopupView('searchBook')} />
-          </GenericForm>
         </>
       )}
 

@@ -6,26 +6,33 @@ import DetailsIcon from '../../../assets/img/details-icon.svg';
 import ReturnIcon from '../../../assets/img/return-icon.svg';
 import ReneweIcon from '../../../assets/img/renewe-icon.svg';
 import AddBookIcon from '../../../assets/img/add-book-icon.svg';
-import SaveIcon from '../../../assets/img/save-icon.svg';
 import PopUp from '../../popup-table/PopUp2';
 import PopUpDelete from '../../deletebtnComponent/PopUpDelete';
 import { useState } from 'react';
 import Btn from '../../btn/Btn';
 import ConfirmMessage from '../../confirmMessage/ConfirmMessage';
+import { mockBooksLoans } from '../../../data/mocks/loans';
+import { useEntityManager } from '../../../hooks/useEntityManager';
 
-export default function LendBooks({menu, method}) {
+export default function LendBooks({menu, method, itemsData, deleteItem}) {
         const [deletePopup, setDeletePopup] = useState(false);
         const [confirmReturnPopup, setConfirmReturnPopup] = useState(false);
         const [confirmRenewePopup, setConfirmRenewePopup] = useState(false);
         const [confirmReturnAllPopup, setConfirmReturnAllPopup] = useState(false);
         const [confirmSaveChangesPopup, setConfirmSaveChangesPopup] = useState(false);
+        const [selected, setSelected] = useState(null);
 
         const lendBooksPopups = [
             {
                 key: 'deletePopup',
                 title: 'Borrar prestamo',
                 className: 'delete-size-popup',
-                content: <PopUpDelete  title={"Libro"} closePopup={() => setDeletePopup(false)} />,
+                content: <PopUpDelete  title={"Libro"} closePopup={() => setDeletePopup(false)} onConfirm={
+                () => {
+                    deleteItem(selected.id)
+                    setDeletePopup(false)
+                }
+            } />,
                 close: () => setDeletePopup(false),
                 condition: deletePopup,
                 variant: 'delete'
@@ -64,23 +71,23 @@ export default function LendBooks({menu, method}) {
             }
     ];
 
-        function redirect(routeName) {
-            window.open(`${window.location.origin}/${routeName}`, '_blank');
-        }
-
        const loans = [
         { id: 1, book_code: '0000006828', title: '100 gramos de ejecutivos', returned: '4' },
         ];
 
        const columns = [
-        { header: 'Código del libro', accessor: 'book_code' },
-        { header: 'Título', accessor: 'title' },
-        { header: 'Renovado', accessor: 'returned' },
+        { header: 'Código del libro', accessor: 'bookCode' },
+        { header: 'Título', accessor: 'bookTitle' },
+        { header: 'Renovado', accessor: 'returnedDate' },
         {
             header: 'Borrar',
             accessor: 'delete',
             render: (_, row) => (
-             <button type='button' className="button-table" onClick={() => setDeletePopup(true)}>
+             <button type='button' className="button-table" onClick={() => {
+            setDeletePopup(true)
+            setSelected(row)
+            console.log(row)
+            }}>
                 <img src={DeleteIcon} alt="Borrar" />
             </button>
             )
@@ -108,24 +115,6 @@ export default function LendBooks({menu, method}) {
                 <img src={DetailsIcon} alt="Detalles" />
             </button>
             
-            )
-        },
-        {
-            header: 'Devolver',
-            accessor: 'return',
-            render: (_, row) => (
-            <button type='button' className="button-table" onClick={() => setConfirmReturnPopup(true)}>
-                <img src={ReturnIcon} alt="Devolver" />
-            </button>
-            )
-        },
-        {
-            header: 'Renovar',
-            accessor: 'renewe',
-            render: (_, row) => (
-            <button type='button' className="button-table" onClick={() => setConfirmRenewePopup(true)}>
-                <img src={ReneweIcon} alt="Renovar" />
-            </button>
             )
         }
         ];
@@ -168,8 +157,8 @@ export default function LendBooks({menu, method}) {
             <div className='lend-books-container'>
                 <h2 className='lend-books-title'>Libros a Prestar</h2>
                 
-                {method==='add' && <Table columns={columns} data={loans} popupLength='popup-length'/>}
-                {method==='return' && <Table columns={columnsReturnForm} data={loans} popupLength='popup-length'/>}
+                {method==='add' && <Table columns={columns} data={itemsData} popupLength='popup-length'/>}
+                {method==='return' && <Table columns={columnsReturnForm} data={itemsData} popupLength='popup-length'/>}
 
                 <div className='add-book-to-lend'>
 
@@ -182,9 +171,7 @@ export default function LendBooks({menu, method}) {
                     )}
 
                 </div>
-                <div className='save-changes-lend-books'>
-                    <Btn text={'Guardar'} onClick={() => setConfirmSaveChangesPopup(true)} icon={<img src={SaveIcon} alt='saveIconButton'/> }/>
-                </div>
+
 
                 {lendBooksPopups.map(({ condition, title, className, content, close, variant }, idx) => (
                                         condition && (
