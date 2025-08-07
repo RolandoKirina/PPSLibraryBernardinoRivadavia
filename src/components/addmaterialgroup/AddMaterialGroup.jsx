@@ -2,21 +2,71 @@ import { Table } from '../table/Table';
 import './AddMaterialGroup.css';
 import { useState } from 'react';
 import ChooseIcon from '../../assets/img/choose-icon.svg';
+import { mockLoanMaterials } from '../../data/mocks/loanMaterials';
+import Btn from '../btn/Btn';
+import SaveIcon from '../../assets/img/save-icon.svg';
+import { useEntityManager } from '../../hooks/useEntityManager';
+import PopUp from '../popup-table/PopUp2';
+import ConfirmMessage from '../confirmMessage/ConfirmMessage';
+import { useEffect } from 'react';
 
-export default function AddMaterialGroup() {
+export default function AddMaterialGroup({method, createItem, updateItem, getItemGroup, getMaterialItem, items, itemIdSelected }) {
   const [popupView, setPopupView] = useState('default');
   const [selectedIds, setSelectedIds] = useState([]);
+  const [confirmSaveChanges, setConfirmSaveChangesPopup] = useState(false);
+  const [group, setGroup] = useState('');
+  const [amount, setAmount] = useState('');
+  
+   useEffect(() => {
+     if(method === 'update') {
 
-  const materials = [
-    { id: 1, material: 'CD' },
-    { id: 2, material: 'DVD' },
-    { id: 3, material: 'Libro' },
-    { id: 4, material: 'Revista' },
-    { id: 5, material: 'Manual' },
-  ];
+       let materialsData = getItemGroup(itemIdSelected);
+
+       console.log(materialsData);
+
+       if(materialsData && materialsData.materials) {
+        let materialsId = materialsData.materials.map((material) => material.id);
+
+        setSelectedIds(materialsId);
+       }
+ 
+     }
+     else {
+       setSelectedIds([]);
+     }
+   }, [method, itemIdSelected]);
+
+  function handleAddItem() {
+    
+    const materials = selectedIds
+      .map(id => getMaterialItem(id))
+      .filter(item => item); // filtra nulos por si algún ID no existe
+
+
+    createItem({
+      groupDescription: group,
+      loanDays: amount,
+      materials: materials
+    });
+  }
+
+  function handleUpdateItem() {
+    const materials = selectedIds
+      .map(id => getMaterialItem(id))
+      .filter(item => item); // filtra nulos por si algún ID no existe
+
+    let data = {
+      groupDescription: group,
+      loanDays: amount,
+      materials: materials
+    }
+
+    updateItem(itemIdSelected, data);   
+  }
+
 
   const materialColumns = [
-    { header: 'Material', accessor: 'material' },
+    { header: 'Material', accessor: 'description' },
     {
       header: 'Elegir',
       accessor: 'choose',
@@ -47,11 +97,11 @@ export default function AddMaterialGroup() {
             <div className='add-loan-form-inputs'>
               <div className='add-loan-retire-date'>
                 <label>Grupo</label>
-                <input type='text' />
+                <input type='text' value={group} onChange={(e) => setGroup(e.target.value)}/>
               </div>
               <div className='add-loan-retire-date'>
                 <label>Cantidad</label>
-                <input type='number' />
+                <input type='number' value={amount} onChange={(e) => setAmount(e.target.value)}/>
               </div>
             </div>
             <div className='author-books-title'>
@@ -59,10 +109,31 @@ export default function AddMaterialGroup() {
             </div>
             <div className='materials-group'>
                 <div className='group-table'>   
-                    <Table columns={materialColumns} data={materials} />
+                    <Table columns={materialColumns} data={items} />
                 </div>
             </div>
+            <div className='save-changes-lend-books'>
+                  <Btn text={'Guardar'} onClick={() => {
+                    setConfirmSaveChangesPopup(true)
+                    }} icon={<img src={SaveIcon} alt='saveIconButton'/> }/>
+            </div>
           </div>
+          {confirmSaveChanges && (
+            <PopUp>
+              <ConfirmMessage text={'¿Está seguro de guardar el nuevo prestamo?'} closePopup={() => setConfirmSaveChangesPopup(false)} onConfirm={() => {
+                
+
+                if(method === 'add') {
+                  handleAddItem();
+                }
+                else if(method === 'update') {
+                  handleUpdateItem();
+                }
+
+                setConfirmSaveChangesPopup(false);
+                }}/>
+            </PopUp>
+          )}
         </div>
       )}
     </>

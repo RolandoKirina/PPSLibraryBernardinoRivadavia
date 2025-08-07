@@ -13,13 +13,22 @@ import { Table } from '../../../components/table/Table';
 import AddMaterialGroup from '../../../components/addmaterialgroup/AddMaterialGroup';
 import { mockLoanAmountGroup } from '../../../data/mocks/loanAmount';
 import { useEntityManager } from '../../../hooks/useEntityManager';
+import { mockLoanMaterials } from '../../../data/mocks/loanMaterials';
 
 export default function LoanAmountSection() {
     const [deletePopup, setDeletePopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
     const [selected, setSelected] = useState(false);
-    const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockLoanAmountGroup, 'loanAmountGroups');
+    const [materialsIdSelected, setMaterialsIdSelected] = useState();
+    const { items: groupItems, getItem: getGroupItem, createItem, updateItem, deleteItem } = useEntityManager(mockLoanAmountGroup, 'loanAmountGroups');
+    const { items: materialsItems, getItem: getMaterialItem, deleteItem: deleteMaterialItem } = useEntityManager(mockLoanMaterials, 'loanMaterials');
+
+    // function storeMaterialsIdSelected() {
+    //     let materials = selected.materials;
+    //     let materialsId = materials.map((material) => material.id);
+    //     setMaterialsIdSelected(materialsId); 
+    // }
 
      const loanMaterialsPopups = [
                 {
@@ -40,7 +49,7 @@ export default function LoanAmountSection() {
                     key: 'editPopup',
                     title: 'Editar Grupo de tipo de material',
                     className: 'add-material-group-background',
-                    content: <AddMaterialGroup />,
+                    content: <AddMaterialGroup method={'update'} createItem={ createItem } updateItem={updateItem} getItemGroup={getGroupItem} getMaterialItem={getMaterialItem} items={materialsItems} itemIdSelected={selected.id}/>,
                     close: () => setEditPopup(false),
                     condition: editPopup
                 },
@@ -50,7 +59,7 @@ export default function LoanAmountSection() {
                     className: 'add-material-group-background',
                     content: 
                     <>
-                        <AddMaterialGroup />
+                        <AddMaterialGroup method={'add'} createItem={ createItem } updateItem={updateItem} getItemGroup={getGroupItem} getMaterialItem={getMaterialItem} items={materialsItems} />
                     </>,
                     close: () => setAddPopup(false),
                     condition: addPopup
@@ -65,8 +74,9 @@ export default function LoanAmountSection() {
             accessor: 'delete',
             render: (_, row) => (
             <button className="button-table" onClick={() => {
-                setDeletePopup(true)
-                setSelected(row)
+                setDeletePopup(true);
+                setSelected(row);
+                console.log(row);
                 }}>
                 <img src={DeleteIcon} alt="Borrar" />
             </button>
@@ -76,7 +86,10 @@ export default function LoanAmountSection() {
             header: 'Editar',
             accessor: 'edit',
             render: (_, row) => (
-            <button className="button-table"  onClick={() => setEditPopup(true)}>
+            <button className="button-table"  onClick={() => {
+                setEditPopup(true);
+                setSelected(row);
+                }}>
                 <img src={EditIcon} alt="Editar" />
             </button>
             )
@@ -85,7 +98,7 @@ export default function LoanAmountSection() {
 
     return (
         <>
-            <GenericSection title={'Configurar grupos para cantidad maxima de prestamos'} columns={columns} data={items} popups={loanMaterialsPopups} actions={
+            <GenericSection title={'Configurar grupos para cantidad maxima de prestamos'} columns={columns} data={groupItems} popups={loanMaterialsPopups} actions={
                 <Btn className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg'/>}/>
             }/>
         </>

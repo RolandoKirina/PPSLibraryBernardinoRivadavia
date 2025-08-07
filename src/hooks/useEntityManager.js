@@ -30,7 +30,11 @@ export const useEntityManager = (initialItemsEntity, nameEntity) => {
 
   // ➕ CREATE
   const createItem = (newItem) => {
-    setItems((prev) => [...prev, newItem]);
+     const itemWithId = {
+    ...newItem,
+    id: newItem.id ?? crypto.randomUUID()
+    };
+    setItems((prev) => [...prev, itemWithId]);
   };
 
   // 📝 UPDATE

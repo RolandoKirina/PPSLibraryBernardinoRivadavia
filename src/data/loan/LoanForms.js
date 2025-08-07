@@ -49,32 +49,27 @@ export const addLendBookFields = [
   },
   {
     label: 'Título',
-    name: 'title',
+    name: 'bookTitle',
     type: 'text'
   },
   {
+    label: 'Fecha Retiro',
+    name: 'retiredDate',
+    type: 'date'
+  },
+  {
     label: 'Fecha Prevista',
-    name: 'expectedDate',
+    name: 'plannedDate',
     type: 'date'
   },
   {
     label: 'Fecha de Devolución',
-    name: 'returnDate',
+    name: 'returnedDate',
     type: 'date'
   },
   {
-    label: 'Devuelto',
-    name: 'returned',
-    type: 'checkbox'
-  },
-  {
-    label: 'Renovación',
-    name: 'renewal',
-    type: 'checkbox'
-  },
-  {
     label: 'Cantidad Renovaciones',
-    name: 'renewalCount',
+    name: 'renewes',
     type: 'counter'
   }
 ];

@@ -32,20 +32,6 @@ export default function LoanSection({openRenewes, pendientBooks}) {
     const [listingsPopup, setListingsPopup] = useState(false);
     const [renewePopup, setRenewePopup] = useState(false);
 
-    let initialData =  {
-        loanData: {
-
-        },
-        partnerData: {
-
-        },
-        lendBooksData: {
-
-        }
-    }
-
-    const [newData, setNewData] = useState(initialData);
-
     useEffect(() => {
         if (openRenewes) {
             setRenewePopup(true);
@@ -53,28 +39,11 @@ export default function LoanSection({openRenewes, pendientBooks}) {
         localStorage.removeItem('loans');
     }, [openRenewes]);
 
+    
     function getLoanDetails(loan) {
         let loanData = getItem(loan.id);
         setLoanDetailsData(loanData);
     }
-
-    function addNewLoan() {
-
-    }
-
-    function getLoanDataForm(data) {
-
-    }
-
-    function getPartnerDataForm(data) {
-        
-    }
-
-    function getLendBooksData(data) {
-        
-    }
-
-
 
     //columnas y acciones - tabla principal prestamos
     const columns = [
@@ -142,7 +111,7 @@ export default function LoanSection({openRenewes, pendientBooks}) {
             key: 'editPopup',
             title: 'Editar préstamo',
             className: '',
-            content: <LoanForm />,
+            content: <LoanForm createLoanItem={createItem}/>,
             close: () => setEditPopup(false),
             condition: editPopup
         },
@@ -150,8 +119,7 @@ export default function LoanSection({openRenewes, pendientBooks}) {
             key: 'addPopup',
             title: 'Agregar préstamo',
             className: 'loans-background',
-            content: <LoanForm saveLoanInfo={getLoanDataForm} savePartnerInfo={getPartnerDataForm} saveLendBooksInfo={getLendBooksData}/>,
-            // content: <GenericForm fields={formFields} onSubmit={(data) => console.log('Formulario enviado:', data)}/>,
+            content: <LoanForm createLoanItem={createItem}/>,
             close: () => setAddPopup(false),
             condition: addPopup
         },

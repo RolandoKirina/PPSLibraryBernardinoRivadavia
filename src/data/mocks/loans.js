@@ -75,3 +75,51 @@ export const mockLoans = [
     phone: '2494-445566'
   }
 ];
+
+export const mockBooksLoans = [
+  {
+    id: '1',
+    bookCode: 'BK-1023',
+    bookTitle: 'Cien años de soledad',
+    returnedDate: '2025-08-14',
+    retiredDate: '2025-08-01',
+    plannedDate: '2025-08-15',
+    renewes: '1'
+  },
+  {
+    id: '2',
+    bookCode: 'BK-2081',
+    bookTitle: 'El principito',
+    returnedDate: '2025-08-08',
+    retiredDate: '2025-07-25',
+    plannedDate: '2025-08-08',
+    renewes: '0'
+  },
+  {
+    id: '3',
+    bookCode: 'BK-3329',
+    bookTitle: 'Rayuela',
+    returnedDate: '2025-08-13',
+    retiredDate: '2025-07-30',
+    plannedDate: '2025-08-14',
+    renewes: '2'
+  },
+  {
+    id: '4',
+    bookCode: 'BK-1197',
+    bookTitle: 'Martín Fierro',
+    returnedDate: '2025-08-15',
+    retiredDate: '2025-08-01',
+    plannedDate: '2025-08-16',
+    renewes: '1'
+  },
+  {
+    id: '5',
+    bookCode: 'BK-4015',
+    bookTitle: 'Don Quijote de la Mancha',
+    returnedDate: '2025-08-18',
+    retiredDate: '2025-08-02',
+    plannedDate: '2025-08-17',
+    renewes: '3'
+  }
+];

@@ -1,27 +1,14 @@
 import './Reader.css';
-import { useState } from 'react';
-import { useEffect } from 'react';
 
-export default function Reader({ loanType, onDataChange }) {
-  const [readerData, setReaderData] = useState({
-    readerDNI: '',
-    readerName: ''
-  });
-
-  useEffect(() => {
-    if(onDataChange && loanType === 'in_room') {
-        onDataChange(readerData)
-    }
-  }, [readerData])
-
-
+export default function Reader({ loanType, onDataChange, readerData }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setReaderData(prev => {
-      const updated = { ...prev, [name]: value };
-      console.log("Datos del lector:", updated);
-      return updated;
-    });
+    const updated = { ...readerData, [name]: value };
+    console.log("Datos del lector:", updated);
+
+    if (onDataChange && loanType === 'in_room') {
+      onDataChange(updated);
+    }
   };
 
   return (
@@ -33,7 +20,7 @@ export default function Reader({ loanType, onDataChange }) {
           <input
             type='number'
             name='readerDNI'
-            value={readerData.readerDNI}
+            value={readerData.readerDNI ?? ''}
             onChange={handleChange}
           />
         </div>
@@ -42,7 +29,7 @@ export default function Reader({ loanType, onDataChange }) {
           <input
             type='text'
             name='readerName'
-            value={readerData.readerName}
+            value={readerData.readerName ?? ''}
             onChange={handleChange}
           />
         </div>
