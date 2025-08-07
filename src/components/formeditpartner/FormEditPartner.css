@@ -1,0 +1,54 @@
+.form-details {
+   display: flex;
+  flex-direction: column;
+  align-items: flex-start; 
+  width: 50%;
+  margin: 0.5rem; 
+}
+.checkbox-group{
+    display: flex;
+    
+    gap: 1em;
+    width: 70%;
+    align-items: center;
+}
+.form-details label {
+  margin-bottom: 0.3rem;
+  font-weight: bold; 
+  text-align: left;
+  width: 100%;
+}
+
+.form-details input,
+.form-details select {
+  height: 3em;
+  width: 100%; 
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.items-info-details-form-accordion{
+    display: flex;
+    flex-direction: row;
+}
+
+.form-details-checkbox{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.form-details-checkbox div {
+    display: flex;
+    flex-direction: row;
+
+}
+
+
+.inputobservations{
+    height: 8em;
+    width: 100%;
+}
+
