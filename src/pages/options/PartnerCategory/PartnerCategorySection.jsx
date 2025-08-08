@@ -16,17 +16,18 @@ export default function PartnerCategorySection() {
     const [deletePopup, setDeletePopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
-    const [selectedPartnerCategory, setSelectedPartnerCategory] = useState(null);
+    const [selected, setSelected] = useState(null);
     const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockPartnersCategory, 'partnersCategory');
 
-    // const partnerCategories = [
-    // { id: 1, category: 'Honorario', import: '$3500' },
-    // { id: 1, category: 'Honorario', import: '$3500' },
-    // { id: 1, category: 'Honorario', import: '$3500' },
-    // { id: 1, category: 'Honorario', import: '$3500' },
-    // { id: 1, category: 'Honorario', import: '$3500' },
-    // ];
+    function handleAddItem(data) {
+        createItem(data);
+        setAddPopup(false);
+    }
 
+    function handleEditItem(data) {
+        updateItem(selected.id, data);
+        setEditPopup(false);
+    }
      const authorsPopups = [
                 {
                     key: 'deletePopup',
@@ -34,7 +35,7 @@ export default function PartnerCategorySection() {
                     className: 'delete-size-popup',
                     content: <PopUpDelete title={"Categoria de socio"} closePopup={() => setDeletePopup(false)} onConfirm={
                 () => {
-                    deleteItem(selectedPartnerCategory.id)
+                    deleteItem(selected.id)
                     setDeletePopup(false)
                 }
             } />,
@@ -46,7 +47,7 @@ export default function PartnerCategorySection() {
                     key: 'editPopup',
                     title: 'Editar categoria de socio',
                     className: '',
-                    content: <GenericForm fields={partnerCategoryFields} onSubmit={(data) => console.log('Formulario enviado:', data)}/>,
+                    content: <GenericForm fields={partnerCategoryFields} onSubmit={(data) => handleEditItem(data)}/>,
                     close: () => setEditPopup(false),
                     condition: editPopup
                 },
@@ -54,14 +55,14 @@ export default function PartnerCategorySection() {
                     key: 'addPopup',
                     title: 'Agregar categoria de socio',
                     className: '',
-                    content: <GenericForm fields={partnerCategoryFields} onSubmit={(data) => console.log('Formulario enviado:', data)}/>,
+                    content: <GenericForm fields={partnerCategoryFields} onSubmit={(data) => handleAddItem(data)}/>,
                     close: () => setAddPopup(false),
                     condition: addPopup
                 }
     ];
 
     const columns = [
-        { header: 'Categoria', accessor: 'partnerCategory' },
+        { header: 'Categoria', accessor: 'category' },
         { header: 'Importe', accessor: 'amount' },
         {
             header: 'Borrar',
@@ -69,8 +70,7 @@ export default function PartnerCategorySection() {
             render: (_, row) => (
             <button className="button-table" onClick={() => {
                 setDeletePopup(true)
-                setSelectedPartnerCategory(row)
-                {console.log(row)}
+                setSelected(row)
                 }}>
                 <img src={DeleteIcon} alt="Borrar" />
             </button>
@@ -80,7 +80,10 @@ export default function PartnerCategorySection() {
             header: 'Editar',
             accessor: 'edit',
             render: (_, row) => (
-            <button className="button-table"  onClick={() => setEditPopup(true)}>
+            <button className="button-table"  onClick={() => {
+                setEditPopup(true)
+                setSelected(row)
+                }}>
                 <img src={EditIcon} alt="Editar" />
             </button>
             )

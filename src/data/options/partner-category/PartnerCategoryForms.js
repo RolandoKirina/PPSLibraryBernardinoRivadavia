@@ -7,7 +7,7 @@ export const partnerCategoryFields = [
     },
     {
         label: 'Importe',
-        name: 'import',
+        name: 'amount',
         type: 'text'
     }
 ];

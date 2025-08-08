@@ -24,7 +24,18 @@ export default function RemovePartnerReasonSection({chooseMode}) {
     const [selected, setSelected] = useState(false);
     const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockRemovePartnerReason, 'removePartnerReason');
  
+    function handleAddItem(data) {
+        createItem(data);
+        setAddPopup(false);
+    }
 
+    function handleEditItem(data) {
+        console.log(selected);
+        updateItem(selected.id, data);
+        setEditPopup(false);
+    }
+
+    
      const removePartnerReasonsPopups = [
                 {
                     key: 'deletePopup',
@@ -44,7 +55,7 @@ export default function RemovePartnerReasonSection({chooseMode}) {
                     key: 'editPopup',
                     title: 'Editar motivo para dar de baja',
                     className: '',
-                    content: <GenericForm fields={removePartnerReasonForms} onSubmit={(data) => console.log('Formulario enviado:', data)}/>,
+                    content: <GenericForm fields={removePartnerReasonForms} onSubmit={(data) => handleEditItem(data)}/>,
                     close: () => setEditPopup(false),
                     condition: editPopup
                 },
@@ -52,7 +63,7 @@ export default function RemovePartnerReasonSection({chooseMode}) {
                     key: 'addPopup',
                     title: 'Agregar motivo para dar de baja',
                     className: '',
-                    content: <GenericForm fields={removePartnerReasonForms} onSubmit={(data) => console.log('Formulario enviado:', data)}/>,
+                    content: <GenericForm fields={removePartnerReasonForms} onSubmit={(data) => handleAddItem(data)}/>,
                     close: () => setAddPopup(false),
                     condition: addPopup
                 }
@@ -76,7 +87,10 @@ export default function RemovePartnerReasonSection({chooseMode}) {
              header: 'Editar',
              accessor: 'edit',
              render: (_, row) => (
-             <button className="button-table"  onClick={() => setEditPopup(true)}>
+             <button className="button-table"  onClick={() => {
+                setEditPopup(true)
+                setSelected(row);
+                }}>
                  <img src={EditIcon} alt="Editar" />
              </button>
              )

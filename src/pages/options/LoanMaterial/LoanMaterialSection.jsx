@@ -18,6 +18,16 @@ export default function LoanMaterialSection() {
     const [selected, setSelected] = useState(false);
     const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockLoanMaterials, 'loamMaterials');
 
+    function handleAddItem(data) {
+        console.log(data);
+        createItem(data);
+        setAddPopup(false);
+    }
+
+    function handleEditItem(data) {
+        updateItem(selected.id, data);
+        setEditPopup(false);
+    }
 
      const loanMaterialsPopups = [
                 {
@@ -38,7 +48,7 @@ export default function LoanMaterialSection() {
                     key: 'editPopup',
                     title: 'Editar material de préstamo',
                     className: '',
-                    content: <GenericForm fields={loanMaterialsFields} onSubmit={(data) => console.log('Formulario enviado:', data)}/>,
+                    content: <GenericForm fields={loanMaterialsFields} onSubmit={(data) => handleEditItem(data)}/>,
                     close: () => setEditPopup(false),
                     condition: editPopup
                 },
@@ -46,7 +56,7 @@ export default function LoanMaterialSection() {
                     key: 'addPopup',
                     title: 'Agregar material de préstamo',
                     className: '',
-                    content: <GenericForm fields={loanMaterialsFields} onSubmit={(data) => console.log('Formulario enviado:', data)}/>,
+                    content: <GenericForm fields={loanMaterialsFields} onSubmit={(data) => handleAddItem(data)}/>,
                     close: () => setAddPopup(false),
                     condition: addPopup
                 }
@@ -71,7 +81,10 @@ export default function LoanMaterialSection() {
             header: 'Editar',
             accessor: 'edit',
             render: (_, row) => (
-            <button className="button-table"  onClick={() => setEditPopup(true)}>
+            <button className="button-table"  onClick={() => {
+                setEditPopup(true)
+                setSelected(row);
+                }}>
                 <img src={EditIcon} alt="Editar" />
             </button>
             )

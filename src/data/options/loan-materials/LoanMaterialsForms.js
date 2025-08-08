@@ -6,7 +6,7 @@ export const loanMaterialsFields = [
     },
     {
         label: 'Días préstamo',
-        name: 'loan-days',
+        name: 'loanDays',
         type: 'number'
     }
 ];
