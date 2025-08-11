@@ -14,6 +14,9 @@
 
 .add-material-container {
     width: 40em;
+    max-height: 70vh;         /* Ajustá según el diseño */
+    overflow-y: auto;         /* Habilita el scroll vertical */
+    padding-right: 1em;  
 }
 
 .add-material-group-background {

@@ -5,8 +5,8 @@ export const employeeDetails = [
     active: false,
     rows: [
       [
-        { label: 'ID de empleado', value: 'información' },
-        { label: 'Código', value: 'información' }
+        { label: 'ID de empleado', value: 'información', attribute: 'id' },
+        { label: 'Código', value: 'información', attribute: 'employeeCode' }
       ]
     ]
   },
@@ -16,10 +16,10 @@ export const employeeDetails = [
     active: false,
     rows: [
       [
-        { label: 'Nombre completo', value: 'información' }
+        { label: 'Nombre completo', value: 'información', attribute: 'fullname' }
       ],
       [
-        { label: 'Email', value: 'información' }
+        { label: 'Email', value: 'información', attribute: 'email' }
       ]
     ]
   },
@@ -29,11 +29,11 @@ export const employeeDetails = [
     active: false,
     rows: [
       [
-        { label: 'Nombre de usuario', value: 'información' },
-        { label: 'Contraseña', value: '••••••••' } // opcional: mostrar oculto
+        { label: 'Nombre de usuario', value: 'información', attribute: 'username' },
+        { label: 'Contraseña', value: '••••••••', attribute: 'password' }
       ],
       [
-        { label: 'Rol', value: 'información' }
+        { label: 'Rol', value: 'información', attribute: 'rol' }
       ]
     ]
   }

@@ -19,7 +19,7 @@ export default function AuthorSection() {
     const [addPopup, setAddPopup] = useState(false);
     const [selected, setSelected] = useState(false);
     const [booksPopup, setBooksPopup] = useState(false);
-    const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockAuthors, 'authors');
+    const { items: authorItems, getItem: getAuthorItem, createItem: createAuthorItem, updateItem: updateAuthorItem, deleteItem: deleteAuthorItem } = useEntityManager(mockAuthors, 'authors');
     
     const authorsPopups = [
             {
@@ -28,7 +28,7 @@ export default function AuthorSection() {
                 className: 'delete-size-popup',
                 content: <PopUpDelete title={"Autor"} closePopup={() => setDeletePopup(false)} onConfirm={
                 () => {
-                    deleteItem(selected.id)
+                    deleteAuthorItem(selected.id)
                     setDeletePopup(false)
                 }
             } />,
@@ -40,7 +40,7 @@ export default function AuthorSection() {
                 key: 'editPopup',
                 title: 'Editar autor',
                 className: '',
-                content: <AuthorBooks />,
+                content: <AuthorBooks authorSelected={selected} method={'update'} updateAuthorItem={updateAuthorItem}/>,
                 close: () => setEditPopup(false),
                 condition: editPopup
             },
@@ -48,7 +48,7 @@ export default function AuthorSection() {
                 key: 'addPopup',
                 title: 'Agregar autor',
                 className: 'author-books-background',
-                content: <AuthorBooks />,
+                content: <AuthorBooks method={'add'} createAuthorItem={createAuthorItem}/>,
                 close: () => setAddPopup(false),
                 condition: addPopup
             }
@@ -81,7 +81,10 @@ export default function AuthorSection() {
             header: 'Editar',
             accessor: 'edit',
             render: (_, row) => (
-            <button className="button-table"  onClick={() => setEditPopup(true)}>
+            <button className="button-table"  onClick={() => {
+                setEditPopup(true)
+                setSelected(row);
+                }}>
                 <img src={EditIcon} alt="Editar" />
             </button>
             )
@@ -90,7 +93,7 @@ export default function AuthorSection() {
 
     return (
         <>
-            <GenericSection title={'Listado de autores'} columns={columns} data={items} popups={authorsPopups} 
+            <GenericSection title={'Listado de autores'} columns={columns} data={authorItems} popups={authorsPopups} 
             actions={
                 <>
                 <div className='author-actions'>

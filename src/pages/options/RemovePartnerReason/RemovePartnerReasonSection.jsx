@@ -62,7 +62,7 @@ export default function RemovePartnerReasonSection({chooseMode}) {
                 {
                     key: 'addPopup',
                     title: 'Agregar motivo para dar de baja',
-                    className: '',
+                    className: 'remove-parner-form-size',
                     content: <GenericForm fields={removePartnerReasonForms} onSubmit={(data) => handleAddItem(data)}/>,
                     close: () => setAddPopup(false),
                     condition: addPopup
@@ -116,7 +116,9 @@ export default function RemovePartnerReasonSection({chooseMode}) {
         {!chooseMode ? (
              <GenericSection title={'Listado de motivos para dar de baja socio'} columns={columns} data={items} popups={removePartnerReasonsPopups} actions={
                 <>
-                <Btn className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg'/>}/>
+                <div className='listbtns'>
+                    <Btn className='primary-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg'/>}/>
+                </div>
                 
                 </>
             }/>
