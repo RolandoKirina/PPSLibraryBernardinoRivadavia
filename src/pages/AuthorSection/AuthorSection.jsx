@@ -20,6 +20,39 @@ export default function AuthorSection() {
     const [selected, setSelected] = useState(false);
     const [booksPopup, setBooksPopup] = useState(false);
     const { items: authorItems, getItem: getAuthorItem, createItem: createAuthorItem, updateItem: updateAuthorItem, deleteItem: deleteAuthorItem } = useEntityManager(mockAuthors, 'authors');
+
+    function deleteAuthorSelected(id) {
+        console.log("ejecutado");
+        //hacer updateAuthorItem con los datos del autor seleccionado pero sin el libro con ese id
+        let updatedBooks = selected.books.filter(book => book.id !== id);
+
+        let updatedAuthor = {
+            ...selected,
+            books: updatedBooks
+        }
+
+        updateAuthorItem(selected.id, updatedAuthor);
+
+        setSelected(updatedAuthor);
+    }
+
+    function updateAuthorSelectedBooks(book) { //añadir libro a authorSelected, que son los datos de un autor seleccionado cuando se está en modo update
+        let alreadyExists = selected.books.some(b => b.id === book.id);
+
+        if(!alreadyExists) {
+            
+            let updatedBooks = [...selected.books, book];
+
+            let updatedAuthorWithNewBook = {
+                ...selected,
+                books: updatedBooks
+            }
+
+            updateAuthorItem(selected.id, updatedAuthorWithNewBook);
+
+            setSelected(updatedAuthorWithNewBook);
+        }
+    }
     
     const authorsPopups = [
             {
@@ -40,7 +73,7 @@ export default function AuthorSection() {
                 key: 'editPopup',
                 title: 'Editar autor',
                 className: '',
-                content: <AuthorBooks authorSelected={selected} method={'update'} updateAuthorItem={updateAuthorItem}/>,
+                content: <AuthorBooks authorSelected={selected} updateAuthorSelectedBooks={updateAuthorSelectedBooks} deleteAuthorSelected={deleteAuthorSelected} method={'update'} updateAuthorItem={updateAuthorItem}/>,
                 close: () => setEditPopup(false),
                 condition: editPopup
             },

@@ -17,7 +17,7 @@ import { booksAuthor } from '../../../data/mocks/authors';
 import { useEntityManager } from '../../../hooks/useEntityManager';
 import { books } from '../../../data/mocks/authors';
 
-export default function AuthorBooks({authorSelected, menu, method, createAuthorItem, updateAuthorItem}) {
+export default function AuthorBooks({authorSelected, deleteAuthorSelected, updateAuthorSelectedBooks, menu, method, createAuthorItem, updateAuthorItem}) {
     const [seeAllButton, setSeeAllButton] = useState('Prestados');
     const [confirmPopup, setConfirmPopup] = useState(false);
     const [deletePopup, setDeletePopup] = useState(false);
@@ -25,7 +25,8 @@ export default function AuthorBooks({authorSelected, menu, method, createAuthorI
     const [popupView, setPopupView] = useState('default');
     const [authorData, setAuthorData] = useState({
         authorName: '',
-        nationality: ''
+        nationality: '',
+        books: []
     });
 
     const {
@@ -54,8 +55,57 @@ export default function AuthorBooks({authorSelected, menu, method, createAuthorI
         }))
 
         console.log("Datos del autor:", { ...authorData, [name]: value });
-
     }
+
+    function handleAddAuthorBook(book) {
+        if(method === 'add') {
+            setAuthorData(prev => {
+            const alreadyExists = prev.books.some(b => b.id === book.id);
+
+            if(alreadyExists) {
+                return prev;
+            }
+
+            return {
+                ...prev,
+                books: [...prev.books, book]
+            };
+            });
+        }
+        else {
+            console.log("updateed add");
+            updateAuthorSelectedBooks(book);
+        }
+       
+    }
+
+    function handleDeleteAuthorBook(id) {
+        if(method === 'add') {
+            setAuthorData(prev => {
+            const alreadyExists = prev.books.some(b => b.id === id);
+
+            if(!alreadyExists) {
+                return prev;
+            }
+
+            let updatedBooks = prev.books.filter((book) => book.id !== id);
+
+            return {
+                ...prev,
+                books: updatedBooks
+            };
+        });
+        }
+        else {
+            console.log("update");
+            deleteAuthorSelected(id);
+        }
+
+        
+    }
+
+
+
 
     function handleSetAllbutton() {
         let seeAllValue = 'Prestados';
@@ -70,13 +120,6 @@ export default function AuthorBooks({authorSelected, menu, method, createAuthorI
 
     }
 
-    const mainAuthorBooks = [
-        { id: 1, book_code: '000320023', title: '100 Años del eco tandil', position: 1, codclass: '51', codrcdu: '', codling: 'M 22' },
-    ];
-
-    const authorBooks = [
-        { id: 1, book_code: '000320023', title: '100 Años del eco tandil', position: 1 },
-    ];
     
     const mainAuthorBooksColumns = [
             { header: 'Código del libro', accessor: 'bookCode' },
@@ -109,15 +152,7 @@ export default function AuthorBooks({authorSelected, menu, method, createAuthorI
             },
     ];
 
-    const bookshelfBooks = [
-        { id: 1, book_code: '000320023', title: '100 Años del eco tandil'},
-        { id: 1, book_code: '000320023', title: '100 Años del eco tandil'},
-        { id: 1, book_code: '000320023', title: '100 Años del eco tandil'},
-        { id: 1, book_code: '000320023', title: '100 Años del eco tandil'},
-        { id: 1, book_code: '000320023', title: '100 Años del eco tandil'},
-    ];
-
-    const authorBooksColumns = [
+    const authorBooksColumns = [ //igual que mainAuthorBooksColumns pero solo se muestran 3 columnas
             { header: 'Código del libro', accessor: 'bookCode' },
             { header: 'Título', accessor: 'bookTitle' },
             { header: 'Posición', accessor: 'position' },
@@ -125,7 +160,9 @@ export default function AuthorBooks({authorSelected, menu, method, createAuthorI
                 header: 'Borrar',
                 accessor: 'delete',
                 render: (_, row) => (
-                 <button type='button' className="button-table" onClick={() => setDeletePopup(true)}>
+                 <button type='button' className="button-table" onClick={() => {
+                    handleDeleteAuthorBook(row.id);
+                }}>
                     <img src={DeleteIcon} alt="Borrar" />
                 </button>
                 )
@@ -137,10 +174,10 @@ export default function AuthorBooks({authorSelected, menu, method, createAuthorI
             { header: 'Título', accessor: 'bookTitle' },
             {
                 header: 'Agregar',
-                accessor: 'edit',
+                accessor: 'add',
                 render: (_, row) => (
-                <button type='button' className="button-table" onClick={() => menu('editForm')}>
-                    <img src={AddBookIcon} alt="Editar" />
+                <button type='button' className="button-table" onClick={() => handleAddAuthorBook(row)}>
+                    <img src={AddBookIcon} alt="Agregar" />
                 </button>
                 )
             }
@@ -157,7 +194,7 @@ export default function AuthorBooks({authorSelected, menu, method, createAuthorI
                     let newAuthor = { 
                         authorName: authorData.authorName,
                         nationality: authorData.nationality,
-                        books: authorBooksItems
+                        books: authorData.books
                     }
                     createAuthorItem(newAuthor);
 
@@ -170,7 +207,7 @@ export default function AuthorBooks({authorSelected, menu, method, createAuthorI
                         books: authorSelected.books
                     }
                     
-                    updateItem(authorSelected.id, updateAuthor);
+                    updateAuthorItem(authorSelected.id, updateAuthor);
                 }
             }}/>,
             close: () => setConfirmPopup(false),
@@ -178,11 +215,11 @@ export default function AuthorBooks({authorSelected, menu, method, createAuthorI
         },
         {
             key: 'deletePopup',
-            title: 'Borrar prestamo',
+            title: 'Borrar libro de autor',
             className: 'delete-size-popup',
             content: <PopUpDelete  title={"Libro"} closePopup={() => setDeletePopup(false)} onConfirm={
             () => {
-                deleteItem(selected.id)
+                handleDeleteAuthorBook(selected.id);
                 setDeletePopup(false)
             }
         } />,
@@ -214,7 +251,7 @@ export default function AuthorBooks({authorSelected, menu, method, createAuthorI
                         <div className='author-books-title'>
                             <h3>Libros de este autor</h3>
                         </div>
-                        <Table columns={mainAuthorBooksColumns} data={method==='update' ? authorSelected.books : authorBooksItems}>
+                        <Table columns={mainAuthorBooksColumns} data={method==='update' ? authorSelected.books : authorData.books}>
                             <div className='main-author-btns'>
                                 <Btn className="primary-btn" onClick={() => setPopupView('addBook')} text={'Administrar libros'}/>
                                 <Btn className="primary-btn" text={seeAllButton} onClick={() => handleSetAllbutton()}/>
@@ -255,7 +292,7 @@ export default function AuthorBooks({authorSelected, menu, method, createAuthorI
                         {method === 'update' ? (
                             <Table columns={authorBooksColumns} data={authorSelected.books}/>
                         ): (
-                            <Table columns={authorBooksColumns} data={books}/>
+                            <Table columns={authorBooksColumns} data={authorData.books}/>
                         )}
                     </div>
                     </>
