@@ -5,13 +5,7 @@
   width: 50%;
   margin: 0.5rem; 
 }
-.checkbox-group{
-    display: flex;
-    
-    gap: 1em;
-    width: 70%;
-    align-items: center;
-}
+
 .form-details label {
   margin-bottom: 0.3rem;
   font-weight: bold; 
@@ -50,5 +44,32 @@
 .inputobservations{
     height: 8em;
     width: 100%;
+}
+
+
+.checkbox-group{
+    
+    gap: 1em;
+    width: 70%;
+}
+
+.checkbox-size{
+
+width: 0.7em;
+height: 0.7em;
+}
+.label{
+  display: flex;
+  align-items: center;
+}
+.marginbtn{
+  margin: 1em;
+}
+
+.divbtncontainer{
+width: 100%;
+display: flex;
+justify-content: flex-end;
+margin: 1em 0 1em 0;
 }
 

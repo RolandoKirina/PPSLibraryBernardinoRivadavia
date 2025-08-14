@@ -29,7 +29,7 @@
   background: var(--primary-dark-2);
   border-radius: 10px;
   width: 50em;
-  height: 40em;
+  height: auto;
 }
 
 .genericlistbtns {
@@ -44,18 +44,7 @@
   margin: 1em 1em 0 0;
 }
 
-.primary-btn {
-  background-color: var(--primary-light-2);
-  color: var(--white);
-  padding: 0.6em 1.2em;
-  border: none;
-  border-radius: 5px;
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-}
+
 
 .actions {
     width: 100%;

@@ -1,10 +1,9 @@
-import { useState } from 'react';
 import './accordion.css';
 import ToggleIcon from '../../../assets/img/toggle-icon.svg';
 
-export default function Accordion({ title, children, isActive, onToggle }) {
+export default function Accordion({ title, isActive, onToggle, children }) {
   return (
-    <div className="accordion">
+    <div>
       <div className="dropdown-title">
         <h4>{title}</h4>
         <button type="button" onClick={onToggle}>

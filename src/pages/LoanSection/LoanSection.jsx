@@ -47,6 +47,7 @@ export default function LoanSection({openRenewes, pendientBooks}) {
     {
         header: 'Borrar',
         accessor: 'delete',
+        className: "action-buttons",
         render: (_, row) => (
         <button className="button-table" onClick={() => {
             setDeletePopup(true)
@@ -59,7 +60,7 @@ export default function LoanSection({openRenewes, pendientBooks}) {
     {
         header: 'Editar',
         accessor: 'edit',
-
+        className: "action-buttons",
         render: (_, row) => (
         <button className="button-table"  onClick={() => {
             setEditPopup(true)
@@ -72,6 +73,7 @@ export default function LoanSection({openRenewes, pendientBooks}) {
     {
         header: 'Ver detalle',
         accessor: 'details',
+        className: "action-buttons",
         render: (_, row) => (
         <button className="button-table" onClick={() => {
             setSelected(row)

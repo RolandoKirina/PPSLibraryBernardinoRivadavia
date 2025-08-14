@@ -159,11 +159,11 @@ export default function FormEditBook(){
 
                       <div className="btns-form-edit">
                         <div className="btn-left">
-                            <Btn text="Ver reservas" className="secondary-btn" onClick={() => redirect('renewed')}></Btn>   
-                            <Btn text="Ver autores" className="secondary-btn"></Btn>
+                            <Btn text="Ver reservas" onClick={() => redirect('renewed')} variant="secondary"></Btn>   
+                            <Btn text="Ver autores" variant="secondary"></Btn>
                         </div>
                         <div className="btnright">
-                            <Btn text="Guardar" className="changes btn" icon={<div className="img-ico"><img src={SaveIcon} alt="Guardar"  /></div> } ></Btn>
+                            <Btn text="Guardar"  icon={<div className="img-ico"><img src={SaveIcon} alt="Guardar"  /></div> } variant="primary"></Btn>
 
                         </div>
 

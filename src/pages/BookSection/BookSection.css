@@ -87,3 +87,9 @@
 .fade-popup.closing {
   opacity: 0;
 }
+
+
+.listbtns{
+  display: flex;
+  margin-top: 1em;
+}

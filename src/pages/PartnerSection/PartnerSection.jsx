@@ -6,41 +6,39 @@ import { useState } from 'react';
 
 import DeleteIcon from '../../assets/img/delete-icon.svg';
 import EditIcon from '../../assets/img/edit-icon.svg';
-import DetailsIcon from '../../assets/img/details-icon.svg';
 import FormEditPartner  from '../../components/formeditpartner/FormEditPartner.jsx';
+import DetailsIcon from '../../assets/img/details-icon.svg';
+import PlusIcon from '../../assets/img/plus-icon.svg';
 
 import PopUpDelete from '../../components/deletebtnComponent/PopUpDelete.jsx';
 import { useEntityManager } from '../../hooks/useEntityManager.js';
 import ShowDetails from '../../components/generic/ShowDetails/ShowDetails.jsx';
+import {DetailPartner} from '../../data/mocks/details/partner.js';
+import Btn from '../../components/btn/Btn.jsx';
 export default function PartnerSection(){
 
-   {
-    /*
-    const partners = [{id: 1, partnerName: "Maria", partnerSurname: "Rolando", 
-        statePartner: false, DNI: "45324233", telephone: "2494354658", collectionadress:
-         "Brown 103",pendingbooks:3,unpaidfees: 2, reasonwithdrawal,category: "regular"}];*/
-   } 
 
 
 
     const {items,getItem,createItem,updateItem,deleteItem} = useEntityManager(partners, "partners");
 
 
-     const [selectedItem, setSelectedItem] = useState(null);
-     const [itemsDetailsData, setItemsDetailsData] = useState(null);
-
+    const [selectedItem, setSelectedItem] = useState(null);
+    
     const [PopUpDeletePartner,setPopUpDelete]=useState(false);
 
    const [PopUpEdit,setPopupEdit]=useState(false);
 
-   const [PopUpDetail,setPopUpDetail]=useState(false);
+const [DetailData,setDetailData]=useState(null);
+    const [PopUpDetail,setPopUpDetail]=useState(false);
 
    const [PopUpAdd,setPopUpAdd]=useState(false);
 
    function getItemsDetails(item) {
-        let ItemData = getItem(item.Id);
-        setItemsDetailsData(ItemData);
-    }
+        let ItemData = getItem(item.id);
+   setDetailData({ ...ItemData }); // <-- esto crea nueva referencia
+   
+  }
 
    const columns = [
     {header: 'Numero de socio', accessor: 'id'},
@@ -49,6 +47,7 @@ export default function PartnerSection(){
       {
           header: 'Borrar',
           accessor: 'delete',
+          className: "action-buttons",
           render: (_, row) => (
             <button className="button-table"
             onClick={() => {
@@ -62,7 +61,7 @@ export default function PartnerSection(){
       {
         header: 'Editar',
         accessor: 'edit',
-
+        className: "action-buttons",
         render: (_, row) => (
           <button className="button-table"  
           onClick={() =>{
@@ -76,12 +75,12 @@ export default function PartnerSection(){
         {
           header: 'Ver detalle',
           accessor: 'details',
+          className: "action-buttons",
           render: (_, row) => (
             <button className="button-table">
               <img src={DetailsIcon} alt="Detalles" onClick={()=> {
                  setPopUpDetail(true)   
-                 setSelectedItem(row)
-                     getItemsDetails(row)
+                 getItemsDetails(row);
                 }
               }
              />
@@ -95,11 +94,11 @@ export default function PartnerSection(){
       {
            
           key: 'deletePopup',
-          title: 'Borrar ítem',
+          title: 'Borrar socio',
           className: 'delete-size-popup',
           content: (
             <PopUpDelete
-              title={"Ítem"}
+              title={"Socio"}
               onConfirm={() => {
                 deleteItem(selectedItem.id);
                 setPopUpDelete(false);
@@ -125,18 +124,19 @@ export default function PartnerSection(){
             key: 'AddPopup',
             title: 'Agregar Socio',
             className: 'popup-container',
-            //content: <FormAddBook/>,
+           content: <FormEditPartner/>,
             close: () => setPopUpAdd(false),
             condition: PopUpAdd
       },
-      // {
-      //       key: 'detailsPopup',
-      //       title: 'Detalles del socio',
-      //       className: '',
-      //       content: <ShowDetails data={itemsDetailsData} detailsData={ItemDetailsInfo} isPopup={true} />,
-      //       close: () => setDetailsPopup(false),
-      //       condition: detailsPopup
-      // },
+      {
+           key: 'detailsPopup',
+           title: 'Detalles del socio',
+           className: '',
+           
+           content: <ShowDetails data={DetailData} detailsData={DetailPartner} isPopup={true} />,
+           close: () => setPopUpDetail(false),
+           condition: PopUpDetail
+      },
   ];
         
      return (
@@ -144,13 +144,15 @@ export default function PartnerSection(){
         
           <GenericSection title="Listado socios" filters={<PartnerFilter/>} 
           columns={columns} data={items} popups={partnersPopUp}
-            // actions={
-            //   <BookButtons  
-            //     addBook={() => setPopupAddBook(true)} 
-            //     duplicateBook={() => setPopUpDuplicateBook(true)}
-            //   />
-            // }
-          ></GenericSection>
+           actions={
+            <div>
+                   <Btn text="Agregar socio"  onClick={() => setPopUpAdd(true)} variant={"primary"} icon={<img src={PlusIcon}/>} ></Btn>
+            </div>
+                  
+                } 
+          >
+            
+          </GenericSection>
     
           
     

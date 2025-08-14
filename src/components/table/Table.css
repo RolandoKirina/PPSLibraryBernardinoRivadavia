@@ -19,6 +19,7 @@
     flex-direction: column;
     margin-top: 1em;
     position: relative;
+    padding: 1em;
 }
 .table td {
     padding: 1.5em;
@@ -61,5 +62,6 @@
   background-color: var(--primary-light);
   transition: background-color 0.30s ease-in-out;
 }
-
-
+.action-buttons{
+  text-align: center;
+}

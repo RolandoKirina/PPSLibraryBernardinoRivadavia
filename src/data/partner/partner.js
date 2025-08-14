@@ -5,7 +5,7 @@ export const partnerEditBookForm = [
     active: false,
     rows: [
       [
-        { label: 'Código', value: 'información' },
+        { label: 'Código', value: 'información'},
         { label: 'Título', value: 'información' },
          { label: 'Año de edicion', value: 'información' }
       ],

@@ -101,6 +101,7 @@ export default function AuthorSection() {
         {
             header: 'Borrar',
             accessor: 'delete',
+            className: "action-buttons",
             render: (_, row) => (
             <button className="button-table" onClick={() => {
                 setDeletePopup(true)
@@ -113,6 +114,7 @@ export default function AuthorSection() {
         {
             header: 'Editar',
             accessor: 'edit',
+            className: "action-buttons",
             render: (_, row) => (
             <button className="button-table"  onClick={() => {
                 setEditPopup(true)
@@ -122,6 +124,8 @@ export default function AuthorSection() {
             </button>
             )
         }
+
+        
     ];
 
     return (
@@ -130,7 +134,10 @@ export default function AuthorSection() {
             actions={
                 <>
                 <div className='author-actions'>
-                    <Btn text={'Nuevo'}  onClick={() => setAddPopup(true)} className='new-btn' icon={<img src={PlusIcon} alt='plusIconBtn'/>}/> 
+                    <div className='btn-new'>
+                    <Btn text={'Nuevo'}  onClick={() => setPopupAdd(true)} icon={<img src={PlusIcon} alt='plusIconBtn'/>} variant="primary"/> 
+
+                    </div>
                     <div className='author-filter'>
                         <label>Filtro por nombre: </label>
                         <input type='text' name='author-name' />

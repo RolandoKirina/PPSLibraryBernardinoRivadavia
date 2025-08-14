@@ -178,9 +178,10 @@ export default function FormEditPartner() {
           <div className="form-details-checkbox">
             <label>Estado del socio</label>
             <div className="checkbox-group">
-              <label htmlFor="active">
+             
+                     <label htmlFor="active" className="label">
                 <div className="checkbox">
-               <input
+               <input className="checkbox-size"
                   type="checkbox"
                   id="active"
                   name="estado"
@@ -190,32 +191,49 @@ export default function FormEditPartner() {
                 </div>
            
               </label>
-              <label htmlFor="inactive">
+              
+         <div>
 
-                <div className="checkbox">
-                   <input
-                  type="checkbox"
-                  id="inactive"
-                  name="estado"
-                  value="baja"
-                />
-                <p>Baja</p>
-                </div>
-               
-              </label>
-            </div>
-        </div>
+          <div className="flex">
+                <label htmlFor="inactive">
 
-         <div className="form-details">
-            <label htmlFor="reasonofwithdrawal">Motivo de baja</label>
-            <input id="reasonofwithdrawal" name="reasonofwithdrawal" type="text" placeholder="Ingrese su motivo de baja" />
+                  <div className="checkbox">
+                    <input className="checkbox-size"
+                    type="checkbox"
+                    id="inactive"
+                    name="estado"
+                    value="baja"
+                  />
+                  <p>Baja</p>
+                  </div>
+                
+                </label>
+
           </div>
+         </div>  
+        </div>
+        </div>
+        <div className="form-details">
+                <label htmlFor="reasonofwithdrawal">Motivo de baja</label>
+                <input id="reasonofwithdrawal" name="reasonofwithdrawal" type="text" placeholder="Motivo de baja" />
+              </div>
 
 
-            <div className="form-details">
-            <label htmlFor="dateofwithdrawal">Fecha de baja</label>
-            <input id="dateofwithdrawal" name="dateofwithdrawal" type="date" placeholder="Ingrese su fecha de baja" />
-            </div>
+                <div className="form-details">
+                <label htmlFor="dateofwithdrawal">Fecha de baja</label>
+                <input id="dateofwithdrawal" name="dateofwithdrawal" type="date" placeholder="Ingrese su fecha de baja" />
+                </div>
+      
+              
+
+
+                <div className="form-details">
+              <label htmlFor="resignationdate">Fecha de renuncia</label>
+              <input id="resignationdate" name="resignationdate" type="date" placeholder="Ingrese su fecha de renuncia" />
+              </div>
+
+         
+            
         </div>
 
 
@@ -225,24 +243,43 @@ export default function FormEditPartner() {
             <input id="observations" name="observations" type="text" className="inputobservations"placeholder="Ingrese sus observaciones" />
             </div>
         
-            <div className="form-details">
-            <label htmlFor="resignationdate">Fecha de renuncia</label>
-            <input id="resignationdate" name="resignationdate" type="date" placeholder="Ingrese su fecha de renuncia" />
-            </div>
+         
       </div>
         
-      </Accordion>
+
+        <div className="btn-list">
+      <Btn
+        text="Cuotas impagas"
+        variant="secondary"
+      >
+      </Btn>
 
 
       <Btn
+        text="Libros pendientes"
+        variant="secondary"
+      ></Btn>
+
+</div>
+      
+      </Accordion>
+
+
+
+
+<div className="divbtncontainer">
+     <Btn
         text="Guardar"
-        className="changes btn"
         icon={
           <div className="img-ico">
             <img src={SaveIcon} alt="Guardar" />
           </div>
         }
+
+         variant="primary"
       />
+</div>
+     
     </form>
   );
 }

@@ -11,7 +11,6 @@ import PopUp from '../../popup-table/PopUp2';
 import ConfirmMessage from '../../../components/confirmMessage/ConfirmMessage';
 import PlusIcon from '../../../assets/img/plus-icon.svg';
  import BackviewBtn from '../../backviewbtn/BackviewBtn';
-import FormEditBook from '../../formeditbook/FormEditBook';
 import SaveIcon from '../../../assets/img/save-icon.svg';
 import { booksAuthor } from '../../../data/mocks/authors';
 import { useEntityManager } from '../../../hooks/useEntityManager';
