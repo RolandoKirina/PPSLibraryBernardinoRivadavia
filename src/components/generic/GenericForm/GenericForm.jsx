@@ -39,7 +39,7 @@ export default function GenericForm({ fields, onSubmit, title, children }) {
             return (
               <div
                 key={idx}
-                className={isCheckbox ? 'generic-checkbox' : ''}
+                className={isCheckbox ? 'generic-checkbox' : 'simple-inputs'}
               >
                 <label>
                   {isCheckbox ? (

@@ -80,18 +80,18 @@ function addLoanItems(data) {
   if(data.loanType === 'retired') {
     console.log(items);
     items.forEach((lendBook) => {
-  createItem({
-    bookCode: lendBook.bookCode,
-    bookTitle: lendBook.bookTitle,
-    partnerNumber: data.partnerNumber,
-    partnerName: data.partnerName,
-    retiredDate: data.retiredDate,
-    employee: data.employeeCode,
-    // retiredHour: data.retiredHour, // si lo tenés
-    // address: data.partnerAddress, // si lo tenés
-    // phone: data.partnerPhone,     // si lo tenés
+    createItem({
+      bookCode: lendBook.bookCode,
+      bookTitle: lendBook.bookTitle,
+      partnerNumber: data.partnerNumber,
+      partnerName: data.partnerName,
+      retiredDate: data.retiredDate,
+      employee: data.employeeCode,
+      // retiredHour: data.retiredHour, // si lo tenés
+      // address: data.partnerAddress, // si lo tenés
+      // phone: data.partnerPhone,     // si lo tenés
+    });
   });
-});
   }
   else if(data.loanType === 'in_room') { //segun el tipo, cambiar columnas de tabla si se elige en el filtro
      items.map((lendBook) => 

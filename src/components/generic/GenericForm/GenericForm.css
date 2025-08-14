@@ -122,3 +122,7 @@
   font-weight: bold;
 }
 
+.simple-inputs label {
+  display: flex;
+  flex-direction: column;
+}
