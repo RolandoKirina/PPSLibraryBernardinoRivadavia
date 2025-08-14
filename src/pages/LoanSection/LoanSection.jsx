@@ -20,7 +20,7 @@ import { mockLoans } from "../../data/mocks/loans";
 import { useEntityManager } from "../../hooks/useEntityManager";
 
 export default function LoanSection({openRenewes, pendientBooks}) {
-    const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockLoans, 'loans');
+    const { items: loanItems, getItem: getLoanItem, createItem: createLoanItem, updateItem: updateLoanItem, deleteItem: deleteLoanItem } = useEntityManager(mockLoans, 'loans');
 
     const [selected, setSelected] = useState(null);
     const [loanDetailsData, setLoanDetailsData] = useState(null);
@@ -39,12 +39,6 @@ export default function LoanSection({openRenewes, pendientBooks}) {
         localStorage.removeItem('loans');
     }, [openRenewes]);
 
-    
-    function getLoanDetails(loan) {
-        let loanData = getItem(loan.id);
-        setLoanDetailsData(loanData);
-    }
-
     //columnas y acciones - tabla principal prestamos
     const columns = [
     { header: 'Codigo', accessor: 'bookCode' },
@@ -57,7 +51,6 @@ export default function LoanSection({openRenewes, pendientBooks}) {
         <button className="button-table" onClick={() => {
             setDeletePopup(true)
             setSelected(row)
-            console.log(row)
             }}>
             <img src={DeleteIcon} alt="Borrar" />
         </button>
@@ -81,9 +74,9 @@ export default function LoanSection({openRenewes, pendientBooks}) {
         accessor: 'details',
         render: (_, row) => (
         <button className="button-table" onClick={() => {
-            setDetailsPopup(true)
             setSelected(row)
-            getLoanDetails(row)
+            setDetailsPopup(true)
+            // getLoanDetails(row)
             }}>
             <img src={DetailsIcon} alt="Detalles" />
         </button>
@@ -99,7 +92,7 @@ export default function LoanSection({openRenewes, pendientBooks}) {
             className: 'delete-size-popup',
             content: <PopUpDelete  title={"Prestamo"} onConfirm={
                 () => {
-                    deleteItem(selected.id)
+                    deleteLoanItem(selected.id)
                     setDeletePopup(false)
                 }
             } closePopup={() => setDeletePopup(false)} />,
@@ -107,19 +100,29 @@ export default function LoanSection({openRenewes, pendientBooks}) {
             condition: deletePopup,
             variant: 'delete'
         },
-        {
-            key: 'editPopup',
-            title: 'Editar préstamo',
-            className: '',
-            content: <LoanForm createLoanItem={createItem}/>,
-            close: () => setEditPopup(false),
-            condition: editPopup
-        },
+         {
+             key: 'editPopup',
+             title: 'Editar préstamo',
+             className: '',
+             content: <GenericForm title={'Editar Libro en Prestamo'} fields={editLoanformFields} onSubmit={(data) => {
+                updateLoanItem(selected.id, {
+                    ...selected,
+                    retiredDate: data.retiredDate,
+                    expectedDate: data.expectedDate,
+                    returnDate: data.returnDate,
+                    employee: data.employee
+                    
+                })
+                setEditPopup(false);
+             }}/>,
+             close: () => setEditPopup(false),
+             condition: editPopup
+         },
         {
             key: 'addPopup',
             title: 'Agregar préstamo',
             className: 'loans-background',
-            content: <LoanForm createLoanItem={createItem}/>,
+            content: <LoanForm createLoanItem={createLoanItem}/>,
             close: () => setAddPopup(false),
             condition: addPopup
         },
@@ -127,7 +130,7 @@ export default function LoanSection({openRenewes, pendientBooks}) {
             key: 'detailsPopup',
             title: 'Detalles del préstamo',
             className: '',
-            content: <ShowDetails data={loanDetailsData} detailsData={loanDetailsInfo} isPopup={true} />,
+            content: <ShowDetails data={selected} detailsData={loanDetailsInfo} isPopup={true} />,
             close: () => setDetailsPopup(false),
             condition: detailsPopup
         },
@@ -159,7 +162,7 @@ export default function LoanSection({openRenewes, pendientBooks}) {
 
     return (     
         <>
-            <GenericSection title={'Listado de préstamos'} filters={<LoanFilter />} columns={columns} data={items} popups={loanPopups}
+            <GenericSection title={'Listado de préstamos'} filters={<LoanFilter />} columns={columns} data={loanItems} popups={loanPopups}
             actions={
                  <LoanButtons
                   displayLoanform={() => setAddPopup(true)}

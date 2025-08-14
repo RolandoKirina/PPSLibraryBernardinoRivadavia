@@ -41,55 +41,55 @@ export const updateLendBookFields = [
   }
 ];
 
-export const addLendBookFields = [
-  {
-    label: 'Código de Libro',
-    name: 'bookCode',
-    type: 'text'
-  },
-  {
-    label: 'Título',
-    name: 'bookTitle',
-    type: 'text'
-  },
-  {
-    label: 'Fecha Retiro',
-    name: 'retiredDate',
-    type: 'date'
-  },
-  {
-    label: 'Fecha Prevista',
-    name: 'plannedDate',
-    type: 'date'
-  },
-  {
-    label: 'Fecha de Devolución',
-    name: 'returnedDate',
-    type: 'date'
-  },
-  {
-    label: 'Cantidad Renovaciones',
-    name: 'renewes',
-    type: 'counter'
-  }
-];
+// export const addLendBookFields = [
+//   {
+//     label: 'Código de Libro',
+//     name: 'bookCode',
+//     type: 'text'
+//   },
+//   {
+//     label: 'Título',
+//     name: 'bookTitle',
+//     type: 'text'
+//   },
+//   {
+//     label: 'Fecha Retiro',
+//     name: 'retiredDate',
+//     type: 'date'
+//   },
+//   {
+//     label: 'Fecha Prevista',
+//     name: 'plannedDate',
+//     type: 'date'
+//   },
+//   {
+//     label: 'Fecha de Devolución',
+//     name: 'returnedDate',
+//     type: 'date'
+//   },
+//   {
+//     label: 'Cantidad Renovaciones',
+//     name: 'renewes',
+//     type: 'counter'
+//   }
+// ];
 
 
 
 export const editLoanformFields = [
     {
         label: 'Fecha de Retiro',
-        name: 'date_out',
+        name: 'retiredDate',
         type: 'date'
     },
     {
         label: 'Fecha Prevista',
-        name: 'expected_return',
+        name: 'expectedDate',
         type: 'date'
     },
     {
         label: 'Fecha de Devolución',
-        name: 'actual_return',
+        name: 'returnDate',
         type: 'date'
     },
     {
@@ -100,33 +100,16 @@ export const editLoanformFields = [
     ];
 
 export const reneweLoanFields = [
-   {
-    label: 'Numero',
-    name: 'partner_number',
-    type: 'number'
-  },
-  {
-    label: 'Apellido, Nombre',
-    name: 'fullname',
-    type: 'text'
-  },
   {
     label: 'Fecha de Reserva',
-    name: 'date_out',
+    name: 'reneweDate',
     type: 'date'
   },
   {
     label: 'Fecha Promesa',
-    name: 'expected_return',
+    name: 'expectedDate',
     type: 'date'
-  },
-  {
-    label: 'Titulo libro',
-    name: 'title',
-    type: 'text'
-  },
-
-
+  }
 ];
 
 

@@ -30,9 +30,9 @@
     width: auto;
     display: flex;
     flex-direction: column; 
-    padding: 1em 2em;
+    padding: 1em 0em;
     align-items: center;
-    width: 100%;
+    width: 90%;
 
 }
 .renewe-inputs-items .renewe-input {
@@ -42,7 +42,7 @@
     justify-content: space-between;
 }
 .renewe-input div{
-    width: 48%;
+    width: 40%;
 }
 .renewe-inputs-items .renewe-input div {
     height: 100%;
@@ -67,4 +67,9 @@
 .renewe-title {
     width: 100%;
     color: var(--secondary-light-2);
+}
+
+.renewe-edit-form-size {
+    width: 30em;
+    margin: 1em 0;
 }

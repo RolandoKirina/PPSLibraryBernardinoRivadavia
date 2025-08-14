@@ -94,3 +94,67 @@
     width: 80%;
     color: var(--secondary-light-2);
 }
+
+
+
+/* lendbooks */
+
+.lend-books-container {
+    width: 80%;
+    margin-top: 2em;
+}
+
+.lend-books-title {
+    color: var(--secondary-light-2);
+}
+
+.add-book-to-lend, .save-changes-lend-books {
+    width: 100%;
+    margin-top: 1em;
+}
+
+.save-changes-lend-books {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1em;
+}
+
+.add-book-to-lend button, .save-changes-lend-books button {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 0.2em;
+    background-color: var(--primary-light-2);
+    border-radius: 0.8em;
+    letter-spacing: 0.10em;
+    color: var(--white);
+    border: 0;
+}
+
+.add-book-to-lend button:hover, .save-changes-lend-books button:hover {
+    background-color: var(--primary-light);
+    transition: background-color 0.30s ease-in-out;
+}
+
+.add-book-to-lend button img, .save-changes-lend-books button img {
+    height: 80%;
+    margin-right: 0.25em;
+    margin-left: 0.25em;
+}
+
+.save-changes-lend-books button span img {
+    height: 60%;
+    margin-right: 0.3em;
+    margin-left: 0.3em;
+}
+
+.save-changes-lend-books button {
+    border: 0.15em solid var(--sucess);
+}
+
+
+.add-book-to-lend button a, .save-changes-lend-books button a {
+    color: var(--white);
+    text-decoration: none;
+}
+

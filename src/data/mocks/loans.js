@@ -123,3 +123,81 @@ export const mockBooksLoans = [
     renewes: '3'
   }
 ];
+
+
+export const mockRenewes = [
+  {
+    id: 1,
+    partnerNumber: 'P-001',
+    partnerFullName: 'Marcela Gutiérrez',
+    name: 'Marcela',
+    lastname: 'Gutiérrez',
+    bookTitle: 'Cien años de soledad',
+    reneweDate: '2025-08-10',
+    expectedDate: '2025-08-20',
+    books: [
+      { id: '1', bookCode: 'B1001', bookTitle: 'Ficciones', position: 1, codClass: '51', codLing: 'M 22', codRcdu: '' },
+      { id: '6', bookCode: 'B1006', bookTitle: 'El informe de Brodie', position: 6, codClass: '51', codLing: 'M 22', codRcdu: '' }
+    ]
+  },
+  {
+    id: 2,
+    partnerNumber: 'P-003',
+    partnerFullName: 'Julia González',
+    name: 'Julia',
+    lastname: 'González',
+    bookTitle: 'Rayuela',
+    reneweDate: '2025-08-11',
+    expectedDate: '2025-08-21',
+    books: [
+      { id: '3', bookCode: 'B1003', bookTitle: 'Eva Luna', position: 3, codClass: '53', codLing: 'M 24', codRcdu: '' },
+      { id: '8', bookCode: 'B1008', bookTitle: 'Paula', position: 8, codClass: '53', codLing: 'M 24', codRcdu: '' },
+      { id: '18', bookCode: 'B1018', bookTitle: 'Retrato en sepia', position: 18, codClass: '53', codLing: 'M 24', codRcdu: '' }
+    ]
+  },
+  {
+    id: 3,
+    partnerNumber: 'P-004',
+    partnerFullName: 'Tomás Rivas',
+    name: 'Tomás',
+    lastname: 'Rivas',
+    bookTitle: 'Martín Fierro',
+    reneweDate: '2025-08-12',
+    expectedDate: '2025-08-22',
+    books: [
+      { id: '4', bookCode: 'B1004', bookTitle: 'Conversación en La Catedral', position: 4, codClass: '54', codLing: 'M 25', codRcdu: '' },
+      { id: '14', bookCode: 'B1014', bookTitle: 'La tía Julia y el escribidor', position: 14, codClass: '54', codLing: 'M 25', codRcdu: '' }
+    ]
+  },
+  {
+    id: 4,
+    partnerNumber: 'P-005',
+    partnerFullName: 'Agustina Pérez',
+    name: 'Agustina',
+    lastname: 'Pérez',
+    bookTitle: 'Don Quijote de la Mancha',
+    reneweDate: '2025-08-13',
+    expectedDate: '2025-08-23',
+    books: [
+      { id: '5', bookCode: 'B1005', bookTitle: 'Libertad bajo palabra', position: 5, codClass: '55', codLing: 'M 26', codRcdu: '' },
+      { id: '10', bookCode: 'B1010', bookTitle: 'El arco y la lira', position: 10, codClass: '55', codLing: 'M 26', codRcdu: '' },
+      { id: '20', bookCode: 'B1020', bookTitle: 'Piedra de sol', position: 20, codClass: '55', codLing: 'M 26', codRcdu: '' }
+    ]
+  },
+  {
+    id: 5,
+    partnerNumber: 'P-002',
+    partnerFullName: 'Lucas Fernández',
+    name: 'Lucas',
+    lastname: 'Fernández',
+    bookTitle: 'El principito',
+    reneweDate: '2025-08-08',
+    expectedDate: '2025-08-18',
+    books: [
+      { id: '2', bookCode: 'B1002', bookTitle: 'El coronel no tiene quien le escriba', position: 2, codClass: '52', codLing: 'M 23', codRcdu: '' },
+      { id: '7', bookCode: 'B1007', bookTitle: 'Crónica de una muerte anunciada', position: 7, codClass: '52', codLing: 'M 23', codRcdu: '' },
+      { id: '17', bookCode: 'B1017', bookTitle: 'Ojos de perro azul', position: 17, codClass: '52', codLing: 'M 23', codRcdu: '' }
+    ]
+  }
+];
+

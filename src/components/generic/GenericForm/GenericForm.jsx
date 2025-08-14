@@ -2,7 +2,7 @@ import './GenericForm.css';
 import SaveIcon from '../../../assets/img/save-icon.svg';
 import { useState } from 'react';
 
-export default function GenericForm({ fields, onSubmit, title, children }) {
+export default function GenericForm({ fields, onSubmit, title, children, className }) {
   const [formState, setFormState] = useState({});
 
   const handleChange = (e) => {
@@ -21,8 +21,7 @@ export default function GenericForm({ fields, onSubmit, title, children }) {
   };
 
   return (
-    <div className="generic-form-container">
-      <div className="generic-form">
+    <div className={`generic-form-container${className ? ` ${className}` : ''}`}>      <div className="generic-form">
         {title && (
           <div className="generic-form-title">
             <h2>{title}</h2>

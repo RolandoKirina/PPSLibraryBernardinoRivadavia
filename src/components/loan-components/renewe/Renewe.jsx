@@ -15,29 +15,21 @@ import { reneweLoanFields } from '../../../data/loan/LoanForms.js';
 import ShowDetails from '../../generic/ShowDetails/ShowDetails.jsx';
 import { reneweDetails } from '../../../data/loan/LoanDetails.js';
 import AddRenewe from '../addrenewe/AddRenewe.jsx';
+import { useEntityManager } from '../../../hooks/useEntityManager.js';
+import { mockRenewes } from '../../../data/mocks/loans.js';
+
 
 export default function Renewe({title, isPopup}) {
-    const [addRenewe, setAddRenewe] = useState(false);
     const [deletePopup, setDeletePopup] = useState(false);
     const [popupView, setPopupView] = useState("default");
-
-    function redirect(action) {
-        switch(action) {
-            case 'add': {
-                let title = 'Añadir reserva'
-                window.open(`${window.location.origin}/loans/renewe-add`, '_blank',title);
-                break;
-            }
-            case 'edit': {  
-                window.open(`${window.location.origin}/loans/renewe-edit`, '_blank');
-                break;
-            }
-            case 'details': {
-                window.open(`${window.location.origin}/loans/renewe-details`, '_blank');
-                break;
-            }
-        }
-    }
+    const [selected, setSelected] = useState(null);
+    const {
+    items: reneweItems,
+    getItem: getReneweItem,
+    createItem: createReneweItem,
+    updateItem: updateReneweItem,
+    deleteItem: deleteReneweItem
+    } = useEntityManager(mockRenewes, 'renewes');
 
 
     const renewespopup= [
@@ -45,29 +37,30 @@ export default function Renewe({title, isPopup}) {
             key: 'deletePopup',
             title: 'Borrar reserva',
             className: 'delete-size-popup',
-            content: <PopUpDelete  title={"Reserva"} closePopup={() => setDeletePopup(false)} />,
+            content: <PopUpDelete title={"Reserva"} closePopup={() => setDeletePopup(false)} onConfirm={
+                () => {
+                    deleteReneweItem(selected.id)
+                    setDeletePopup(false)
+                }
+            } />,
             close: () => setDeletePopup(false),
             condition: deletePopup,
             variant: 'delete'
         },
     ];
-
-    const renewes = [
-        { id: 1, partner_number: 123, partner: 'Carlos ruíz' },
-        { id: 1, partner_number: 123, partner: 'Carlos ruíz' },
-        { id: 1, partner_number: 123, partner: 'Carlos ruíz' },
-        { id: 1, partner_number: 123, partner: 'Carlos ruíz' },
-        { id: 1, partner_number: 123, partner: 'Carlos ruíz' },
-    ];
     
         const columns = [
-        { header: 'Número socio', accessor: 'partner_number' },
-        { header: 'Socio', accessor: 'partner' },
+        { header: 'Número socio', accessor: 'partnerNumber' },
+        { header: 'Socio', accessor: 'partnerFullName' },
+        { header: 'Titulo libro', accessor: 'bookTitle' },
         {
             header: 'Borrar',
             accessor: 'delete',
             render: (_, row) => (
-            <button className="button-table" onClick={() => setDeletePopup(true)}>
+            <button className="button-table" onClick={() => {
+                setDeletePopup(true)
+                setSelected(row)
+                }}>
                 <img src={DeleteIcon} alt="Borrar" />
             </button>
             )
@@ -77,7 +70,10 @@ export default function Renewe({title, isPopup}) {
             accessor: 'edit',
     
             render: (_, row) => (
-            <button className="button-table"  onClick={() => setPopupView('editForm')}>
+            <button className="button-table"  onClick={() => {
+                setSelected(row)
+                setPopupView('editForm')
+                }}>
                 <img src={EditIcon} alt="Editar" />
             </button>
             )
@@ -86,7 +82,10 @@ export default function Renewe({title, isPopup}) {
             header: 'Ver detalle',
             accessor: 'details',
             render: (_, row) => (
-            <button className="button-table" onClick={() => setPopupView('details')}>
+            <button className="button-table" onClick={() => {
+                setPopupView('details')
+                setSelected(row);
+                }}>
                 <img src={DetailsIcon} alt="Detalles" />
             </button>
             )
@@ -130,7 +129,7 @@ export default function Renewe({title, isPopup}) {
                                 <h2>Reservas
                                 </h2>
                             </div>
-                            <Table columns={columns} data={renewes}>
+                            <Table columns={columns} data={reneweItems}> 
                                 <div className='add-renew-btn'>
                                     <Btn text={'Nueva reserva'}  onClick={() => setPopupView('addRenewe')} icon={<img src={PlusIcon} alt={PlusIcon}/>}/>
                                 </div>
@@ -148,22 +147,31 @@ export default function Renewe({title, isPopup}) {
 
                     </div>
                 )}
-                {popupView === 'editForm' && (
-                    <>
-                    <BackviewBtn menu={'default'} changeView={setPopupView} />
-                    <AddRenewe />
-                    </>
-                )}
                 {popupView === 'addRenewe' && (
                     <>
                     <BackviewBtn menu={'default'} changeView={setPopupView} />
-                    <AddRenewe />
+                    <AddRenewe method={'add'} createReneweItem={createReneweItem} />
+                    </>
+                )}
+                {popupView === 'editForm' && (
+                    <>
+                    <BackviewBtn menu={'default'} changeView={setPopupView} />
+                    <GenericForm fields={reneweLoanFields} onSubmit={(data) => {
+                        updateReneweItem(selected.id, {
+                            bookTitle: selected.bookTitle,
+                            partnerNumber: selected.partnerNumber,
+                            reneweDate: data.reneweDate,
+                            expectedDate: data.expectedDate,
+                            books: selected.books
+                        })
+                        setPopupView('default');
+                    }} title={'Editar reserva'} className={'renewe-edit-form-size'}/>
                     </>
                 )}
                 {popupView === 'details' && (
                     <>
                         <BackviewBtn menu={'default'} changeView={setPopupView} />
-                        <ShowDetails insidePopup={true} titleText={'Detalles de reserva'} isPopup={false} detailsData={reneweDetails} />
+                        <ShowDetails data={selected} insidePopup={true} titleText={'Detalles de reserva'} isPopup={false} detailsData={reneweDetails} />
                     </>
                 )}
                 

@@ -5,6 +5,9 @@
     margin-top: 1em;
     justify-content: space-evenly;
     height: 100%;
+    background-color: var(--primary-dark-2);
+    max-height: 70vh;         /* Ajustá según el diseño */
+    overflow-y: auto;         /* Habilita el scroll vertical */
 }
 
 .renewe-books-title {
@@ -47,11 +50,15 @@
 .library-books {
     height: 100%;
     width: 45%;
+      max-height: 70vh;         /* Ajustá según el diseño */
+  overflow-y: auto;  
 }
 
 .renewe-books {
     height: 100%;
     width: 45%;
+    max-height: 70vh;         /* Ajustá según el diseño */
+    overflow-y: auto;  
 }
 
 .main-renewe-btns {

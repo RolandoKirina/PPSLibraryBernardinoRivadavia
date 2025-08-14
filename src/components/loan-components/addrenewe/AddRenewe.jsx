@@ -8,54 +8,99 @@ import Btn from '../../btn/Btn';
 import PopUp from '../../popup-table/PopUp2';
 import ConfirmMessage from '../../../components/confirmMessage/ConfirmMessage';
 import BackviewBtn from '../../backviewbtn/BackviewBtn';
-import FormEditBook from '../../formeditbook/FormEditBook';
 import SaveIcon from '../../../assets/img/save-icon.svg';
+import { books } from '../../../data/mocks/authors';
 
-export default function addRenewe({ menu }) {
+export default function addRenewe({menu, selected, createReneweItem }) {
   const [confirmPopup, setConfirmPopup] = useState(false);
   const [popupView, setPopupView] = useState('default');
+  const [reneweData, setReneweData] = useState({
+    partnerNumber: '',
+    partnerFullName: '',
+    reneweDate: '',
+    expectedDate: '',
+    books: []
+  })
 
-  const mainReneweBooks = [
-    { id: 1, book_code: '000320023', title: '100 Años del eco tandil', position: 1, codclass: '51', codrcdu: '', codling: 'M 22' },
-  ];
+function handleSaveChanges() {
+  reneweData.books.forEach(reneweBook => {
+    createReneweItem({
+      partnerNumber: reneweData.partnerNumber,
+      partnerFullName: reneweData.partnerFullName,
+      bookTitle: reneweBook.bookTitle,
+      reneweDate: reneweData.reneweDate,
+      expectedDate: reneweData.expectedDate
+    });
+  });
+}
+  function handleAddBook(book) {
+    setReneweData(prev => {
+      let alreadyExists = reneweData.books.some(b => b.id === book.id);
 
-  const reneweBooks = [
-    { id: 1, book_code: '000320023', title: '100 Años del eco tandil', position: 1 },
-  ];
+      if(alreadyExists) {
+        return prev;
+      }
+
+      return {
+        ...prev,
+        books: [...prev.books, book]
+      }
+
+    }
+    )
+  }
+
+  function handleDeleteBook(book) {
+    setReneweData(prev => {
+      let alreadyExists = reneweData.books.some(b => b.id === book.id);
+
+      if(!alreadyExists) {
+        return prev;
+      }
+
+      let booksUpdated = prev.books.filter(b => b.id !== book.id);
+
+      return {
+        ...prev,
+        books: booksUpdated
+      }
+
+    }
+    )
+  }
+
+  function handleOnChange(e) {
+    const {name, value} = e.target;
+
+    setReneweData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+
+    console.log("Datos de la reserva:", { ...reneweData, [name]: value });
+  }
+
 
   const mainReneweBooksColumns = [
-    { header: 'Código del libro', accessor: 'book_code' },
-    { header: 'Título', accessor: 'title' },
+    { header: 'Código del libro', accessor: 'bookCode' },
+    { header: 'Título', accessor: 'bookTitle' },
     { header: 'Posición', accessor: 'position' },
-    { header: 'Codclass', accessor: 'codclass' },
-    { header: 'Codrcdu', accessor: 'codrcdu' },
-    { header: 'CodLing', accessor: 'codling' },
-    {
-      header: 'Editar',
-      accessor: 'edit',
-      render: (_, row) => (
-        <button type='button' className="button-table" onClick={() => setPopupView('editBookForm')}>
-          <img src={EditIcon} alt="Editar" />
-        </button>
-      )
-    }
+    { header: 'Codclass', accessor: 'codClass' },
+    { header: 'Codrcdu', accessor: 'codRcdu' },
+    { header: 'CodLing', accessor: 'codLing' },
   ];
 
-  const bookshelfBooks = Array(5).fill({
-    id: 1,
-    book_code: '000320023',
-    title: '100 Años del eco tandil'
-  });
-
   const reneweBooksColumns = [
-    { header: 'Código del libro', accessor: 'book_code' },
-    { header: 'Título', accessor: 'title' },
+    { header: 'Código del libro', accessor: 'bookCode' },
+    { header: 'Título', accessor: 'bookTitle' },
     { header: 'Posición', accessor: 'position' },
     {
       header: 'Borrar',
       accessor: 'delete',
       render: (_, row) => (
-        <button type='button' className="button-table" onClick={() => setConfirmPopup(true)}>
+        <button type='button' className="button-table" onClick={() => {
+          handleDeleteBook(row);
+          }}>
           <img src={DeleteIcon} alt="Borrar" />
         </button>
       )
@@ -63,13 +108,13 @@ export default function addRenewe({ menu }) {
   ];
 
   const bookshelfBooksColumns = [
-    { header: 'Código', accessor: 'book_code' },
-    { header: 'Título', accessor: 'title' },
+    { header: 'Código', accessor: 'bookCode' },
+    { header: 'Título', accessor: 'bookTitle' },
     {
       header: 'Agregar',
-      accessor: 'edit',
+      accessor: 'add',
       render: (_, row) => (
-        <button type='button' className="button-table" onClick={() => menu('editForm')}>
+        <button type='button' className="button-table" onClick={() => handleAddBook(row)}>
           <img src={AddBookIcon} alt="Agregar" />
         </button>
       )
@@ -81,7 +126,11 @@ export default function addRenewe({ menu }) {
       key: 'confirmPopup',
       title: 'Confirmar cambios',
       className: '',
-      content: <ConfirmMessage text="¿Está seguro de confirmar los cambios?" closePopup={() => setConfirmPopup(false)} />,
+      content: <ConfirmMessage text="¿Está seguro de confirmar los cambioss?" closePopup={() => setConfirmPopup(false)} onConfirm={() => {
+        setConfirmPopup(false)
+        handleSaveChanges()
+        
+      }}/>,
       close: () => setConfirmPopup(false),
       condition: confirmPopup,
     }
@@ -97,29 +146,29 @@ export default function addRenewe({ menu }) {
           <div className='add-loan-form-inputs'>
             <div className='add-loan-retire-date'>
               <label>Numero</label>
-              <input type='text' />
+              <input type='text' name='partnerNumber' value={reneweData.partnerNumber} onChange={handleOnChange}/>
             </div>
             <div className='add-loan-retire-date'>
               <label>Apellido, Nombre</label>
-              <input type='text' />
+              <input type='text' name='partnerFullName' value={reneweData.partnerFullName} onChange={handleOnChange}/>
             </div>
             <div className='add-loan-retire-date'>
               <label>Fecha reserva</label>
-              <input type='date' />
+              <input type='date' name='reneweDate' value={reneweData.reneweDate}  onChange={handleOnChange}/>
             </div>
             <div className='add-loan-retire-date'>
               <label>Fecha promesa</label>
-              <input type='date' />
+              <input type='date' name='expectedDate' value={reneweData.expectedDate}  onChange={handleOnChange}/>
             </div>
-            <div className='add-loan-retire-date'>
+            {/*FILTRO:  <div className='add-loan-retire-date'>
               <label>Título libro</label>
               <input type='text' />
-            </div>
+            </div> */}
           </div>
           <div className='renewe-books-title'>
             <h3>Libros vinculados a la reserva</h3>
           </div>
-          <Table columns={mainReneweBooksColumns} data={mainReneweBooks}>
+          <Table columns={mainReneweBooksColumns} data={reneweData.books}>
             <div className='main-renewe-btns'>
               <Btn className="primary-btn" onClick={() => setPopupView('addBook')} text="Administrar libros" />
             </div>
@@ -144,25 +193,13 @@ export default function addRenewe({ menu }) {
             <div className='renewe-books-title'>
               <h3>Libros cargados en la biblioteca</h3>
             </div>
-            <Table columns={bookshelfBooksColumns} data={bookshelfBooks} />
+            <Table columns={bookshelfBooksColumns} data={books} />
           </div>
           <div className='renewe-books'>
             <div className='renewe-books-title'>
               <h3>Libros vinculados</h3>
             </div>
-            <Table columns={reneweBooksColumns} data={reneweBooks} />
-          </div>
-        </>
-      )}
-
-      {popupView === 'editBookForm' && (
-        <>
-          <BackviewBtn menu='default' changeView={setPopupView} />
-          <div>
-            <div className='editBookAuthor'>
-              <h2>Editar libro</h2>
-            </div>
-            <FormEditBook />
+            <Table columns={reneweBooksColumns} data={reneweData.books} />
           </div>
         </>
       )}

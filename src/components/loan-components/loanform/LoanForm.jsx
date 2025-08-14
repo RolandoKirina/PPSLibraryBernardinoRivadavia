@@ -2,30 +2,127 @@ import { useEffect, useState } from 'react';
 import './LoanForm.css';
 import SearchPartner from '../searchpartner/SearchPartner';
 import Reader from '../reader/Reader';
-import LendBooks from '../lendbooks/LendBooks';
 import BackviewBtn from '../../backviewbtn/BackviewBtn';
 import ShowDetails from '../../generic/ShowDetails/ShowDetails';
 import { lendBooksDetails } from '../../../data/loan/LoanDetails';
 import GenericForm from '../../generic/GenericForm/GenericForm';
-import { addLendBookFields } from '../../../data/loan/LoanForms';
 import Btn from '../../btn/Btn';
-import SearchBooks from '../searchBooks/SearchBooks';
 import SaveIcon from '../../../assets/img/save-icon.svg';
 import { useEntityManager } from '../../../hooks/useEntityManager';
 import { mockBooksLoans } from '../../../data/mocks/loans';
 import PopUp from '../../popup-table/PopUp2';
 import ConfirmMessage from '../../confirmMessage/ConfirmMessage';
+import { Table } from '../../table/Table';
+import DeleteIcon from '../../../assets/img/delete-icon.svg';
+import EditIcon from '../../../assets/img/edit-icon.svg';
+import DetailsIcon from '../../../assets/img/details-icon.svg';
+import AddBookIcon from '../../../assets/img/add-book-icon.svg';
+import PopUpDelete from '../../deletebtnComponent/PopUpDelete';
+import { books } from '../../../data/mocks/authors';
+import { editLoanformFields } from '../../../data/loan/LoanForms';
 
 export default function LoanForm({createLoanItem}) {
   const [popupView, setPopupView] = useState("default");
   const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockBooksLoans, 'booksLoans');
-  const [confirmSaveChanges, setConfirmSaveChangesPopup] = useState(false);
+  const [confirmSaveChangesPopup, setConfirmSaveChangesPopup] = useState(false);
+  const [deletePopup, setDeletePopup] = useState(false);
 
   const [loanData, setLoanData] = useState({
     loanType: 'in_room',
     employeeCode: '',
-    retiredDate: ''
+    retiredDate: '',
+    expectedDate: '',
+    books: []
   });
+
+function handleAddNewLoan() {
+  console.log("entro");
+  loanData.books.forEach(lendBook => {
+    createLoanItem({
+      bookCode: lendBook.bookCode,
+      bookTitle: lendBook.bookTitle,
+      partnerName: loanData.partnerName,
+      partnerNumber: loanData.partnerNumber,
+      retiredDate: loanData.retiredDate,
+      expectedDate: loanData.expectedDate,
+      retiredHour: '11:00',
+      employeeCode: loanData.employeeCode
+    });
+  });
+}
+
+  function handleAddBook(book) {
+    setLoanData(prev => {
+      let alreadyExists = loanData.books.some(b => b.id === book.id);
+
+      if(alreadyExists) {
+        return prev;
+      }
+
+      return {
+        ...prev,
+        books: [...prev.books, book]
+      }
+
+    }
+    )
+  }
+
+  function handleDeleteBook(book) {
+    setLoanData(prev => {
+      let alreadyExists = loanData.books.some(b => b.id === book.id);
+
+      if(!alreadyExists) {
+        return prev;
+      }
+
+      let booksUpdated = prev.books.filter(b => b.id !== book.id);
+
+      return {
+        ...prev,
+        books: booksUpdated
+      }
+
+    }
+    )
+  }
+
+    const bookshelfBooksColumns = [
+            { header: 'Codigo', accessor: 'bookCode' },
+            { header: 'Título', accessor: 'bookTitle' },
+            {
+                header: 'Agregar',
+                accessor: 'add',
+                render: (_, row) => (
+                <button type='button' className="button-table" onClick={() => handleAddBook(row)}>
+                    <img src={AddBookIcon} alt="Agregar" />
+                </button>
+                )
+            }
+    ]
+
+  const columns = [
+          { header: 'Código del libro', accessor: 'bookCode' },
+          { header: 'Título', accessor: 'bookTitle' },
+    ];
+
+    const lendBooksColumns = [ //igual que mainAuthorBooksColumns pero solo se muestran 3 columnas
+              { header: 'Código del libro', accessor: 'bookCode' },
+              { header: 'Título', accessor: 'bookTitle' },
+              { header: 'Posición', accessor: 'position' },
+              {
+                  header: 'Borrar',
+                  accessor: 'delete',
+                  render: (_, row) => (
+                   <button type='button' className="button-table" onClick={() => {
+                      handleDeleteBook(row);
+                      console.log("deleted");
+                  }}>
+                      <img src={DeleteIcon} alt="Borrar" />
+                  </button>
+                  )
+              }
+  ];
 
 const handleChange = (e) => {
   const { name, value } = e.target;
@@ -73,41 +170,6 @@ const handleChange = (e) => {
     return updated;
   });
 };
-
-function addLoanItems(data) {
-  createItem(data);
-
-  if(data.loanType === 'retired') {
-    console.log(items);
-    items.forEach((lendBook) => {
-    createItem({
-      bookCode: lendBook.bookCode,
-      bookTitle: lendBook.bookTitle,
-      partnerNumber: data.partnerNumber,
-      partnerName: data.partnerName,
-      retiredDate: data.retiredDate,
-      employee: data.employeeCode,
-      // retiredHour: data.retiredHour, // si lo tenés
-      // address: data.partnerAddress, // si lo tenés
-      // phone: data.partnerPhone,     // si lo tenés
-    });
-  });
-  }
-  else if(data.loanType === 'in_room') { //segun el tipo, cambiar columnas de tabla si se elige en el filtro
-     items.map((lendBook) => 
-      createItem({
-        bookCode: lendBook.bookCode,
-        bookTitle: lendBook.bookTitle,
-        retiredDate: data.retiredDate,
-        employee: data.employeeCode, //aqui deberia buscar el nombre por codigo
-        // adress:
-        // phone:
-        // retiredHour:
-      })
-    )
-  }
-  
-}
 
 
   return (
@@ -167,6 +229,17 @@ function addLoanItems(data) {
                   onChange={handleChange}
                 />
               </div>
+
+              <div className='add-loan-expected-date'>
+                <label>Fecha prevista</label>
+                <input
+                  type='date'
+                  name='expectedDate'
+                  value={loanData.expectedDate}
+                  onChange={handleChange}
+                />
+              </div>
+
             </div>
 
             {loanData.loanType === 'retired' ? (
@@ -188,8 +261,15 @@ function addLoanItems(data) {
               />
             )}
 
-            <LendBooks menu={setPopupView} method={'add'} onDataChange={handleExtraData} itemsData={items}
-  deleteItem={deleteItem} />
+            <div className='lend-books-container'>
+                <h2 className='lend-books-title'>Libros a Prestar</h2>
+
+              <Table columns={columns} data={loanData.books}>
+                <div className='add-book-to-lend'>
+                  <Btn text={'Agregar Libro'} onClick={() => setPopupView('addBook')} icon={<img src={AddBookIcon} alt='addBookIconButton'/> }/>
+                </div>
+              </Table>
+            </div>
 
             <div className='save-changes-lend-books'>
                 <Btn text={'Guardar'} onClick={() => {
@@ -200,50 +280,50 @@ function addLoanItems(data) {
 
           </form>
 
-          {confirmSaveChanges && (
-            <PopUp>
+           {confirmSaveChangesPopup && (
+            <PopUp title={'Guardar préstamo'}>
               <ConfirmMessage text={'¿Está seguro de guardar el nuevo prestamo?'} closePopup={() => setConfirmSaveChangesPopup(false)} onConfirm={() => {
-                createLoanItem(loanData);
+                handleAddNewLoan();
                 setConfirmSaveChangesPopup(false);
                 }}/>
             </PopUp>
-          )}
+          )} 
         </div>
       )}
 
       {popupView === 'addBook' && (
         <>
-          <BackviewBtn menu={'default'} changeView={setPopupView} />
+          {/* <BackviewBtn menu={'default'} changeView={setPopupView} />
           <GenericForm title={'Agregar Libro en Prestamo'} fields={addLendBookFields} onSubmit={(data) => {
             console.log(data);
             addLoanItems(data);
             setPopupView('default');
             }}>
             <Btn className='search-book-btn' text={'Buscar libro'} onClick={() => setPopupView('searchBook')} />
-          </GenericForm>
-        </>
-      )}
+          </GenericForm> */}
 
-      {popupView === 'editForm' && (
-        <>
-          <BackviewBtn menu={'default'} changeView={setPopupView} />
-          <GenericForm title={'Editar Libro en Prestamo'} fields={addLendBookFields} onSubmit={(data) => console.log('Formulario enviado:', data)}>
-            <Btn className='search-book-btn' text={'Buscar libro'} onClick={() => setPopupView('searchBook')} />
-          </GenericForm>
-        </>
-      )}
+          <BackviewBtn menu={'default'} changeView={setPopupView}/>
+          <div className='author-books-container'>
+              <div className='library-books'>
+                <div className='author-books-title'>
+                    <h3>Libros cargados en la biblioteca</h3>
+                </div>
+                <Table columns={bookshelfBooksColumns} data={books}/>
+            </div>
+            <div className='author-books'>
+                <div className='author-books-title'>
+                    <h3>Libros de este autor</h3>
+                </div>
+                <Table columns={lendBooksColumns} data={loanData.books}/>
 
-      {popupView === 'details' && (
-        <>
-          <BackviewBtn menu={'default'} changeView={setPopupView} />
-          <ShowDetails insidePopup={true} titleText={'Detalles de libro en préstamo'} isPopup={false} detailsData={lendBooksDetails} />
-        </>
-      )}
-
-      {popupView === 'searchBook' && (
-        <>
-          <BackviewBtn menu={'addBook'} changeView={setPopupView} />
-          <SearchBooks />
+                {/* {method === 'update' ? (
+                    <Table columns={authorBooksColumns} data={authorSelected.books}/>
+                ): (
+                    <Table columns={authorBooksColumns} data={authorData.books}/>
+                )} */}
+            </div>
+          </div>
+          
         </>
       )}
 
@@ -257,7 +337,7 @@ function addLoanItems(data) {
       {popupView === 'editUnpaidQuote' && (
         <>
           <BackviewBtn menu={'unpaidQuotes'} changeView={setPopupView} />
-          <GenericForm title={'Editar cuota pendiente'} fields={addLendBookFields} onSubmit={(data) => console.log('Formulario enviado:', data)} />
+          <GenericForm title={'Editar cuota pendiente'} fields={editLoanformFields} onSubmit={(data) => console.log('Formulario enviado:', data)} />
         </>
       )}
       

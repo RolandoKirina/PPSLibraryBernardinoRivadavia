@@ -12,7 +12,7 @@ export default function SearchPartner({ menu, onDataChange, loanType, partnerDat
     const updated = { ...partnerData, [name]: value };
     console.log("Datos del socio:", updated);
 
-    if (onDataChange && loanType === 'retired') {
+    if (onDataChange) {
       onDataChange(updated);
     }
   };

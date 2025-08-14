@@ -54,8 +54,8 @@ export const loanDetailsInfo = [
         { label: 'Hora de Retiro', value: 'información', attribute: 'retiredHour' }
       ],
       [
-        { label: 'Fecha prevista', value: 'información', attribute: 'plannedDate' },
-        { label: 'Fecha Devolución', value: 'información', attribute: 'returnedDate' }
+        { label: 'Fecha prevista', value: 'información', attribute: 'expectedDate' },
+        { label: 'Fecha Devolución', value: 'información', attribute: 'returnDate' }
       ]
     ]
   },
@@ -114,7 +114,6 @@ export const lendBooksDetails = [
   }
 ]
 
-
 export const lendBooksReturnDetails = [
   {
     id: 1,
@@ -122,10 +121,10 @@ export const lendBooksReturnDetails = [
     active: false,
     rows: [
       [
-        { label: 'Código de libro', value: 'información' }
+        { label: 'Código de libro', value: 'información', attribute: 'bookCode' }
       ],
       [
-        { label: 'Título', value: 'información' }
+        { label: 'Título', value: 'información', attribute: 'bookTitle' }
       ]
     ]
   },
@@ -135,10 +134,10 @@ export const lendBooksReturnDetails = [
     active: false,
     rows: [
       [
-        { label: 'Fecha retiro', value: 'información' }
+        { label: 'Fecha retiro', value: 'información', attribute: 'retiredDate' }
       ],
       [
-        { label: 'Fecha prevista', value: 'información' }
+        { label: 'Fecha prevista', value: 'información', attribute: 'plannedDate' }
       ]
     ]
   },
@@ -148,11 +147,11 @@ export const lendBooksReturnDetails = [
     active: false,
     rows: [
       [
-        { label: 'Renovación', value: 'Si/No' },
+        { label: 'Renovación', value: 'Si/No', attribute: 'renewes' }
       ]
     ]
   }
-]
+];
 
 
 export const reneweDetails = [
@@ -162,7 +161,7 @@ export const reneweDetails = [
     active: false,
     rows: [
       [
-        { label: 'Título', value: 'información' },
+        { label: 'Título', value: 'El principito', attribute: 'bookTitle' }
       ]
     ]
   },
@@ -172,11 +171,11 @@ export const reneweDetails = [
     active: false,
     rows: [
       [
-        { label: 'Número de socio', value: 'información' }
+        { label: 'Número de socio', value: 'P-002', attribute: 'partnerNumber' }
       ],
       [
-        { label: 'Nombre', value: 'información' },
-        { label: 'Apellido', value: 'información' }
+        { label: 'Nombre', value: 'Lucas', attribute: 'name' },
+        { label: 'Apellido', value: 'Fernández', attribute: 'lastname' }
       ]
     ]
   },
@@ -186,12 +185,13 @@ export const reneweDetails = [
     active: false,
     rows: [
       [
-        { label: 'Fecha de reserva', value: 'información' },
-        { label: 'Fecha de promesa', value: 'información' }
+        { label: 'Fecha de reserva', value: '2025-08-08', attribute: 'reneweDate' },
+        { label: 'Fecha de promesa', value: '2025-08-18', attribute: 'expectedDate' }
       ]
     ]
   }
-]
+];
+
 
 
 
