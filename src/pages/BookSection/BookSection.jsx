@@ -5,17 +5,20 @@ import { useState } from 'react';
 import BookFilter from  '../../components/bookfilter/BookFilter.jsx';
 import  '../../components/Table/Table.css';
 import './BookSection.css';
-import FormEditBook from '../../components/formeditbook/FormEditbook.jsx';
 import PopUpDelete from '../../components/deletebtnComponent/PopUpDelete.jsx';
 import FormAddBook from '../../components/FormAddbook/FormAddBook.jsx';
 import {duplicateBook} from '../../data/book/BookForms.js';
 import GenericForm from '../../components/generic/GenericForm/GenericForm.jsx';
 import {BookDetail} from '../../data/book/BookDetail.js';
 import GenericSection from '../../components/generic/GenericSection/GenericSection.jsx';
-import BookButtons from '../../components/BookButtons/BookButtons.jsx';
 import ShowDetails from '../../components/generic/ShowDetails/ShowDetails.jsx';
 import {books }from '../../data/mocks/books.js';
 import{ useEntityManager} from '../../hooks/useEntityManager.js';
+import Btn from '../../components/btn/Btn.jsx';
+import PlusIcon from '../../assets/img/plus-icon.svg';
+import FormEditBook from '../../components/formeditbook/FormEditbook.jsx';
+
+
 const BookSection = () => {
 
   
@@ -36,6 +39,7 @@ const BookSection = () => {
     {
       header: 'Borrar',
       accessor: 'delete',
+      className: "action-buttons",
       render: (_, row) => (
         <button className="button-table"
           onClick={() => {
@@ -50,7 +54,7 @@ const BookSection = () => {
     {
       header: 'Editar',
       accessor: 'edit',
-
+      className: "action-buttons",
       render: (_, row) => (
         <button className="button-table"  
         onClick={() =>{
@@ -66,9 +70,10 @@ const BookSection = () => {
     {
       header: 'Ver detalle',
       accessor: 'details',
+      className: "action-buttons",
       render: (_, row) => (
         <button className="button-table">
-          <img src={DetailsIcon} alt="Detalles" onClick={()=> setPopUpDetailBook(true)}/>
+          <img src={DetailsIcon} alt="Detalles" onClick={()=> setPopUpDetail(true)}/>
         </button>
       )
     }
@@ -145,8 +150,11 @@ const BookSection = () => {
       <GenericSection title="Listado de libros" filters={<BookFilter/>} 
       columns={columns} data={items} popups={booksPopUp}
       actions={
-          <BookButtons  addBook={() => setPopupAdd(true)} 
-                        duplicateBook={() => setPopUpDuplicate(true)}></BookButtons>
+        <div className='listbtns'>
+               <Btn  icon={<img src={PlusIcon}/>} onClick={() => setPopupAdd(true)} text={'Agregar libro'} variant={"primary"}/>
+                <Btn icon={<img src={PlusIcon}/>} onClick={() =>setPopUpDuplicate(true)} text={'Duplicar libro'} variant={"primary"}/>
+        </div>
+         
       } 
       
       ></GenericSection>

@@ -13,8 +13,8 @@ export default function PopUpDelete ({title,closePopup, onConfirm}) {
                         <h2>¿Estás seguro de que quieres eliminar el {title}?</h2>
                     </div>
                     <div className='delete-btns'>
-                        <Btn text={'Cancelar'} className={'cancel-btn'} onClick={() => closePopup()}/>
-                        <Btn text={'Eliminar'} className={'delete-btn'} onClick={onConfirm}/>
+                        <Btn text={'Cancelar'} onClick={() => closePopup()} variant="cancel"/>
+                        <Btn text={'Eliminar'} onClick={onConfirm} variant="delete"/>
                     </div>
                 </div>
             </div>

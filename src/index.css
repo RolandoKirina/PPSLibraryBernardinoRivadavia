@@ -82,7 +82,6 @@ a {
     letter-spacing: 0.2em;
     gap: 0.5em;
     padding: 0.6em 1em;
-    color: white;
     border: none;
     height: 4em;
     border-radius: 5px;
@@ -95,7 +94,7 @@ a {
     letter-spacing: 0.2em;
   }
 
-.secondary-btn{
+.btn-secondary{
   background-color: var(--primary-dark-2);
   color: var(--white);
   height: 6em;
@@ -109,8 +108,37 @@ a {
     padding-left: 0.75rem; 
   }
 
-
+.btn-list{
+  margin-top: 1em;
+  width: 50%;
+  display: flex;
+  gap: 1em;
+}
 /*buena estrategia para saber que elemento causa scroll horizontal*/
 /** * {
   outline: 1px solid red;
 }*/
+
+
+.btn-primary {
+  background-color: var(--primary-light-2);
+  color: var(--white);
+  padding: 0.6em 1.2em;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+
+
+.centered {
+  text-align: center;
+}
+.actions{
+  margin-left: 0.8em;
+  margin-top: 0.8em;
+}

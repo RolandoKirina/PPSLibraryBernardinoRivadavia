@@ -22,7 +22,7 @@ import BooksAuthor from './components/author-components/BooksAuthor/BooksAuthor.
 import Signature from './components/signature/Signature.jsx';
 import PartnerSection from './pages/PartnerSection/PartnerSection.jsx';
 import OptionSection from './pages/OptionSection/OptionSection.jsx';
-
+import FeeSection from './pages/FeeSection/FeeSection.jsx';
 function App() {
   return (
     <>
@@ -44,6 +44,7 @@ function App() {
             <Route path='/options/loan-materials' element={<LoanMaterialSection/>}/>
             <Route path='/options/remove-partner-reasons' element={<RemovePartnerReasonSection chooseMode={false}/>}/>
             <Route path='/options/loan-amount-group' element={<LoanAmountSection/>}/> 
+            <Route path='/fees' element={<FeeSection/>}/>
 
             {loanFormRoutes.map(({ path, title, fields }, idx) => ( //rutas de formularios independientes(no son popup) de préstamo(u otras secciones
               <Route
