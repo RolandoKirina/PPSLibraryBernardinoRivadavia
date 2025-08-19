@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 
 import ClosePopupImg from '../../assets/img/close-popup-btn.svg';
 
-export default function PopUp({ title, className, onClick,children,variant}) {
+export default function PopUp({ type='button', title, className, onClick,children,variant}) {
 
 
   const [visible, setVisible] = useState(false);
@@ -31,7 +31,7 @@ export default function PopUp({ title, className, onClick,children,variant}) {
    <div className={`bordepopup ${className} ${visible ? 'popup-visible' : ''} ${exiting ? 'popup-exit' : ''}`}>
         <div className={`titlepopup2 ${variantClass}`}>
           <h1 className="titlepopuph1">{title}</h1>
-           <button className='edit-form-close-btn'  onClick={handleClose}><img src={ClosePopupImg}/></button>
+           <button type={type} className='edit-form-close-btn'  onClick={handleClose}><img src={ClosePopupImg}/></button>
         </div>
          <div>
           {children}

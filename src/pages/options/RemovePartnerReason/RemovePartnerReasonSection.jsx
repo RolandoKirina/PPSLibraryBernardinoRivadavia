@@ -51,6 +51,7 @@ export default function RemovePartnerReasonSection({chooseMode}) {
                     condition: deletePopup,
                     variant: 'delete'
                 },
+
                 {
                     key: 'editPopup',
                     title: 'Editar motivo para dar de baja',
@@ -63,11 +64,19 @@ export default function RemovePartnerReasonSection({chooseMode}) {
                     key: 'addPopup',
                     title: 'Agregar motivo para dar de baja',
                     className: 'remove-parner-form-size',
-                    content: <GenericForm fields={removePartnerReasonForms} onSubmit={(data) => handleAddItem(data)}/>,
+                    content: <GenericForm fields={removePartnerReasonForms} onSubmit={(data) => handleAddItem(data)}/>, 
                     close: () => setAddPopup(false),
                     condition: addPopup
                 }
     ];
+
+    /*
+                    {confirmPopup && (
+                        <PopUp title={'Guardar motivo'} onClick={() => setConfirmPopup(false)}>   
+                            <ConfirmMessage text={'¿Esta seguro de guardar este motivo?'} closePopup={() => setConfirmPopup(false)}/>
+                        </PopUp>
+                    )}
+                        */
 
     const columns = [
         { header: 'Motivo', accessor: 'reason' },
@@ -117,9 +126,8 @@ export default function RemovePartnerReasonSection({chooseMode}) {
              <GenericSection title={'Listado de motivos para dar de baja socio'} columns={columns} data={items} popups={removePartnerReasonsPopups} actions={
                 <>
                 <div className='listbtns'>
-                    <Btn className='primary-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg'/>}/>
+                    <Btn variant={'primary'} className='primary-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg'/>}/>
                 </div>
-                
                 </>
             }/>
         ): (

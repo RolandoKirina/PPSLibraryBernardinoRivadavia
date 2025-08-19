@@ -20,15 +20,8 @@ export default function LoanAmountSection() {
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
     const [selected, setSelected] = useState(false);
-    const [materialsIdSelected, setMaterialsIdSelected] = useState();
     const { items: groupItems, getItem: getGroupItem, createItem, updateItem, deleteItem } = useEntityManager(mockLoanAmountGroup, 'loanAmountGroups');
     const { items: materialsItems, getItem: getMaterialItem, deleteItem: deleteMaterialItem } = useEntityManager(mockLoanMaterials, 'loanMaterials');
-
-    // function storeMaterialsIdSelected() {
-    //     let materials = selected.materials;
-    //     let materialsId = materials.map((material) => material.id);
-    //     setMaterialsIdSelected(materialsId); 
-    // }
 
      const loanMaterialsPopups = [
                 {
@@ -99,7 +92,7 @@ export default function LoanAmountSection() {
     return (
         <>
             <GenericSection title={'Configurar grupos para cantidad maxima de prestamos'} columns={columns} data={groupItems} popups={loanMaterialsPopups} actions={
-                <Btn className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg'/>}/>
+                <Btn variant='primary' className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg'/>}/>
             }/>
         </>
     )

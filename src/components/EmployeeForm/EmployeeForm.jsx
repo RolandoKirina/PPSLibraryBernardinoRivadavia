@@ -63,11 +63,11 @@ return(
             
            
             <div className='form-button'>
-                <Btn className={'primary-btn'} type={'submit'} text={'Crear empleado'}/>
+                <Btn variant={'primary'} type={'submit'} text={'Crear empleado'}/>
             </div>
-            <div className='message'>
+            {/* <div className='message'>
                 <a>¿ Ya tienes una cuenta ?</a>
-            </div>
+            </div> */}
         </form>
     </div>
 </>

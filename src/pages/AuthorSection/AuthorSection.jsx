@@ -22,8 +22,6 @@ export default function AuthorSection() {
     const { items: authorItems, getItem: getAuthorItem, createItem: createAuthorItem, updateItem: updateAuthorItem, deleteItem: deleteAuthorItem } = useEntityManager(mockAuthors, 'authors');
 
     function deleteAuthorSelected(id) {
-        console.log("ejecutado");
-        //hacer updateAuthorItem con los datos del autor seleccionado pero sin el libro con ese id
         let updatedBooks = selected.books.filter(book => book.id !== id);
 
         let updatedAuthor = {
@@ -72,7 +70,7 @@ export default function AuthorSection() {
             {
                 key: 'editPopup',
                 title: 'Editar autor',
-                className: '',
+                className: 'author-books-background',
                 content: <AuthorBooks authorSelected={selected} updateAuthorSelectedBooks={updateAuthorSelectedBooks} deleteAuthorSelected={deleteAuthorSelected} method={'update'} updateAuthorItem={updateAuthorItem}/>,
                 close: () => setEditPopup(false),
                 condition: editPopup
@@ -86,14 +84,6 @@ export default function AuthorSection() {
                 condition: addPopup
             }
     ];
-
-    // const authors = [
-    // { id: 1, name: 'Carolina Gómez', nationality: 'Argentino' },
-    // { id: 1, name: 'Carolina Gómez', nationality: 'Argentino' },
-    // { id: 1, name: 'Carolina Gómez', nationality: 'Argentino' },
-    // { id: 1, name: 'Carolina Gómez', nationality: 'Argentino' },
-    // { id: 1, name: 'Carolina Gómez', nationality: 'Argentino' }
-    // ];
 
     const columns = [
         { header: 'Nombre', accessor: 'authorName' },
@@ -135,7 +125,7 @@ export default function AuthorSection() {
                 <>
                 <div className='author-actions'>
                     <div className='btn-new'>
-                    <Btn text={'Nuevo'}  onClick={() => setPopupAdd(true)} icon={<img src={PlusIcon} alt='plusIconBtn'/>} variant="primary"/> 
+                    <Btn text={'Nuevo'}  onClick={() => setAddPopup(true)} icon={<img src={PlusIcon} alt='plusIconBtn'/>} variant="primary"/> 
 
                     </div>
                     <div className='author-filter'>

@@ -1,6 +1,7 @@
 import './GenericForm.css';
 import SaveIcon from '../../../assets/img/save-icon.svg';
 import { useState } from 'react';
+import Btn from '../../btn/Btn';
 
 export default function GenericForm({ fields, onSubmit, title, children, className }) {
   const [formState, setFormState] = useState({});
@@ -103,10 +104,11 @@ export default function GenericForm({ fields, onSubmit, title, children, classNa
         </div>
 
         <div className="generic-btn-save">
-          <button onClick={() => onSubmit(formState)} alt="Guardar" >
-            <img src={SaveIcon} />
+          <Btn variant={'primary'} text={'Guardar'} onClick={() => onSubmit(formState)} icon={<img src={SaveIcon} alt="Guardar"/>}/>
+          {/* <button onClick={() => onSubmit(formState)}  >
+            <img src={SaveIcon} alt="Guardar"/>
             Guardar
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
