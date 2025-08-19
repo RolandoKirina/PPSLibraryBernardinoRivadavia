@@ -21,9 +21,7 @@ import { useEntityManager } from "../../hooks/useEntityManager";
 
 export default function LoanSection({openRenewes, pendientBooks}) {
     const { items: loanItems, getItem: getLoanItem, createItem: createLoanItem, updateItem: updateLoanItem, deleteItem: deleteLoanItem } = useEntityManager(mockLoans, 'loans');
-
     const [selected, setSelected] = useState(null);
-    const [loanDetailsData, setLoanDetailsData] = useState(null);
     const [deletePopup, setDeletePopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);

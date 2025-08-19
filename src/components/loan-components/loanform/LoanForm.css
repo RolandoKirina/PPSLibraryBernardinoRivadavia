@@ -6,9 +6,7 @@
     background-color: var(--primary-dark-2);
     max-height: 70vh;         /* Ajustá según el diseño */
     overflow-y: auto;         /* Habilita el scroll vertical */
-    padding-right: 1em;  
     width: 68em;
-    min-height: 39.81em;
 }
 
 .add-loan-form-close-btn img, .edit-loan-form-close-btn img {
@@ -148,13 +146,19 @@
     margin-left: 0.3em;
 }
 
-.save-changes-lend-books button {
-    border: 0.15em solid var(--sucess);
-}
-
-
 .add-book-to-lend button a, .save-changes-lend-books button a {
     color: var(--white);
     text-decoration: none;
 }
 
+.lend-books-container .content-table {
+    padding: 0;
+}
+
+.lend-books-container .content-table .table {
+    width: 100%;
+}
+
+.add-loan-form-content .save-changes-lend-books {
+    width: 80%;
+}

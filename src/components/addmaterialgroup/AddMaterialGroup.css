@@ -12,13 +12,32 @@
     width: 100%;
 }
 
+.group-table .content-table {
+    padding: 0;
+}
+
+.group-table .content-table .table {
+    width: 100%;
+}
+
+.group-table .content-table .pagination {
+    width: 100%;
+}
+
 .add-material-container {
     width: 40em;
-    max-height: 70vh;         /* Ajustá según el diseño */
+    max-height: 95vh;         /* Ajustá según el diseño */
     overflow-y: auto;         /* Habilita el scroll vertical */
-    padding-right: 1em;  
+    margin-bottom: 0;
 }
 
 .add-material-group-background {
     background-color: var(--primary-dark-2);
+    max-height: 95vh;         /* Ajustá según el diseño */
+    overflow-y: auto;         /* Habilita el scroll vertical */
 }
+
+.add-material-inputs {
+    width: 100%;
+}
+

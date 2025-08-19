@@ -10,8 +10,8 @@ export default function ConfirmMessage({text, closePopup, onConfirm}) {
                     <h2>{text}</h2>
                     </div>
                     <div className='confirm-btns'>
-                    <Btn text={'Cancelar'} className={'cancel-btn'} onClick={() => closePopup()} />
-                    <Btn text={'Confirmar'} className={'confirm-btn'} onClick={onConfirm} />
+                    <Btn variant={'primary'} text={'Cancelar'} className={'cancel-btn'} onClick={() => closePopup()} />
+                    <Btn variant={'primary'} text={'Confirmar'} className={'confirm-btn'} onClick={onConfirm} />
                     </div>
                 </div>
             </div>

@@ -28,23 +28,6 @@ export default function AuthorBooks({authorSelected, deleteAuthorSelected, updat
         books: []
     });
 
-    const {
-    items: authorBooksItems,
-    getItem: getAuthorBooksItem,
-    createItem: createAuthorBooksItem,
-    updateItem: updateAuthorBooksItem,
-    deleteItem
-    } = useEntityManager(booksAuthor, 'authorBooks');
-
-
-    function redirect(action){
-         switch(action){
-            case 'edit':{
-                window.open(`${window.location.origin}/books/editbook`, '_blank','editbook');
-            }
-         }
-    }
-
     function handleAuthorChange(e) {
         const { name, value } = e.target;
 
@@ -252,8 +235,8 @@ export default function AuthorBooks({authorSelected, deleteAuthorSelected, updat
                         </div>
                         <Table columns={mainAuthorBooksColumns} data={method==='update' ? authorSelected.books : authorData.books}>
                             <div className='main-author-btns'>
-                                <Btn className="primary-btn" onClick={() => setPopupView('addBook')} text={'Administrar libros'}/>
-                                <Btn className="primary-btn" text={seeAllButton} onClick={() => handleSetAllbutton()}/>
+                                <Btn variant={'primary'} onClick={() => setPopupView('addBook')} text={'Administrar libros'}/>
+                                <Btn variant={'primary'} text={seeAllButton} onClick={() => handleSetAllbutton()}/>
                             </div>
                         </Table>
                         <div className='save-changes-lend-books'>

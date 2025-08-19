@@ -160,7 +160,7 @@ export default function Return() {
                             </div>
 
                             <div className='save-changes-lend-books'>
-                                <Btn text={'Guardar'} onClick={() => {
+                                <Btn type={'button'} text={'Guardar'} onClick={() => {
                                     setConfirmSaveChangesPopup(true)
                 
                                     }} icon={<img src={SaveIcon} alt='saveIconButton'/> }/>

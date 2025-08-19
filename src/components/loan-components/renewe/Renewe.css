@@ -73,3 +73,19 @@
     width: 30em;
     margin: 1em 0;
 }
+
+.renewe-table-size .content-table {
+    padding: 0;
+}
+
+.renewe-table-size .content-table .table {
+    width: 100%;
+}
+
+.renewe-table-size .content-table .pagination {
+    width: 100%;
+}
+
+.renewe-table-size .content-table .add-renew-btn {
+    width: 100%;
+}

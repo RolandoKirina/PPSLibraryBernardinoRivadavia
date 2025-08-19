@@ -131,7 +131,7 @@ export default function Renewe({title, isPopup}) {
                             </div>
                             <Table columns={columns} data={reneweItems}> 
                                 <div className='add-renew-btn'>
-                                    <Btn text={'Nueva reserva'}  onClick={() => setPopupView('addRenewe')} icon={<img src={PlusIcon} alt={PlusIcon}/>}/>
+                                    <Btn variant={'primary'} text={'Nueva reserva'}  onClick={() => setPopupView('addRenewe')} icon={<img src={PlusIcon} alt={PlusIcon}/>}/>
                                 </div>
                             </Table>
                         </div>

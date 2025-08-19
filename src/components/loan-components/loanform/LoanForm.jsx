@@ -230,7 +230,7 @@ const handleChange = (e) => {
                 />
               </div>
 
-              <div className='add-loan-expected-date'>
+              <div className='add-loan-retire-date'>
                 <label>Fecha prevista</label>
                 <input
                   type='date'
@@ -266,28 +266,28 @@ const handleChange = (e) => {
 
               <Table columns={columns} data={loanData.books}>
                 <div className='add-book-to-lend'>
-                  <Btn text={'Agregar Libro'} onClick={() => setPopupView('addBook')} icon={<img src={AddBookIcon} alt='addBookIconButton'/> }/>
+                  <Btn variant={'primary'} text={'Agregar Libro'} onClick={() => setPopupView('addBook')} icon={<img src={AddBookIcon} alt='addBookIconButton'/> }/>
                 </div>
               </Table>
             </div>
 
             <div className='save-changes-lend-books'>
-                <Btn text={'Guardar'} onClick={() => {
-                  setConfirmSaveChangesPopup(true)
+                <Btn type={'button'} variant={'primary'} text={'Guardar'} onClick={() => {
+                  setConfirmSaveChangesPopup(true);
 
                   }} icon={<img src={SaveIcon} alt='saveIconButton'/> }/>
             </div>
 
           </form>
 
-           {confirmSaveChangesPopup && (
+            {confirmSaveChangesPopup && (
             <PopUp title={'Guardar préstamo'}>
               <ConfirmMessage text={'¿Está seguro de guardar el nuevo prestamo?'} closePopup={() => setConfirmSaveChangesPopup(false)} onConfirm={() => {
                 handleAddNewLoan();
                 setConfirmSaveChangesPopup(false);
                 }}/>
             </PopUp>
-          )} 
+          )}  
         </div>
       )}
 

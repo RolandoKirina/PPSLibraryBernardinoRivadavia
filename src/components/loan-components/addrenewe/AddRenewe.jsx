@@ -170,11 +170,11 @@ function handleSaveChanges() {
           </div>
           <Table columns={mainReneweBooksColumns} data={reneweData.books}>
             <div className='main-renewe-btns'>
-              <Btn className="primary-btn" onClick={() => setPopupView('addBook')} text="Administrar libros" />
+              <Btn variant={'primary'} className="primary-btn" onClick={() => setPopupView('addBook')} text="Administrar libros" />
             </div>
           </Table>
           <div className='save-changes-lend-books'>
-            <Btn text="Guardar" onClick={() => setConfirmPopup(true)} icon={<img src={SaveIcon} alt="Guardar" />} />
+            <Btn variant={'primary'} text="Guardar" onClick={() => setConfirmPopup(true)} icon={<img src={SaveIcon} alt="Guardar" />} />
           </div>
           {reneweBooksPopups.map(({ condition, title, className, content, close, variant }, idx) =>
             condition && (

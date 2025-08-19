@@ -11,7 +11,6 @@ import ConfirmMessage from '../confirmMessage/ConfirmMessage';
 import { useEffect } from 'react';
 
 export default function AddMaterialGroup({method, createItem, updateItem, getItemGroup, getMaterialItem, items, itemIdSelected }) {
-  const [popupView, setPopupView] = useState('default');
   const [selectedIds, setSelectedIds] = useState([]);
   const [confirmSaveChanges, setConfirmSaveChangesPopup] = useState(false);
   const [group, setGroup] = useState('');
@@ -19,17 +18,13 @@ export default function AddMaterialGroup({method, createItem, updateItem, getIte
   
    useEffect(() => {
      if(method === 'update') {
-
        let materialsData = getItemGroup(itemIdSelected);
-
-       console.log(materialsData);
 
        if(materialsData && materialsData.materials) {
         let materialsId = materialsData.materials.map((material) => material.id);
 
         setSelectedIds(materialsId);
        }
- 
      }
      else {
        setSelectedIds([]);
@@ -37,7 +32,7 @@ export default function AddMaterialGroup({method, createItem, updateItem, getIte
    }, [method, itemIdSelected]);
 
   function handleAddItem() {
-    
+
     const materials = selectedIds
       .map(id => getMaterialItem(id))
       .filter(item => item); // filtra nulos por si algún ID no existe
@@ -72,15 +67,16 @@ export default function AddMaterialGroup({method, createItem, updateItem, getIte
       accessor: 'choose',
       render: (_, row) => (
         <button
+          key={`select-${row.id}-${selectedIds.includes(row.id)}`} // fuerza re-render si cambia
           type="button"
           className={`button-table ${selectedIds.includes(row.id) ? 'choosed' : ''}`}
           onClick={() => {
-            setSelectedIds((prev) =>
-              prev.includes(row.id)
-                ? prev.filter((id) => id !== row.id) // desmarca si ya estaba
-                : [...prev, row.id] // marca si no estaba
-            );
-            console.log('Elegidos:', [...selectedIds, row.id]);
+            setSelectedIds(prev => {
+              const updated = prev.includes(row.id)
+                ? prev.filter(id => id !== row.id)
+                : [...prev, row.id];
+              return updated;
+            });
           }}
         >
           <img src={ChooseIcon} alt="Elegir" />
@@ -91,10 +87,9 @@ export default function AddMaterialGroup({method, createItem, updateItem, getIte
 
   return (
     <>
-      {popupView === 'default' && (
         <div className='author-books-container add-material-container'>
           <div className='main-author-books'>
-            <div className='add-loan-form-inputs'>
+            <div className='add-loan-form-inputs add-material-inputs'>
               <div className='add-loan-retire-date'>
                 <label>Grupo</label>
                 <input type='text' value={group} onChange={(e) => setGroup(e.target.value)}/>
@@ -113,16 +108,14 @@ export default function AddMaterialGroup({method, createItem, updateItem, getIte
                 </div>
             </div>
             <div className='save-changes-lend-books'>
-                  <Btn text={'Guardar'} onClick={() => {
+                  <Btn variant={'primary'} text={'Guardar'} onClick={() => {
                     setConfirmSaveChangesPopup(true)
                     }} icon={<img src={SaveIcon} alt='saveIconButton'/> }/>
             </div>
           </div>
           {confirmSaveChanges && (
-            <PopUp>
-              <ConfirmMessage text={'¿Está seguro de guardar el nuevo prestamo?'} closePopup={() => setConfirmSaveChangesPopup(false)} onConfirm={() => {
-                
-
+            <PopUp title='Grupo de material' onClick={() => setConfirmSaveChangesPopup(false)}>
+              <ConfirmMessage text={'¿Está seguro de guardar el nuevo grupo?'} closePopup={() => setConfirmSaveChangesPopup(false)} onConfirm={() => {
                 if(method === 'add') {
                   handleAddItem();
                 }
@@ -131,11 +124,12 @@ export default function AddMaterialGroup({method, createItem, updateItem, getIte
                 }
 
                 setConfirmSaveChangesPopup(false);
-                }}/>
+                }
+                }/>
             </PopUp>
           )}
         </div>
-      )}
+
     </>
   );
 }

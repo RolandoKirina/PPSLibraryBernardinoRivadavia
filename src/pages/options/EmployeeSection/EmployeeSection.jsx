@@ -19,29 +19,8 @@ export default function EmployeeSection() {
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
     const [selected, setSelected] = useState(false);
-    const [detailsData, setDetailsData] = useState(null);
     const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockEmployees, 'employees');
     
-    function getDetailsData(data) {
-        let detailsData = getItem(data.id);
-        setDetailsData(detailsData);
-    }
-
-    function redirect(action){
-         switch(action){
-            // case 'add':{
-            //     let title ="Empleados";
-            //     window.open(`${window.location.origin}/employees/register`, '_blank',title);
-            //     break;
-            // }
-            case 'edit':{
-                let title ="Editar Empleado";
-                window.open(`${window.location.origin}/employees/edit-employee`, '_blank',title);
-                break;
-            }
-        }
-    }
-
      const employeePopups = [
                 {
                     key: 'deletePopup',
@@ -61,7 +40,7 @@ export default function EmployeeSection() {
                     key: 'detailsPopup',
                     title: 'Detalles del préstamo',
                     className: '',
-                    content: <ShowDetails data={detailsData} detailsData={employeeDetails} isPopup={true} />,
+                    content: <ShowDetails data={selected} detailsData={employeeDetails} isPopup={true} />,
                     close: () => setDetailsPopup(false),
                     condition: detailsPopup
                 },
@@ -117,7 +96,6 @@ export default function EmployeeSection() {
             <button className="button-table" onClick={() => {
                 setDetailsPopup(true)
                 setSelected(row)
-                getDetailsData(row)
             }}>
                 <img src={DetailsIcon} alt="Detalles" />
             </button>
@@ -129,7 +107,7 @@ export default function EmployeeSection() {
     return (
         <>
             <GenericSection title={'Listado de empleados'} columns={columns} data={items} popups={employeePopups} actions={
-                <Btn className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg'/>}/>
+                <Btn variant={'primary'} className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg'/>}/>
             }/>
         </>
     )

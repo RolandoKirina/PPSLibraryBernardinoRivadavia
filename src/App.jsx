@@ -1,4 +1,3 @@
-import RegisterEmployee from './pages/options/RegisterEmployee/RegisterEmployee.jsx';
 import BookSection from './pages/BookSection/BookSection.jsx';
 import Layout from './layout/Layout';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -31,8 +30,6 @@ function App() {
           <Route path='/' element={<Layout />}> 
              <Route path='/dashboard' element={<Dashboard/>}/>
             <Route path='/employees' element={<EmployeeSection/>}/>
-            <Route path='/employees/register' element={<RegisterEmployee mode={'add'}/>}/>
-            <Route path='/employees/edit-employee' element={<RegisterEmployee mode={'edit'}/>}/>
             <Route path='/loans' element={<LoanSection openRenewes={false}/>}/>
             <Route path='/loans/renewes' element={<LoanSection openRenewes={true}/>}/>
             <Route path='/loans/filters/partner' element={<LoanSection openRenewes={false} pendientBooks={true}/>}/>

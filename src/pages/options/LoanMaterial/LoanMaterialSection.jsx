@@ -94,7 +94,7 @@ export default function LoanMaterialSection() {
     return (
         <>
             <GenericSection title={'Listado de material en préstamo'} columns={columns} data={items} popups={loanMaterialsPopups} actions={
-                <Btn className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg'/>}/>
+                <Btn variant={'primary'} className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg'/>}/>
             }/>
         </>
     )

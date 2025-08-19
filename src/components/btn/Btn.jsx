@@ -1,5 +1,5 @@
 
-export default function Btn({ text, icon, onClick, variant }) {
+export default function Btn({ type = 'button', text, icon, onClick, variant }) {
 
   //puse 4 diferentes tipos
   const variantClasses = {
@@ -18,7 +18,7 @@ export default function Btn({ text, icon, onClick, variant }) {
   const variantClass = variantClasses[variant] || variantClasses.default;
   return (
     <button
-
+      type={type}
       className={`my-button ${variantClass}`}
       onClick={onClick}
     >

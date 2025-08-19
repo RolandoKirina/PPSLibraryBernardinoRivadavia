@@ -59,7 +59,6 @@
 }
 
 .generic-btn-save button {
-  height: 2.5em;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
@@ -68,7 +67,7 @@
   border-radius: 0.8em;
   letter-spacing: 0.10em;
   color: var(--white);
-  border: 0.15em solid var(--sucess);
+  border: 0;
 }
 
 .generic-btn-save button:hover {

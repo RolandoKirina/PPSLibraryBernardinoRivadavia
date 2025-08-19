@@ -22,7 +22,6 @@ export const books = [
 ];
 
 
-
 export const mockAuthors = [
   {
     id: '1',
