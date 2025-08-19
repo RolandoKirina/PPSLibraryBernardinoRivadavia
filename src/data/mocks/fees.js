@@ -1,41 +1,83 @@
 export const fees = [
+  { 
+    id: 1,
+    id_socio: 23,
+    month: 6,
+    year: 2024,
+    amount: 50,
+    paid: true,
+    date_of_paid: "20/07/2024",
+    observation: "Pagada"
+  }
+];
 
-    { 
-    id: 1, 
-    title: 'El principito', 
-    code_inventory: 202, 
-    codeCDU: 108,
-    editorial:'Planeta',
-    nro_edition: 1,
-    traductor:"javier ondicol",
-    pages: 3,
-    cod_clas: 37,
-    cod_rcdu:-4,
-    number_of_copies: 5,
-    notes: "lorem impsus",
-    type: 44,
-    cod_ling: "A 14",
-    authors:[
-            {
-                 id: 1,
-                name: "Antoine",
-                surname: "de Saint-Exupéry"
-            },
-            {
-                 id: 2,
-                name: "Otro",
-                surname: "Colaborador"
-            }
-    ],
-    id_supplier: 1,
-    invoice_number: 1232,
-    date_of_buy: "23/07/2004",
-    loss_date: "23/07/2008",
-    lost_partner_number: 1,
-    lost: true
+export const paidFees = [
+  { 
+    id: 1,
+    id_socio: 23,
+    month: 5,
+    year: 2004,
+    amount: 100,
+    paid: true,
+    date_of_paid: "23/07/2004",
+    observation: "Pagada"
+  },
+  { 
+    id: 2,
+    id_socio: 12,
+    month: 8,
+    year: 2005,
+    amount: 120,
+    paid: true,
+    date_of_paid: "15/08/2005",
+    observation: "Pagada"
+  },
+  { 
+    id: 3,
+    id_socio: 15,
+    month: 1,
+    year: 2006,
+    amount: 80,
+    paid: true,
+    date_of_paid: "01/01/2006",
+    observation: "Pagada"
+  },
 
 
-    // place_edition
-    //ubication
-    }
+];
+
+export const unpaidFees = [
+  { 
+    id: 1,
+    id_socio: 33,
+    month: 2,
+    year: 2007,
+    amount: 90,
+    paid: false,
+    date_of_paid: null,
+    observation: "Impaga"
+  }
+];
+
+export const newFees = [
+  { 
+    id: 1,
+    id_socio: 44,
+    month: 10,
+    year: 2025,
+    amount: 110,
+    paid: false,
+    date_of_paid: null,
+    observation: "Nueva"
+  },
+  { 
+    id: 2,
+    id_socio: 55,
+    month: 8,
+    year: 2025,
+    amount: 95,
+    paid: false,
+    date_of_paid: null,
+    observation: "Nueva"
+  }
 ];

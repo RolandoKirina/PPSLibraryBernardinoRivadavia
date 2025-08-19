@@ -1,0 +1,60 @@
+.cardfees-container{
+    display: flex;
+    justify-content: space-evenly;
+    background-color: var(--white);
+    padding: 1em;
+    width: 55em;
+    height: auto;
+}
+.cardfee{
+    background-color: var(--primary);
+    border: 1px solid var(--primary-light-2);
+    border-radius: 0.5em;
+    padding: 0em 1em 1em 1em;
+    width: 16em;
+    max-height: 32em; 
+    box-sizing: border-box; 
+
+}
+
+.title-fee{
+    text-align:left;
+}
+
+
+ul{
+    list-style: none;
+}
+
+.form-fee{
+    display: flex;
+    flex-direction: column; 
+}
+.form-fee input{
+    margin: 0.5em 0;
+}
+li{
+    
+    margin:1em 0em;
+}
+
+
+.container-form-fee, .fee{
+    background-color: var(--primary-light-2);
+    padding: 0.25em;
+    border-radius: 0.5em;
+}
+
+label {
+    margin: 0;
+}
+
+.fee:hover {
+      
+  background: #6b44dd;
+}
+
+.fee.selected {
+  border: 2px solid #fff;  /* marco de selección */
+  background: #372088;
+}

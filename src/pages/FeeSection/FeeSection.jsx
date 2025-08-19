@@ -1,4 +1,4 @@
-import BookFilter from  '../../components/bookfilter/BookFilter.jsx';
+import FeeFilter from  '../../components/feefilter/FeeFilter.jsx';
 import{ useEntityManager} from '../../hooks/useEntityManager.js';
 
 import { useState } from 'react';
@@ -10,19 +10,24 @@ import DeleteIcon from '../../assets/img/delete-icon.svg';
 import EditIcon from '../../assets/img/edit-icon.svg';
 import DetailsIcon from '../../assets/img/details-icon.svg';
 import ShowDetails from '../../components/generic/ShowDetails/ShowDetails.jsx';
+import Btn from '../../components/btn/Btn.jsx';
+import CardFees from '../../components/CardFees/CardFees.jsx';
+import { paidFees } from '../../data/mocks/fees.js';
+import { unpaidFees } from '../../data/mocks/fees.js';
+import { newFees } from '../../data/mocks/fees.js';
 export const FeeSection = () => {
 
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [PopUpEdit,setPopupEdit]=useState(false);
-  const [PopUpAdd,setPopupAdd]=useState(false);
-  const [PopUpDelete,setPopUpDelete]=useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [PopUpEdit,setPopupEdit]=useState(false);
+    const [PopUpAdd,setPopupAdd]=useState(false);
+    const [PopUpDelete,setPopUpDelete]=useState(false);
 
- const [PopUpDetail,setPopUpDetail]=useState(false);
+    const [PopUpDetail,setPopUpDetail]=useState(false);
 
-  const {items,getItem,createItem,updateItem,deleteItem} = useEntityManager(fees, "fees");
+    const[PopUpPaidFees,setPopUpPaidFees]=useState(false);
 
+    const {items,getItem,createItem,updateItem,deleteItem} = useEntityManager(fees, "fees");
 
-  
     const columns = [
       { header: 'Numero de cuota', accessor: 'numberofFee' },
       { header: 'Nombre de socio', accessor: 'partnerName' },
@@ -72,6 +77,13 @@ export const FeeSection = () => {
     ];
 
 
+    const paidfeescolumns = [
+      { header: 'Cuotas pagadas', accessor: 'numberofFee' },
+      { header: 'Cuotas impagas', accessor: 'partnerName' },
+      { header: 'Cuotas nuevas', accessor: 'paidfees' },
+    ];
+
+    
   const feesPopUp=[
       {
           key: 'deletePopup',
@@ -104,27 +116,32 @@ export const FeeSection = () => {
         close: () => setPopupAdd(false),
         condition: PopUpAdd
       },
-    
-  
-  
-   {
+      {
         key: 'SeeDetail',
         title: 'Ver detalle',
         content: <ShowDetails isPopup={true} detailsData={<h1>adszxzvx</h1>}/>,
         close: () => setPopUpDetail(false),
         condition: PopUpDetail
+      },
+      {
+        key: 'PaidFees',
+        title: 'Cuotas pagas',
+        content: <CardFees></CardFees>,
+        close: () => setPopUpPaidFees(false),
+        condition: PopUpPaidFees
       }
     ]
 
      return (
         <>
         
-          <GenericSection title="Listado de cuotas" filters={<BookFilter/>} 
+          <GenericSection title="Listado de cuotas" filters={<FeeFilter/>} 
           columns={columns} data={items} popups={feesPopUp}
-       
+          actions={          
+          <Btn text="Cuotas pagas" variant="primary" onClick={() => setPopUpPaidFees(true)}></Btn>
+          }
           
           ></GenericSection>
-    
     
     
     

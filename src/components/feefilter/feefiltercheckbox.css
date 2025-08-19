@@ -1,0 +1,10 @@
+.feefiltercheckbox{
+    display: flex;
+    align-items: center;
+
+    gap: 0.5em;
+}
+
+.color-secondary{
+    color: var(--secondary-light-2);
+}
