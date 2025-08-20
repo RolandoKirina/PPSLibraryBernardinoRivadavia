@@ -3,6 +3,8 @@
   flex-direction: row;
   width: 100%;
   color: var(--white);
+  /* min-height: 100vh;  */
+  min-height: 75vh;
 }
 
 .genericfilters {

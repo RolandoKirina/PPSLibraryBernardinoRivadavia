@@ -21,3 +21,11 @@
 .return-all-size {
     width: 50em;
 }
+
+.return-form-content .add-book-to-lend {
+    margin-bottom: 1em;
+}
+
+.return-form-content .search-partner-container {
+    margin-top: 0;
+}

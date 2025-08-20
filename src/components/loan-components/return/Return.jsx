@@ -79,7 +79,7 @@ export default function Return() {
                       title: 'Confirmar Cambios',
                       className: '',
                       content: <ConfirmMessage text={'¿Esta seguro de confirmar los cambios?'} closePopup={() => setConfirmSaveChangesPopup(false)} onConfirm={() => {
-
+                        
                       }}/>,
                       close: () => setConfirmSaveChangesPopup(false),
                       condition: confirmSaveChangesPopup
@@ -157,13 +157,6 @@ export default function Return() {
 
                             <div className='add-book-to-lend'>
                                 <Btn text={'Devolver todos'} onClick={() => setConfirmReturnAllPopup(true)} /> 
-                            </div>
-
-                            <div className='save-changes-lend-books'>
-                                <Btn type={'button'} text={'Guardar'} onClick={() => {
-                                    setConfirmSaveChangesPopup(true)
-                
-                                    }} icon={<img src={SaveIcon} alt='saveIconButton'/> }/>
                             </div>
 
                             {returnBooksPopups.map(({ condition, title, className, content, close, variant }, idx) => (

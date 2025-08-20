@@ -27,8 +27,11 @@ export default function Sidebar({ isOpen }) {
     return (  
         <>
           <nav className={`sidebar ${isOpen ? 'sidebar-active' : ''}`}>
-            <h3><strong>Javier Ondicol</strong></h3>
-            <h3>Administrador</h3>
+            <div className='sidebar-user-name'>    
+              <h3><strong>Javier Ondicol</strong></h3>
+              <h3>Administrador</h3>
+            </div>
+    
                     <ul className="listsidebar">
                         <li><div className='iconssidebar'><img src={loan} alt="Prestamos" /></div> <a href="/loans">Prestamos</a></li>
                         <li><div className='iconssidebar'><img src={book} alt="Libros" /></div> <a href="/books">Libros</a></li>

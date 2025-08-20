@@ -1,0 +1,138 @@
+.login-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.login-content {
+    width: 90%;
+    height: 90%;
+    display: flex;
+    align-items: center;
+    border-radius: 1em;
+    justify-content: space-between;
+
+}
+
+.login-presentation {
+    width: 50%;
+    height: 100%;
+    background-color: var(--primary-dark-2);
+    border-radius: 1em;
+    margin-right: 1em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}   
+
+.login-title {
+    text-align: center;
+    height: 40%;
+    display: flex;
+    align-items: center;
+    margin: 0 1em;
+    border-radius: 1em;
+    width: 100%;
+    justify-content: center;
+}
+
+.login-title h2 {
+    font-size: 3em;
+    color: var(--secondary-light-2);
+}
+
+.login-info {
+    height: 60%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 1em;
+    flex-direction: column;
+    width: 80%;
+}
+
+.login-info p {
+    font-size: 1.5em;
+    color: var(--white);
+}
+
+.login-info-img {
+    width: 30%;
+    height: 2em;
+    margin-top: 1em;
+    height: 5em;
+}
+
+.login-info-img img {
+    width: 100%;
+    height: 100%;
+}
+
+.haveAccount {
+    margin-top: 1em;
+}
+
+.haveAccount a {
+    color: var(--secondary-light-2);
+    font-size: 1em;
+}
+
+.login-form {
+    width: 50%;
+    height: 100%;
+    background-color: var(--white);
+    border-radius: 1em;
+    border: 0.6em solid var(--black);
+}
+
+
+.login-inputs {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.login-form-title {
+    height: 25%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--black);
+}
+
+.login-form-title h3 {
+    font-size: 2.5em;
+}
+
+.login-form form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 75%;
+}
+
+
+.login-form form .input {
+    width: 70%;
+    color: var(--black);
+}
+
+.login-form form .input:has(> input:focus) > label {
+    color: var(--primary-light-2);
+}
+
+.login-form form .input label {
+    font-size: 1.25em;
+}
+
+.login-form form .input input {
+    margin-top: 0.5em;
+    height: 2.5em;
+}

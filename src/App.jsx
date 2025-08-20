@@ -22,6 +22,8 @@ import Signature from './components/signature/Signature.jsx';
 import PartnerSection from './pages/PartnerSection/PartnerSection.jsx';
 import OptionSection from './pages/OptionSection/OptionSection.jsx';
 import FeeSection from './pages/FeeSection/FeeSection.jsx';
+import LoginSection from './pages/options/LoginSection/LoginSection.jsx';
+
 function App() {
   return (
     <>
@@ -30,6 +32,7 @@ function App() {
           <Route path='/' element={<Layout />}> 
              <Route path='/dashboard' element={<Dashboard/>}/>
             <Route path='/employees' element={<EmployeeSection/>}/>
+            <Route path='/login' element={<LoginSection/>}/>
             <Route path='/loans' element={<LoanSection openRenewes={false}/>}/>
             <Route path='/loans/renewes' element={<LoanSection openRenewes={true}/>}/>
             <Route path='/loans/filters/partner' element={<LoanSection openRenewes={false} pendientBooks={true}/>}/>

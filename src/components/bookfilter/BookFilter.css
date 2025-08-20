@@ -2,6 +2,7 @@
   background-color: var(--primary-dark-1);
   color: var(--white);
   width: 15%;
+  min-height: 75vh;
 }
 
 .book-filter-title {

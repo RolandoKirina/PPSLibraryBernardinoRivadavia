@@ -22,7 +22,8 @@ export default function GenericForm({ fields, onSubmit, title, children, classNa
   };
 
   return (
-    <div className={`generic-form-container${className ? ` ${className}` : ''}`}>      <div className="generic-form">
+    <div className={`generic-form-container${className ? ` ${className}` : ''}`}>      
+      <div className="generic-form">
         {title && (
           <div className="generic-form-title">
             <h2>{title}</h2>
