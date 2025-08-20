@@ -30,7 +30,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<Layout />}> 
-             <Route path='/dashboard' element={<Dashboard/>}/>
+            <Route index element={<LoginSection />} />
+            <Route path='/dashboard' element={<Dashboard/>}/>
             <Route path='/employees' element={<EmployeeSection/>}/>
             <Route path='/login' element={<LoginSection/>}/>
             <Route path='/loans' element={<LoanSection openRenewes={false}/>}/>
