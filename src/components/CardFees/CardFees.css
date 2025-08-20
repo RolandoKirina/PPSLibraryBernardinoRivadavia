@@ -1,13 +1,14 @@
 .cardfees-container{
     display: flex;
     justify-content: space-evenly;
-    background-color: var(--white);
+    background-color: var(--primary-dark-2);
     padding: 1em;
     width: 55em;
     height: auto;
 }
 .cardfee{
-    background-color: var(--primary);
+    color: var(--black);
+    background-color: var(--white);
     border: 1px solid var(--primary-light-2);
     border-radius: 0.5em;
     padding: 0em 1em 1em 1em;
@@ -18,7 +19,7 @@
 }
 
 .title-fee{
-    text-align:left;
+    text-align:center;
 }
 
 
@@ -39,9 +40,9 @@ li{
 }
 
 
-.container-form-fee, .fee{
-    background-color: var(--primary-light-2);
-    padding: 0.25em;
+.fee{
+    border: 2px solid var(--primary);
+    padding:1em;
     border-radius: 0.5em;
 }
 
@@ -51,10 +52,11 @@ label {
 
 .fee:hover {
       
-  background: #6b44dd;
+  background: var(--primary-light-2);
 }
 
 .fee.selected {
-  border: 2px solid #fff;  /* marco de selección */
-  background: #372088;
+  border: 4px solid var(--primary-light-2);  /* marco de selección */
+  background: var(--secondary-dark-2);
 }
+
