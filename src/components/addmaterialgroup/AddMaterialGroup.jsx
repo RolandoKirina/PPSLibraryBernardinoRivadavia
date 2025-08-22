@@ -90,11 +90,11 @@ export default function AddMaterialGroup({method, createItem, updateItem, getIte
         <div className='author-books-container add-material-container'>
           <div className='main-author-books'>
             <div className='add-loan-form-inputs add-material-inputs'>
-              <div className='add-loan-retire-date'>
+              <div className='add-loan-retire-date input'>
                 <label>Grupo</label>
                 <input type='text' value={group} onChange={(e) => setGroup(e.target.value)}/>
               </div>
-              <div className='add-loan-retire-date'>
+              <div className='add-loan-retire-date input'>
                 <label>Cantidad</label>
                 <input type='number' value={amount} onChange={(e) => setAmount(e.target.value)}/>
               </div>

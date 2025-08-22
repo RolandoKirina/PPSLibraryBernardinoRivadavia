@@ -1,4 +1,9 @@
 .backview-btn {
-    top: 0;
+    top: 0.5em;
     position: absolute;
+    margin-top: 0;
+}
+
+.backview-btn button {
+    color: var(--white);
 }

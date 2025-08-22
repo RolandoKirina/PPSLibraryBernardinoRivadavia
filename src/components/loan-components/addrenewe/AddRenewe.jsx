@@ -144,19 +144,19 @@ function handleSaveChanges() {
             <h3>Datos de la reserva</h3>
           </div>
           <div className='add-loan-form-inputs'>
-            <div className='add-loan-retire-date'>
+            <div className='add-loan-retire-date input'>
               <label>Numero</label>
               <input type='text' name='partnerNumber' value={reneweData.partnerNumber} onChange={handleOnChange}/>
             </div>
-            <div className='add-loan-retire-date'>
+            <div className='add-loan-retire-date input'>
               <label>Apellido, Nombre</label>
               <input type='text' name='partnerFullName' value={reneweData.partnerFullName} onChange={handleOnChange}/>
             </div>
-            <div className='add-loan-retire-date'>
+            <div className='add-loan-retire-date input'>
               <label>Fecha reserva</label>
               <input type='date' name='reneweDate' value={reneweData.reneweDate}  onChange={handleOnChange}/>
             </div>
-            <div className='add-loan-retire-date'>
+            <div className='add-loan-retire-date input'>
               <label>Fecha promesa</label>
               <input type='date' name='expectedDate' value={reneweData.expectedDate}  onChange={handleOnChange}/>
             </div>

@@ -18,6 +18,8 @@ import AddRenewe from '../addrenewe/AddRenewe.jsx';
 import { useEntityManager } from '../../../hooks/useEntityManager.js';
 import { mockRenewes } from '../../../data/mocks/loans.js';
 
+import { authMock } from '../../../data/mocks/authMock.js';
+
 
 export default function Renewe({title, isPopup}) {
     const [deletePopup, setDeletePopup] = useState(false);
@@ -49,48 +51,61 @@ export default function Renewe({title, isPopup}) {
         },
     ];
     
-        const columns = [
-        { header: 'Número socio', accessor: 'partnerNumber' },
-        { header: 'Socio', accessor: 'partnerFullName' },
-        { header: 'Titulo libro', accessor: 'bookTitle' },
-        {
-            header: 'Borrar',
-            accessor: 'delete',
-            render: (_, row) => (
-            <button className="button-table" onClick={() => {
-                setDeletePopup(true)
-                setSelected(row)
-                }}>
-                <img src={DeleteIcon} alt="Borrar" />
-            </button>
-            )
-        },
-        {
-            header: 'Editar',
-            accessor: 'edit',
-    
-            render: (_, row) => (
-            <button className="button-table"  onClick={() => {
-                setSelected(row)
-                setPopupView('editForm')
-                }}>
-                <img src={EditIcon} alt="Editar" />
-            </button>
-            )
-        },
-        {
-            header: 'Ver detalle',
-            accessor: 'details',
-            render: (_, row) => (
-            <button className="button-table" onClick={() => {
-                setPopupView('details')
-                setSelected(row);
-                }}>
-                <img src={DetailsIcon} alt="Detalles" />
-            </button>
-            )
-        }
-    ];
+    let columns = [];
+
+    if(authMock.role === 'admin') {
+        columns = [
+            { header: 'Número socio', accessor: 'partnerNumber' },
+            { header: 'Socio', accessor: 'partnerFullName' },
+            { header: 'Titulo libro', accessor: 'bookTitle' },
+            {
+                header: 'Borrar',
+                accessor: 'delete',
+                render: (_, row) => (
+                <button className="button-table" onClick={() => {
+                    setDeletePopup(true)
+                    setSelected(row)
+                    }}>
+                    <img src={DeleteIcon} alt="Borrar" />
+                </button>
+                )
+            },
+            {
+                header: 'Editar',
+                accessor: 'edit',
+        
+                render: (_, row) => (
+                <button className="button-table"  onClick={() => {
+                    setSelected(row)
+                    setPopupView('editForm')
+                    }}>
+                    <img src={EditIcon} alt="Editar" />
+                </button>
+                )
+            },
+            {
+                header: 'Ver detalle',
+                accessor: 'details',
+                render: (_, row) => (
+                <button className="button-table" onClick={() => {
+                    setPopupView('details')
+                    setSelected(row);
+                    }}>
+                    <img src={DetailsIcon} alt="Detalles" />
+                </button>
+                )
+            }
+        ];
+    }
+    else if(authMock.role === 'reader') {
+        columns = [
+            { header: 'Titulo libro', accessor: 'bookTitle' },
+            { header: 'Fecha reserva', accessor: 'reneweDate' },
+            { header: 'Fecha limite', accessor: 'expectedDate' }
+        ];        
+    }
+
+
 
     return (
         <>
@@ -102,21 +117,21 @@ export default function Renewe({title, isPopup}) {
                                 <h2>Filtros</h2>
                             </div>
                             <div className='renewe-input'>
-                            <div>
+                            <div className='input'>
                                 <label>Codigo libro</label>
                                 <input type='number' />
                             </div>
-                                <div>
+                            <div className='input'>
                                 <label>Título libro</label>
                                 <input type='text' />
                             </div>   
                         </div>
                         <div className='renewe-input'>
-                            <div>
+                            <div className='input'>
                                 <label>Fecha de devolución</label>
                                 <input type='date' />
                             </div>
-                            <div>
+                            <div className='input'>
                                 <label>Fecha reserva</label>
                                 <input type='date' />
                             </div>   
@@ -130,9 +145,12 @@ export default function Renewe({title, isPopup}) {
                                 </h2>
                             </div>
                             <Table columns={columns} data={reneweItems}> 
+                                {authMock.role === 'admin' && (
                                 <div className='add-renew-btn'>
                                     <Btn variant={'primary'} text={'Nueva reserva'}  onClick={() => setPopupView('addRenewe')} icon={<img src={PlusIcon} alt={PlusIcon}/>}/>
                                 </div>
+                                )} 
+
                             </Table>
                         </div>
 

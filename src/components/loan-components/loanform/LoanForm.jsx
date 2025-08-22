@@ -209,7 +209,7 @@ const handleChange = (e) => {
                 </div>
               </div>
 
-              <div className='add-loan-code-employee'>
+              <div className='add-loan-code-employee input'>
                 <label>Código Empleado</label>
                 <input
                   type='number'
@@ -220,7 +220,7 @@ const handleChange = (e) => {
                 <span className='found'>Fortunato, Jorge</span>
               </div>
 
-              <div className='add-loan-retire-date'>
+              <div className='add-loan-retire-date input'>
                 <label>Fecha de retiro</label>
                 <input
                   type='date'
@@ -230,7 +230,7 @@ const handleChange = (e) => {
                 />
               </div>
 
-              <div className='add-loan-retire-date'>
+              <div className='add-loan-retire-date input'>
                 <label>Fecha prevista</label>
                 <input
                   type='date'

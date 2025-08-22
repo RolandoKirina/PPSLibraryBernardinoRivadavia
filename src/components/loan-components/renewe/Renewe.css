@@ -7,6 +7,10 @@
     background-color: var(--primary-dark-2);
 }
 
+.renewe-container .content-table {
+    margin-bottom: 1em;
+}
+
 .renewe-input {
   display: flex;
   gap: 2em;

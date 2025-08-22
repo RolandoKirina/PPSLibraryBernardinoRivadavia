@@ -50,19 +50,15 @@
 .library-books {
     height: 100%;
     width: 45%;
-      max-height: 70vh;         /* Ajustá según el diseño */
-  overflow-y: auto;  
 }
 
 .renewe-books {
     height: 100%;
-    width: 45%;
-    max-height: 70vh;         /* Ajustá según el diseño */
-    overflow-y: auto;  
+    width: 45%;  
 }
 
 .main-renewe-btns {
-    width: 98%;
+    width: 100%;
     display: flex;
     margin-top: 1em;
     height: 100%;
@@ -87,3 +83,21 @@
     width: 100%;
     color: var(--secondary-light-2);
 }
+
+.renewe-container .details-container {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+.renewe-books-container .content-table {
+    padding: 0;
+}
+
+.renewe-books-container .content-table .table {
+    width: 100%;
+}
+
+.renewe-books-container .pagination {
+    width: 100%;
+}
+

@@ -16,6 +16,8 @@ import { booksAuthor } from '../../../data/mocks/authors';
 import { useEntityManager } from '../../../hooks/useEntityManager';
 import { books } from '../../../data/mocks/authors';
 
+import { authMock } from '../../../data/mocks/authMock';
+
 export default function AuthorBooks({authorSelected, deleteAuthorSelected, updateAuthorSelectedBooks, menu, method, createAuthorItem, updateAuthorItem}) {
     const [seeAllButton, setSeeAllButton] = useState('Prestados');
     const [confirmPopup, setConfirmPopup] = useState(false);
@@ -27,6 +29,8 @@ export default function AuthorBooks({authorSelected, deleteAuthorSelected, updat
         nationality: '',
         books: []
     });
+
+    console.log(authorSelected);
 
     function handleAuthorChange(e) {
         const { name, value } = e.target;
@@ -102,37 +106,29 @@ export default function AuthorBooks({authorSelected, deleteAuthorSelected, updat
 
     }
 
-    
-    const mainAuthorBooksColumns = [
+    let mainAuthorBooksColumns = [];
+
+    if(authMock.role === 'admin') {
+    mainAuthorBooksColumns = [
             { header: 'Código del libro', accessor: 'bookCode' },
             { header: 'Título', accessor: 'bookTitle' },
             { header: 'Posición', accessor: 'position' },
             { header: 'Codclass', accessor: 'codClass' },
             { header: 'Codrcdu', accessor: 'codRcdu' },
-            { header: 'CodLing', accessor: 'codLing' },
-            {
-                header: 'Editar',
-                accessor: 'edit',
-                render: (_, row) => (
-                 <button type='button' className="button-table" onClick={() => setPopupView('editBookForm')}>
-                    <img src={EditIcon} alt="Editar" />
-                </button>
-                )
-            },
-            {
-                header: 'Borrar',
-                accessor: 'delete',
-                render: (_, row) => (
-                    <button type='button' className="button-table" onClick={() => {
-                setDeletePopup(true)
-                setSelected(row)
-                console.log(row)  
-                }}>
-                    <img src={DeleteIcon} alt="Borrar" />
-                </button>
-                )
-            },
+            { header: 'CodLing', accessor: 'codLing' }
     ];
+    }
+    else if(authMock.role === 'reader') {
+     mainAuthorBooksColumns = [
+            { header: 'Código del libro', accessor: 'bookCode' },
+            { header: 'Título', accessor: 'bookTitle' },
+            { header: 'Posición', accessor: 'position' },
+            { header: 'Codclass', accessor: 'codClass' },
+            { header: 'Codrcdu', accessor: 'codRcdu' },
+            { header: 'CodLing', accessor: 'codLing' }
+    ];       
+    }
+
 
     const authorBooksColumns = [ //igual que mainAuthorBooksColumns pero solo se muestran 3 columnas
             { header: 'Código del libro', accessor: 'bookCode' },
@@ -221,13 +217,22 @@ export default function AuthorBooks({authorSelected, deleteAuthorSelected, updat
                             <h3>Datos del autor</h3>
                         </div>
                         <div className='add-loan-form-inputs'>
-                            <div className='add-loan-retire-date'>
+                            <div className='add-loan-retire-date input'>
                                 <label>Nombre</label>
+                                {authMock.role === 'admin' ? (
                                 <input type='text' name='authorName' value={authorData.authorName} onChange={handleAuthorChange}/>
+                                ): (
+                                <p className='readonly-field'>{authorSelected.authorName}</p>
+                                )}
+
                             </div>
-                            <div className='add-loan-retire-date'>
+                            <div className='add-loan-retire-date input'>
                                 <label>Nacionalidad</label>
+                                {authMock.role === 'admin' ? (
                                 <input type='text' name='nationality' value={authorData.nationality} onChange={handleAuthorChange}/>
+                                ): (
+                                <p className='readonly-field'>{authorSelected.nationality}</p>
+                                )}
                             </div>
                         </div>
                         <div className='author-books-title'>
@@ -235,13 +240,21 @@ export default function AuthorBooks({authorSelected, deleteAuthorSelected, updat
                         </div>
                         <Table columns={mainAuthorBooksColumns} data={method==='update' ? authorSelected.books : authorData.books}>
                             <div className='main-author-btns'>
+                                {authMock.role === 'admin' && (
                                 <Btn variant={'primary'} onClick={() => setPopupView('addBook')} text={'Administrar libros'}/>
+                                )}
+
                                 <Btn variant={'primary'} text={seeAllButton} onClick={() => handleSetAllbutton()}/>
                             </div>
                         </Table>
+                        {method === 'add' && (
                         <div className='save-changes-lend-books'>
-                         <Btn text={'Guardar'} onClick={() => setConfirmPopup(true)} icon={<img src={SaveIcon} alt='saveIconButton'/> }/>
+                            {authMock.role == 'admin' && (
+                                <Btn text={'Guardar'} onClick={() => setConfirmPopup(true)} icon={<img src={SaveIcon} alt='saveIconButton'/> }/>
+                            )}
                         </div>
+                        )}
+
                     {authorBooksPopups.map(({ condition, title, className, content, close, variant }, idx) => (
                                         condition && (
                                             <PopUp

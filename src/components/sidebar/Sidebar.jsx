@@ -5,6 +5,7 @@ import fee from '../../assets/img/fee-icon.svg';
 import author from '../../assets/img/author-icon.svg'
 import options from '../../assets/img/options-icon.svg';
 import partner from '../../assets/img/options-icon.svg';
+import { authMock } from '../../data/mocks/authMock';
 
 import { useEffect } from 'react';
 
@@ -29,14 +30,21 @@ export default function Sidebar({ isOpen }) {
           <nav className={`sidebar ${isOpen ? 'sidebar-active' : ''}`}>
             <div className='sidebar-user-name'>    
               <h3><strong>Javier Ondicol</strong></h3>
+              {authMock.role === 'admin' ? (
               <h3>Administrador</h3>
+              ): (
+              <h3>Lector</h3>
+              )}
+
             </div>
     
                     <ul className="listsidebar">
                         <li><div className='iconssidebar'><img src={loan} alt="Prestamos" /></div> <a href="/loans">Prestamos</a></li>
                         <li><div className='iconssidebar'><img src={book} alt="Libros" /></div> <a href="/books">Libros</a></li>
                         <li><div className='iconssidebar' ><img src={author} alt="Autor" /></div> <a href="/authors">Autor</a></li>
+                        {authMock.role === 'admin' && (
                         <li><div className='iconssidebar'><img src={partner} alt="Socio" /></div> <a href="/partners">Socios </a></li>
+                        )}
                         <li><div className='iconssidebar'><img src={fee} alt="Socio" /></div> <a href="/fees">Cuotas</a></li>
                         <li><div className='iconssidebar'><img src={options} alt="Opciones" /></div> <a href="/options">Opciones</a></li>
                     </ul>

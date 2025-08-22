@@ -9,6 +9,10 @@
     width: 68em;
 }
 
+.add-loan-form-content .input:has(> input:focus) > label {
+    color: var(--secondary-light-2);
+}
+
 .add-loan-form-close-btn img, .edit-loan-form-close-btn img {
     width: 100%;
     height: 100%;

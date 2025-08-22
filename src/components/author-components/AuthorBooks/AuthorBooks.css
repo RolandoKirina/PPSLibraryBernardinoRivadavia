@@ -10,6 +10,10 @@
     padding-right: 1em;  
 }
 
+.author-books-container .input:has(> input:focus) > label {
+    color: var(--secondary-light-2);
+}
+
 .author-books-title {
     margin-top: 1em;
  }

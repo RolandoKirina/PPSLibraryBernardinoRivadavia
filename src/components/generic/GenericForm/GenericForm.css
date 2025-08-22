@@ -7,6 +7,10 @@
   border-radius: 0.2em;
 }
 
+.generic-inputs-width .input:has(> input:focus) > label {
+  color: var(--secondary-light-2);
+}
+
 .generic-form {
   margin-top: 1em;
   width: 90%;

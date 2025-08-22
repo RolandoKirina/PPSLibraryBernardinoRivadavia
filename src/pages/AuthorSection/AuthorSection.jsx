@@ -13,6 +13,8 @@ import AuthorBooks from '../../components/author-components/AuthorBooks/AuthorBo
 import { useEntityManager } from '../../hooks/useEntityManager';
 import { mockAuthors } from '../../data/mocks/authors';
 
+import { authMock } from '../../data/mocks/authMock';
+
 export default function AuthorSection() {
     const [deletePopup, setDeletePopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
@@ -85,38 +87,61 @@ export default function AuthorSection() {
             }
     ];
 
-    const columns = [
-        { header: 'Nombre', accessor: 'authorName' },
-        { header: 'Nacionalidad', accessor: 'nationality' },
-        {
-            header: 'Borrar',
-            accessor: 'delete',
-            className: "action-buttons",
-            render: (_, row) => (
-            <button className="button-table" onClick={() => {
-                setDeletePopup(true)
-                setSelected(row)
-                }}>
-                <img src={DeleteIcon} alt="Borrar" />
-            </button>
-            )
-        },
-        {
-            header: 'Editar',
-            accessor: 'edit',
-            className: "action-buttons",
-            render: (_, row) => (
-            <button className="button-table"  onClick={() => {
-                setEditPopup(true)
-                setSelected(row);
-                }}>
-                <img src={EditIcon} alt="Editar" />
-            </button>
-            )
-        }
+    let columns = [];
 
-        
-    ];
+    if(authMock.role === 'admin') {
+    columns = [
+            { header: 'Nombre', accessor: 'authorName' },
+            { header: 'Nacionalidad', accessor: 'nationality' },
+            {
+                header: 'Borrar',
+                accessor: 'delete',
+                className: "action-buttons",
+                render: (_, row) => (
+                <button className="button-table" onClick={() => {
+                    setDeletePopup(true)
+                    setSelected(row)
+                    }}>
+                    <img src={DeleteIcon} alt="Borrar" />
+                </button>
+                )
+            },
+            {
+                header: 'Editar',
+                accessor: 'edit',
+                className: "action-buttons",
+                render: (_, row) => (
+                <button className="button-table"  onClick={() => {
+                    setEditPopup(true)
+                    setSelected(row);
+                    }}>
+                    <img src={EditIcon} alt="Editar" />
+                </button>
+                )
+            }
+        ];
+    }
+    else if(authMock.role === 'reader') {
+    columns = [
+            { header: 'Nombre', accessor: 'authorName' },
+            { header: 'Nacionalidad', accessor: 'nationality' },
+            {
+                header: 'Ver libros',
+                accessor: 'edit',
+                className: "action-buttons",
+                render: (_, row) => (
+                <button className="button-table"  onClick={() => {
+                    setEditPopup(true)
+                    setSelected(row);
+                    }}>
+                    <img src={BookIcon} alt="Libros" />
+                </button>
+                )
+            }
+        ];        
+    }
+
+    
 
     return (
         <>
@@ -124,10 +149,13 @@ export default function AuthorSection() {
             actions={
                 <>
                 <div className='author-actions'>
-                    <div className='btn-new'>
-                    <Btn text={'Nuevo'}  onClick={() => setAddPopup(true)} icon={<img src={PlusIcon} alt='plusIconBtn'/>} variant="primary"/> 
+                    {authMock.role === 'admin' && (
+                        <div className='btn-new'>
+                        <Btn text={'Nuevo'}  onClick={() => setAddPopup(true)} icon={<img src={PlusIcon} alt='plusIconBtn'/>} variant="primary"/> 
 
-                    </div>
+                        </div>
+                    )}
+                    
                     <div className='author-filter'>
                         <label>Filtro por nombre: </label>
                         <input type='text' name='author-name' />

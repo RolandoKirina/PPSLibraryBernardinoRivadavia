@@ -10,7 +10,7 @@ import partnerCategory from '../../assets/img/dark-icon/options/partner-category
 import partnerList from '../../assets/img/dark-icon/options/partner-list.svg';
 import quoteDates from '../../assets/img/dark-icon/options/quote-dates.svg';
 import ranking from '../../assets/img/dark-icon/options/ranking.svg';
-
+import { authMock } from '../../data/mocks/authMock'
 
 
 
@@ -23,9 +23,9 @@ export default function OptionSection(){
             <GenericSection title="Otras secciones">
                 <div className="container-all">
                     <div className="container-dashboard-cards">
-                        <div className="card-container">
-
-
+                        {authMock.role === 'admin' ? (
+                            <>
+                         <div className="card-container">
                                 <a href="/employees">
                                 <div className="card">
                                     <div className="card-title">
@@ -159,7 +159,51 @@ export default function OptionSection(){
                                     </div>
                                 </div>
                                 </a>
-                        </div>
+                        </div>                                         
+                        </>
+                        ): (
+                            <>
+                                <div className="card-container">
+                                    <a href="/options">
+                                    <div className="card">
+                                        <div className="card-title">
+                                            <h2>Ranking de libros</h2>
+                                        </div>
+                                            <div className="card-icons">
+                                            <img src={ranking} alt="Ranking de libros" />
+                                        </div>
+                                    </div>
+                                    </a>
+
+                                    <a href="/options/loan-amount-group"> 
+                                    <div className="card">
+                                        <div className="card-title">
+                                        <h2>Grupos de tipo de material</h2>
+                                        </div>
+                                        <div className="card-icons">
+                                            <img src={groupMaterials} alt="Grupo de tipo material" />
+                                        </div>
+                                    </div>
+                                    </a>
+
+                                    <a href="/options/loan-materials">
+                                    <div className="card">
+                                        
+                                        <div className="card-title">
+                                        <h2>Materiales de prestamo</h2>
+                                        </div>
+                                        <div className="card-icons">
+                                            <img src={materials} alt="Material de prestamo" />
+                                        </div>
+                                    
+                                    </div>
+                                    </a>
+
+                                </div>
+                            </>
+                        )}
+
+
                     </div>
                 </div>
               

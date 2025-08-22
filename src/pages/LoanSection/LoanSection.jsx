@@ -19,6 +19,8 @@ import { useEffect } from "react";
 import { mockLoans } from "../../data/mocks/loans";
 import { useEntityManager } from "../../hooks/useEntityManager";
 
+import { authMock } from "../../data/mocks/authMock";
+
 export default function LoanSection({openRenewes, pendientBooks}) {
     const { items: loanItems, getItem: getLoanItem, createItem: createLoanItem, updateItem: updateLoanItem, deleteItem: deleteLoanItem } = useEntityManager(mockLoans, 'loans');
     const [selected, setSelected] = useState(null);
@@ -38,51 +40,65 @@ export default function LoanSection({openRenewes, pendientBooks}) {
     }, [openRenewes]);
 
     //columnas y acciones - tabla principal prestamos
-    const columns = [
-    { header: 'Codigo', accessor: 'bookCode' },
-    { header: 'Título', accessor: 'bookTitle' },
-    { header: 'Nombre Socio', accessor: 'partnerName' },
-    {
-        header: 'Borrar',
-        accessor: 'delete',
-        className: "action-buttons",
-        render: (_, row) => (
-        <button className="button-table" onClick={() => {
-            setDeletePopup(true)
-            setSelected(row)
-            }}>
-            <img src={DeleteIcon} alt="Borrar" />
-        </button>
-        )
-    },
-    {
-        header: 'Editar',
-        accessor: 'edit',
-        className: "action-buttons",
-        render: (_, row) => (
-        <button className="button-table"  onClick={() => {
-            setEditPopup(true)
-            setSelected(row)
-            }}>
-            <img src={EditIcon} alt="Editar" />
-        </button>
-        )
-    },
-    {
-        header: 'Ver detalle',
-        accessor: 'details',
-        className: "action-buttons",
-        render: (_, row) => (
-        <button className="button-table" onClick={() => {
-            setSelected(row)
-            setDetailsPopup(true)
-            // getLoanDetails(row)
-            }}>
-            <img src={DetailsIcon} alt="Detalles" />
-        </button>
-        )
+
+    let columns = [];
+
+    if(authMock.role === 'admin') {
+        columns = [
+        { header: 'Codigo', accessor: 'bookCode' },
+        { header: 'Título', accessor: 'bookTitle' },
+        { header: 'Nombre Socio', accessor: 'partnerName' },
+        {
+            header: 'Borrar',
+            accessor: 'delete',
+            className: "action-buttons",
+            render: (_, row) => (
+            <button className="button-table" onClick={() => {
+                setDeletePopup(true)
+                setSelected(row)
+                }}>
+                <img src={DeleteIcon} alt="Borrar" />
+            </button>
+            )
+        },
+        {
+            header: 'Editar',
+            accessor: 'edit',
+            className: "action-buttons",
+            render: (_, row) => (
+            <button className="button-table"  onClick={() => {
+                setEditPopup(true)
+                setSelected(row)
+                }}>
+                <img src={EditIcon} alt="Editar" />
+            </button>
+            )
+        },
+        {
+            header: 'Ver detalle',
+            accessor: 'details',
+            className: "action-buttons",
+            render: (_, row) => (
+            <button className="button-table" onClick={() => {
+                setSelected(row)
+                setDetailsPopup(true)
+                // getLoanDetails(row)
+                }}>
+                <img src={DetailsIcon} alt="Detalles" />
+            </button>
+            )
+        }
+        ];
     }
-    ];
+    else if(authMock.role === 'reader') {
+        columns = [
+        { header: 'Codigo', accessor: 'bookCode' },
+        { header: 'Título', accessor: 'bookTitle' },
+        { header: 'Fecha retiro', accessor: 'retiredDate' },
+        { header: 'Fecha limite', accessor: 'plannedDate' },
+        { header: 'Fecha devolución', accessor: 'returnedDate' },
+        ]
+    }
 
     //data para crear todos los popups que existen en la seccion
     const loanPopups = [
@@ -162,7 +178,7 @@ export default function LoanSection({openRenewes, pendientBooks}) {
 
     return (     
         <>
-            <GenericSection title={'Listado de préstamos'} filters={<LoanFilter />} columns={columns} data={loanItems} popups={loanPopups}
+            <GenericSection title={authMock.role === 'admin' ? 'Listado de préstamos' : 'Listado de tus préstamos'} filters={<LoanFilter />} columns={columns} data={loanItems} popups={loanPopups}
             actions={
                  <LoanButtons
                   displayLoanform={() => setAddPopup(true)}

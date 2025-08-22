@@ -18,6 +18,8 @@ import SaveIcon from '../../../assets/img/save-icon.svg';
 import ConfirmMessage from '../../confirmMessage/ConfirmMessage';
 import Btn from '../../btn/Btn';
 
+import { authMock } from '../../../data/mocks/authMock';
+
 export default function Return() {
     //cuando se usan los inputs de partner se filtran las devoluciones y se pueden renovar, devolver o devolver todos
 
@@ -86,47 +88,72 @@ export default function Return() {
                   }
       ];
 
-  const columnsReturnForm = [
-          { header: 'Código del libro', accessor: 'bookCode' },
-          { header: 'Título', accessor: 'bookTitle' },
-          { header: 'Renovado', accessor: 'renewes' },
-          {
-              header: 'Detalles',
-              accessor: 'details',
-              render: (_, row) => (
-              <button type='button' className="button-table" onClick={() => {
-                setPopupView('details')
-                setSelected(row)
-                }}>
-                  <img src={DetailsIcon} alt="Detalles" />
-              </button>
-              )
-          },
-          {
-              header: 'Devolver',
-              accessor: 'return',
-              render: (_, row) => (
-              <button type='button' className="button-table" onClick={() => {
-                setConfirmReturnPopup(true)
-                setSelected(row)
-                }}>
-                  <img src={ReturnIcon} alt="Devolver" />
-              </button>
-              )
-          },
-          {
-              header: 'Renovar',
-              accessor: 'renewe',
-              render: (_, row) => (
-              <button type='button' className="button-table" onClick={() => {
-                setConfirmRenewePopup(true)
-                setSelected(row)
-                }}>
-                  <img src={ReneweIcon} alt="Renovar" />
-              </button>
-              )
-          }
-      ];
+let columnsReturnForm = [];
+
+if(authMock.role === 'admin') {
+    columnsReturnForm = [
+            { header: 'Código del libro', accessor: 'bookCode' },
+            { header: 'Título', accessor: 'bookTitle' },
+            { header: 'Renovado', accessor: 'renewes' },
+            {
+                header: 'Detalles',
+                accessor: 'details',
+                render: (_, row) => (
+                <button type='button' className="button-table" onClick={() => {
+                    setPopupView('details')
+                    setSelected(row)
+                    }}>
+                    <img src={DetailsIcon} alt="Detalles" />
+                </button>
+                )
+            },
+            {
+                header: 'Devolver',
+                accessor: 'return',
+                render: (_, row) => (
+                <button type='button' className="button-table" onClick={() => {
+                    setConfirmReturnPopup(true)
+                    setSelected(row)
+                    }}>
+                    <img src={ReturnIcon} alt="Devolver" />
+                </button>
+                )
+            },
+            {
+                header: 'Renovar',
+                accessor: 'renewe',
+                render: (_, row) => (
+                <button type='button' className="button-table" onClick={() => {
+                    setConfirmRenewePopup(true)
+                    setSelected(row)
+                    }}>
+                    <img src={ReneweIcon} alt="Renovar" />
+                </button>
+                )
+            }
+    ];
+}
+else if(authMock.role === 'reader') {
+    columnsReturnForm = [
+            { header: 'Código del libro', accessor: 'bookCode' },
+            { header: 'Título', accessor: 'bookTitle' },
+            { header: 'Renovaciones', accessor: 'renewes' },
+            {
+                header: 'Detalles',
+                accessor: 'details',
+                render: (_, row) => (
+                <button type='button' className="button-table" onClick={() => {
+                    setPopupView('details')
+                    setSelected(row)
+                    }}>
+                    <img src={DetailsIcon} alt="Detalles" />
+                </button>
+                )
+            }
+    ];
+}
+
+
 
     const handleExtraData = (newData) => {
     setPartnerData(prev => {
@@ -142,6 +169,7 @@ export default function Return() {
                 {popupView === 'default' && (
                     <>
                     <form>
+                        {authMock.role === 'admin' && (
                         <SearchPartner menu={setPopupView} partnerData={
                             {
                             partnerName: partnerData.partnerName,
@@ -149,15 +177,20 @@ export default function Return() {
                             memoSearch: partnerData.memoSearch 
                             }
                         } onDataChange={handleExtraData}/>
+                        )}
+
 
                         <div className='lend-books-container'>
                             <h2 className='lend-books-title'>Libros Prestados</h2>
             
                             <Table columns={columnsReturnForm} data={items}/>
 
+                            {authMock.role === 'admin' && (
                             <div className='add-book-to-lend'>
                                 <Btn text={'Devolver todos'} onClick={() => setConfirmReturnAllPopup(true)} /> 
                             </div>
+                            )}
+
 
                             {returnBooksPopups.map(({ condition, title, className, content, close, variant }, idx) => (
                                                     condition && (

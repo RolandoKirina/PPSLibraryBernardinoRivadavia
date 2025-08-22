@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './LoanFilter.css';
+import { authMock } from '../../../data/mocks/authMock';
 
 export default function LoanFilter() {
   const [formData, setFormData] = useState({
@@ -68,47 +69,50 @@ export default function LoanFilter() {
               </label>
             ))}
           </div>
+          
+          {authMock.role === 'admin' && (
+            <div className="loan-form-checkbox-group">
+              <h4>Tipo de material retirado</h4>
+              <label>
+                <input
+                  type="radio"
+                  name="materialType"
+                  value="all"
+                  checked={formData.materialType === 'all'}
+                  onChange={handleChange}
+                />
+                Todos
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="materialType"
+                  value="specific"
+                  checked={formData.materialType === 'specific'}
+                  onChange={handleChange}
+                />
+                Los del tipo:
+              </label>
 
-          <div className="loan-form-checkbox-group">
-            <h4>Tipo de material retirado</h4>
-            <label>
-              <input
-                type="radio"
-                name="materialType"
-                value="all"
-                checked={formData.materialType === 'all'}
-                onChange={handleChange}
-              />
-              Todos
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="materialType"
-                value="specific"
-                checked={formData.materialType === 'specific'}
-                onChange={handleChange}
-              />
-              Los del tipo:
-            </label>
-
-            {formData.materialType === 'specific' && (
-              <select
-                name="selectedMaterial"
-                value={formData.selectedMaterial}
-                onChange={handleChange}
-                className="loan-filter-select"
-              >
-                <option value="">Seleccionar tipo...</option>
-                <option value="CD">CD</option>
-                <option value="DVD">DVD</option>
-                <option value="Libro">Libro</option>
-                <option value="Revista">Revista</option>
-                <option value="Texto">Texto</option>
-                <option value="Video">Video</option>
-              </select>
-            )}
-          </div>
+              {formData.materialType === 'specific' && (
+                <select
+                  name="selectedMaterial"
+                  value={formData.selectedMaterial}
+                  onChange={handleChange}
+                  className="loan-filter-select"
+                >
+                  <option value="">Seleccionar tipo...</option>
+                  <option value="CD">CD</option>
+                  <option value="DVD">DVD</option>
+                  <option value="Libro">Libro</option>
+                  <option value="Revista">Revista</option>
+                  <option value="Texto">Texto</option>
+                  <option value="Video">Video</option>
+                </select>
+              )}
+            </div>
+          )}
+          
 
           <div className="loan-form-input-group">
             <h4>Fecha de retiro</h4>
@@ -126,15 +130,18 @@ export default function LoanFilter() {
             <input type="date" name="returnEndDate" value={formData.returnEndDate} onChange={handleChange} />
           </div>
 
-          <div className="loan-form-checkbox-group">
-            <h4>Socio</h4>
-            <label>Nombre</label>
-            <input name="memberName" value={formData.memberName} onChange={handleChange} />
-            <label>
-              <input type="checkbox" name="onlyActiveMembers" checked={formData.onlyActiveMembers} onChange={handleChange} />
-              Solo los activos
-            </label>
-          </div>
+          {authMock.role === 'admin' && (
+            <div className="loan-form-checkbox-group">
+              <h4>Socio</h4>
+              <label>Nombre</label>
+              <input name="memberName" value={formData.memberName} onChange={handleChange} />
+              <label>
+                <input type="checkbox" name="onlyActiveMembers" checked={formData.onlyActiveMembers} onChange={handleChange} />
+                Solo los activos
+              </label>
+            </div>           
+          )}
+
 
           <div className="loan-form-input-group">
             <h4>Libro</h4>

@@ -9,6 +9,10 @@
     padding:1em;
 }
 
+.employee-form .input:has(> input:focus) > label, .employee-form .input:has(> select:focus) > label {
+    color: var(--secondary-light-2);
+}
+
 .employee-form form {
     display: flex;
     flex-direction: column;

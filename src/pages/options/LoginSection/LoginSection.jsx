@@ -1,10 +1,15 @@
 import './LoginSection.css';
 import GenericSection from '../../../components/generic/GenericSection/GenericSection';
-import GenericForm from '../../../components/generic/GenericForm/GenericForm';
 import Btn from '../../../components/btn/Btn';
 import Logo from '../../../assets/img/logo_biblioteca_rivadavia.svg';
+import { authMock } from '../../../data/mocks/authMock';
 
 export default function LoginSection() {
+    if(authMock.isAuthenticated) {
+        window.location.href = '/options';
+        return null;       
+    }
+
     return (
         <>
             <GenericSection title={'Ingresar'}>
