@@ -142,3 +142,8 @@ a {
   margin-left: 0.8em;
   margin-top: 0.8em;
 }
+button:disabled {
+  opacity: 0.8;
+  cursor: not-allowed;
+  pointer-events: none;
+}

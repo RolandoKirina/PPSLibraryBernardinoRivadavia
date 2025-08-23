@@ -13,24 +13,40 @@ export default function CardFees() {
     const [newFeeList, setNewFeeList] = useState([...newFees]);
     const [selectedUnpaidId, setSelectedUnpaidId] = useState(null);
     const [selectedNewId, setSelectedNewId] = useState(null);
-  function payfee(id) {
-    if (!id) return;
+    function payfee(id,listType) {
+        if (!id) return;
 
-    const index = newFeeList.findIndex(obj => obj.id === id);
-    if (index !== -1) {
-        const removedObject = newFeeList[index];
 
-        // Actualizar listas
-        setNewFeeList(prev => prev.filter(fee => fee.id !== id));
-        setPaidFeeList(prev => [...prev, removedObject]);
-       
+                const list = listType === "new" ? newFeeList : unpaidFeeList;
+
+                const setList = listType === "new" ? setNewFeeList : unsetPaidFeeList;
+
+        const index = newFeeList.findIndex(obj => obj.id === id);
+                if (index !== -1) {
+
+                    const removedObject = newFeeList[index];
+
+                    // Actualizar la lista original
+                    setList(prev => prev.filter(fee => fee.id !== id));
+
+                    // Agregarlo a las cuotas pagadas
+                    setPaidFeeList(prev => [...prev, removedObject]);
+
+                    // Resetear selección
+                    if (listType === "new") {
+                        setSelectedNewId(null);
+                    } else {
+                        console.log("FDdfsdfs")
+                        setSelectedUnpaidId(null);
+                    }
+                
+                }
     }
-}
     return (
         <div className='cardfees-container'>
 
             {/* Cuotas Pagadas */}
-            <div className='cardfee'>
+            <div className='cardfee cardpaid'>
                 <div className='title-fee'>
                     <h2>Cuotas pagadas</h2>
                 </div>
@@ -67,25 +83,34 @@ export default function CardFees() {
                     <h2>Cuotas impagas</h2>
                 </div>
 
-                <ul className='info-fee'>
-                    {unpaidFees.map((fee, index) => (
-                        <li
-                            key={index}
-                            className={`fee ${selectedUnpaidId === fee.id ? "selected" : ""}`}
-                            onClick={() => setSelectedUnpaidId(fee.id)}
-                        >
-                            <p><strong>Socio:</strong> {fee.id}</p>
-                            <p><strong>Monto:</strong> {fee.amount}</p>
-                            <p><strong>Fecha:</strong> {fee.date_of_paid}</p>
-                        </li>
-                    ))}
+                    <ul className="info-fee">
+                {unpaidFeeList.length === 0 ? (
+                    <li className='centercardtext'>No hay más cuotas impagas</li>
+                ) : (
+                    unpaidFeeList.map((fee, index) => (
+                    <li
+                        key={index}
+                        className={`fee ${selectedUnpaidId === fee.id ? "selected" : ""}`}
+                        onClick={() => setSelectedUnpaidId(fee.id)}
+                    >
+                        <p><strong>Socio:</strong> {fee.id}</p>
+                        <p><strong>Monto:</strong> {fee.amount}</p>
+                        <p><strong>Fecha:</strong> {fee.date_of_paid}</p>
+                    </li>
+                    ))
+                )}
                 </ul>
-
-                <Btn
+                        
+                <div className='btncentercard'>
+                  <Btn
                 text="Pagar cuota"
                 variant="primary"
-                onClick={() => console.log("Pagar cuota impaga:", selectedUnpaidId)}
+                onClick={() =>  payfee(selectedUnpaidId, "unpaid")}
+
+                disabled={!selectedUnpaidId || unpaidFeeList.length === 0}
                 />
+                </div>
+              
             </div>
 
             {/* Cuotas Nuevas */}
@@ -93,24 +118,32 @@ export default function CardFees() {
                 <div className='title-fee'>
                     <h2>Cuotas nuevas</h2>
                 </div>
-            
-                <ul className='info-fee'>
-                    {newFeeList.map((fee, index) => (
-                       <li
-                            key={index}
-                            className={`fee ${selectedNewId === fee.id ? "selected" : ""}`}
-                            onClick={() => setSelectedNewId(fee.id)}
-                        >
-                            <p><strong>Socio:</strong> {fee.id}</p>
-                            <p><strong>Monto:</strong> {fee.amount}</p>
-                            <p><strong>Fecha:</strong> {fee.date_of_paid}</p>
-                        </li>
-                    ))}
+           <ul className="info-fee">
+                {newFeeList.length === 0 ? (
+                    <li className='centercardtext'>No hay más cuotas nuevas para pagar</li>
+                ) : (
+                    newFeeList.map((fee, index) => (
+                    <li
+                        key={index}
+                        className={`fee ${selectedNewId === fee.id ? "selected" : ""}`}
+                        onClick={() => setSelectedNewId(fee.id)}
+                    >
+                        <p><strong>Socio:</strong> {fee.id}</p>
+                        <p><strong>Monto:</strong> {fee.amount}</p>
+                        <p><strong>Fecha:</strong> {fee.date_of_paid}</p>
+                    </li>
+                    ))
+                )}
                 </ul>
 
-                <Btn text="Pagar cuota" variant="primary" className="btnpay" onClick={() => payfee(selectedNewId)} 
+                <div className='btncentercard'>
+                         <Btn text="Pagar cuota" variant="primary" className="btnpay"
+                disabled={!selectedNewId || newFeeList.length === 0}
+                onClick={() =>  payfee(selectedNewId, "new")} 
                     
-                    disabled={!selectedNewId || newFeeList.length === 0}/>
+                  />
+                </div>
+           
             </div>
         </div>
     );

@@ -1,5 +1,5 @@
 
-export default function Btn({ type = 'button', text, icon, onClick, variant }) {
+export default function Btn({ type = 'button', text, icon, onClick, variant, disabled }) {
 
   //puse 4 diferentes tipos
   const variantClasses = {
@@ -21,6 +21,7 @@ export default function Btn({ type = 'button', text, icon, onClick, variant }) {
       type={type}
       className={`my-button ${variantClass}`}
       onClick={onClick}
+       disabled={disabled}
     >
       {icon && <span className="button-icon">{icon}</span>}
       <span className="button-text">{text}</span>
