@@ -68,7 +68,7 @@ export default function CardFees() {
 
                 <ul className='info-fee'>
                     {paidFeeList.map((fee, index) => (
-                        <li key={index} className='fee'>
+                        <li key={index} className='feepaid'>
                             <p><strong>Socio:</strong> {fee.id}</p>
                             <p><strong>Monto:</strong> {fee.amount}</p>
                             <p><strong>Fecha:</strong> {fee.date_of_paid}</p>

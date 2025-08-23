@@ -73,6 +73,21 @@ export const mockLoans = [
     employee: 'Fortunato, Jorge',
     address: 'Estrada 988, Tandil',
     phone: '2494-445566'
+  },
+  {
+    id: '6',
+    bookCode: 'BK-4015',
+    bookTitle: 'Don Quijote de la Mancha',
+    partnerNumber: 'P-005',
+    partnerName: 'Agustina',
+    partnerLastname: 'Pérez',
+    retiredDate: '2025-08-02',
+    retiredHour: '11:20',
+    plannedDate: '2025-08-17',
+    returnedDate: '',
+    employee: 'Fortunato, Jorge',
+    address: 'Estrada 988, Tandil',
+    phone: '2494-445566'
   }
 ];
 
@@ -186,6 +201,22 @@ export const mockRenewes = [
   },
   {
     id: 5,
+    partnerNumber: 'P-002',
+    partnerFullName: 'Lucas Fernández',
+    name: 'Lucas',
+    lastname: 'Fernández',
+    bookTitle: 'El principito',
+    reneweDate: '2025-08-08',
+    expectedDate: '2025-08-18',
+    books: [
+      { id: '2', bookCode: 'B1002', bookTitle: 'El coronel no tiene quien le escriba', position: 2, codClass: '52', codLing: 'M 23', codRcdu: '' },
+      { id: '7', bookCode: 'B1007', bookTitle: 'Crónica de una muerte anunciada', position: 7, codClass: '52', codLing: 'M 23', codRcdu: '' },
+      { id: '17', bookCode: 'B1017', bookTitle: 'Ojos de perro azul', position: 17, codClass: '52', codLing: 'M 23', codRcdu: '' }
+    ]
+  }
+  ,
+  {
+    id: 6,
     partnerNumber: 'P-002',
     partnerFullName: 'Lucas Fernández',
     name: 'Lucas',
