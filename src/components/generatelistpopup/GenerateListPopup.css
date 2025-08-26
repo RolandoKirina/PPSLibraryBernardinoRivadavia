@@ -1,0 +1,17 @@
+.generate-list-container {
+    width: 100%;
+    height: 100%;
+    background-color: var(--primary-dark-2);
+}
+
+.generate-list-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.print-icon-btn {
+    width: 98%;
+    margin-top: 1em;
+}

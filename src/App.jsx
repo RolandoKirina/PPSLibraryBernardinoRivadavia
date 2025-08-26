@@ -23,6 +23,8 @@ import PartnerSection from './pages/PartnerSection/PartnerSection.jsx';
 import OptionSection from './pages/OptionSection/OptionSection.jsx';
 import FeeSection from './pages/FeeSection/FeeSection.jsx';
 import LoginSection from './pages/options/LoginSection/LoginSection.jsx';
+import RegisterSection from './pages/options/RegisterSection/RegisterSection.jsx';
+import PartnerListSection from './pages/options/PartnerListSection/PartnerListSection.jsx';
 
 function App() {
   return (
@@ -30,10 +32,10 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<Layout />}> 
-            <Route index element={<LoginSection />} />
             <Route path='/dashboard' element={<Dashboard/>}/>
             <Route path='/employees' element={<EmployeeSection/>}/>
             <Route path='/login' element={<LoginSection/>}/>
+            <Route path='/register' element={<RegisterSection/>}/>
             <Route path='/loans' element={<LoanSection openRenewes={false}/>}/>
             <Route path='/loans/renewes' element={<LoanSection openRenewes={true}/>}/>
             <Route path='/loans/filters/partner' element={<LoanSection openRenewes={false} pendientBooks={true}/>}/>
@@ -45,6 +47,7 @@ function App() {
             <Route path='/options/loan-materials' element={<LoanMaterialSection/>}/>
             <Route path='/options/remove-partner-reasons' element={<RemovePartnerReasonSection chooseMode={false}/>}/>
             <Route path='/options/loan-amount-group' element={<LoanAmountSection/>}/> 
+            <Route path='/options/partner-lists' element={<PartnerListSection/>}/> 
             <Route path='/fees' element={<FeeSection/>}/>
 
             {loanFormRoutes.map(({ path, title, fields }, idx) => ( //rutas de formularios independientes(no son popup) de préstamo(u otras secciones
