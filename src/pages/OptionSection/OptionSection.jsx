@@ -88,10 +88,10 @@ export default function OptionSection(){
                                 </a>
 
 
-                                <a href="/options">
+                                <a href="/options/partner-lists">
                                 <div className="card">
                                     <div className="card-title">
-                                        <h2>Listados de socios</h2>
+                                        <h2>Generar listado de socios</h2>
                                     </div>
                                         <div className="card-icons">
                                         <img src={partnerList} alt="Listado de socio" />
