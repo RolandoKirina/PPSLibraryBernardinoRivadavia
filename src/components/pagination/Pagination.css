@@ -1,5 +1,5 @@
 .pagination { 
-    width: 98%;
+    width: 100%;
     display: flex;
     justify-content:flex-start;
 }
@@ -9,8 +9,11 @@
     margin-top: 1em;
     display: flex;
     align-items: center;
-}
 
+}
+.number-buttons button:last-child{
+    border-right: 0.15em solid black;
+}
 .number-buttons button {
     min-width: 3.5em;
     padding-left: 0.5em;
@@ -20,14 +23,21 @@
     border-right: 0;
     font-family: var(--font-texts);
     letter-spacing: 0.2em;
+    transition: background-color 0.3s ease;
 }
 
-.number-buttons button:first-child {
-    background-color: var(--secondary);
+.number-buttons button:hover , .number-buttons button.next-button:hover {
+    background-color: var(--secondary-hover); 
 }
 
-.number-buttons button:last-child {
-    border-right: 0.15em solid black;
-
+.number-buttons button.active {
+    background-color: var(--accent);
+    color: white;
+    font-weight: bold;
 }
-
+.number-buttons button.next-button:disabled {
+    background-color: #e0e0e0;
+    color: #aaa;
+    border: 0.15em solid #ccc;
+    cursor: not-allowed;
+}

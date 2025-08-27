@@ -13,7 +13,7 @@ export const fees = [
 
 export const paidFees = [
   { 
-    id: 1,
+    id: 567,
     id_socio: 23,
     month: 5,
     year: 2004,
@@ -23,7 +23,7 @@ export const paidFees = [
     observation: "Pagada"
   },
   { 
-    id: 2,
+    id: 232,
     id_socio: 12,
     month: 8,
     year: 2005,
@@ -33,7 +33,7 @@ export const paidFees = [
     observation: "Pagada"
   },
   { 
-    id: 3,
+    id: 323,
     id_socio: 15,
     month: 1,
     year: 2006,
@@ -48,7 +48,7 @@ export const paidFees = [
 
 export const unpaidFees = [
   { 
-    id: 1,
+    id: 132,
     id_socio: 33,
     month: 2,
     year: 2007,
@@ -61,7 +61,7 @@ export const unpaidFees = [
 
 export const newFees = [
   { 
-    id: 1,
+    id: 121,
     id_socio: 44,
     month: 10,
     year: 2025,
@@ -71,7 +71,87 @@ export const newFees = [
     observation: "Nueva"
   },
   { 
-    id: 2,
+    id: 256,
+    id_socio: 55,
+    month: 8,
+    year: 2025,
+    amount: 95,
+    paid: false,
+    date_of_paid: null,
+    observation: "Nueva"
+  },
+  { 
+    id: 258,
+    id_socio: 55,
+    month: 8,
+    year: 2025,
+    amount: 95,
+    paid: false,
+    date_of_paid: null,
+    observation: "Nueva"
+  },
+  { 
+    id: 259,
+    id_socio: 55,
+    month: 8,
+    year: 2025,
+    amount: 95,
+    paid: false,
+    date_of_paid: null,
+    observation: "Nueva"
+  },
+  { 
+    id: 256879,
+    id_socio: 55,
+    month: 8,
+    year: 2025,
+    amount: 95,
+    paid: false,
+    date_of_paid: null,
+    observation: "Nueva"
+  },
+  { 
+    id: 256,
+    id_socio: 55,
+    month: 8,
+    year: 2025,
+    amount: 95,
+    paid: false,
+    date_of_paid: null,
+    observation: "Nueva"
+  },
+  { 
+    id: 25686876,
+    id_socio: 55,
+    month: 8,
+    year: 2025,
+    amount: 95,
+    paid: false,
+    date_of_paid: null,
+    observation: "Nueva"
+  },
+  { 
+    id: 25680989890,
+    id_socio: 55,
+    month: 8,
+    year: 2025,
+    amount: 95,
+    paid: false,
+    date_of_paid: null,
+    observation: "Nueva"
+  },
+  { 
+    id: 256809809,
+    id_socio: 55,
+    month: 8,
+    year: 2025,
+    amount: 95,
+    paid: false,
+    date_of_paid: null,
+    observation: "Nueva"
+  },
+  { 
+    id: 256567576567,
     id_socio: 55,
     month: 8,
     year: 2025,
