@@ -102,7 +102,7 @@ export default function OptionSection(){
 
                             <div className="card-container">
 
-                                <a href="/options">
+                                <a href="/options/book-ranking">
                                 <div className="card">
                                     <div className="card-title">
                                         <h2>Ranking de libros</h2>

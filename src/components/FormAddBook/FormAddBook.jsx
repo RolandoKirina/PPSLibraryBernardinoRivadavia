@@ -40,8 +40,8 @@ export default function FormEditBook(){
 
                             </div>
                             <div>   
-                                 <input id="codeCDU1" type="number" />
-                                <input id="codeCDU1" type="number" />
+                                 <input name="codeCDU1" type="number" />
+                                <input name="codeCDU1" type="number" />
                             </div>
                            
 

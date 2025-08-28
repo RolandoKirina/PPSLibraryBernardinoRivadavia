@@ -7,6 +7,7 @@ import { mockRemovePartnerReason } from '../../../data/mocks/removePartnerReason
 import { useState } from 'react';
 import PopUp from '../../../components/popup-table/PopUp2';
 import GenerateListPopup from '../../../components/generatelistpopup/GenerateListPopup';
+import { titlesByType, listOptions, sortOptions } from '../../../data/generatedList/generatedList';
 
 export default function PartnerListSection() {
     const { items: partnerCategories } = useEntityManager(mockPartnersCategory, 'partnerCategories');
@@ -36,26 +37,6 @@ export default function PartnerListSection() {
     setFormValues(data); // 👈 Guardás en el estado
     };
 
-
-    const listOptions = [
-    { label: 'Núm-Apey-Nomb-Direc-Tel-Cuotas-LPend-FInsc', value: 'TypeOne' },
-    { label: 'Núm-Apey-Nomb-Direc-Tel-Estado-FInsc', value: 'TypeTwo' },
-    { label: 'Núm-Apey-Nomb-Direc-Tel-FBaja-Motivo', value: 'TypeThree' },
-    { label: 'Núm-Apey-Nomb-Direc-Tel-Present-X-FInsc', value: 'TypeFour' }
-    ];
-
-    const sortOptions = [
-    { label: 'Apellido - Nombre', value: 'lastNameFirstName' },
-    { label: 'Cantidad de cuotas impagas', value: 'unpaidFees' },
-    { label: 'Cantidad de libros pendientes', value: 'pendingBooks' },
-    { label: 'Fecha de Baja', value: 'deactivationDate' },
-    { label: 'Fecha Inscripción', value: 'registrationDate' },
-    { label: 'Fecha Nacimiento', value: 'birthDate' },
-    { label: 'Motivo Baja', value: 'deactivationReason' },
-    { label: 'Número de Socio', value: 'memberNumber' }
-    ];
-
-
     return (
         <GenericSection title={'Generar listado de socios'}>
             <div className='partner-list-container'>
@@ -73,19 +54,19 @@ export default function PartnerListSection() {
                                 <div className='filter-options'>
 
                                     <div className='input'>
-                                    <label htmlFor='category'>Categoría</label>
-                                    <label className='exclude'>
-                                        <input type="checkbox" name="excludeCategory" />
-                                        Excluir
-                                    </label>
-                                    <select id="category" name='category'>
-                                        <option value=''>Elegir</option>
-                                        {partnerCategories.map(category => (
-                                        <option key={category.id} value={category.category}>
-                                            {category.category}
-                                        </option>
-                                        ))}
-                                    </select>
+                                        <label htmlFor='category'>Categoría</label>
+                                        <label className='exclude'>
+                                            <input type="checkbox" name="excludeCategory" />
+                                            Excluir
+                                        </label>
+                                        <select id="category" name='category'>
+                                            <option value=''>Elegir</option>
+                                            {partnerCategories.map((category, index) => (
+                                            <option key={index} value={category.category}>
+                                                {category.category}
+                                            </option>
+                                            ))}
+                                        </select>
                                     </div>
 
                                     <div className="input">
@@ -156,8 +137,8 @@ export default function PartnerListSection() {
                                     </label>
                                     <select id="removeReason" name='removeReason'>
                                         <option value=''>Elegir</option>
-                                        {removePartnerReasons.map(removeReason => (
-                                        <option key={removeReason.id} value={removeReason.reason}>
+                                        {removePartnerReasons.map((removeReason, index) => (
+                                        <option key={index} value={removeReason.reason}>
                                             {removeReason.reason}
                                         </option>
                                         ))}
@@ -248,8 +229,8 @@ export default function PartnerListSection() {
                                         <label htmlFor="orderBy">Ordenado por: </label>
                                         <select id="orderBy" name='orderBy'>
                                             <option value=''>Elegir</option>
-                                            {sortOptions.map(sortOption => (
-                                            <option value="sortOption.value">{sortOption.label}</option>
+                                            {sortOptions.map((sortOption, index) => (
+                                            <option key={index} value="sortOption.value">{sortOption.label}</option>
                                             ))}
                                         </select>
                                     </div>  
@@ -276,7 +257,7 @@ export default function PartnerListSection() {
                                 {/* segun el tipo de listado cambian las columnas de la tabla, segun el titulo del listado cambia el titulo del popup */}
                 {generateListPopup && (
                     <>  
-                        <PopUp className={'generate-list-popup-size'} title={formValues.listTitle} onClick={() => setGenerateListPopup(false)}>
+                        <PopUp className={'generate-list-popup-size'} title={formValues.listTitle ? formValues.listTitle : titlesByType[formValues.listType]} onClick={() => setGenerateListPopup(false)}>
                                <GenerateListPopup typeList={formValues.listType}/>
                         </PopUp>
                     </>

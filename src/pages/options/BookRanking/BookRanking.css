@@ -1,0 +1,113 @@
+.ranking-list-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ranking-list-content {
+    width: 60%;
+    background-color: var(--primary-dark-2);
+    margin: 1em 0;
+    border-radius: 0.625em;
+}
+
+.ranking-list-title {
+    width: 100%;
+    height: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--secondary-light-2);
+    margin: 1em 0;
+}
+
+.ranking-list-filters {
+    width: 100%;
+    height: 90%;
+}
+
+.ranking-list-filter-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ranking-list-filter-option .ranking-list-filter-title {
+    background-color: var(--primary-dark-1);
+    height: 100%;
+    width: 100%;
+    padding: 0.5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ranking-list-filter-option .filter-options {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 1em;
+    width: 30em;
+}
+
+.ranking-list-filter-option .filter-options .input {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.ranking-list-filter-option .filter-options .column-input {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 30em;
+}
+
+.ranking-list-filter-option .filter-options .column-input .codeCDU {
+    width: 15em;
+}
+
+.ranking-list-filter-option .filter-options .column-input .codeCDU2 {
+    width: 6em;
+    margin-left: 1em;
+}
+
+.ranking-list-filter-option .filter-options .column-input input {
+    margin-top: 1em;
+    width: 15em;
+}
+
+.ranking-list-filter-option .filter-options .input label {
+   margin-right: 1em;
+}
+
+.ranking-list-filter-option .filter-options .calendar-icon {
+    display: inline-block;
+    margin-right: 1em;
+}
+
+.ranking-list-filter-option .filter-options .order-by-select {
+    width: 15em;
+    margin-top: 1em;
+    height: 2.5em;
+}
+
+.ranking-list-filter-option .filter-options .radio-inputs input {
+    margin-right: 0.5em;
+}
+
+.ranking-list-filter-option .filter-options .radio-inputs label:first-child {
+    margin-right: 1em;
+}
+
+.ranking-list-filter-option .filter-options .radio-inputs {
+    margin-bottom: 1em;
+}
+
+.ranking-list-filter-option {
+    border-bottom: 0.2em solid var(--primary-dark-1);
+}
+
+
+

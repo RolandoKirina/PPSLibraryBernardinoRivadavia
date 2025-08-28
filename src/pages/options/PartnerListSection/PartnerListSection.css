@@ -31,9 +31,6 @@
 .partner-list-filter-option {
     width: 100%;
     border: 0.2em solid var(--primary-dark-1);
-}
-
-.partner-list-filter-option {
     display: flex;
     flex-direction: column;
     align-items: center;
