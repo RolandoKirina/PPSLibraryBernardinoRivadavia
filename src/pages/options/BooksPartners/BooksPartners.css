@@ -19,6 +19,10 @@
     align-items: center;
 }
 
+.result .result-title img {
+    margin-right: 0.5em;
+}
+
 .result .result-value {
     height: 2em;
     display: flex;

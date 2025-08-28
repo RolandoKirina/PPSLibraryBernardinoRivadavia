@@ -3,8 +3,9 @@ import GenericSection from '../../../components/generic/GenericSection/GenericSe
 import calendarIcon from '../../../assets/img/calendar-icon.svg';
 import Btn from '../../../components/btn/Btn';
 import { useState } from 'react';
-import PopUp from '../../../components/popup-table/PopUp2';
-import GenerateListPopup from '../../../components/generatelistpopup/GenerateListPopup';
+import bookIcon from '../../../assets/img/book-icon-2.svg';
+import personIcon from '../../../assets/img/person-icon.svg';
+
 
 export default function BooksPartners() {
     const [formValues, setFormValues] = useState({});
@@ -71,6 +72,7 @@ export default function BooksPartners() {
                                 <div className='books-partners-result'>
                                     <div className='result'>
                                         <div className='result-title'>
+                                            <img src={bookIcon} alt='book-icon'/>
                                             <h4>Libros</h4>
                                         </div>
                                         <div className='result-value'>
@@ -79,6 +81,7 @@ export default function BooksPartners() {
                                     </div>
                                     <div className='result'>
                                         <div className='result-title'>
+                                            <img src={personIcon} alt='person-icon'/>
                                             <h4>Socios</h4>
                                         </div>
                                         <div className='result-value'>
