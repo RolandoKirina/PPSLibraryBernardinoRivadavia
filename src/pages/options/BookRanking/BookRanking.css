@@ -28,10 +28,17 @@
     height: 90%;
 }
 
+.ranking-list-filters form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .ranking-list-filter-option {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
 }
 
 .ranking-list-filter-option .ranking-list-filter-title {

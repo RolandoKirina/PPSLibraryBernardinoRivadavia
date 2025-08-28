@@ -138,7 +138,7 @@ export default function OptionSection(){
 
                         <div className="card-container">
 
-                                <a href="/options">
+                                <a href="/options/books-partners">
                                 <div className="card">
                                     <div className="card-title">
                                         <h2>Cantidad de libros y socios</h2>
