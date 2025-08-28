@@ -159,5 +159,85 @@ export const newFees = [
     paid: false,
     date_of_paid: null,
     observation: "Nueva"
+  },
+    { 
+    id: 25667,
+    id_socio: 55,
+    month: 8,
+    year: 2025,
+    amount: 95,
+    paid: false,
+    date_of_paid: null,
+    observation: "Nueva"
+  },  
+  { 
+    id: 256567,
+    id_socio: 55,
+    month: 8,
+    year: 2025,
+    amount: 95,
+    paid: false,
+    date_of_paid: null,
+    observation: "Nueva"
+  },
+    { 
+    id: 2567,
+    id_socio: 55,
+    month: 8,
+    year: 2025,
+    amount: 95,
+    paid: false,
+    date_of_paid: null,
+    observation: "Nueva"
+  },  { 
+    id: 3137,
+    id_socio: 55,
+    month: 8,
+    year: 2025,
+    amount: 95,
+    paid: false,
+    date_of_paid: null,
+    observation: "Nueva"
+  },
+    { 
+    id: 251326567,
+    id_socio: 55,
+    month: 8,
+    year: 2025,
+    amount: 95,
+    paid: false,
+    date_of_paid: null,
+    observation: "Nueva"
+  },
+    { 
+    id: 312567,
+    id_socio: 55,
+    month: 8,
+    year: 2025,
+    amount: 95,
+    paid: false,
+    date_of_paid: null,
+    observation: "Nueva"
+  },
+    { 
+    id: 2132567,
+    id_socio: 55,
+    month: 8,
+    year: 2025,
+    amount: 95,
+    paid: false,
+    date_of_paid: null,
+    observation: "Nueva"
+  },
+    { 
+    id:2132367,
+    id_socio: 55,
+    month: 8,
+    year: 2025,
+    amount: 95,
+    paid: false,
+    date_of_paid: null,
+    observation: "Nueva"
   }
+
 ];

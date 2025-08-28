@@ -37,6 +37,7 @@ body.sidebar-open { /* bloquear scroll al abrir sidebar */
     display: flex;
     align-items: center;
     width: 9em;
+    padding: 6%;
 }
 
 .iconssidebar{

@@ -20,6 +20,11 @@ export default function CardFees() {
     const [selectedUnpaidId, setSelectedUnpaidId] = useState(null);
     const [selectedNewId, setSelectedNewId] = useState(null);
 
+
+    // lo añado para saber en que bloque de paginacion estoy ej: 1-4 ,5-9,etc
+    const [paginationBlock, setPaginationBlock] = useState(0);
+
+    const buttonsPerBlock = 4;
     function payfee(id, listType) {
         if (!id) return;
 

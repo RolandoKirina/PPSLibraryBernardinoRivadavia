@@ -1,12 +1,15 @@
 import '../pagination/Pagination.css';
+import Pagination from '../pagination/Pagination.jsx'; // Asegurate de importar correctamente
+
 export default function PaginatedList({
   items = [],
   itemsPerPage = 3,
   currentPage,
   setCurrentPage,
   renderItem,
-  emptyMessage = "No hay elementos para mostrar"
-}) { 
+  emptyMessage = "No hay elementos para mostrar",
+  buttonsPerBlock = 4
+}) {
   const totalPages = Math.ceil(items.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -23,28 +26,13 @@ export default function PaginatedList({
       </ul>
 
       {totalPages > 1 && (
-        <div className="pagination">
-            <div className='pagination-options'>
-        <div className='number-buttons'>
-          {[...Array(totalPages)].map((_, i) => (
-            <button
-              key={i}
-              className={currentPage === i + 1 ? "active" : ""}
-              onClick={() => setCurrentPage(i + 1)}
-            >
-              {i + 1}
-            </button>
-          ))}
-          <button
-          className="next-button"
-            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-            disabled={currentPage === totalPages}
-          >
-            Siguiente
-          </button>
-        </div>
-        </div>
-        </div>
+        <Pagination
+          totalItems={items.length}
+          itemsPerPage={itemsPerPage}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+          buttonsPerBlock={buttonsPerBlock}
+        />
       )}
     </div>
   );

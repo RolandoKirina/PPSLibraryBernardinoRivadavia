@@ -56,8 +56,8 @@ label {
 }
 
 .fee.selected {
-  border: 2px solid var(--primary);  
-  background: var(--primary-light-1);
+  border: 2px solid var(--primary-dark-2);  
+  background: var(--primary-light);
 }
 
 .cardpaid{
