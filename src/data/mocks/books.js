@@ -15,9 +15,9 @@ export const books = [
     notes: "lorem impsus",
     type: 44,
     cod_ling: "A 14",
-    authors:[
-            {
-                 id: 1,
+     authors:[
+             {
+                  id: 1,
                 name: "Antoine",
                 surname: "de Saint-Exupéry"
             },

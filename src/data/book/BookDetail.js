@@ -5,9 +5,9 @@ export const BookDetail = [
     active: false,
     rows: [
       [
-        { label: 'Código', value: 'información' },
-        { label: 'Título', value: 'información' },
-         { label: 'Año de edicion', value: 'información' }
+        { label: 'Título', value: 'información', attribute: 'title' },
+        { label: 'Código', value: 'información', attribute: 'code_inventory' },
+        { label: 'Año de edicion', value: 'información', attribute: 'nro_edition' }
       ],
     ]
   },
@@ -15,10 +15,18 @@ export const BookDetail = [
     id: 2,
     title: 'Autores y publicación',
     active: false,
-    rows: [
+     rows: [
       [
-        { label: 'Autores', value: 'información' },
-        { label: 'Editorial', value: 'información' }
+        {
+          label: 'Autores',
+          value: 'información',
+          attribute: 'authors',
+        subfields: [
+  { key: 'name', label: 'Nombre' },
+  { key: 'surname', label: 'Apellido' }
+]
+        },
+        { label: 'Editorial', value: 'información', attribute: 'editorial' }
       ]
     ]
   },
@@ -27,11 +35,11 @@ export const BookDetail = [
     title: 'Clasificación bibliográfica',
     active: false,
     rows: [
-        [
-            { label: 'Tipo', value: 'información' },
-             { label: 'CDU', value: 'información' },
-            { label: 'COD_RCDU', value: 'información' }
-        ]
+      [
+        { label: 'Tipo', value: 'información', attribute: 'type' },
+        { label: 'CDU', value: 'información', attribute: 'codeCDU' },
+        { label: 'COD_RCDU', value: 'información', attribute: 'cod_rcdu' }
+      ]
     ]
   }
 ];

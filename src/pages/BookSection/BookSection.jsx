@@ -73,7 +73,11 @@ const BookSection = () => {
       className: "action-buttons",
       render: (_, row) => (
         <button className="button-table">
-          <img src={DetailsIcon} alt="Detalles" onClick={()=> setPopUpDetail(true)}/>
+          <img src={DetailsIcon} alt="Detalles" onClick={
+            ()=> {setPopUpDetail(true)
+              setSelectedItem(row)
+            }
+            }/>
         </button>
       )
     }
@@ -131,7 +135,7 @@ const BookSection = () => {
   {
       key: 'SeeDetail',
       title: 'Ver detalle',
-      content: <ShowDetails isPopup={true} detailsData={BookDetail}/>,
+      content: <ShowDetails data={selectedItem} detailsData={BookDetail} isPopup={true}  />,
       close: () => setPopUpDetail(false),
       condition: PopUpDetail
     }

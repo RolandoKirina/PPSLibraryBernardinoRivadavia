@@ -12,9 +12,7 @@ import DetailsIcon from '../../assets/img/details-icon.svg';
 import ShowDetails from '../../components/generic/ShowDetails/ShowDetails.jsx';
 import Btn from '../../components/btn/Btn.jsx';
 import CardFees from '../../components/CardFees/CardFees.jsx';
-import { paidFees } from '../../data/mocks/fees.js';
-import { unpaidFees } from '../../data/mocks/fees.js';
-import { newFees } from '../../data/mocks/fees.js';
+import { FeesDetail } from '../../data/fees/FeesDetail.js';
 export const FeeSection = () => {
 
     const [selectedItem, setSelectedItem] = useState(null);
@@ -119,7 +117,7 @@ export const FeeSection = () => {
       {
         key: 'SeeDetail',
         title: 'Ver detalle',
-        content: <ShowDetails isPopup={true} detailsData={<h1>adszxzvx</h1>}/>,
+        content: <ShowDetails isPopup={true} detailsData={FeesDetail}/>,
         close: () => setPopUpDetail(false),
         condition: PopUpDetail
       },

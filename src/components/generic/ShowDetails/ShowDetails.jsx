@@ -5,13 +5,18 @@ import Accordion from '../accordion/Accordion';
 export default function ShowDetails({ data, isPopup, detailsData, titleText }) {
   
   function fillDetailsWithData(detailsData, data) {
+    if (!data) return detailsData;
+
     return detailsData.map(menu => ({
       ...menu,
       rows: menu.rows.map(row =>
-        row.map(item => ({
-          ...item,
-          value: item.attribute ? data[item.attribute] ?? '—' : item.value
-        }))
+        row.map(item => {
+          const rawValue = item.attribute ? data[item.attribute] ?? '—' : item.value;
+          return {
+            ...item,
+            value: rawValue
+          };
+        })
       )
     }));
   }
@@ -27,6 +32,28 @@ export default function ShowDetails({ data, isPopup, detailsData, titleText }) {
       )
     );
   }
+const renderFieldValue = (value, subfields) => {
+  if (!value) return '—';
+
+  if (Array.isArray(value)) {
+    return (
+      <ul>
+        {value.map((item, index) => (
+          <li key={index}>
+            {subfields
+              ? subfields.map(({ key, label }) => `${label}: ${item[key]}`).join(' ')
+              : Object.values(item).join(' ')}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  return String(value);
+};
+
+
+
 
   return (
     <div className="details-container">
@@ -49,9 +76,11 @@ export default function ShowDetails({ data, isPopup, detailsData, titleText }) {
                 <div className="items-info-details" key={rowIndex}>
                   {row.map((item, itemIndex) => (
                     <div className="item-details" key={itemIndex}>
-                      <h4>{item.label}</h4>
-                      <p>{item.value}</p>
-                    </div>
+                    <div>
+                       <span>{item.label}</span>
+                         <div>{renderFieldValue(item.value, item.subfields)}</div>      
+                        </div>
+                      </div>
                   ))}
                 </div>
               ))}
