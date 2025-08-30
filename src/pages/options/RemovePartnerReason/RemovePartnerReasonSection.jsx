@@ -9,7 +9,7 @@ import Btn from '../../../components/btn/Btn';
 import DeleteIcon from '../../../assets/img/delete-icon.svg';
 import EditIcon from '../../../assets/img/edit-icon.svg';
 import ChooseIcon from '../../../assets/img/choose-icon.svg';
-import PopUp from '../../../components/popup-table/PopUp2';
+import PopUp from '../../../components/popup-table/PopUp';
 import { Table } from '../../../components/table/Table';
 import ConfirmMessage from '../../../components/confirmMessage/ConfirmMessage';
 import { mockRemovePartnerReason } from '../../../data/mocks/removePartnerReason';

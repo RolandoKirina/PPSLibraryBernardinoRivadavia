@@ -5,7 +5,7 @@ import { mockPartnersCategory } from '../../../data/mocks/partnersCategory';
 import { useEntityManager } from '../../../hooks/useEntityManager';
 import { mockRemovePartnerReason } from '../../../data/mocks/removePartnerReason';
 import { useState } from 'react';
-import PopUp from '../../../components/popup-table/PopUp2';
+import PopUp from '../../../components/popup-table/PopUp';
 import GenerateListPopup from '../../../components/generatelistpopup/GenerateListPopup';
 import { titlesByType, listOptions, sortOptions } from '../../../data/generatedList/generatedList';
 

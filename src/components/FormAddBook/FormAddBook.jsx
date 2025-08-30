@@ -168,17 +168,22 @@ export default function FormEditBook(){
                 <div className="btns-form">
                 
                     <div>
-                        <Btn text="Autores del libro" className="secondary-btn" onClick={() => redirect('booksauthor')}  />
-                        <Btn text="Ver reservas" className="secondary-btn" onClick={() => redirect('renewed')} />
+                        <Btn text="Autores del libro" className="secondary-btn" onClick={() => redirect('booksauthor')} variant="primary"  />
+                        <Btn text="Ver reservas" className="secondary-btn" onClick={() => redirect('renewed')} variant="primary"/>
                     </div>
                     <div>
-                        <Btn text="Calcular signatura" className="secondary-btn" onClick={()=> redirect('signature')} />
-                        <Btn text="Ver autores" className="secondary-btn" onClick={() => redirect('authors')} />
+                        <Btn text="Calcular signatura" className="secondary-btn" onClick={()=> redirect('signature')} variant="primary" />
+                        <Btn text="Ver autores" className="secondary-btn" onClick={() => redirect('authors')}variant="primary" />
                     </div>
+
+                    <div></div>
+
+                    
                 </div>
 
-                {/* 👇 Botón "Guardar" alineado a la derecha */}
-                <div className="btn-right">
+
+                <div>
+                    <div className="btn-right">
                     <Btn
                         text="Guardar"
                         className="changes btn"
@@ -187,8 +192,12 @@ export default function FormEditBook(){
                                 <img src={SaveIcon} alt="Guardar" />
                             </div>
                         }
+                        variant="primary"
                     />
                 </div>
+                </div>
+                
+                
             </div>
                 
             

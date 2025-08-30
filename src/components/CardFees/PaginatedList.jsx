@@ -3,7 +3,7 @@ import Pagination from '../pagination/Pagination.jsx'; // Asegurate de importar 
 
 export default function PaginatedList({
   items = [],
-  itemsPerPage = 3,
+  itemsPerPage,
   currentPage,
   setCurrentPage,
   renderItem,

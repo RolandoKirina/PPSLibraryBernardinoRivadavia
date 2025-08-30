@@ -5,7 +5,7 @@ import EditIcon from '../../../assets/img/edit-icon.svg';
 import DetailsIcon from '../../../assets/img/details-icon.svg';
 import Btn from '../../btn/Btn';
 import PlusIcon from '../../../assets/img/plus-icon.svg';
-import PopUp from '../../popup-table/PopUp2';
+import PopUp from '../../popup-table/PopUp';
 import PopUpDelete from '../../deletebtnComponent/PopUpDelete';
 import { useState } from 'react';
 import GenericSection from '../../generic/GenericSection/GenericSection.jsx';

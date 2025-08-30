@@ -77,7 +77,7 @@
 
 
 .dropdown-details-menu {
-    max-width: 100%;
+   
     width: 40em;
 }
 
@@ -86,22 +86,20 @@
     display: flex;
     padding: 0.5em;
     justify-content: center;
+    
 }
 
 .item-details {
-    width: 8em;
+    width: 9em;
     margin-right: 1em;
 }
 
-
-
 .item-details p { 
     margin-top: 0.5em;
-    display: inline-block;
-    max-width: 19em;
-    height: 100%;
-    white-space: normal;
-    word-wrap: break-word;
-    overflow-wrap: break-word;;
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 

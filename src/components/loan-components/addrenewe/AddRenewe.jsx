@@ -5,7 +5,7 @@ import DeleteIcon from '../../../assets/img/delete-icon.svg';
 import EditIcon from '../../../assets/img/edit-icon.svg';
 import AddBookIcon from '../../../assets/img/add-book-icon.svg';
 import Btn from '../../btn/Btn';
-import PopUp from '../../popup-table/PopUp2';
+import PopUp from '../../popup-table/PopUp';
 import ConfirmMessage from '../../../components/confirmMessage/ConfirmMessage';
 import BackviewBtn from '../../backviewbtn/BackviewBtn';
 import SaveIcon from '../../../assets/img/save-icon.svg';

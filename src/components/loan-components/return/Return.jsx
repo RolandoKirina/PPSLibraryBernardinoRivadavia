@@ -13,7 +13,7 @@ import { Table } from '../../table/Table';
 import DetailsIcon from '../../../assets/img/details-icon.svg';
 import ReturnIcon from '../../../assets/img/return-icon.svg';
 import ReneweIcon from '../../../assets/img/renewe-icon.svg';
-import PopUp from '../../popup-table/PopUp2';
+import PopUp from '../../popup-table/PopUp';
 import SaveIcon from '../../../assets/img/save-icon.svg';
 import ConfirmMessage from '../../confirmMessage/ConfirmMessage';
 import Btn from '../../btn/Btn';

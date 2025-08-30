@@ -6,7 +6,7 @@ import { mockLoanMaterials } from '../../data/mocks/loanMaterials';
 import Btn from '../btn/Btn';
 import SaveIcon from '../../assets/img/save-icon.svg';
 import { useEntityManager } from '../../hooks/useEntityManager';
-import PopUp from '../popup-table/PopUp2';
+import PopUp from '../popup-table/PopUp';
 import ConfirmMessage from '../confirmMessage/ConfirmMessage';
 import { useEffect } from 'react';
 

@@ -7,7 +7,7 @@ import DetailsIcon from '../../../assets/img/details-icon.svg';
 import AddBookIcon from '../../../assets/img/add-book-icon.svg';
 import Btn from '../../btn/Btn';
 import PopUpDelete from '../../deletebtnComponent/PopUpDelete';
-import PopUp from '../../popup-table/PopUp2';
+import PopUp from '../../popup-table/PopUp';
 import ConfirmMessage from '../../../components/confirmMessage/ConfirmMessage';
 import PlusIcon from '../../../assets/img/plus-icon.svg';
  import BackviewBtn from '../../backviewbtn/BackviewBtn';

@@ -7,7 +7,7 @@ import AddBookIcon from '../../../assets/img/add-book-icon.svg';
 import SaveIcon from '../../../assets/img/save-icon.svg'
 import { useState } from 'react';
 import GenericForm from '../../generic/GenericForm/GenericForm.jsx';
-import PopUp from '../../popup-table/PopUp2';
+import PopUp from '../../popup-table/PopUp';
 import data from '../../../data/booksauthor/booksauthor.js';
 export default function BooksAuthor() {
 

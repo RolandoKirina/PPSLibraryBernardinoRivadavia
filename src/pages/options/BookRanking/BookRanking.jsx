@@ -3,7 +3,7 @@ import GenericSection from '../../../components/generic/GenericSection/GenericSe
 import calendarIcon from '../../../assets/img/calendar-icon.svg';
 import Btn from '../../../components/btn/Btn';
 import { useState } from 'react';
-import PopUp from '../../../components/popup-table/PopUp2';
+import PopUp from '../../../components/popup-table/PopUp';
 import GenerateListPopup from '../../../components/generatelistpopup/GenerateListPopup';
 
 export default function BookRanking() {

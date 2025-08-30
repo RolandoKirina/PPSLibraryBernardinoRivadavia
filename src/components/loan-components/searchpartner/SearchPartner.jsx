@@ -1,7 +1,7 @@
 import './SearchPartner.css';
 import Btn from '../../btn/Btn';
 import { useState } from 'react';
-import PopUp from '../../popup-table/PopUp2';
+import PopUp from '../../popup-table/PopUp';
 import PartnerMemo from '../partnermemo/PartnerMemo';
 
 export default function SearchPartner({ menu, onDataChange, loanType, partnerData }) {

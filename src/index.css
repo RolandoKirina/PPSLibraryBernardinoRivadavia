@@ -147,3 +147,12 @@ button:disabled {
   cursor: not-allowed;
   pointer-events: none;
 }
+
+
+.feespopup{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 35em;
+  height: 60%;
+}

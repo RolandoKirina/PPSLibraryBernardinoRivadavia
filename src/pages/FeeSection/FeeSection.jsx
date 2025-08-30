@@ -13,6 +13,8 @@ import ShowDetails from '../../components/generic/ShowDetails/ShowDetails.jsx';
 import Btn from '../../components/btn/Btn.jsx';
 import CardFees from '../../components/CardFees/CardFees.jsx';
 import { FeesDetail } from '../../data/fees/FeesDetail.js';
+import GenericForm from '../../components/generic/GenericForm/GenericForm.jsx';
+import editnewFeesForm from '../../data/fees/FeesForms.js';
 export const FeeSection = () => {
 
     const [selectedItem, setSelectedItem] = useState(null);
@@ -101,8 +103,10 @@ export const FeeSection = () => {
       {
         key: 'editPopup',
         title: 'Editar Cuota',
-        className: 'popup-container',
-        content: <div/>,
+        className: 'feespopup',
+        content: <GenericForm title={'Editar cuota nueva'} fields={editnewFeesForm}  className="editfees" onSubmit={(data) =>{
+          console.log("ñldfjñdfñlds")
+        }}/>,
         close: () => setPopupEdit(false),
         condition: PopUpEdit
       },
