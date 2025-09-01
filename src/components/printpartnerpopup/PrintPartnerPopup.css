@@ -4,6 +4,7 @@
     display: flex;   
     max-height: 75vh;         /* Ajustá según el diseño */
     overflow-y: auto; 
+    position: relative;
 }
 
 .partner-list-container {
@@ -151,5 +152,9 @@
 
 .preview-list-container {
     width: 85%;
-    background-color: rgb(125, 148, 211);
+    position: sticky;
+    background-color: var(--white);
+    overflow-y: auto;
+    top: 0;
 }
+

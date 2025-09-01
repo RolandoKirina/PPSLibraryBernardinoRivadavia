@@ -88,7 +88,7 @@ export default function OptionSection(){
                                 </a>
 
 
-                                <a href="/options/partner-lists">
+                                {/* <a href="/options/partner-lists">
                                 <div className="card">
                                     <div className="card-title">
                                         <h2>Generar listado de socios</h2>
@@ -97,10 +97,10 @@ export default function OptionSection(){
                                         <img src={partnerList} alt="Listado de socio" />
                                     </div>
                                 </div>
-                                </a>
+                                </a> */}
                             </div> 
 
-                            <div className="card-container">
+                            {/* <div className="card-container">
 
                                 <a href="/options/book-ranking">
                                 <div className="card">
@@ -159,7 +159,7 @@ export default function OptionSection(){
                                     </div>
                                 </div>
                                 </a>
-                        </div>                                         
+                        </div>                                          */}
                         </>
                         ): (
                             <>

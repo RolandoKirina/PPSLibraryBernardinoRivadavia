@@ -10,15 +10,15 @@ export default function GenerateListPopup({typeList}) {
 
     return (
         <>
-            <div className='generate-list-container'>
-                <div className='generate-list-content'>
-                    <Table columns={columnsByType[resolvedType]} data={dataByType[resolvedType]}>
+            {/* <div className='generate-list-container'>
+                <div className='generate-list-content'> */}
+                    <Table columns={columnsByType[resolvedType]} data={dataByType[resolvedType]} isPrintList={true} rowsPerPage={30}>
                         <div className='print-icon-btn'>
                             <Btn variant={'primary'} text={'Imprimir'} icon={<img src={printIcon} alt='printIcon'/> }/>
                         </div>
                     </Table>
-                </div>
-            </div>
+                {/* </div>
+            </div> */}
         </>
     )
 }

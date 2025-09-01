@@ -30,6 +30,8 @@
   height: 5em;
     background-color: var(--table-color-2);
 }
+
+
 .table th {
   padding: 0.5em;
 }
@@ -65,3 +67,22 @@
 .action-buttons{
   text-align: center;
 }
+
+
+.table .theadPrint {
+  background-color: gray;
+}
+
+.table .tbodyPrint tr:nth-child(even), .table .tbodyPrint tr:nth-child(odd) {
+  background-color: var(--white);
+  color: black;
+}
+
+.table, th, td {
+    border: 1px solid var(--table-lines);
+    border-collapse: collapse; /* evita bordes dobles */
+  }
+
+  .theadPrint th, .tbodyPrint td{
+  border: 1px solid rgb(56, 56, 56);
+  }

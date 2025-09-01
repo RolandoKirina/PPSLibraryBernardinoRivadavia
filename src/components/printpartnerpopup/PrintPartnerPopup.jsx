@@ -6,11 +6,12 @@ import { mockRemovePartnerReason } from '../../data/mocks/removePartnerReason';
 import { useState } from 'react';
 import PopUp from '../popup-table/PopUp2';
 import { titlesByType, listOptions, sortOptions } from '../../data/generatedlist/generatedList';
+import GenerateListPopup from '../generatelistpopup/GenerateListPopup';
 
 export default function PrintPartnerPopup() {
     const { items: partnerCategories } = useEntityManager(mockPartnersCategory, 'partnerCategories');
     const { items: removePartnerReasons } = useEntityManager(mockRemovePartnerReason, 'removePartnerReason');
-    const [generateListPopup, setGenerateListPopup] = useState(false);
+    // const [generateListPopup, setGenerateListPopup] = useState(false);
     const [formValues, setFormValues] = useState({});
 
     const handleSubmit = (e) => {
@@ -242,26 +243,16 @@ export default function PrintPartnerPopup() {
                             </div>
 
                             <div className='partner-list-btn'>
-                                <Btn variant={'primary'} text={'Generar'} type="submit" onClick={() => setGenerateListPopup(true)}/>              
+                                <Btn variant={'primary'} text={'Generar'} type="submit"/>              
                             </div>
                         </form> 
                     </div>  
                 </div>
 
 
-                                {/* segun el tipo de listado cambian las columnas de la tabla, segun el titulo del listado cambia el titulo del popup */}
-                {generateListPopup && (
-                    <>  
-                        <PopUp className={'generate-list-popup-size'} title={formValues.listTitle ? formValues.listTitle : titlesByType[formValues.listType]} onClick={() => setGenerateListPopup(false)}>
-                                <GenerateListPopup typeList={formValues.listType}/>
-                        </PopUp>
-                    </>
-                )}
-
-
             </div>
             <div className='preview-list-container'>
-
+                    <GenerateListPopup typeList={formValues.listType}/>
             </div>
         </div>
             
