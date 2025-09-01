@@ -15,6 +15,12 @@ import { useEntityManager } from '../../hooks/useEntityManager.js';
 import ShowDetails from '../../components/generic/ShowDetails/ShowDetails.jsx';
 import {DetailPartner} from '../../data/mocks/details/partner.js';
 import Btn from '../../components/btn/Btn.jsx';
+
+import PrintIcon from '../../assets/img/print-icon.svg';
+
+import './PartnerSection.css';
+import PrintPartnerPopup from '../../components/printpartnerpopup/PrintPartnerPopup.jsx';
+
 export default function PartnerSection(){
 
 
@@ -28,6 +34,8 @@ export default function PartnerSection(){
     const [PopUpDeletePartner,setPopUpDelete]=useState(false);
 
    const [PopUpEdit,setPopupEdit]=useState(false);
+
+   const [printListPopup, setPrintListPopup]=useState(false);
 
 const [DetailData,setDetailData]=useState(null);
     const [PopUpDetail,setPopUpDetail]=useState(false);
@@ -137,6 +145,14 @@ const [DetailData,setDetailData]=useState(null);
            close: () => setPopUpDetail(false),
            condition: PopUpDetail
       },
+      {
+           key: 'printListPopup',
+           title: 'Imprimir listado de socios',
+           className: 'print-partners-size',
+           content: <PrintPartnerPopup /> ,
+           close: () => setPrintListPopup(false),
+           condition: printListPopup
+      }
   ];
         
      return (
@@ -146,7 +162,10 @@ const [DetailData,setDetailData]=useState(null);
           columns={columns} data={items} popups={partnersPopUp}
            actions={
             <div>
-                   <Btn text="Agregar socio"  onClick={() => setPopUpAdd(true)} variant={"primary"} icon={<img src={PlusIcon}/>} ></Btn>
+              <div className='partner-buttons'>
+                  <Btn text="Agregar socio"  onClick={() => setPopUpAdd(true)} variant={"primary"} icon={<img src={PlusIcon}/>} ></Btn>
+                  <Btn text="Imprimir socios"  onClick={() => setPrintListPopup(true)} variant={"primary"} icon={<img src={PrintIcon}/>} ></Btn>
+              </div>
             </div>
                   
                 } 

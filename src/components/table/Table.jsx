@@ -2,9 +2,8 @@ import Pagination from "../pagination/Pagination";
 import { useState } from "react";
 
 
-export const Table = ({ columns =[], data=[], children, popupLength }) => {
+export const Table = ({ columns =[], data=[], children, popupLength, isPrintList , rowsPerPage = 5}) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 5;
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = data.slice(indexOfFirstRow, indexOfLastRow);
@@ -13,7 +12,7 @@ export const Table = ({ columns =[], data=[], children, popupLength }) => {
     <div className="content-table">
 
       <table className={`table ${popupLength ? popupLength : ''}`}>
-          <thead>
+          <thead className={isPrintList && 'theadPrint'}>
             <tr>
               {columns.map(col => (
                 <th key={col.accessor} className={col.className ? col.className : ''}>
@@ -22,7 +21,7 @@ export const Table = ({ columns =[], data=[], children, popupLength }) => {
               ))}
             </tr>
           </thead>
-          <tbody>
+          <tbody className={isPrintList && 'tbodyPrint'}>
             {currentRows.map((row, i) => (
               <tr key={i}>
                 {columns.map((col, j) => (

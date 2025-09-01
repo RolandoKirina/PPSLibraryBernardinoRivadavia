@@ -1,20 +1,18 @@
-import './PartnerListSection.css';
-import GenericSection from '../../../components/generic/GenericSection/GenericSection';
-import Btn from '../../../components/btn/Btn';
-import { mockPartnersCategory } from '../../../data/mocks/partnersCategory';
-import { useEntityManager } from '../../../hooks/useEntityManager';
-import { mockRemovePartnerReason } from '../../../data/mocks/removePartnerReason';
+import './PrintPartnerPopup.css';
+import Btn from '../btn/Btn';
+import { mockPartnersCategory } from '../../data/mocks/partnersCategory';
+import { useEntityManager } from '../../hooks/useEntityManager';
+import { mockRemovePartnerReason } from '../../data/mocks/removePartnerReason';
 import { useState } from 'react';
-import PopUp from '../../../components/popup-table/PopUp';
-import GenerateListPopup from '../../../components/generatelistpopup/GenerateListPopup';
-import { titlesByType, listOptions, sortOptions } from '../../../data/generatedList/generatedList';
+import PopUp from '../popup-table/PopUp';
+import { titlesByType, listOptions, sortOptions, dataByType, columnsByType } from '../../data/generatedlist/generatedList';
+import GenerateListPopup from '../generatelistpopup/GenerateListPopup';
 
-export default function PartnerListSection() {
+export default function PrintPartnerPopup() {
     const { items: partnerCategories } = useEntityManager(mockPartnersCategory, 'partnerCategories');
     const { items: removePartnerReasons } = useEntityManager(mockRemovePartnerReason, 'removePartnerReason');
-    const [generateListPopup, setGenerateListPopup] = useState(false);
+    // const [generateListPopup, setGenerateListPopup] = useState(false);
     const [formValues, setFormValues] = useState({});
-
 
     const handleSubmit = (e) => {
     e.preventDefault();
@@ -38,12 +36,10 @@ export default function PartnerListSection() {
     };
 
     return (
-        <GenericSection title={'Generar listado de socios'}>
+        <>
+        <div className='print-partners-container'>
             <div className='partner-list-container'>
                 <div className='partner-list-content'>
-                    <div className='partner-list-title'>
-                        <h2>Configuración de filtros para listado de socios</h2>
-                    </div>
                     <div className='partner-list-filters'>  
                         <form onSubmit={handleSubmit}>
                             {/* Datos del socio */}
@@ -89,11 +85,11 @@ export default function PartnerListSection() {
                                         Excluir
                                     </label>
                                     <div>
-                                        <label>
+                                        <label className='exclude'>
                                         <input type="checkbox" name="afterBirth" />
                                         Mayor a:
                                         </label>
-                                        <label>
+                                        <label className='exclude'>
                                         <input type="checkbox" name="beforeBirth" />
                                         Menor a:
                                         </label>
@@ -173,7 +169,7 @@ export default function PartnerListSection() {
                                     </div>
                                     <div className="input">
                                         <label htmlFor="borrowedBooks">Cantidad de libros retirados</label>
-                                        <label>
+                                        <label className='exclude'>
                                             <input type="checkbox" name="excludeBorrowedBooks" />
                                             Excluir
                                         </label>
@@ -197,7 +193,7 @@ export default function PartnerListSection() {
                                 <div className='filter-options'>
                                     <div className="input">
                                         <label htmlFor="unpaidQuotes">Cuotas impagas</label>
-                                        <label>
+                                        <label  className='exclude'>
                                             <input type="checkbox" name="excludeUnpaidQuotes" />
                                             Excluir
                                         </label>
@@ -247,24 +243,19 @@ export default function PartnerListSection() {
                             </div>
 
                             <div className='partner-list-btn'>
-                                <Btn variant={'primary'} text={'Generar'} type="submit" onClick={() => setGenerateListPopup(true)}/>              
+                                <Btn variant={'primary'} text={'Generar'} type="submit"/>              
                             </div>
                         </form> 
                     </div>  
                 </div>
 
 
-                                {/* segun el tipo de listado cambian las columnas de la tabla, segun el titulo del listado cambia el titulo del popup */}
-                {generateListPopup && (
-                    <>  
-                        <PopUp className={'generate-list-popup-size'} title={formValues.listTitle ? formValues.listTitle : titlesByType[formValues.listType]} onClick={() => setGenerateListPopup(false)}>
-                               <GenerateListPopup typeList={formValues.listType}/>
-                        </PopUp>
-                    </>
-                )}
-
-
             </div>
-        </GenericSection>
+            <div className='preview-list-container'>
+                    <GenerateListPopup dataByType={dataByType} columnsByType={columnsByType} typeList={formValues.listType} title={formValues.listTitle}/>
+            </div>
+        </div>
+            
+        </>
     )
 }

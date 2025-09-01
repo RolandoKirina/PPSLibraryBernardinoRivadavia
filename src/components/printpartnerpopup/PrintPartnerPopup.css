@@ -1,15 +1,24 @@
-.partner-list-container {
+
+.print-partners-container {
     width: 100%;
-    height: 100%;
+    display: flex;   
+    max-height: 75vh;         /* Ajustá según el diseño */
+    overflow-y: auto; 
+    position: relative;
+}
+
+.partner-list-container {
+    width: 25%;
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100%;
+    
 }
 
 .partner-list-content {
-    width: 60%;
+    width: 100%;
     background-color: var(--primary-dark-2);
-    margin: 1em 0;
     border-radius: 0.625em;
 }
 
@@ -26,32 +35,24 @@
 .partner-list-filters {
     width: 100%;
     height: 90%;
+    margin-top: 1em;
 }
 
 .partner-list-filter-option {
     width: 100%;
-    border: 0.2em solid var(--primary-dark-1);
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
 .partner-list-filter-option .partner-list-filter-title {
-    background-color: var(--primary-dark-1);
     height: 100%;
-    width: 100%;
+    width: 90%;
     padding-bottom: 0.5em;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
 }
-
-/* .partner-list-filter-option {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: red;
-} */
 
 .partner-list-filter-option .filter-options {
     display: flex;
@@ -63,14 +64,14 @@
 }
 
 .partner-list-filter-option .filter-options .input {
-    margin: 1em 1em;
+    margin: 0.5em 1em;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
 .partner-list-filter-option .filter-options .input select {
-    height: 2.5em;
+    height: 2em;
     overflow-y: auto;
 }
 
@@ -84,6 +85,7 @@
 
 .partner-list-filter-option .filter-options .input label {
     margin-bottom: 0.3rem;
+    color: var(--secondary-light-1);
 }
 
 .partner-list-btn {
@@ -93,17 +95,13 @@
     margin: 1em 0;
 }
 
-.birthDate-checkbox  {
-   min-width: 15em;
-}
-
 .birthDate-checkbox div {
     display: flex;
     justify-content: space-between;
 }
 
 .birthDate-checkbox div label input {
-   margin-right: 0.5em;
+   margin-right: 0.2em;
 }
 
 .registration-resignation div span {
@@ -130,6 +128,15 @@
     overflow-y: auto; 
 }
 
+.partner-list-filter-option .filter-options .input  .exclude {
+    color: var(--white);
+}
+
+
+.partner-list-filter-option .filter-options .input .birthDate-checkbox {
+    color: var(--white);
+}
+
 .exclude input {
     margin-right: 0.25em;
 }
@@ -138,6 +145,16 @@
     width: 100%;
 }
 
-.listTitleInput input {
-    width: 20em;
+
+
+
+/* preview-list-container */
+
+.preview-list-container {
+    width: 85%;
+    position: sticky;
+    background-color: var(--white);
+    overflow-y: auto;
+    top: 0;
 }
+
