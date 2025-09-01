@@ -252,7 +252,7 @@ export default function PrintPartnerPopup() {
 
             </div>
             <div className='preview-list-container'>
-                    <GenerateListPopup dataByType={dataByType} columnsByType={columnsByType} typeList={formValues.listType} title={formValues.listTitle}/>
+                    <GenerateListPopup dataByType={dataByType} columnsByType={columnsByType} typeList={formValues.listType} title={formValues.listTitle} />
             </div>
         </div>
             

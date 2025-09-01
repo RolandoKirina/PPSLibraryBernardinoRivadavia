@@ -1,14 +1,13 @@
 import './BookRanking.css';
-import GenericSection from '../../../components/generic/GenericSection/GenericSection';
-import calendarIcon from '../../../assets/img/calendar-icon.svg';
-import Btn from '../../../components/btn/Btn';
+import calendarIcon from '../../assets/img/calendar-icon.svg';
+import Btn from '../btn/Btn';
 import { useState } from 'react';
-import PopUp from '../../../components/popup-table/PopUp';
-import GenerateListPopup from '../../../components/generatelistpopup/GenerateListPopup';
+import GenerateListPopup from '../generatelistpopup/GenerateListPopup';
+import { dataByType, columnsByType } from '../../data/generatedlist/generatedList';
+
 
 export default function BookRanking() {
     const [formValues, setFormValues] = useState({});
-    const [generateListPopup, setGenerateListPopup] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -28,19 +27,13 @@ export default function BookRanking() {
         });
 
         setFormValues(data);
-        setGenerateListPopup(true);
         console.log("Formulario:", data);
-        };
-
+    };
 
     return (
         <>
-            <GenericSection title={'Generar ranking de libros'}>
-                <div className='ranking-list-container'>
+            <div className='book-ranking-container'>
                     <div className='ranking-list-content'>
-                        <div className='ranking-list-title'>
-                            <h2>Configuración de filtros para ranking de libros</h2>
-                        </div>
                         <div className='ranking-list-filters'>
                             <form onSubmit={handleSubmit}>
                                 <div className='ranking-list-filter-option'>
@@ -48,19 +41,19 @@ export default function BookRanking() {
                                     <h3>Fecha de retiro</h3>
                                     </div>
                                     <div className='filter-options'>
-                                    <div className='input'>
-                                        <div className='calendar-icon'>
+                                    <div className='input column-input'>
+                                        {/* <div className='calendar-icon'>
                                         <img src={calendarIcon} alt='calendar-icon' />
-                                        </div>
+                                        </div> */}
                                         <label htmlFor='dateFrom'>Fecha mayor a:</label>
                                         <input type="date" name="dateFrom" id="dateFrom" />
                                     </div>
                                     </div>
                                     <div className='filter-options'>
-                                    <div className='input'>
-                                        <div className='calendar-icon'>
+                                    <div className='input column-input'>
+                                        {/* <div className='calendar-icon'>
                                         <img src={calendarIcon} alt='calendar-icon' />
-                                        </div>
+                                        </div> */}
                                         <label htmlFor='dateTo'>Fecha menor a:</label>
                                         <input type="date" name="dateTo" id="dateTo" />
                                     </div>
@@ -113,22 +106,16 @@ export default function BookRanking() {
                                     </div>
                                 </div>
                                 <div className='partner-list-btn'>
-                                    <Btn variant={'primary'} text={'Generar'} type="submit" onClick={() => setGenerateListPopup(true)} />
+                                    <Btn variant={'primary'} text={'Generar'} type="submit" onClick={console.log("generated")} />
                                 </div>
                             </form>
 
                         </div>
                     </div>
-                    {generateListPopup && (
-                        <>  
-                            <PopUp className={'generate-list-popup-size'} title={'Ranking de libros prestados'} onClick={() => setGenerateListPopup(false)}>
-                                    <GenerateListPopup typeList={'BookRanking'}/>
-                            </PopUp>
-                        </>
-                    )}
-
-                </div>
-            </GenericSection>
+                    <div className='preview-list-container'>
+                            <GenerateListPopup dataByType={dataByType} columnsByType={columnsByType} typeList={'BookRanking'} title={formValues.listTitle}/>
+                    </div>               
+            </div>
         </>
     )
 }

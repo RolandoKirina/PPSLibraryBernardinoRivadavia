@@ -93,3 +93,7 @@
   display: flex;
   margin-top: 1em;
 }
+
+.ranking-books-size {
+    width: 85%;
+}

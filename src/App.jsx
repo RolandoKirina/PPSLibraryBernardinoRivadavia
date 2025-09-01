@@ -25,7 +25,6 @@ import FeeSection from './pages/FeeSection/FeeSection.jsx';
 import LoginSection from './pages/options/LoginSection/LoginSection.jsx';
 import RegisterSection from './pages/options/RegisterSection/RegisterSection.jsx';
 // import PartnerListSection from './pages/options/PartnerListSection/PartnerListSection.jsx';
-import BookRanking from './pages/options/BookRanking/BookRanking.jsx';
 import BooksPartners from './pages/options/BooksPartners/BooksPartners.jsx';
 
 function App() {
@@ -50,7 +49,6 @@ function App() {
             <Route path='/options/remove-partner-reasons' element={<RemovePartnerReasonSection chooseMode={false}/>}/>
             <Route path='/options/loan-amount-group' element={<LoanAmountSection/>}/> 
             {/* <Route path='/options/partner-lists' element={<PartnerListSection/>}/>  */}
-            <Route path='/options/book-ranking' element={<BookRanking/>}/> 
             <Route path='/options/books-partners' element={<BooksPartners/>}/> 
             <Route path='/fees' element={<FeeSection/>}/>
 

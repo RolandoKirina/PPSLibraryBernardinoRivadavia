@@ -16,8 +16,9 @@ import {books }from '../../data/mocks/books.js';
 import{ useEntityManager} from '../../hooks/useEntityManager.js';
 import Btn from '../../components/btn/Btn.jsx';
 import PlusIcon from '../../assets/img/plus-icon.svg';
+import BookIcon from '../../assets/img/book-icon.svg';
 import FormEditBook from '../../components/formeditbook/FormEditbook.jsx';
-
+import BookRanking from '../../components/bookranking/BookRanking.jsx';
 
 const BookSection = () => {
 
@@ -28,6 +29,7 @@ const BookSection = () => {
   const [PopUpDeleteBook,setPopUpDelete]=useState(false);
   const [PopUpDuplicate,setPopUpDuplicate]=useState(false);
   const [PopUpDetail,setPopUpDetail]=useState(false);
+  const [PopUpRanking,setPopUpRanking]=useState(false);
 
 
   const {items,getItem,createItem,updateItem,deleteItem} = useEntityManager(books, "books");
@@ -131,13 +133,20 @@ const BookSection = () => {
     close: () => setPopUpDuplicate(false),
     condition: PopUpDuplicate
   },
-
   {
       key: 'SeeDetail',
       title: 'Ver detalle',
       content: <ShowDetails data={selectedItem} detailsData={BookDetail} isPopup={true}  />,
       close: () => setPopUpDetail(false),
       condition: PopUpDetail
+    },
+    {
+      key: 'BooksRanking',
+      title: 'Ranking de libros',
+      classname: 'ranking-books-size',
+      content: <BookRanking />,
+      close: () => setPopUpRanking(false),
+      condition: PopUpRanking
     }
   ]
 
@@ -156,7 +165,8 @@ const BookSection = () => {
       actions={
         <div className='listbtns'>
                <Btn  icon={<img src={PlusIcon}/>} onClick={() => setPopupAdd(true)} text={'Agregar libro'} variant={"primary"}/>
-                <Btn icon={<img src={PlusIcon}/>} onClick={() =>setPopUpDuplicate(true)} text={'Duplicar libro'} variant={"primary"}/>
+               <Btn icon={<img src={PlusIcon}/>} onClick={() =>setPopUpDuplicate(true)} text={'Duplicar libro'} variant={"primary"}/>
+               <Btn icon={<img src={BookIcon}/>} onClick={() =>setPopUpRanking(true)} text={'Ranking de libros'} variant={"primary"}/>
         </div>
          
       } 
