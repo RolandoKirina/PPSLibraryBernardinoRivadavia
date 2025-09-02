@@ -25,8 +25,8 @@
 - cd PPSLibraryFrontend
 
 3️⃣ **Instalar dependencias**
-- npm install
+- Poner el siguiente comando en la consola *npm install*
 
 4️⃣ **Ejecutar la aplicación**
-- npm run dev
-- Abrir la aplicación en el puerto http://localhost:5173
+- Poner el siguiente comando en la consola *npm run dev*
+- Abrir el siguiente link en el navega, en el puerto 5173 http://localhost:5173
