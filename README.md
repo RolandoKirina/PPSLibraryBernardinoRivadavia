@@ -1,5 +1,5 @@
 #  📚 Sistema web para la gestión de la Biblioteca Bernardino Rivadavia de Tandil
-## En el entorno de las Prácticas Profesionales de la Tecnicatura Universitaria en Desarrollo de Aplicaciones Informáticas.
+## Este proyecto se desarrolla en el marco de las Prácticas Profesionales de la Tecnicatura Universitaria en Desarrollo de Aplicaciones Informáticas.
 
 ## 🚀 Características
 - CRUD de las entidades de la biblioteca.
