@@ -21,14 +21,91 @@
   { label: 'Número de Socio', value: 'memberNumber' }
   ];
 
+  export const sortOptionsLostBooks = [
+  { label: 'Apellido del Socio', value: 'memberLastName' },
+  { label: 'Código del Libro', value: 'bookCode' },
+  { label: 'Fecha de Pérdida', value: 'lossDate' },
+  { label: 'Número de Socio', value: 'memberNumber' },
+  { label: 'Título del Libro', value: 'bookTitle' }
+];
+
 export const titlesByType = {
   TypeOne: 'Listado de Socios - Cuotas - Libros pendientes',
   TypeTwo: 'Listado de Socios dados de alta',
   TypeThree: 'Socios a consideración de la Comisión Directiva',
   TypeFour: 'Listado de Socios - "incorporado por"',
   BookRanking: 'Ranking de libros prestados',
+  LostBooks: 'Listado de libros perdidos',
   TypeOneFees: 'Listado de cuotas entre fechas',
   TypeTwoFees: 'Listado de cuotas por letra y categoria',
+};
+
+
+export const columnsByType = {
+  TypeOne: [
+    { header: 'Número - Apellido', accessor: 'memberCodeSurname' },
+    { header: 'Nombre', accessor: 'firstName' },
+    { header: 'Dirección', accessor: 'address' },
+    { header: 'Teléfono', accessor: 'phone' },
+    { header: 'Cuotas', accessor: 'fees' },
+    { header: 'Libros Pendientes', accessor: 'pendingBooks' },
+    { header: 'Fecha de Inscripción', accessor: 'registrationDate' }
+  ],
+  TypeTwo: [
+    { header: 'Número - Apellido', accessor: 'memberCodeSurname' },
+    { header: 'Nombre', accessor: 'firstName' },
+    { header: 'Dirección', accessor: 'address' },
+    { header: 'Teléfono', accessor: 'phone' },
+    { header: 'Estado', accessor: 'status' },
+    { header: 'Fecha de Inscripción', accessor: 'registrationDate' }
+  ],
+  TypeThree: [
+    { header: 'Número - Apellido', accessor: 'memberCodeSurname' },
+    { header: 'Nombre', accessor: 'firstName' },
+    { header: 'Dirección', accessor: 'address' },
+    { header: 'Teléfono', accessor: 'phone' },
+    { header: 'Fecha de Baja', accessor: 'deactivationDate' },
+    { header: 'Motivo', accessor: 'reason' }
+  ],
+  TypeFour: [
+    { header: 'Número - Apellido', accessor: 'memberCodeSurname' },
+    { header: 'Nombre', accessor: 'firstName' },
+    { header: 'Dirección', accessor: 'address' },
+    { header: 'Teléfono', accessor: 'phone' },
+    { header: 'Presentado por', accessor: 'presentedBy' },
+    { header: 'Fecha de Inscripción', accessor: 'registrationDate' }
+  ],
+  BookRanking: [
+    { header: 'Código', accessor: 'bookCode' },
+    { header: 'Título', accessor: 'bookTitle' },
+    { header: 'Autores', accessor: 'authors' },
+    { header: 'CDU', accessor: 'cdu' },
+    { header: 'Cantidad', accessor: 'quantity' }
+  ],
+  LostBooks: [
+    { header: 'Fecha', accessor: 'date' },
+    { header: 'Código', accessor: 'code' },
+    { header: 'Tabla', accessor: 'table' },
+    { header: 'Número pedido', accessor: 'orderNumber' },
+    { header: 'Nombre', accessor: 'name' },
+    { header: 'Dirección', accessor: 'address' },
+    { header: 'Teléfono', accessor: 'phone' }
+  ],
+
+  TypeOneFees: [
+  { header: 'Número de Socio', accessor: 'memberNumber' },
+  { header: 'Apellido', accessor: 'lastName' },
+  { header: 'Nombre', accessor: 'firstName' },
+  { header: 'Monto', accessor: 'amount' },
+  { header: 'Cantidad de Cuotas', accessor: 'installments' }
+  ],
+  TypeTwoFees: [
+    { header: 'Letra', accessor: 'letter' },
+    { header: 'Regular', accessor: 'regular' },
+    { header: 'Honorario', accessor: 'honorary' },
+    { header: 'Protector', accessor: 'protector' },
+    { header: 'Débito', accessor: 'debit' }
+  ]
 };
 
 export const dataByType = {
@@ -454,6 +531,100 @@ export const dataByType = {
       quantity: 22
     }
   ],
+
+  LostBooks: [
+    {
+      date: '2025-01-12',
+      code: 'LB-001',
+      table: 'Mesa 3',
+      orderNumber: 'REQ-14396',
+      name: 'Lucrecia AERUANTE',
+      address: 'Avellaneda 120',
+      phone: '2995123456'
+    },
+    {
+      date: '2025-02-08',
+      code: 'LB-002',
+      table: 'Mesa 1',
+      orderNumber: 'REQ-10393',
+      name: 'Griselda ABRAHAM',
+      address: 'Mitre 88',
+      phone: '2994789654'
+    },
+    {
+      date: '2025-03-15',
+      code: 'LB-003',
+      table: 'Mesa 2',
+      orderNumber: 'REQ-14393',
+      name: 'Luciano MATFROLCH',
+      address: 'Belgrano 55',
+      phone: '2995012345'
+    },
+    {
+      date: '2025-04-03',
+      code: 'LB-004',
+      table: 'Mesa 4',
+      orderNumber: 'REQ-10392',
+      name: 'Facundo AGUILA',
+      address: 'San Martín 102',
+      phone: '2994432187'
+    },
+    {
+      date: '2025-05-20',
+      code: 'LB-005',
+      table: 'Mesa 5',
+      orderNumber: 'REQ-10401',
+      name: 'María José BAZÁN',
+      address: 'Chacabuco 77',
+      phone: '2994123987'
+    },
+    {
+      date: '2025-06-11',
+      code: 'LB-006',
+      table: 'Mesa 2',
+      orderNumber: 'REQ-10402',
+      name: 'Esteban CARRERA',
+      address: 'Urquiza 33',
+      phone: '2994567890'
+    },
+    {
+      date: '2025-07-07',
+      code: 'LB-007',
+      table: 'Mesa 1',
+      orderNumber: 'REQ-10403',
+      name: 'Lucía DÍAZ',
+      address: 'Alsina 99',
+      phone: '2994781234'
+    },
+    {
+      date: '2025-08-14',
+      code: 'LB-008',
+      table: 'Mesa 3',
+      orderNumber: 'REQ-10404',
+      name: 'Martín ECHAGÜE',
+      address: 'Roca 88',
+      phone: '2994123456'
+    },
+    {
+      date: '2025-09-01',
+      code: 'LB-009',
+      table: 'Mesa 4',
+      orderNumber: 'REQ-10405',
+      name: 'Sofía FERNÁNDEZ',
+      address: 'Venezuela 44',
+      phone: '2995526739'
+    },
+    {
+      date: '2025-09-02',
+      code: 'LB-010',
+      table: 'Mesa 5',
+      orderNumber: 'REQ-10406',
+      name: 'Julián GÓMEZ',
+      address: 'Lavalle 12',
+      phone: '2994789650'
+    }
+  ],
+
   TypeOneFees: [
     {
     memberNumber: '14396',
@@ -599,61 +770,4 @@ export const dataByType = {
     }
   ]
 
-};
-
-export const columnsByType = {
-  TypeOne: [
-    { header: 'Número - Apellido', accessor: 'memberCodeSurname' },
-    { header: 'Nombre', accessor: 'firstName' },
-    { header: 'Dirección', accessor: 'address' },
-    { header: 'Teléfono', accessor: 'phone' },
-    { header: 'Cuotas', accessor: 'fees' },
-    { header: 'Libros Pendientes', accessor: 'pendingBooks' },
-    { header: 'Fecha de Inscripción', accessor: 'registrationDate' }
-  ],
-  TypeTwo: [
-    { header: 'Número - Apellido', accessor: 'memberCodeSurname' },
-    { header: 'Nombre', accessor: 'firstName' },
-    { header: 'Dirección', accessor: 'address' },
-    { header: 'Teléfono', accessor: 'phone' },
-    { header: 'Estado', accessor: 'status' },
-    { header: 'Fecha de Inscripción', accessor: 'registrationDate' }
-  ],
-  TypeThree: [
-    { header: 'Número - Apellido', accessor: 'memberCodeSurname' },
-    { header: 'Nombre', accessor: 'firstName' },
-    { header: 'Dirección', accessor: 'address' },
-    { header: 'Teléfono', accessor: 'phone' },
-    { header: 'Fecha de Baja', accessor: 'deactivationDate' },
-    { header: 'Motivo', accessor: 'reason' }
-  ],
-  TypeFour: [
-    { header: 'Número - Apellido', accessor: 'memberCodeSurname' },
-    { header: 'Nombre', accessor: 'firstName' },
-    { header: 'Dirección', accessor: 'address' },
-    { header: 'Teléfono', accessor: 'phone' },
-    { header: 'Presentado por', accessor: 'presentedBy' },
-    { header: 'Fecha de Inscripción', accessor: 'registrationDate' }
-  ],
-  BookRanking: [
-    { header: 'Código', accessor: 'bookCode' },
-    { header: 'Título', accessor: 'bookTitle' },
-    { header: 'Autores', accessor: 'authors' },
-    { header: 'CDU', accessor: 'cdu' },
-    { header: 'Cantidad', accessor: 'quantity' }
-  ],
-  TypeOneFees: [
-  { header: 'Número de Socio', accessor: 'memberNumber' },
-  { header: 'Apellido', accessor: 'lastName' },
-  { header: 'Nombre', accessor: 'firstName' },
-  { header: 'Monto', accessor: 'amount' },
-  { header: 'Cantidad de Cuotas', accessor: 'installments' }
-  ],
-  TypeTwoFees: [
-    { header: 'Letra', accessor: 'letter' },
-    { header: 'Regular', accessor: 'regular' },
-    { header: 'Honorario', accessor: 'honorary' },
-    { header: 'Protector', accessor: 'protector' },
-    { header: 'Débito', accessor: 'debit' }
-  ]
 };

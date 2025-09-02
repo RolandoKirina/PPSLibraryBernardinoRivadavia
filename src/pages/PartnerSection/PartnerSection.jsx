@@ -22,7 +22,9 @@ import './PartnerSection.css';
 import PrintPartnerPopup from '../../components/printpartnerpopup/PrintPartnerPopup.jsx';
 
 import PartnersBooks from '../../components/partnersbooks/PartnersBooks.jsx';
-import BookIcon from '../../assets/img/book-icon.svg';
+
+import ReaderIcon from '../../assets/img/reader.svg';
+
 
 export default function PartnerSection(){
 
@@ -180,7 +182,7 @@ const [DetailData,setDetailData]=useState(null);
               <div className='partner-buttons'>
                   <Btn text="Agregar socio"  onClick={() => setPopUpAdd(true)} variant={"primary"} icon={<img src={PlusIcon}/>} ></Btn>
                   <Btn text="Imprimir socios"  onClick={() => setPrintListPopup(true)} variant={"primary"} icon={<img src={PrintIcon}/>} ></Btn>
-                  <Btn icon={<img src={BookIcon}/>} onClick={() =>setPopUpBooksPartners(true)} text={'Libros y socios'} variant={"primary"}/>
+                  <Btn icon={<img src={ReaderIcon}/>} onClick={() =>setPopUpBooksPartners(true)} text={'Libros y socios'} variant={"primary"}/>
               </div>
             </div>
                   

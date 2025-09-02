@@ -17,9 +17,12 @@ import{ useEntityManager} from '../../hooks/useEntityManager.js';
 import Btn from '../../components/btn/Btn.jsx';
 import PlusIcon from '../../assets/img/plus-icon.svg';
 import BookIcon from '../../assets/img/book-icon.svg';
+import LostBookIcon from '../../assets/img/lost-book.svg';
+import ReaderIcon from '../../assets/img/reader.svg';
 import FormEditBook from '../../components/formeditbook/FormEditbook.jsx';
 import BookRanking from '../../components/bookranking/BookRanking.jsx';
 import PartnersBooks from '../../components/partnersbooks/PartnersBooks.jsx';
+import LostBooks from '../../components/lostbooks/LostBooks.jsx';
 
 const BookSection = () => {
 
@@ -32,6 +35,7 @@ const BookSection = () => {
   const [PopUpDetail,setPopUpDetail]=useState(false);
   const [PopUpRanking,setPopUpRanking]=useState(false);
   const [PopUpBooksPartners,setPopUpBooksPartners]=useState(false);
+  const [PopUpLostBooks,setPopUpLostBooks]=useState(false);
 
 
   const {items,getItem,createItem,updateItem,deleteItem} = useEntityManager(books, "books");
@@ -157,6 +161,14 @@ const BookSection = () => {
       content: <PartnersBooks />,
       close: () => setPopUpBooksPartners(false),
       condition: PopUpBooksPartners
+    },
+    {
+      key: 'LostBooks',
+      title: 'Libros perdidos',
+      className: 'lost-books-size',
+      content: <LostBooks />,
+      close: () => setPopUpLostBooks(false),
+      condition: PopUpLostBooks
     }
   ]
 
@@ -177,7 +189,8 @@ const BookSection = () => {
                <Btn  icon={<img src={PlusIcon}/>} onClick={() => setPopupAdd(true)} text={'Agregar libro'} variant={"primary"}/>
                <Btn icon={<img src={PlusIcon}/>} onClick={() =>setPopUpDuplicate(true)} text={'Duplicar libro'} variant={"primary"}/>
                <Btn icon={<img src={BookIcon}/>} onClick={() =>setPopUpRanking(true)} text={'Ranking de libros'} variant={"primary"}/>
-               <Btn icon={<img src={BookIcon}/>} onClick={() =>setPopUpBooksPartners(true)} text={'Libros y socios'} variant={"primary"}/>
+               <Btn icon={<img src={ReaderIcon}/>} onClick={() =>setPopUpBooksPartners(true)} text={'Libros y socios'} variant={"primary"}/>
+               <Btn icon={<img src={LostBookIcon}/>} onClick={() =>setPopUpLostBooks(true)} text={'Libros perdidos'} variant={"primary"}/>
         </div>
          
       } 

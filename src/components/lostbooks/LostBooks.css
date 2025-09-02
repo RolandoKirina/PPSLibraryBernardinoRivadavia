@@ -1,0 +1,110 @@
+.lost-books-container {
+  width: 100%;
+  display: flex;
+  max-height: 75vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.lost-books-content {
+  width: 25%;
+  background-color: var(--primary-dark-2);
+  border-radius: 0.625em;
+}
+
+.lost-books-filters {
+  width: 100%;
+  height: 90%;
+}
+
+.lost-books-filters form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--primary-dark-2);
+}
+
+.lost-books-filter-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: 1em;
+  border-bottom: 0.2em solid var(--primary-dark-1);
+}
+
+.lost-books-filter-option .lost-books-filter-title:first-child {
+  margin-top: 0;
+}
+
+.lost-books-filter-option .lost-books-filter-title {
+  height: 100%;
+  width: 90%;
+  padding-bottom: 0.5em;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 1em;
+}
+
+.lost-books-filter-option .filter-options {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-top: 0.5em;
+}
+
+.lost-books-filter-option .filter-options .input {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 0.5em 1em;
+}
+
+.lost-books-filter-option .filter-options .column-input {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.lost-books-filter-option .filter-options .column-input input {
+  margin-top: 0.3em;
+}
+
+.lost-books-filter-option .filter-options .input label {
+  display: inline-block;
+  color: var(--secondary-light-1);
+}
+
+.lost-books-filter-option .filter-options .calendar-icon {
+  display: inline-block;
+}
+
+.lost-books-filter-option .filter-options .order-by-select {
+  margin-top: 0.3em;
+  height: 2.5em;
+}
+
+.lost-books-filter-option .filter-options .radio-inputs {
+  margin: 0em 1em;
+  display: flex;
+  flex-direction: column;
+}
+
+.lost-books-filter-option .filter-options .radio-inputs label {
+  margin-bottom: 1em;
+}
+
+.lost-books-filter-option .filter-options .radio-inputs input {
+  margin-right: 0.5em;
+}
+
+.lost-books-filter-option .filter-options .radio-inputs label:first-child {
+  margin-right: 1em;
+}
+
+.lost-books-btn {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 1em 0;
+}
