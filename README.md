@@ -29,4 +29,4 @@
 
 4️⃣ **Ejecutar la aplicación**
 - npm run dev
-- http://localhost:5173
+- Abrir la aplicación en el puerto http://localhost:5173
