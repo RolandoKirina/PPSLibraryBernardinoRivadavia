@@ -29,4 +29,4 @@
 
 4️⃣ **Ejecutar la aplicación**
 - Poner el siguiente comando en la consola **npm run dev**
-- Abrir el siguiente link en el navega, en el puerto 5173 http://localhost:5173
+- Abrir el siguiente link en el navegador, en el puerto 5173 http://localhost:5173
