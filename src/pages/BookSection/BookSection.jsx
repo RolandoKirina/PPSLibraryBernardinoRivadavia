@@ -19,6 +19,7 @@ import PlusIcon from '../../assets/img/plus-icon.svg';
 import BookIcon from '../../assets/img/book-icon.svg';
 import FormEditBook from '../../components/formeditbook/FormEditbook.jsx';
 import BookRanking from '../../components/bookranking/BookRanking.jsx';
+import PartnersBooks from '../../components/partnersbooks/PartnersBooks.jsx';
 
 const BookSection = () => {
 
@@ -30,6 +31,7 @@ const BookSection = () => {
   const [PopUpDuplicate,setPopUpDuplicate]=useState(false);
   const [PopUpDetail,setPopUpDetail]=useState(false);
   const [PopUpRanking,setPopUpRanking]=useState(false);
+  const [PopUpBooksPartners,setPopUpBooksPartners]=useState(false);
 
 
   const {items,getItem,createItem,updateItem,deleteItem} = useEntityManager(books, "books");
@@ -143,10 +145,18 @@ const BookSection = () => {
     {
       key: 'BooksRanking',
       title: 'Ranking de libros',
-      classname: 'ranking-books-size',
+      className: 'ranking-books-size',
       content: <BookRanking />,
       close: () => setPopUpRanking(false),
       condition: PopUpRanking
+    },
+    {
+      key: 'BooksPartnersQuantity',
+      title: 'Cantidad de libros y socios',
+      className: 'books-partners-amount-size',
+      content: <PartnersBooks />,
+      close: () => setPopUpBooksPartners(false),
+      condition: PopUpBooksPartners
     }
   ]
 
@@ -167,6 +177,7 @@ const BookSection = () => {
                <Btn  icon={<img src={PlusIcon}/>} onClick={() => setPopupAdd(true)} text={'Agregar libro'} variant={"primary"}/>
                <Btn icon={<img src={PlusIcon}/>} onClick={() =>setPopUpDuplicate(true)} text={'Duplicar libro'} variant={"primary"}/>
                <Btn icon={<img src={BookIcon}/>} onClick={() =>setPopUpRanking(true)} text={'Ranking de libros'} variant={"primary"}/>
+               <Btn icon={<img src={BookIcon}/>} onClick={() =>setPopUpBooksPartners(true)} text={'Libros y socios'} variant={"primary"}/>
         </div>
          
       } 
