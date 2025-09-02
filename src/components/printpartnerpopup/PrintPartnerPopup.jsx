@@ -5,7 +5,7 @@ import { useEntityManager } from '../../hooks/useEntityManager';
 import { mockRemovePartnerReason } from '../../data/mocks/removePartnerReason';
 import { useState } from 'react';
 import PopUp from '../popup-table/PopUp';
-import { titlesByType, listOptions, sortOptions, dataByType, columnsByType } from '../../data/generatedlist/generatedList';
+import { listOptions, sortOptions, dataByType, columnsByType } from '../../data/generatedlist/generatedList';
 import GenerateListPopup from '../generatelistpopup/GenerateListPopup';
 
 export default function PrintPartnerPopup() {
@@ -252,7 +252,7 @@ export default function PrintPartnerPopup() {
 
             </div>
             <div className='preview-list-container'>
-                    <GenerateListPopup dataByType={dataByType} columnsByType={columnsByType} typeList={formValues.listType} title={formValues.listTitle} />
+                    <GenerateListPopup dataByType={dataByType} columnsByType={columnsByType} typeList={formValues.listType ? formValues.listType : 'TypeOne'} title={formValues.listTitle} />
             </div>
         </div>
             
