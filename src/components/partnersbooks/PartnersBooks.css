@@ -15,11 +15,13 @@
 .partners-books-filter-option .filter-options {
     display: flex;
     justify-content: space-between;
+    margin: 0;
     margin-top: 1em;
 }
 
 .partners-books-filter-option .filter-options .input {
     width: 45%;
+    margin-left: 0;
 }
 
 .partners-books-filter-result {

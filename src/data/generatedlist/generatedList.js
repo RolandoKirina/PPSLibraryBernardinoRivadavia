@@ -5,6 +5,11 @@
   { label: 'Núm-Apey-Nomb-Direc-Tel-Present-X-FInsc', value: 'TypeFour' }
   ];
 
+  export const feesBetweenDatesListOptions = [
+  { label: 'Listado de cuotas pagas por categoria', value: 'TypeOneFees' },
+  { label: 'Cuotas por letra y categoria', value: 'TypeTwoFees' },
+  ];
+
   export const sortOptions = [
   { label: 'Apellido - Nombre', value: 'lastNameFirstName' },
   { label: 'Cantidad de cuotas impagas', value: 'unpaidFees' },
@@ -21,7 +26,9 @@ export const titlesByType = {
   TypeTwo: 'Listado de Socios dados de alta',
   TypeThree: 'Socios a consideración de la Comisión Directiva',
   TypeFour: 'Listado de Socios - "incorporado por"',
-  BookRanking: 'Ranking de libros prestados'
+  BookRanking: 'Ranking de libros prestados',
+  TypeOneFees: 'Listado de cuotas entre fechas',
+  TypeTwoFees: 'Listado de cuotas por letra y categoria',
 };
 
 export const dataByType = {
@@ -446,10 +453,153 @@ export const dataByType = {
       cdu: '863.44',
       quantity: 22
     }
+  ],
+  TypeOneFees: [
+    {
+    memberNumber: '14396',
+    lastName: 'AERUANTE',
+    firstName: 'Lucrecia',
+    amount: '6300.00 €',
+    installments: 2
+    },
+    {
+      memberNumber: '10393',
+      lastName: 'ABRAHAM',
+      firstName: 'Griselda Alejandra',
+      amount: '7000.00 €',
+      installments: 2
+    },
+    {
+      memberNumber: '14393',
+      lastName: 'AERDO MATFROLCH',
+      firstName: 'Luciano',
+      amount: '14000.00 €',
+      installments: 4
+    },
+    {
+      memberNumber: '10392',
+      lastName: 'AGUILA',
+      firstName: 'Facundo Manuel',
+      amount: '6000.00 €',
+      installments: 2
+    },
+    {
+      memberNumber: '10401',
+      lastName: 'BAZÁN',
+      firstName: 'María José',
+      amount: '8200.00 €',
+      installments: 3
+    },
+    {
+      memberNumber: '10402',
+      lastName: 'CARRERA',
+      firstName: 'Esteban',
+      amount: '5600.00 €',
+      installments: 1
+    },
+    {
+      memberNumber: '10403',
+      lastName: 'DÍAZ',
+      firstName: 'Lucía',
+      amount: '9100.00 €',
+      installments: 2
+    },
+    {
+      memberNumber: '10404',
+      lastName: 'ECHAGÜE',
+      firstName: 'Martín',
+      amount: '7500.00 €',
+      installments: 3
+    },
+    {
+      memberNumber: '10405',
+      lastName: 'FERNÁNDEZ',
+      firstName: 'Sofía',
+      amount: '6700.00 €',
+      installments: 2
+    },
+    {
+      memberNumber: '10406',
+      lastName: 'GÓMEZ',
+      firstName: 'Julián',
+      amount: '8800.00 €',
+      installments: 4
+    }
+  ],
+  TypeTwoFees: [
+    {
+      letter: 'A',
+      regular: 65,
+      honorary: '226750.00 €',
+      protector: 4,
+      debit: '14000.00 €'
+    },
+    {
+      letter: 'B',
+      regular: 48,
+      honorary: '198500.00 €',
+      protector: 3,
+      debit: '12500.00 €'
+    },
+    {
+      letter: 'C',
+      regular: 72,
+      honorary: '245000.00 €',
+      protector: 5,
+      debit: '16000.00 €'
+    },
+    {
+      letter: 'D',
+      regular: 55,
+      honorary: '210300.00 €',
+      protector: 2,
+      debit: '9800.00 €'
+    },
+    {
+      letter: 'E',
+      regular: 60,
+      honorary: '230000.00 €',
+      protector: 6,
+      debit: '17500.00 €'
+    },
+    {
+      letter: 'F',
+      regular: 49,
+      honorary: '190000.00 €',
+      protector: 3,
+      debit: '11000.00 €'
+    },
+    {
+      letter: 'G',
+      regular: 70,
+      honorary: '250000.00 €',
+      protector: 4,
+      debit: '20000.00 €'
+    },
+    {
+      letter: 'H',
+      regular: 58,
+      honorary: '215000.00 €',
+      protector: 2,
+      debit: '9500.00 €'
+    },
+    {
+      letter: 'I',
+      regular: 62,
+      honorary: '240000.00 €',
+      protector: 5,
+      debit: '18500.00 €'
+    },
+    {
+      letter: 'J',
+      regular: 53,
+      honorary: '205000.00 €',
+      protector: 3,
+      debit: '12000.00 €'
+    }
   ]
+
 };
-
-
 
 export const columnsByType = {
   TypeOne: [
@@ -491,5 +641,19 @@ export const columnsByType = {
     { header: 'Autores', accessor: 'authors' },
     { header: 'CDU', accessor: 'cdu' },
     { header: 'Cantidad', accessor: 'quantity' }
+  ],
+  TypeOneFees: [
+  { header: 'Número de Socio', accessor: 'memberNumber' },
+  { header: 'Apellido', accessor: 'lastName' },
+  { header: 'Nombre', accessor: 'firstName' },
+  { header: 'Monto', accessor: 'amount' },
+  { header: 'Cantidad de Cuotas', accessor: 'installments' }
+  ],
+  TypeTwoFees: [
+    { header: 'Letra', accessor: 'letter' },
+    { header: 'Regular', accessor: 'regular' },
+    { header: 'Honorario', accessor: 'honorary' },
+    { header: 'Protector', accessor: 'protector' },
+    { header: 'Débito', accessor: 'debit' }
   ]
 };

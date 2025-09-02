@@ -15,6 +15,10 @@ import CardFees from '../../components/CardFees/CardFees.jsx';
 import { FeesDetail } from '../../data/fees/FeesDetail.js';
 import GenericForm from '../../components/generic/GenericForm/GenericForm.jsx';
 import editnewFeesForm from '../../data/fees/FeesForms.js';
+import FeesBetweenDates from '../../components/feesbetweendates/FeesBetweenDates.jsx';
+
+import './FeeSection.css';
+
 export const FeeSection = () => {
 
     const [selectedItem, setSelectedItem] = useState(null);
@@ -25,6 +29,9 @@ export const FeeSection = () => {
     const [PopUpDetail,setPopUpDetail]=useState(false);
 
     const[PopUpPaidFees,setPopUpPaidFees]=useState(false);
+
+    const[PopUpFeesBetweenDates,setPopUpFeesBetweenDates]=useState(false);
+
 
     const {items,getItem,createItem,updateItem,deleteItem} = useEntityManager(fees, "fees");
 
@@ -131,6 +138,14 @@ export const FeeSection = () => {
         content: <CardFees></CardFees>,
         close: () => setPopUpPaidFees(false),
         condition: PopUpPaidFees
+      },
+      {
+        key: 'FeesBetweenDates',
+        title: 'Cuotas entre fechas',
+        content: <FeesBetweenDates />,
+        className: 'print-partners-size',
+        close: () => setPopUpFeesBetweenDates(false),
+        condition: PopUpFeesBetweenDates
       }
     ]
 
@@ -140,7 +155,10 @@ export const FeeSection = () => {
           <GenericSection title="Listado de cuotas" filters={<FeeFilter/>} 
           columns={columns} data={items} popups={feesPopUp}
           actions={          
-          <Btn text="Cuotas pagas" variant="primary" onClick={() => setPopUpPaidFees(true)}></Btn>
+            <div className='fees-actions'>
+            <Btn text="Cuotas pagas" variant="primary" onClick={() => setPopUpPaidFees(true)}></Btn>
+            <Btn text="Cuotas entre fechas" variant="primary" onClick={() => setPopUpFeesBetweenDates(true)}></Btn>
+            </div>
           }
           
           ></GenericSection>

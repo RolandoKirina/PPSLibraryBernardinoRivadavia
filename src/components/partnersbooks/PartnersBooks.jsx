@@ -1,6 +1,5 @@
 import './PartnersBooks.css';
 import { useState } from 'react';
-import calendarIcon from '../../assets/img/calendar-icon.svg';
 import bookIcon from '../../assets/img/book-icon.svg';
 import personIcon from '../../assets/img/person-icon.svg';
 import Btn from '../btn/Btn';
