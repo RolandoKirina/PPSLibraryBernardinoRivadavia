@@ -1,6 +1,6 @@
 import './Return.css';
 import SearchPartner from '../searchpartner/SearchPartner';
-import BackviewBtn from '../../backviewbtn/BackviewBtn';
+import BackviewBtn from '../../common/backviewbtn/BackviewBtn';
 import UnpaidQuotes from '../unpaidquotes/UnpaidQuotes';
 import ShowDetails from '../../generic/ShowDetails/ShowDetails';
 import { lendBooksReturnDetails } from '../../../data/showdetails/LoanDetails';
@@ -9,14 +9,13 @@ import GenericForm from '../../generic/GenericForm/GenericForm';
 import { editPendingQuoteFields } from '../../../data/forms/LoanForms';
 import { useEntityManager } from '../../../hooks/useEntityManager';
 import { mockBooksLoans } from '../../../data/mocks/loans';
-import { Table } from '../../table/Table';
+import { Table } from '../../common/table/Table';
 import DetailsIcon from '../../../assets/img/details-icon.svg';
 import ReturnIcon from '../../../assets/img/return-icon.svg';
 import ReneweIcon from '../../../assets/img/renewe-icon.svg';
-import PopUp from '../../popup-table/PopUp';
-import SaveIcon from '../../../assets/img/save-icon.svg';
-import ConfirmMessage from '../../confirmMessage/ConfirmMessage';
-import Btn from '../../btn/Btn';
+import PopUp from '../../common/popup-table/PopUp';
+import ConfirmMessage from '../../common/confirmMessage/ConfirmMessage';
+import Btn from '../../common/btn/Btn';
 
 import { authMock } from '../../../data/mocks/authMock';
 

@@ -1,5 +1,5 @@
 import './UnpaidQuotes.css';
-import { Table } from '../../table/Table';
+import { Table } from '../../common/table/Table';
 import MoneyIcon from '../../../assets/img/money-icon.svg';
 import EditIcon from '../../../assets/img/edit-icon.svg';
 

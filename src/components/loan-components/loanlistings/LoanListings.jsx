@@ -1,5 +1,5 @@
 import './LoanListings.css';
-import Btn from '../../btn/Btn';
+import Btn from '../../common/btn/Btn';
 
 
 export default function LoanListings() {

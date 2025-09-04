@@ -1,7 +1,7 @@
 import './GenericForm.css';
 import SaveIcon from '../../../assets/img/save-icon.svg';
 import { useState } from 'react';
-import Btn from '../../btn/Btn';
+import Btn from '../../common/btn/Btn';
 
 export default function GenericForm({ fields, onSubmit, title, children, className }) {
   const [formState, setFormState] = useState({});

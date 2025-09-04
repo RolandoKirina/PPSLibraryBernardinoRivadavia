@@ -2,11 +2,10 @@ import DeleteIcon from '../../assets/img/delete-icon.svg';
 import EditIcon from '../../assets/img/edit-icon.svg';
 import DetailsIcon from '../../assets/img/details-icon.svg';
 import { useState } from 'react';
-import BookFilter from  '../../components/bookfilter/BookFilter.jsx';
-import  '../../components/Table/Table.css';
+import BookFilter from  '../../components/filter/bookfilter/BookFilter.jsx';
 import './BookSection.css';
-import PopUpDelete from '../../components/deletebtnComponent/PopUpDelete.jsx';
-import FormAddBook from '../../components/FormAddbook/FormAddBook.jsx';
+import PopUpDelete from '../../components/common/deletebtnComponent/PopUpDelete.jsx';
+import FormAddBook from '../../components/book-components/FormAddBook/FormAddBook.jsx';
 import {duplicateBook} from '../../data/forms/BookForms.js';
 import GenericForm from '../../components/generic/GenericForm/GenericForm.jsx';
 import {BookDetail} from '../../data/showdetails/BookDetail.js';
@@ -14,15 +13,15 @@ import GenericSection from '../../components/generic/GenericSection/GenericSecti
 import ShowDetails from '../../components/generic/ShowDetails/ShowDetails.jsx';
 import {books }from '../../data/mocks/books.js';
 import{ useEntityManager} from '../../hooks/useEntityManager.js';
-import Btn from '../../components/btn/Btn.jsx';
+import Btn from '../../components/common/btn/Btn.jsx';
 import PlusIcon from '../../assets/img/plus-icon.svg';
 import BookIcon from '../../assets/img/book-icon.svg';
 import LostBookIcon from '../../assets/img/lost-book.svg';
 import ReaderIcon from '../../assets/img/reader.svg';
-import FormEditBook from '../../components/formeditbook/FormEditbook.jsx';
-import BookRanking from '../../components/bookranking/BookRanking.jsx';
-import PartnersBooks from '../../components/partnersbooks/PartnersBooks.jsx';
-import LostBooks from '../../components/lostbooks/LostBooks.jsx';
+import FormEditBook from '../../components/book-components/formeditbook/FormEditBook.jsx';
+import PartnersBooks from '../../components/partner-components/partnersbooks/PartnersBooks.jsx';
+import LostBooks from '../../components/book-components/lostbooks/LostBooks.jsx';
+import BookRanking from '../../components/book-components/bookranking/BookRanking.jsx';
 
 const BookSection = () => {
 

@@ -3,7 +3,7 @@ import PlusIcon from '../../../assets/img/plus-icon.svg';
 import PrintIcon from '../../../assets/img/print-icon.svg';
 import ReserveIcon from '../../../assets/img/reserve-icon.svg';
 import ReturnIcon from '../../../assets/img/return-icon.svg';
-import Btn from '../../btn/Btn';
+import Btn from '../../common/btn/Btn';
 import { authMock } from '../../../data/mocks/authMock';
 
 export default function LoanButtons({displayLoanform, displayReturnForm, displayListingsPopup, displayRenewe}) {

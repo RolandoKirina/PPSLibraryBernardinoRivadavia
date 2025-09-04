@@ -1,0 +1,1 @@
+este componente va en common porque es utilizado en distintas secciones para generar listados
