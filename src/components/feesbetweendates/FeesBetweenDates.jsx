@@ -42,12 +42,12 @@ export default function FeesBetweenDates() {
                         </div>
                         <div className='filter-options'>
                             <div className='input'>
-                            <label htmlFor='category'>Entre el día: </label>
-                            <input id="birthDate" name="birthDate" type="date"/>
+                            <label htmlFor='beforeDate'>Entre el día: </label>
+                            <input id="" name="beforeDate" type="date"/>
                             </div>
                             <div className='input'>
-                            <label htmlFor='category'>y el día: </label>
-                            <input id="birthDate" name="birthDate" type="date"/>
+                            <label htmlFor='afterDate'>y el día: </label>
+                            <input id="" name="afterDate" type="date"/>
                             </div>
                         </div>
                         </div>
@@ -84,6 +84,10 @@ export default function FeesBetweenDates() {
                     columnsByType={columnsByType}
                     typeList={formValues.listType ? formValues.listType : 'TypeOneFees'}
                     title={formValues.listTitle}
+                    feeDates={{
+                        beforeDate: formValues.beforeDate,
+                        afterDate: formValues.afterDate
+                    }}
                     />
                 </div>                   
             </div>

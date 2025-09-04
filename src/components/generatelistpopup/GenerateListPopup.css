@@ -7,11 +7,29 @@
     color: black;
 }
 
+.generate-list-container .fees-info {
+    color: black;
+    display: flex;
+    flex-direction: column;
+    width: 98%;
+}
+
+.generate-list-container .fees-info span {
+    margin-top: 1em;
+}
+
+.generate-list-container h4 {
+    color: black;
+    margin-top: 1em;
+}
+
 .generate-list-title {
     width: 98%;
     padding: 1em;
     padding-bottom: 0;
 }
+
+.generate-list-title h
 
 .generate-list-content {
     width: 100%;
