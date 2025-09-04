@@ -2,7 +2,7 @@ import './LoanMaterialSection.css';
 import GenericSection from '../../../components/generic/GenericSection/GenericSection';
 import PopUpDelete from '../../../components/deletebtnComponent/PopUpDelete';
 import GenericForm from '../../../components/generic/GenericForm/GenericForm';
-import { loanMaterialsFields } from '../../../data/options/loan-materials/LoanMaterialsForms';
+import { loanMaterialsFields } from '../../../data/forms/LoanMaterialsForms';
 import PlusIcon from '../../../assets/img/plus-icon.svg';
 import { useState } from 'react';
 import Btn from '../../../components/btn/Btn';

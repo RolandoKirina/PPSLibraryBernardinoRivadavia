@@ -6,7 +6,7 @@ import { useState } from 'react';
 import Btn from '../../../components/btn/Btn';
 import DeleteIcon from '../../../assets/img/delete-icon.svg';
 import EditIcon from '../../../assets/img/edit-icon.svg';
-import { employeeDetails } from '../../../data/options/employee/EmployeeDetails';
+import { employeeDetails } from '../../../data/showdetails/EmployeeDetails';
 import DetailsIcon from '../../../assets/img/details-icon.svg';
 import ShowDetails from '../../../components/generic/ShowDetails/ShowDetails';
 import { useEntityManager } from '../../../hooks/useEntityManager';

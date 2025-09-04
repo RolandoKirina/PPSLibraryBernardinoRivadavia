@@ -2,7 +2,7 @@ import './PartnerCategorySection.css';
 import GenericSection from '../../../components/generic/GenericSection/GenericSection';
 import PopUpDelete from '../../../components/deletebtnComponent/PopUpDelete';
 import GenericForm from '../../../components/generic/GenericForm/GenericForm';
-import { partnerCategoryFields } from '../../../data/options/partner-category/PartnerCategoryForms';
+import { partnerCategoryFields } from '../../../data/forms/PartnerCategoryForms';
 import PlusIcon from '../../../assets/img/plus-icon.svg';
 import { useState } from 'react';
 import Btn from '../../../components/btn/Btn';

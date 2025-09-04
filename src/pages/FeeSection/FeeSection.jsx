@@ -12,9 +12,9 @@ import DetailsIcon from '../../assets/img/details-icon.svg';
 import ShowDetails from '../../components/generic/ShowDetails/ShowDetails.jsx';
 import Btn from '../../components/btn/Btn.jsx';
 import CardFees from '../../components/CardFees/CardFees.jsx';
-import { FeesDetail } from '../../data/fees/FeesDetail.js';
+import { FeesDetail } from '../../data/showdetails/FeesDetail.js';
 import GenericForm from '../../components/generic/GenericForm/GenericForm.jsx';
-import editnewFeesForm from '../../data/fees/FeesForms.js';
+import editnewFeesForm from '../../data/forms/FeesForms.js';
 import FeesBetweenDates from '../../components/feesbetweendates/FeesBetweenDates.jsx';
 
 import './FeeSection.css';

@@ -8,7 +8,7 @@ import SaveIcon from '../../../assets/img/save-icon.svg'
 import { useState } from 'react';
 import GenericForm from '../../generic/GenericForm/GenericForm.jsx';
 import PopUp from '../../popup-table/PopUp';
-import data from '../../../data/booksauthor/booksauthor.js';
+import data from '../../../data/forms/booksauthorforms.js';
 export default function BooksAuthor() {
 
     

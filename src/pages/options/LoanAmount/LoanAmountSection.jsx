@@ -1,15 +1,11 @@
 import './LoanAmountSection.css';
 import GenericSection from '../../../components/generic/GenericSection/GenericSection';
 import PopUpDelete from '../../../components/deletebtnComponent/PopUpDelete';
-import GenericForm from '../../../components/generic/GenericForm/GenericForm';
-import { loanMaterialsFields } from '../../../data/options/loan-materials/LoanMaterialsForms';
 import PlusIcon from '../../../assets/img/plus-icon.svg';
 import { useState } from 'react';
 import Btn from '../../../components/btn/Btn';
 import DeleteIcon from '../../../assets/img/delete-icon.svg';
 import EditIcon from '../../../assets/img/edit-icon.svg';
-import { loanMaterialsGroupFields } from '../../../data/options/loan-materials/LoanMaterialsForms';
-import { Table } from '../../../components/table/Table';
 import AddMaterialGroup from '../../../components/addmaterialgroup/AddMaterialGroup';
 import { mockLoanAmountGroup } from '../../../data/mocks/loanAmount';
 import { useEntityManager } from '../../../hooks/useEntityManager';

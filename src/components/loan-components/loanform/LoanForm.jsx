@@ -4,7 +4,7 @@ import SearchPartner from '../searchpartner/SearchPartner';
 import Reader from '../reader/Reader';
 import BackviewBtn from '../../backviewbtn/BackviewBtn';
 import ShowDetails from '../../generic/ShowDetails/ShowDetails';
-import { lendBooksDetails } from '../../../data/loan/LoanDetails';
+import { lendBooksDetails } from '../../../data/showdetails/LoanDetails';
 import GenericForm from '../../generic/GenericForm/GenericForm';
 import Btn from '../../btn/Btn';
 import SaveIcon from '../../../assets/img/save-icon.svg';
@@ -14,12 +14,9 @@ import PopUp from '../../popup-table/PopUp';
 import ConfirmMessage from '../../confirmMessage/ConfirmMessage';
 import { Table } from '../../table/Table';
 import DeleteIcon from '../../../assets/img/delete-icon.svg';
-import EditIcon from '../../../assets/img/edit-icon.svg';
-import DetailsIcon from '../../../assets/img/details-icon.svg';
 import AddBookIcon from '../../../assets/img/add-book-icon.svg';
-import PopUpDelete from '../../deletebtnComponent/PopUpDelete';
 import { books } from '../../../data/mocks/authors';
-import { editLoanformFields } from '../../../data/loan/LoanForms';
+import { editLoanformFields } from '../../../data/forms/LoanForms';
 
 export default function LoanForm({createLoanItem}) {
   const [popupView, setPopupView] = useState("default");

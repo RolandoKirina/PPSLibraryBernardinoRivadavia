@@ -2,7 +2,7 @@ import './RemovePartnerReasonSection.css';
 import GenericSection from '../../../components/generic/GenericSection/GenericSection';
 import PopUpDelete from '../../../components/deletebtnComponent/PopUpDelete';
 import GenericForm from '../../../components/generic/GenericForm/GenericForm';
-import { removePartnerReasonForms } from '../../../data/options/remove-partner-reason/RemovePartnerReasonForms';
+import { removePartnerReasonForms } from '../../../data/forms/RemovePartnerReasonForms';
 import PlusIcon from '../../../assets/img/plus-icon.svg';
 import { useState } from 'react';
 import Btn from '../../../components/btn/Btn';

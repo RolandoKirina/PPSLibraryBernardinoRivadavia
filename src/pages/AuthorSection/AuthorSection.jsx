@@ -1,8 +1,6 @@
 import './AuthorSection.css';
 import GenericSection from '../../components/generic/GenericSection/GenericSection';
 import PopUpDelete from '../../components/deletebtnComponent/PopUpDelete';
-import { editAuthorFormFields } from '../../data/author/AuthorForms';
-import GenericForm from '../../components/generic/GenericForm/GenericForm';
 import DeleteIcon from '../../assets/img/delete-icon.svg';
 import EditIcon from '../../assets/img/edit-icon.svg';
 import { useState } from 'react';

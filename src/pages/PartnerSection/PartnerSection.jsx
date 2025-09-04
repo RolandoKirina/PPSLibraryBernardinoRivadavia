@@ -13,7 +13,7 @@ import PlusIcon from '../../assets/img/plus-icon.svg';
 import PopUpDelete from '../../components/deletebtnComponent/PopUpDelete.jsx';
 import { useEntityManager } from '../../hooks/useEntityManager.js';
 import ShowDetails from '../../components/generic/ShowDetails/ShowDetails.jsx';
-import {DetailPartner} from '../../data/mocks/details/partner.js';
+import {DetailPartner} from '../../data/showdetails/partner.js';
 import Btn from '../../components/btn/Btn.jsx';
 
 import PrintIcon from '../../assets/img/print-icon.svg';
