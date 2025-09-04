@@ -111,9 +111,7 @@ export const FeeSection = () => {
         key: 'editPopup',
         title: 'Editar Cuota',
         className: 'feespopup',
-        content: <GenericForm title={'Editar cuota nueva'} fields={editnewFeesForm}  className="editfees" onSubmit={(data) =>{
-          console.log("ñldfjñdfñlds")
-        }}/>,
+        content: <GenericForm title={'Editar cuota nueva'} fields={editnewFeesForm} className="editfees"/>,
         close: () => setPopupEdit(false),
         condition: PopUpEdit
       },
