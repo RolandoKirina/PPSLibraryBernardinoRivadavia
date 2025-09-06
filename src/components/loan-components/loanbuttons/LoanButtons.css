@@ -13,24 +13,3 @@
 
 }
 
-.loan-buttons button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--white);
-    letter-spacing: 0.10em;
-    margin-right: 1em;
-    border-radius: 0.9em;
-    height: 3em;
-    border: 0.1em solid black;
-    background-color: var(--primary-light-2);
-}
-
-.loan-buttons button:hover {
-    background-color: var(--primary-light);
-    transition: background-color 0.30s ease-in-out;
-}
-
-.loan-buttons button img {
-    margin-right: 0.5em;
-}

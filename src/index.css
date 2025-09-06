@@ -89,6 +89,8 @@ a {
     border: 2px solid var(--white);
   }
 
+ 
+
   input,select{
     border-radius: 0.3em;
     letter-spacing: 0.2em;
@@ -138,10 +140,7 @@ a {
 .centered {
   text-align: center;
 }
-.actions{
-  margin-left: 0.8em;
-  margin-top: 0.8em;
-}
+
 button:disabled {
   opacity: 0.8;
   cursor: not-allowed;
@@ -155,9 +154,4 @@ button:disabled {
   flex-direction: column;
   width: 35em;
   height: 60%;
-}
-
-.register-btn{
-  border: solid 2px var(--white);
-  background-color: red;
 }

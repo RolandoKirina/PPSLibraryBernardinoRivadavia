@@ -12,16 +12,16 @@ export default function LoanButtons({displayLoanform, displayReturnForm, display
             <div className='loan-buttons'>
                 <div className='loan-options'>
                     {authMock.role === 'admin' && (
-                         <Btn icon={<img src={PlusIcon}/>} onClick={displayLoanform} text={'Nuevo'}/>
+                         <Btn icon={<img src={PlusIcon}/>} onClick={displayLoanform} text={'Nuevo'} variant="primary"/>
                     )}
                    
-                    <Btn icon={<img src={ReturnIcon}/>} onClick={displayReturnForm} text={'Devoluciones'}/>
+                    <Btn icon={<img src={ReturnIcon}/>} onClick={displayReturnForm} text={'Devoluciones'} variant="primary" />
 
                     {authMock.role === 'admin' && (
-                    <Btn icon={<img src={PrintIcon}/>} onClick={displayListingsPopup} text={'Listados'}/>
+                    <Btn icon={<img src={PrintIcon}/>} onClick={displayListingsPopup} text={'Listados'} variant="primary"/>
                     )}
                     
-                    <Btn icon={<img src={ReserveIcon}/>} onClick={displayRenewe} text={'Reservas'}/>
+                    <Btn icon={<img src={ReserveIcon}/>} onClick={displayRenewe} text={'Reservas'} variant="primary"/>
                 </div>
             </div>
         </>

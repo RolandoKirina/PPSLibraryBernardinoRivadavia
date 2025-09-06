@@ -4,6 +4,7 @@ import './Header.css';
 import { useState } from 'react';
 import Sidebar from '../sidebar/Sidebar.jsx';
 import Btn from '../btn/Btn.jsx';
+import { authMock } from '../../../data/mocks/authMock.js';
 export default function Header() {
   const [open, setOpen] = useState(false);
 
@@ -29,11 +30,14 @@ export default function Header() {
             </a>
             <h1 className="title-text">Biblioteca Popular Bernardino Rivadavia</h1>
           </div>
-
-            <div className="auth-buttons">
-                <Btn text="Ingresar" variant="primary" href="/login" />
-                <Btn text="Registrarse" variant="secondary" href="/register" />
-            </div>
+       {!authMock.isAuthenticated ? (
+          <div className="auth-buttons">
+            <Btn text="Ingresar" variant="login" href="/login" />
+            <Btn text="Registrarse" variant="register" href="/register" />
+          </div>
+        ) : 
+        <h3 className='header-msg'>Bienvenido <span className='header-name'>{authMock.name}</span></h3>
+        }
         </div>
       </header>
       <Sidebar isOpen={open} />

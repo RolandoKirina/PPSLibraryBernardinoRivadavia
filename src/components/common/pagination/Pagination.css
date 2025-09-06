@@ -1,7 +1,7 @@
 .pagination { 
-    max-width: 15em;
+    width: 100%;
     display: flex;
-    justify-content:flex-start;
+    justify-content: flex-start;
      flex-wrap: wrap;
      box-sizing: border-box;
   
@@ -9,7 +9,6 @@
 
 
 .pagination-options {
-    margin-top: 1em;
     display: flex;
     align-items: center;
       flex-wrap: wrap;

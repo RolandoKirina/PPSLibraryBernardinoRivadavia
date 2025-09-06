@@ -13,8 +13,6 @@ export const HomePage = () => {
                 <h2>Bienvenidos a NUESTRA BIBLIOTECA</h2>
                 <p>Un espacio para descubrir, aprender y compartir</p>
               </div>
-
-      
         </section>
       );
 }

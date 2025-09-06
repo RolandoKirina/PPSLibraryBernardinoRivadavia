@@ -9,6 +9,8 @@ export default function Btn({ type = 'button', text, icon, onClick, variant, dis
     cancel:"cancel-btn",
     delete:"delete-btn",
     register:"register-btn",
+    login:"login-btn",
+    register:"register-btn",
     default: "my-button"
     
 
@@ -22,10 +24,13 @@ export default function Btn({ type = 'button', text, icon, onClick, variant, dis
 
   if (href) {
     return (
-      <a href={href} >
-        {icon && <span className="button-icon">{icon}</span>}
-        <span className="button-text">{text}</span>
+      <button className={`btn ${variantClass}`}>
+
+          <a href={href} >
+        <span className="btn-text">{text}</span>
       </a>
+      </button>
+    
     );
   }
   return (

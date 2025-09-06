@@ -16,7 +16,7 @@ import { FeesDetail } from '../../data/showdetails/FeesDetail.js';
 import GenericForm from '../../components/generic/GenericForm/GenericForm.jsx';
 import editnewFeesForm from '../../data/forms/FeesForms.js';
 import FeesBetweenDates from '../../components/fees-components/feesbetweendates/FeesBetweenDates.jsx';
-
+import PopUpDelete from '../../components/common/deletebtnComponent/PopUpDelete.jsx';
 import './FeeSection.css';
 
 export const FeeSection = () => {

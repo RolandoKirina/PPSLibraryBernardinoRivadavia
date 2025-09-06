@@ -65,7 +65,7 @@ label {
     margin-bottom: 1em;
 }
 
-a {
+.employee-form a {
     
     color: var(--secondary-light-2);
     letter-spacing: 0.05em;
