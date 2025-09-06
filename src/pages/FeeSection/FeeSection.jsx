@@ -14,14 +14,8 @@ import Btn from '../../components/common/btn/Btn.jsx';
 import CardFees from '../../components/fees-components/CardFees/CardFees.jsx';
 import { FeesDetail } from '../../data/showdetails/FeesDetail.js';
 import GenericForm from '../../components/generic/GenericForm/GenericForm.jsx';
-<<<<<<< HEAD
-import editnewFeesForm from '../../data/fees/FeesForms.js';
-import FeesBetweenDates from '../../components/feesbetweendates/FeesBetweenDates.jsx';
-import PopUpDelete from '../../components/deletebtnComponent/PopUpDelete.jsx';
-=======
 import editnewFeesForm from '../../data/forms/FeesForms.js';
 import FeesBetweenDates from '../../components/fees-components/feesbetweendates/FeesBetweenDates.jsx';
->>>>>>> 7e4f311bb525c4ea51f8541f7c92bd42d8d616cd
 
 import './FeeSection.css';
 
