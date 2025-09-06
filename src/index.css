@@ -156,3 +156,8 @@ button:disabled {
   width: 35em;
   height: 60%;
 }
+
+.register-btn{
+  border: solid 2px var(--white);
+  background-color: red;
+}

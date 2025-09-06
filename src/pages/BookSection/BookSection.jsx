@@ -97,7 +97,7 @@ const BookSection = () => {
         title: 'Borrar Libro',
         className: 'delete-size-popup',
         content: <PopUpDelete
-                  title={"Ítem"}
+                  title={"Libro"}
                   onConfirm={() => {
                     deleteItem(selectedItem.id);
                     setPopUpDelete(false);

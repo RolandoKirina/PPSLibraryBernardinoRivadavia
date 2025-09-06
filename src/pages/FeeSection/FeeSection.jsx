@@ -16,6 +16,7 @@ import { FeesDetail } from '../../data/fees/FeesDetail.js';
 import GenericForm from '../../components/generic/GenericForm/GenericForm.jsx';
 import editnewFeesForm from '../../data/fees/FeesForms.js';
 import FeesBetweenDates from '../../components/feesbetweendates/FeesBetweenDates.jsx';
+import PopUpDelete from '../../components/deletebtnComponent/PopUpDelete.jsx';
 
 import './FeeSection.css';
 
@@ -24,7 +25,7 @@ export const FeeSection = () => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [PopUpEdit,setPopupEdit]=useState(false);
     const [PopUpAdd,setPopupAdd]=useState(false);
-    const [PopUpDelete,setPopUpDelete]=useState(false);
+    const [popupdelete,setPopUpDelete]=useState(false);
 
     const [PopUpDetail,setPopUpDetail]=useState(false);
 
@@ -97,15 +98,14 @@ export const FeeSection = () => {
           title: 'Borrar Cuota',
           className: 'delete-size-popup',
           content: <PopUpDelete
-                    title={"Borrar cuota"}
+                    title={"Borrar la cuota"}
                     onConfirm={() => {
                       deleteItem(selectedItem.id);
                       setPopUpDelete(false);
                     }}
-                        closePopup={() => setPopUpDelete(false)}/>,
+                    closePopup={() => setPopUpDelete(false)}/>,
           close: () => setPopUpDelete(false),
-          condition: PopUpDelete,
-          variant: 'delete'
+condition: popupdelete,
       },
       {
         key: 'editPopup',

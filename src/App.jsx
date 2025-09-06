@@ -24,6 +24,8 @@ import OptionSection from './pages/OptionSection/OptionSection.jsx';
 import FeeSection from './pages/FeeSection/FeeSection.jsx';
 import LoginSection from './pages/options/LoginSection/LoginSection.jsx';
 import RegisterSection from './pages/options/RegisterSection/RegisterSection.jsx';
+import { HomePage } from './pages/HomeSection/HomePage.jsx';
+
 // import PartnerListSection from './pages/options/PartnerListSection/PartnerListSection.jsx';
 
 function App() {
@@ -32,6 +34,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<Layout />}> 
+          <Route index element={<HomePage />} /> 
             <Route path='/dashboard' element={<Dashboard/>}/>
             <Route path='/employees' element={<EmployeeSection/>}/>
             <Route path='/login' element={<LoginSection/>}/>
