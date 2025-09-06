@@ -12,13 +12,15 @@ import ShowDetails from '../../../components/generic/ShowDetails/ShowDetails';
 import { useEntityManager } from '../../../hooks/useEntityManager';
 import { mockEmployees } from '../../../data/mocks/employee';
 import EmployeeForm from '../../../components/option-components/EmployeeForm/EmployeeForm';
-
+import EmployeeLoansGraphic from '../../../components/option-components/EmployeeLoansGraphic/EmployeeLoansGraphic';
 export default function EmployeeSection() {
     const [deletePopup, setDeletePopup] = useState(false);
     const [detailsPopup, setDetailsPopup] = useState(false);
+    const [EmployeeLoans,setEmployeeLoans]= useState(false);
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
     const [selected, setSelected] = useState(false);
+
     const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockEmployees, 'employees');
     
      const employeePopups = [
@@ -59,6 +61,14 @@ export default function EmployeeSection() {
                     content: <EmployeeForm method={'update'} updateItem={updateItem} selected={selected}/>,
                     close: () => setEditPopup(false),
                     condition: editPopup
+                },
+                {
+                    key: 'employeeLoans',
+                    title: 'Grafico de empleados',
+                    className: 'employee-form-size',
+                    content: <EmployeeLoansGraphic/>,
+                    close: () => setEmployeeLoans(false),
+                    condition: EmployeeLoans
                 }
     ];
 
@@ -106,8 +116,12 @@ export default function EmployeeSection() {
 
     return (
         <>
-            <GenericSection title={'Listado de empleados'} columns={columns} data={items} popups={employeePopups} actions={
-                <Btn variant={'primary'} className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg'/>}/>
+            <GenericSection title={'Listado de empleados'} columns={columns} data={items} popups={employeePopups} 
+            actions={
+                <div className='listbtns'>
+                <Btn variant={'primary'} className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg'/>}/>,
+                <Btn variant={'primary'} onClick={() => setEmployeeLoans(true)} text={'Grafico de empleados'}/>
+                </div>      
             }/>
         </>
     )
