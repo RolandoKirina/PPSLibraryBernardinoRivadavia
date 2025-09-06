@@ -12,19 +12,41 @@ export default function EmployeeLoansGraphic() {
 const [formValues, setFormValues] = useState({});
 const [showChart, setShowChart] = useState(false);
 
-function countQuantityAllLoansEmployee(){
-        return mockLoans.length;
+function countQuantityAllLoansEmployee() {
+  const { afterDateFrom, beforeDateTo } = formValues;
+
+  if (!afterDateFrom || !beforeDateTo) {
+    return mockLoans.length;
+  }
+
+  const dateAfter = new Date(afterDateFrom);
+  const dateBefore = new Date(beforeDateTo);
+
+  return mockLoans.filter((loan) => {
+    const loanDate = new Date(loan.plannedDate);
+    return loanDate >= dateAfter && loanDate <= dateBefore;
+  }).length;
 }
 
 
+function isWithinRange(loan) {
+  if (!formValues.afterDateFrom || !formValues.beforeDateTo){
+    return true;
+  } 
+  const loanDate = new Date(loan.plannedDate);
+  const dateAfter = new Date(formValues.afterDateFrom);
+  const dateBefore = new Date(formValues.beforeDateTo);
+  return loanDate >= dateAfter && loanDate <= dateBefore;
+}
 
 function countQuantityLateLoansEmployee(){
-      return mockLoans.filter((loan) => isitLate(loan)).length;
-}
+  return mockLoans.filter((loan) => isitLate(loan) && isWithinRange(loan)).length;}
 
 
 function countQuantityNotReturnedLoansEmployee(){
-       return mockLoans.filter((loan) => isNotReturned(loan)).length;
+  return mockLoans.filter((loan) => isNotReturned(loan) && isWithinRange(loan)).length;
+
+
 }
 function isitLate(loan){
      if (!loan.returnedDate || !loan.plannedDate) {
@@ -39,10 +61,10 @@ function isitLate(loan){
 
 
 function isNotReturned(loan){
-    console.log(loan.returnedDate);
-    return !loan.returnedDate;
-        
+
+  return !loan.returnedDate || loan.returnedDate === '';
 }
+
 
 
 
@@ -88,21 +110,19 @@ return (
         <div className='lost-books-filters'>
           <form onSubmit={handleSubmit}>
             <div className='lost-books-filter-option'>
-              <div className='lost-books-filter-title'>
-                <h3>Fecha de pérdida</h3>
-              </div>
+        
 
               <div className='filter-options'>
                 <div className='input column-input'>
-                  <label htmlFor='lossDateFrom'>Fecha mayor a:</label>
-                  <input type="date" name="lossDateFrom" id="lossDateFrom" />
+                  <label htmlFor='afterDateFrom'>Fecha mayor a:</label>
+                  <input type="date" name="afterDateFrom" id="afterDateFrom" />
                 </div>
               </div>
 
               <div className='filter-options'>
                 <div className='input column-input'>
-                  <label htmlFor='lossDateTo'>Fecha menor a:</label>
-                  <input type="date" name="lossDateTo" id="lossDateTo" />
+                  <label htmlFor='beforeDateTo'>Fecha menor a:</label>
+                  <input type="date" name="beforeDateTo" id="beforeDateTo" />
                 </div>
               </div>
 
