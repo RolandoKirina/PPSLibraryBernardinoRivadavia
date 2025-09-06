@@ -1,7 +1,7 @@
 .background-library{
    
     width: 100%;
-    height: 34em;
+    max-height: 43em;
 }
 .background-library img {
      width: 100%;
@@ -10,12 +10,13 @@
 .hero-container{
      display: flex;
     justify-content: center;
+    min-height: 75vh;
 }
 .hero-text {
     width: 25em;
     font-size: 24px;
   position: absolute;
-  top: 69%;
+  top: 15em;
   left: 40%;
   transform: translate(-50%, -50%);
   color: white;

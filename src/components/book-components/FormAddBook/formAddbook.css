@@ -129,10 +129,9 @@ margin-bottom: 0;
   margin-bottom: 0.5rem;
 }
 
-/*lo siento, no supe como  arregarlo al margen*/
-.margininput{
+/* .margininput{
     margin-bottom: -1.2em;
-}
+} */
 
 
 .changes.btn {
@@ -152,4 +151,21 @@ margin-bottom: 0;
 
 .btn-right{
     margin-left: 0.4em;
+}
+
+.formeditbook .input .cdu div {
+    display: flex;
+}
+
+.formeditbook .input .cdu .cdu-options {
+    width: 100%;
+    justify-content: space-between;
+}
+
+.formeditbook .input .cdu .cdu-options:first-child {
+    width: 50%;
+}
+
+.formeditbook .input .cdu .cdu-options input:last-child {
+    width: 30%;
 }

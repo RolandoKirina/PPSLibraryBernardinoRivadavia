@@ -57,7 +57,7 @@
     background: var(--primary-dark-2);
     overflow: scroll;
     border-radius: 10px;
-    width: 50em;   
+    min-width: 50em;   
     margin-top: 3em;   
     height: auto;
     max-height: 100vh;
