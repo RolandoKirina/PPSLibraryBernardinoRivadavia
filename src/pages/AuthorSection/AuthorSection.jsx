@@ -1,12 +1,10 @@
 import './AuthorSection.css';
 import GenericSection from '../../components/generic/GenericSection/GenericSection';
-import PopUpDelete from '../../components/deletebtnComponent/PopUpDelete';
-import { editAuthorFormFields } from '../../data/author/AuthorForms';
-import GenericForm from '../../components/generic/GenericForm/GenericForm';
+import PopUpDelete from '../../components/common/deletebtnComponent/PopUpDelete';
 import DeleteIcon from '../../assets/img/delete-icon.svg';
 import EditIcon from '../../assets/img/edit-icon.svg';
 import { useState } from 'react';
-import Btn from '../../components/btn/Btn';
+import Btn from '../../components/common/btn/Btn';
 import PlusIcon from '../../assets/img/plus-icon.svg';
 import BookIcon from '../../assets/img/add-book-icon.svg';
 import AuthorBooks from '../../components/author-components/AuthorBooks/AuthorBooks';

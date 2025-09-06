@@ -1,4 +1,4 @@
-import FeeFilter from  '../../components/feefilter/FeeFilter.jsx';
+import FeeFilter from  '../../components/filter/feefilter/FeeFilter.jsx';
 import{ useEntityManager} from '../../hooks/useEntityManager.js';
 
 import { useState } from 'react';
@@ -10,13 +10,18 @@ import DeleteIcon from '../../assets/img/delete-icon.svg';
 import EditIcon from '../../assets/img/edit-icon.svg';
 import DetailsIcon from '../../assets/img/details-icon.svg';
 import ShowDetails from '../../components/generic/ShowDetails/ShowDetails.jsx';
-import Btn from '../../components/btn/Btn.jsx';
-import CardFees from '../../components/CardFees/CardFees.jsx';
-import { FeesDetail } from '../../data/fees/FeesDetail.js';
+import Btn from '../../components/common/btn/Btn.jsx';
+import CardFees from '../../components/fees-components/CardFees/CardFees.jsx';
+import { FeesDetail } from '../../data/showdetails/FeesDetail.js';
 import GenericForm from '../../components/generic/GenericForm/GenericForm.jsx';
+<<<<<<< HEAD
 import editnewFeesForm from '../../data/fees/FeesForms.js';
 import FeesBetweenDates from '../../components/feesbetweendates/FeesBetweenDates.jsx';
 import PopUpDelete from '../../components/deletebtnComponent/PopUpDelete.jsx';
+=======
+import editnewFeesForm from '../../data/forms/FeesForms.js';
+import FeesBetweenDates from '../../components/fees-components/feesbetweendates/FeesBetweenDates.jsx';
+>>>>>>> 7e4f311bb525c4ea51f8541f7c92bd42d8d616cd
 
 import './FeeSection.css';
 

@@ -1,5 +1,5 @@
-import { Table } from '../../table/Table.jsx'; 
-import Btn from '../../btn/Btn.jsx';
+import { Table } from '../../common/table/Table.jsx'; 
+import Btn from '../../common/btn/Btn.jsx';
 import DeleteIcon from '../../../assets/img/delete-icon.svg';
 import EditIcon from '../../../assets/img/edit-icon.svg';
 import DetailsIcon from '../../../assets/img/details-icon.svg';
@@ -7,8 +7,8 @@ import AddBookIcon from '../../../assets/img/add-book-icon.svg';
 import SaveIcon from '../../../assets/img/save-icon.svg'
 import { useState } from 'react';
 import GenericForm from '../../generic/GenericForm/GenericForm.jsx';
-import PopUp from '../../popup-table/PopUp';
-import data from '../../../data/booksauthor/booksauthor.js';
+import PopUp from '../../common/popup-table/PopUp';
+import data from '../../../data/forms/booksauthorforms.js';
 export default function BooksAuthor() {
 
     

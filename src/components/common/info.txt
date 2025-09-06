@@ -1,0 +1,1 @@
+en common van los componentes compartidos y sin dominio como Table, Sidebar, Btn, deletebtnComponent, confirmMessage, etc

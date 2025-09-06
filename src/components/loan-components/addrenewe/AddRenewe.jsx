@@ -1,13 +1,12 @@
 import './AddRenewe.css';
-import { Table } from '../../table/Table';
+import { Table } from '../../common/table/Table';
 import { useState } from 'react';
 import DeleteIcon from '../../../assets/img/delete-icon.svg';
-import EditIcon from '../../../assets/img/edit-icon.svg';
 import AddBookIcon from '../../../assets/img/add-book-icon.svg';
-import Btn from '../../btn/Btn';
-import PopUp from '../../popup-table/PopUp';
-import ConfirmMessage from '../../../components/confirmMessage/ConfirmMessage';
-import BackviewBtn from '../../backviewbtn/BackviewBtn';
+import Btn from '../../common/btn/Btn';
+import PopUp from '../../common/popup-table/PopUp';
+import ConfirmMessage from '../../../components/common/confirmMessage/ConfirmMessage';
+import BackviewBtn from '../../common/backviewbtn/BackviewBtn';
 import SaveIcon from '../../../assets/img/save-icon.svg';
 import { books } from '../../../data/mocks/authors';
 

@@ -1,6 +1,6 @@
 import './GenericSection.css';
-import PopUp from '../../popup-table/PopUp';
-import { Table } from '../../table/Table';
+import PopUp from '../../common/popup-table/PopUp';
+import { Table } from '../../common/table/Table';
 
 export default function GenericSection({title, filters, columns, data, popups, actions, children}) {
     return (

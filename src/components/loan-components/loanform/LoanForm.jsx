@@ -1,25 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import './LoanForm.css';
 import SearchPartner from '../searchpartner/SearchPartner';
 import Reader from '../reader/Reader';
-import BackviewBtn from '../../backviewbtn/BackviewBtn';
-import ShowDetails from '../../generic/ShowDetails/ShowDetails';
-import { lendBooksDetails } from '../../../data/loan/LoanDetails';
+import BackviewBtn from '../../common/backviewbtn/BackviewBtn';
 import GenericForm from '../../generic/GenericForm/GenericForm';
-import Btn from '../../btn/Btn';
+import Btn from '../../common/btn/Btn';
 import SaveIcon from '../../../assets/img/save-icon.svg';
 import { useEntityManager } from '../../../hooks/useEntityManager';
 import { mockBooksLoans } from '../../../data/mocks/loans';
-import PopUp from '../../popup-table/PopUp';
-import ConfirmMessage from '../../confirmMessage/ConfirmMessage';
-import { Table } from '../../table/Table';
+import PopUp from '../../common/popup-table/PopUp';
+import ConfirmMessage from '../../common/confirmMessage/ConfirmMessage';
+import { Table } from '../../common/table/Table';
 import DeleteIcon from '../../../assets/img/delete-icon.svg';
-import EditIcon from '../../../assets/img/edit-icon.svg';
-import DetailsIcon from '../../../assets/img/details-icon.svg';
 import AddBookIcon from '../../../assets/img/add-book-icon.svg';
-import PopUpDelete from '../../deletebtnComponent/PopUpDelete';
 import { books } from '../../../data/mocks/authors';
-import { editLoanformFields } from '../../../data/loan/LoanForms';
+import { editLoanformFields } from '../../../data/forms/LoanForms';
 
 export default function LoanForm({createLoanItem}) {
   const [popupView, setPopupView] = useState("default");
@@ -281,7 +276,7 @@ const handleChange = (e) => {
           </form>
 
             {confirmSaveChangesPopup && (
-            <PopUp title={'Guardar préstamo'}>
+            <PopUp title={'Guardar préstamo'} onClick={() => setConfirmSaveChangesPopup(false)}>
               <ConfirmMessage text={'¿Está seguro de guardar el nuevo prestamo?'} closePopup={() => setConfirmSaveChangesPopup(false)} onConfirm={() => {
                 handleAddNewLoan();
                 setConfirmSaveChangesPopup(false);

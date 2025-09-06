@@ -6,22 +6,22 @@ import { useState } from 'react';
 
 import DeleteIcon from '../../assets/img/delete-icon.svg';
 import EditIcon from '../../assets/img/edit-icon.svg';
-import FormEditPartner  from '../../components/formeditpartner/FormEditPartner.jsx';
+import FormEditPartner  from '../../components/partner-components/formeditpartner/FormEditPartner.jsx';
 import DetailsIcon from '../../assets/img/details-icon.svg';
 import PlusIcon from '../../assets/img/plus-icon.svg';
 
-import PopUpDelete from '../../components/deletebtnComponent/PopUpDelete.jsx';
+import PopUpDelete from '../../components/common/deletebtnComponent/PopUpDelete.jsx';
 import { useEntityManager } from '../../hooks/useEntityManager.js';
 import ShowDetails from '../../components/generic/ShowDetails/ShowDetails.jsx';
-import {DetailPartner} from '../../data/mocks/details/partner.js';
-import Btn from '../../components/btn/Btn.jsx';
+import {DetailPartner} from '../../data/showdetails/partner.js';
+import Btn from '../../components/common/btn/Btn.jsx';
 
 import PrintIcon from '../../assets/img/print-icon.svg';
 
 import './PartnerSection.css';
-import PrintPartnerPopup from '../../components/printpartnerpopup/PrintPartnerPopup.jsx';
+import PrintPartnerPopup from '../../components/partner-components/printpartnerpopup/PrintPartnerPopup.jsx';
 
-import PartnersBooks from '../../components/partnersbooks/PartnersBooks.jsx';
+import PartnersBooks from '../../components/partner-components/partnersbooks/PartnersBooks.jsx';
 
 import ReaderIcon from '../../assets/img/reader.svg';
 
