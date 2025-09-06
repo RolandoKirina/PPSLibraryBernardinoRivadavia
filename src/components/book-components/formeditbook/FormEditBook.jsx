@@ -23,22 +23,14 @@ export default function FormEditBook(){
                 </div>
                 
 
-               <div className="input margininput">
-                <div className="content content-form">
-                        <div>
-                            <div>
-                                <label htmlFor="codeCDU1">Código CDU </label>
-
+                <div className="input">
+                            <div className="cdu">
+                                    <label htmlFor="codeCDU1">Código CDU </label>
+                                    <div className="cdu-options">   
+                                        <input name="codeCDU1" type="number" />
+                                        <input name="codeCDU1" type="number" />
+                                    </div>
                             </div>
-                            <div>   
-                                 <input id="codeCDU1" type="number" />
-                                <input id="codeCDU1" type="number" />
-                            </div>
-                           
-
-                        </div>
-                       
-                </div>
                 </div>
 
                 <div className="input">

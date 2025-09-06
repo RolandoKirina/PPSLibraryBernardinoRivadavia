@@ -59,24 +59,24 @@
   width: 100%;
 }
 
-.input {
+.fees-between-dates-container .input {
   margin: 0.5em 1em;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
-.input label {
+.fees-between-dates-container .input label {
   margin-bottom: 0.3rem;
   color: var(--secondary-light-1);
 }
 
-.input select {
+ .fees-between-dates-container.input select {
   height: 2em;
   overflow-y: auto;
 }
 
-.input select option {
+ .fees-between-dates-container .input select option {
   border-radius: 0.8em;
 }
 

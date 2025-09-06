@@ -98,9 +98,9 @@ function App() {
               <Renewe isPopup={false} title="Listado de reservas" />
             </Content>}/> 
 
-            <Route path='/books/authors' element={<Content>
+            {/* <Route path='/books/authors' element={<Content>
               <AuthorSection/>
-            </Content>}/> 
+            </Content>}/>  */}
 
               
             <Route path='/books/booksauthor' element={<Content>

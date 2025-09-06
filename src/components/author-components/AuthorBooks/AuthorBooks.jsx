@@ -274,7 +274,7 @@ export default function AuthorBooks({authorSelected, deleteAuthorSelected, updat
                             <h3>Libros cargados en la biblioteca</h3>
                         </div>
                         <Table columns={bookshelfBooksColumns} data={books}/>
-                        </div>
+                    </div>
                     <div className='author-books'>
                         <div className='author-books-title'>
                             <h3>Libros de este autor</h3>
