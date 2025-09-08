@@ -1,9 +1,13 @@
 import "./formeditbook.css";
 import Btn from "../../common/btn/Btn.jsx";
 import SaveIcon from '../../../assets/img/save-icon.svg';
+import { useState } from "react";
+import BackviewBtn from "../../common/backviewbtn/BackviewBtn.jsx";
+import BookAuthors from "../BooksAuthor/BookAuthors.jsx";
 
-export default function FormEditBook(){
-
+export default function FormEditBook({selectedBook}){
+    const [popupView, setPopupView] = useState('default');
+    const [authorsSelected, setAuthorsSelected] = useState([]);
 
     function redirect(action){
         switch(action){
@@ -14,157 +18,172 @@ export default function FormEditBook(){
     }
     return(
         <>
-        <form className="formeditbook">
-            <div className="contentformedit">
+        {popupView === 'default' && (
+            <form className="formeditbook">
+                <div className="contentformedit">
 
-                <div className="input">
-                    <label htmlFor="code">Codigo</label>
-                    <input id="code" type="number" placeholder="Codigo"/>
-                </div>
-                
+                    <div className="input">
+                        <label htmlFor="code">Codigo</label>
+                        <input id="code" type="number" placeholder="Codigo"/>
+                    </div>
+                    
 
-                <div className="input">
-                            <div className="cdu">
-                                    <label htmlFor="codeCDU1">Código CDU </label>
-                                    <div className="cdu-options">   
-                                        <input name="codeCDU1" type="number" />
-                                        <input name="codeCDU1" type="number" />
-                                    </div>
+                    <div className="input">
+                                <div className="cdu">
+                                        <label htmlFor="codeCDU1">Código CDU </label>
+                                        <div className="cdu-options">   
+                                            <input name="codeCDU1" type="number" />
+                                            <input name="codeCDU1" type="number" />
+                                        </div>
+                                </div>
+                    </div>
+
+                    <div className="input">
+                        <label htmlFor="title">Titulo</label>
+                        <input id="title" type="text" placeholder="Titulo"/>
+                    </div>
+
+                    <div className="input">
+                        
+                        <div className="divconteiner content">
+                            <div>
+                                <label htmlFor="title">Ubicación</label>
+                                <input id="ubication" type="text" placeholder="Ubicacion" />
                             </div>
-                </div>
-
-                <div className="input">
-                    <label htmlFor="title">Titulo</label>
-                    <input id="title" type="text" placeholder="Titulo"/>
-                </div>
-
-                <div className="input">
-                    
-                    <div className="divconteiner content">
-                        <div>
-                            <label htmlFor="title">Ubicación</label>
-                            <input id="ubication" type="text" placeholder="Ubicacion" />
-                        </div>
-                        <div>
-                            <label htmlFor="title">Cantidad</label>
-                            <input id="quantity" type="number" placeholder="Cantidad"/>
+                            <div>
+                                <label htmlFor="title">Cantidad</label>
+                                <input id="quantity" type="number" placeholder="Cantidad"/>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className="input">
-                     <div className="divconteiner content">
-                        <div>
-                            <label htmlFor="editorial">Editorial</label>
-                            <input id="editorial" type="text" placeholder="Editorial" />
-                        </div>
-                        <div>
-                             <label htmlFor="type">Tipo</label>
-                            <select name="type" id="type" className="selectform">
-                                <option value="1">opcion 1</option>
-                                <option value="2">opcion 2</option>
-                                <option value="3">opcion 3</option>
-                            </select>
-                           
-                        </div>
-                    </div>
-                </div>
-
-                
-
-                <div className="input">
-                    <label htmlFor="translator">Traductor</label>
-                    <input id="translator" type="text" placeholder="Traductor"/>
-                </div>
-
-
-                 <div className="input">
-                     <div className="divconteiner content">
-                        <div>
-                            <label htmlFor="prov">Numero de prov</label>
-                            <input id="prov" type="number" placeholder="Numero de prov" />
-                        </div>
-                        <div>
-                            <label htmlFor="numfactura">Num factura</label>
-                            <input id="numfactura" type="text" placeholder="Numero de factura" />
-                        </div>
-                        <div>
-                             <label htmlFor="type">Fecha de</label>
-                             <input id="dateof" type="date" placeholder="Fecha de" />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="line"></div>
-                
-                <div className="input">
-                     <div className="divconteiner checkbox">
-                     
-                            <input id="Lost" type="checkbox" placeholder="Perdido"  />
-                            <label htmlFor="Lost" className="checkboxin">Perdido</label>
+                    <div className="input">
+                        <div className="divconteiner content">
+                            <div>
+                                <label htmlFor="editorial">Editorial</label>
+                                <input id="editorial" type="text" placeholder="Editorial" />
+                            </div>
+                            <div>
+                                <label htmlFor="type">Tipo</label>
+                                <select name="type" id="type" className="selectform">
+                                    <option value="1">opcion 1</option>
+                                    <option value="2">opcion 2</option>
+                                    <option value="3">opcion 3</option>
+                                </select>
                             
-                    </div>
-                </div>
-
-                <div className="input">
-                     <div className="divconteiner content">
-                        <div>
-                            <label htmlFor="prov">Numero de socio</label>
-                            <input id="prov" type="number" placeholder="Numero de prov" />
-                        </div>
-                        <div>
-                            <label htmlFor="numfactura">Fecha de compra</label>
-                            <select name="type" id="dateofbuy" className="selectform">
-                                <option value="1">opcion 1</option>
-                                <option value="2">opcion 2</option>
-                                <option value="3">opcion 3</option>
-                            </select>
+                            </div>
                         </div>
                     </div>
 
                     
-                </div>   
-               
-            </div>
+
+                    <div className="input">
+                        <label htmlFor="translator">Traductor</label>
+                        <input id="translator" type="text" placeholder="Traductor"/>
+                    </div>
+
+
+                    <div className="input">
+                        <div className="divconteiner content">
+                            <div>
+                                <label htmlFor="prov">Numero de prov</label>
+                                <input id="prov" type="number" placeholder="Numero de prov" />
+                            </div>
+                            <div>
+                                <label htmlFor="numfactura">Num factura</label>
+                                <input id="numfactura" type="text" placeholder="Numero de factura" />
+                            </div>
+                            <div>
+                                <label htmlFor="type">Fecha de</label>
+                                <input id="dateof" type="date" placeholder="Fecha de" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="line"></div>
+                    
+                    <div className="input">
+                        <div className="divconteiner checkbox">
+                        
+                                <input id="Lost" type="checkbox" placeholder="Perdido"  />
+                                <label htmlFor="Lost" className="checkboxin">Perdido</label>
+                                
+                        </div>
+                    </div>
+
+                    <div className="input">
+                        <div className="divconteiner content">
+                            <div>
+                                <label htmlFor="prov">Numero de socio</label>
+                                <input id="prov" type="number" placeholder="Numero de prov" />
+                            </div>
+                            <div>
+                                <label htmlFor="numfactura">Fecha de compra</label>
+                                <select name="type" id="dateofbuy" className="selectform">
+                                    <option value="1">opcion 1</option>
+                                    <option value="2">opcion 2</option>
+                                    <option value="3">opcion 3</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        
+                    </div>   
+                
+                </div>
+                
+                <div className="contentformedit">
+                    
+                    
+                    <div className="input" >
+                            <label htmlFor="notes" >Notas</label>
+                            <input id="notes" type="text" className="notes" />
+                    </div>
+                    
+                    <div className="input" >
+                            <label htmlFor="year" >Año de edición</label>
+                            <input id="year" type="date" />
+                    </div>
+
+                    <div className="input" >
+                            <label htmlFor="number" >Numero de edición</label>
+                            <input id="number" type="text" />
+                    </div>
+                    <div className="input" >
+                            <label htmlFor="pages" >Páginas</label>
+                            <input id="pages" type="text" />
+                    </div>
+
+
+                        <div className="btns-form-edit">
+                            <div className="btn-left">
+                                <Btn text="Ver reservas" onClick={() => redirect('renewed')} variant="secondary"></Btn>   
+                                <Btn text="Ver autores" variant="secondary" onClick={() => setPopupView('chooseAuthor')}></Btn>
+                            </div>
+                            <div className="btnright">
+                                <Btn text="Guardar"  icon={<div className="img-ico"><img src={SaveIcon} alt="Guardar"  /></div> } variant="primary"></Btn>
+
+                            </div>
+
+                        </div>
+                </div>
+
             
-            <div className="contentformedit">
-                
-                
-                <div className="input" >
-                        <label htmlFor="notes" >Notas</label>
-                        <input id="notes" type="text" className="notes" />
+                    
+            </form>
+        )}
+        {popupView === 'chooseAuthor' && (
+                <>
+                <div className='books-author-container'>
+                    <BackviewBtn menu={'default'} changeView={setPopupView}/>
+                    <BookAuthors
+                    authorsSelected={selectedBook.authors}
+                    setAuthorsSelected={setAuthorsSelected}
+                    />
                 </div>
                 
-                <div className="input" >
-                        <label htmlFor="year" >Año de edición</label>
-                        <input id="year" type="date" />
-                </div>
+                </>
+        )}
 
-                <div className="input" >
-                        <label htmlFor="number" >Numero de edición</label>
-                        <input id="number" type="text" />
-                </div>
-                <div className="input" >
-                        <label htmlFor="pages" >Páginas</label>
-                        <input id="pages" type="text" />
-                </div>
-
-
-                      <div className="btns-form-edit">
-                        <div className="btn-left">
-                            <Btn text="Ver reservas" onClick={() => redirect('renewed')} variant="secondary"></Btn>   
-                            <Btn text="Ver autores" variant="secondary"></Btn>
-                        </div>
-                        <div className="btnright">
-                            <Btn text="Guardar"  icon={<div className="img-ico"><img src={SaveIcon} alt="Guardar"  /></div> } variant="primary"></Btn>
-
-                        </div>
-
-                       </div>
-            </div>
-
-          
-                
-        </form>
      
         </>
     )

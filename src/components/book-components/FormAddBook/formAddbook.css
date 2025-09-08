@@ -5,6 +5,7 @@
     position: relative;
     color: var(--white);
     margin-bottom: 3em;
+    margin-top: 0.3em;
 }
 .contentformedit{
     display: flex;
@@ -169,3 +170,10 @@ margin-bottom: 0;
 .formeditbook .input .cdu .cdu-options input:last-child {
     width: 30%;
 }
+
+.form-add-book-size {
+  background-color: var(--primary-dark-2);
+  width: 60em;
+  position: relative;
+}
+

@@ -72,6 +72,11 @@ width: 50%;
     height: 2px;
     background-color: var(--white);
 }
+
+
+
+
+
 .btns-form-edit{
     width:100%;
     display: flex;
@@ -140,7 +145,8 @@ margin-bottom: 0;
   margin-bottom: 0.5rem;
 }
 
-/*lo siento, no supe como  arregarlo al margen*/
-.margininput{
-    margin-bottom: -1.2em;
+.form-add-book-size {
+  background-color: var(--primary-dark-2);
+  width: 60em;
+  position: relative;
 }
