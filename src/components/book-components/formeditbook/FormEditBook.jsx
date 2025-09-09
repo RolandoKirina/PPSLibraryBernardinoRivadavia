@@ -7,12 +7,12 @@ import BookAuthors from "../BooksAuthor/BookAuthors.jsx";
 
 export default function FormEditBook({selectedBook}){
     const [popupView, setPopupView] = useState('default');
-    const [authorsSelected, setAuthorsSelected] = useState([]);
+    const [authorsSelected, setAuthorsSelected] = useState(selectedBook.authors);
 
     function redirect(action){
         switch(action){
             case 'renewed':{
-                window.open(`${window.location.origin}/loans/renewes`, '_blank');
+                window.open(`${window.location.origin}/loans/renewes`, '_blank', "renewes");
             }
         }
     }
@@ -176,7 +176,7 @@ export default function FormEditBook({selectedBook}){
                 <div className='books-author-container'>
                     <BackviewBtn menu={'default'} changeView={setPopupView}/>
                     <BookAuthors
-                    authorsSelected={selectedBook.authors}
+                    authorsSelected={authorsSelected}
                     setAuthorsSelected={setAuthorsSelected}
                     />
                 </div>

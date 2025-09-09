@@ -15,6 +15,8 @@ export default function BookAuthors({ authorsSelected, setAuthorsSelected }) {
     if (alreadyExists) return;
 
     setAuthorsSelected(prev => [...prev, author]);
+    console.log("existsssssssss");
+
     }
 
     function handleDeleteAuthorBook(id) {
