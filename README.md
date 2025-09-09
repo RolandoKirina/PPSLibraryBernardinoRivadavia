@@ -5,6 +5,10 @@
 - CRUD de las entidades de la biblioteca.
 - Obtener listado de entidades.
 - Control de préstamos.
+- Control de autores.
+- Control de libros.
+- Control de socios.
+- Control de cuotas.
 - API REST + Frontend moderno.
 
 ## 🛠️ Tecnologías

@@ -25,15 +25,14 @@
 }
 
 .add-material-container {
-    width: 40em;
-    max-height: 95vh;         /* Ajustá según el diseño */
-    overflow-y: auto;         /* Habilita el scroll vertical */
-    margin-bottom: 0;
+    margin-bottom: 1em;
+    display: flex;
+    justify-content: center;
 }
 
 .add-material-group-background {
     background-color: var(--primary-dark-2);
-    max-height: 95vh;         /* Ajustá según el diseño */
+    max-height: 90vh;         /* Ajustá según el diseño */
     overflow-y: auto;         /* Habilita el scroll vertical */
 }
 
@@ -44,3 +43,4 @@
 .add-material-container .input:has(> input:focus) > label {
     color: var(--secondary-light-2);
 }
+

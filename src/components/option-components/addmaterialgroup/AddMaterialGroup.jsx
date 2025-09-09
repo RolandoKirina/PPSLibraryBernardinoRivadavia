@@ -85,7 +85,7 @@ export default function AddMaterialGroup({method, createItem, updateItem, getIte
 
   return (
     <>
-        <div className='author-books-container add-material-container'>
+        <div className='add-material-container'>
           <div className='main-author-books'>
             <div className='add-loan-form-inputs add-material-inputs'>
               <div className='add-loan-retire-date input'>

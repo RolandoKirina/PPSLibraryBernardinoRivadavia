@@ -88,7 +88,9 @@ export default function LoanAmountSection() {
     return (
         <>
             <GenericSection title={'Configurar grupos para cantidad maxima de prestamos'} columns={columns} data={groupItems} popups={loanMaterialsPopups} actions={
-                <Btn variant='primary' className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg'/>} />
+                <div className='loan-amount-group-buttons'>
+                    <Btn variant='primary' className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg'/>} />
+                </div>
             }/>
         </>
     )
