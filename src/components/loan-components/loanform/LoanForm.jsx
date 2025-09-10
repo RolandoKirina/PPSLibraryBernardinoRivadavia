@@ -179,7 +179,7 @@ const handleChange = (e) => {
 
             <div className='add-loan-form-inputs'>
               <div>
-                <h4>Tipo de Préstamo</h4>
+                <h4>Tipo de Préstamo <span className='required'>*</span></h4>
                 <div>
                   <label>
                     <input
@@ -205,7 +205,7 @@ const handleChange = (e) => {
               </div>
 
               <div className='add-loan-code-employee input'>
-                <label>Código Empleado</label>
+                <label>Código Empleado <span className='required'>*</span></label>
                 <input
                   type='number'
                   name='employeeCode'
@@ -216,7 +216,7 @@ const handleChange = (e) => {
               </div>
 
               <div className='add-loan-retire-date input'>
-                <label>Fecha de retiro</label>
+                <label>Fecha de retiro <span className='required'>*</span></label>
                 <input
                   type='date'
                   name='retiredDate'
@@ -226,7 +226,7 @@ const handleChange = (e) => {
               </div>
 
               <div className='add-loan-retire-date input'>
-                <label>Fecha prevista</label>
+                <label>Fecha prevista <span className='required'>*</span></label>
                 <input
                   type='date'
                   name='expectedDate'

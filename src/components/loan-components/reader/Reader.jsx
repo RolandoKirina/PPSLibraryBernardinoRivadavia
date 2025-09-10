@@ -16,7 +16,7 @@ export default function Reader({ loanType, onDataChange, readerData }) {
       <h2>Lector</h2>
       <div className='search-partner-inputs'>
         <div className='input'>
-          <label>DNI</label>
+          <label>DNI <span className='required'>*</span></label>
           <input
             type='number'
             name='readerDNI'
@@ -25,7 +25,7 @@ export default function Reader({ loanType, onDataChange, readerData }) {
           />
         </div>
         <div className='input'>
-          <label>Apellido, Nombre</label>
+          <label>Apellido, Nombre <span className='required'>*</span></label>
           <input
             type='text'
             name='readerName'

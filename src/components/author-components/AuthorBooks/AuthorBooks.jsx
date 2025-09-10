@@ -195,7 +195,7 @@ export default function AuthorBooks({authorSelected, deleteAuthorSelected, updat
                         </div>
                         <div className='add-loan-form-inputs'>
                             <div className='add-loan-retire-date input'>
-                                <label>Nombre</label>
+                                <label>Nombre <span className='required'>*</span></label>
                                 {authMock.role === 'admin' ? (
                                 <input type='text' name='authorName' value={authorData.authorName} onChange={handleAuthorChange}/>
                                 ): (
@@ -204,7 +204,7 @@ export default function AuthorBooks({authorSelected, deleteAuthorSelected, updat
 
                             </div>
                             <div className='add-loan-retire-date input'>
-                                <label>Nacionalidad</label>
+                                <label>Nacionalidad <span className='required'>*</span></label>
                                 {authMock.role === 'admin' ? (
                                 <input type='text' name='nationality' value={authorData.nationality} onChange={handleAuthorChange}/>
                                 ): (
