@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { mockLoans } from '../../../data/mocks/loans';
-
+import "./EmployeeLoansGraphic.css";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function EmployeeLoansGraphic() {
@@ -26,6 +26,19 @@ function countQuantityAllLoansEmployee() {
     const loanDate = new Date(loan.plannedDate);
     return loanDate >= dateAfter && loanDate <= dateBefore;
   }).length;
+}
+
+function getLoanCountsByEmployee() {
+  const counts = {};
+
+  mockLoans.forEach((loan) => {
+    if (isWithinRange(loan)) {
+      const name = loan.employee;
+      counts[name] = (counts[name] || 0) + 1;
+    }
+  });
+
+  return counts;
 }
 
 
@@ -89,89 +102,102 @@ function isNotReturned(loan){
     setShowChart(true);
     console.log("Formulario:", data);
   };
+const employeeCounts = getLoanCountsByEmployee();
 
-    const pieData = {
-    labels: ['Devueltos atrasados', 'Sin devolver', 'Todos'],
-    datasets: [
-      {
-        data: [formValues.ignoreLossDate === 'devueltos' ? countQuantityLateLoansEmployee(): 0,
-               formValues.ignoreLossDate === 'sinDevolver' ? countQuantityNotReturnedLoansEmployee() : 0,
-               formValues.ignoreLossDate === 'todos' ? countQuantityAllLoansEmployee() : 0],
-        backgroundColor: ['#F4A261', '#E76F51', '#2A9D8F'],
-        borderColor: '#fff',
-        borderWidth: 2,
-      },
-    ],
-  };
-
+const pieData = {
+  labels: Object.keys(employeeCounts),
+  datasets: [
+    {
+      data: Object.values(employeeCounts),
+      backgroundColor: ['#2A9D8F', '#E76F51', '#F4A261', '#264653', '#A8DADC'], // Podés agregar más colores si hay más empleados
+      borderColor: '#fff',
+      borderWidth: 2,
+    },
+  ],
+};
 return (
-    <div className='lost-books-container'>
-      <div className='lost-books-content'>
-        <div className='lost-books-filters'>
+    <div className='filter-graphic-container'>
+      
+        <div className='filter-graphic'>
           <form onSubmit={handleSubmit}>
-            <div className='lost-books-filter-option'>
         
-
-              <div className='filter-options'>
-                <div className='input column-input'>
-                  <label htmlFor='afterDateFrom'>Fecha mayor a:</label>
-                  <input type="date" name="afterDateFrom" id="afterDateFrom" />
+            <div>
+                <div className='filter-options'>
+                  <div className='input'>
+                    <label htmlFor='afterDateFrom'>Fecha mayor a:</label>
+                    <input type="date" name="afterDateFrom" id="afterDateFrom" className='input-filter'/>
+                  </div>
                 </div>
-              </div>
 
-              <div className='filter-options'>
-                <div className='input column-input'>
-                  <label htmlFor='beforeDateTo'>Fecha menor a:</label>
-                  <input type="date" name="beforeDateTo" id="beforeDateTo" />
+                <div className='filter-options'>
+                  <div className='input'>
+                    <label htmlFor='beforeDateTo'>Fecha menor a:</label>
+                    <input type="date" name="beforeDateTo" id="beforeDateTo" />
+                  </div>
                 </div>
-              </div>
 
-              <div className='filter-options'>
-                <div className='input column-input'>
-                  <label className='exclude'>
-                    <input type="radio" name="ignoreLossDate" value="todos" />
-                    Todos
-                  </label>
-                </div>
-              </div>
 
-              <div className='filter-options'>
-                <div className='input column-input'>
-                  <label className='exclude'>
-                    <input type="radio" name="ignoreLossDate" value="devueltos" />
-                    Devueltos atrasados
-                  </label>
-                </div>
-              </div>
+            </div>
+            <div>
+                <div className='filter-options'>
+                    <div className='input column-input'>
+                      <label className='exclude'>
+                        <input type="radio" name="ignoreLossDate" value="todos" />
+                        Todos
+                      </label>
+                    </div>
+                  </div>
 
-              <div className='filter-options'>
-                <div className='input column-input'>
-                  <label className='exclude'>
-                    <input type="radio" name="ignoreLossDate" value="sinDevolver" />
-                    Sin devolver
-                  </label>
-                </div>
-              </div>
+                  <div className='filter-options'>
+                    <div className='input column-input'>
+                      <label className='exclude'>
+                        <input type="radio" name="ignoreLossDate" value="devueltos" />
+                        Devueltos atrasados
+                      </label>
+                    </div>
+                  </div>
 
-              <div className='lost-books-btn'>
+                  <div className='filter-options'>
+                    <div className='input column-input'>
+                      <label className='exclude'>
+                        <input type="radio" name="ignoreLossDate" value="sinDevolver" />
+                        Sin devolver
+                      </label>
+                    </div>
+                  </div>
+            </div>
+          
+            {showChart && (
+              <div className='container-graphic'>
+  <div className='graphic'>
+                        <div>
+                          
+                          <h3>Distribución de préstamos</h3>
+                        </div>
+                        <div style={{ width: '15em', height: '15em', justifyContent: 'center'}}>
+                                                  <Pie data={pieData} />
+
+                        </div>
+                    </div>
+                    
+              </div>
+            
+                
+                    )}
+     
+                <div className='btn-graphic-filter'>
                 <Btn variant={'primary'} text={'Generar'} type="submit" />
               </div>
-            </div>
           </form>
         </div>
 
+          
+
+
       </div>
 
-      <div>
-            {showChart && (
-                        <div style={{ maxWidth: '400px', margin: '2rem auto' }}>
-                        <h3 style={{ textAlign: 'center' }}>Distribución de préstamos</h3>
-                        <Pie data={pieData} />
-                    </div>
-                    
-                    )}
-      </div>
+     
       
-    </div>
+   
   );
 }

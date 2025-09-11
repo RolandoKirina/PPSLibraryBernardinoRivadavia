@@ -64,7 +64,7 @@ export default function EmployeeSection() {
                 },
                 {
                     key: 'employeeLoans',
-                    title: 'Grafico de prestamos recibidos por empleados',
+                    title: 'Prestamos recibidos por ',
                     className: 'employee-form-size',
                     content: <EmployeeLoansGraphic/>,
                     close: () => setEmployeeLoans(false),

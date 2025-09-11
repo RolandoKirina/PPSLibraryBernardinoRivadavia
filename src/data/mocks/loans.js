@@ -85,7 +85,7 @@ export const mockLoans = [
     retiredHour: '11:20',
     plannedDate: '2025-08-17',
     returnedDate: '',
-    employee: 'Fortunato, Jorge',
+    employee: 'Leticia',
     address: 'Estrada 988, Tandil',
     phone: '2494-445566'
   }
