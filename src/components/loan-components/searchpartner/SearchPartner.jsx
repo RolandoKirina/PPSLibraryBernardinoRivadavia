@@ -26,7 +26,7 @@ export default function SearchPartner({ menu, onDataChange, loanType, partnerDat
       <h2>Socio</h2>
       <div className='search-partner-inputs'>
         <div className='input'>
-          <label>Número</label>
+          <label>Número <span className='required'>*</span></label>
           <input
             type='number'
             name='partnerNumber'
@@ -35,7 +35,7 @@ export default function SearchPartner({ menu, onDataChange, loanType, partnerDat
           />
         </div>
         <div className='input'>
-          <label>Apellido, Nombre</label>
+          <label>Apellido, Nombre <span className='required'>*</span></label>
           <input
             type='text'
             name='partnerName'

@@ -7,7 +7,9 @@ export const useEntityManager = (initialItemsEntity, nameEntity) => {
       return initialItemsEntity;
     }
     try {
-      return JSON.parse(stored);
+      return initialItemsEntity;
+      
+      // return JSON.parse(stored);
     } catch (error) {
       console.error("Error parsing:", error);
       return initialItemsEntity;

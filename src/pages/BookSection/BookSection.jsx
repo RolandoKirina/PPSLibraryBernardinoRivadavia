@@ -67,6 +67,7 @@ const BookSection = () => {
         onClick={() =>{
           setPopupEdit(true)
           setSelectedItem(row)
+                      console.log(row)
           }}
        
        >
@@ -109,15 +110,15 @@ const BookSection = () => {
     {
       key: 'editPopup',
       title: 'Editar Libro',
-      className: 'popup-container',
-      content: <FormEditBook/>,
+      className: 'popup-container-book-form',
+      content: <FormEditBook selectedBook={selectedItem}/>,
       close: () => setPopupEdit(false),
       condition: PopUpEdit
     },
     {
       key: 'AddPopup',
       title: 'Agregar Libro',
-      className: 'popup-container',
+      className: 'popup-container-book-form',
       content: <FormAddBook/>,
       close: () => setPopupAdd(false),
       condition: PopUpAdd

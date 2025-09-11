@@ -10,10 +10,10 @@ import ConfirmMessage from '../../../components/common/confirmMessage/ConfirmMes
  import BackviewBtn from '../../common/backviewbtn/BackviewBtn';
 import SaveIcon from '../../../assets/img/save-icon.svg';
 import { books } from '../../../data/mocks/authors';
-
+import { useEffect } from 'react';
 import { authMock } from '../../../data/mocks/authMock';
 
-export default function AuthorBooks({authorSelected, deleteAuthorSelected, updateAuthorSelectedBooks, menu, method, createAuthorItem, updateAuthorItem}) {
+export default function AuthorBooks({authorSelected, deleteAuthorSelected, updateAuthorSelectedBooks, method, createAuthorItem, updateAuthorItem}) {
     const [seeAllButton, setSeeAllButton] = useState('Prestados');
     const [confirmPopup, setConfirmPopup] = useState(false);
     const [deletePopup, setDeletePopup] = useState(false);
@@ -27,6 +27,16 @@ export default function AuthorBooks({authorSelected, deleteAuthorSelected, updat
 
     console.log(authorSelected);
 
+    useEffect(() => {
+        if (method === 'update' && authorSelected) {
+            setAuthorData({
+            authorName: authorSelected.authorName,
+            nationality: authorSelected.nationality,
+            books: [...authorSelected.books]
+            });
+        }
+    }, [method, authorSelected]);
+
     function handleAuthorChange(e) {
         const { name, value } = e.target;
 
@@ -39,51 +49,23 @@ export default function AuthorBooks({authorSelected, deleteAuthorSelected, updat
     }
 
     function handleAddAuthorBook(book) {
-        if(method === 'add') {
-            setAuthorData(prev => {
+        setAuthorData(prev => {
             const alreadyExists = prev.books.some(b => b.id === book.id);
-
-            if(alreadyExists) {
-                return prev;
-            }
-
+            if (alreadyExists) return prev;
             return {
-                ...prev,
-                books: [...prev.books, book]
+            ...prev,
+            books: [...prev.books, book]
             };
-            });
-        }
-        else {
-            console.log("updateed add");
-            updateAuthorSelectedBooks(book);
-        }
-       
+        });
     }
 
     function handleDeleteAuthorBook(id) {
-        if(method === 'add') {
-            setAuthorData(prev => {
-            const alreadyExists = prev.books.some(b => b.id === id);
-
-            if(!alreadyExists) {
-                return prev;
-            }
-
-            let updatedBooks = prev.books.filter((book) => book.id !== id);
-
-            return {
-                ...prev,
-                books: updatedBooks
-            };
-        });
-        }
-        else {
-            console.log("update");
-            deleteAuthorSelected(id);
-        }
-
-        
+        setAuthorData(prev => ({
+            ...prev,
+            books: prev.books.filter(b => b.id !== id)
+        }));
     }
+
 
 
 
@@ -173,15 +155,15 @@ export default function AuthorBooks({authorSelected, deleteAuthorSelected, updat
 
                     console.log(newAuthor);
                 }
-                else if(method === 'update') {
-                    let updateAuthor = { 
-                        authorName: authorData.authorName,
-                        nationality: authorData.nationality,
-                        books: authorSelected.books
-                    }
-                    
-                    updateAuthorItem(authorSelected.id, updateAuthor);
+                else if (method === 'update') {
+                let updatedAuthor = { 
+                    authorName: authorData.authorName,
+                    nationality: authorData.nationality,
+                    books: authorData.books
+                };
+                updateAuthorItem(authorSelected.id, updatedAuthor);
                 }
+
             }}/>,
             close: () => setConfirmPopup(false),
             condition: confirmPopup,
@@ -213,7 +195,7 @@ export default function AuthorBooks({authorSelected, deleteAuthorSelected, updat
                         </div>
                         <div className='add-loan-form-inputs'>
                             <div className='add-loan-retire-date input'>
-                                <label>Nombre</label>
+                                <label>Nombre <span className='required'>*</span></label>
                                 {authMock.role === 'admin' ? (
                                 <input type='text' name='authorName' value={authorData.authorName} onChange={handleAuthorChange}/>
                                 ): (
@@ -222,7 +204,7 @@ export default function AuthorBooks({authorSelected, deleteAuthorSelected, updat
 
                             </div>
                             <div className='add-loan-retire-date input'>
-                                <label>Nacionalidad</label>
+                                <label>Nacionalidad <span className='required'>*</span></label>
                                 {authMock.role === 'admin' ? (
                                 <input type='text' name='nationality' value={authorData.nationality} onChange={handleAuthorChange}/>
                                 ): (
@@ -233,7 +215,7 @@ export default function AuthorBooks({authorSelected, deleteAuthorSelected, updat
                         <div className='author-books-title'>
                             <h3>Libros de este autor</h3>
                         </div>
-                        <Table columns={mainAuthorBooksColumns} data={method==='update' ? authorSelected.books : authorData.books}>
+                        <Table columns={mainAuthorBooksColumns} data={authorData.books}>
                             <div className='main-author-btns'>
                                 {authMock.role === 'admin' && (
                                 <Btn variant={'primary'} onClick={() => setPopupView('addBook')} text={'Administrar libros'}/>
@@ -242,13 +224,13 @@ export default function AuthorBooks({authorSelected, deleteAuthorSelected, updat
                                 <Btn variant={'primary'} text={seeAllButton} onClick={() => handleSetAllbutton()}/>
                             </div>
                         </Table>
-                        {method === 'add' && (
+
                         <div className='save-changes-lend-books'>
                             {authMock.role == 'admin' && (
                                 <Btn text={'Guardar'} onClick={() => setConfirmPopup(true)} icon={<img src={SaveIcon} alt='saveIconButton'/> }/>
                             )}
                         </div>
-                        )}
+                        
 
                     {authorBooksPopups.map(({ condition, title, className, content, close, variant }, idx) => (
                                         condition && (
@@ -274,32 +256,19 @@ export default function AuthorBooks({authorSelected, deleteAuthorSelected, updat
                             <h3>Libros cargados en la biblioteca</h3>
                         </div>
                         <Table columns={bookshelfBooksColumns} data={books}/>
-                        </div>
+                    </div>
                     <div className='author-books'>
                         <div className='author-books-title'>
                             <h3>Libros de este autor</h3>
                         </div>
                         {method === 'update' ? (
-                            <Table columns={authorBooksColumns} data={authorSelected.books}/>
+                            <Table columns={authorBooksColumns} data={authorData.books}/>
                         ): (
                             <Table columns={authorBooksColumns} data={authorData.books}/>
                         )}
                     </div>
                     </>
                 )}
-                {popupView === 'editBookForm' && (
-                    <>
-                    <BackviewBtn menu={'default'} changeView={setPopupView}/>
-                    <div>
-                        <div className='editBookAuthor'>
-                        <h2>Editar libro</h2>
-                        </div>
-                        <FormEditBook />
-                    </div>
-                    </>
-                )}
-
-
 
             </div>
         </>

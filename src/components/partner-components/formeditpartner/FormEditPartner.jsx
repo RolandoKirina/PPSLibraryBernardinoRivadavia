@@ -19,17 +19,17 @@ export default function FormEditPartner() {
 
         <div className="items-info-details-form-accordion">
             <div className="form-details">
-              <label htmlFor="name" className="title-name">Nombre</label>
+              <label htmlFor="name" className="title-name">Nombre <span className='required'>*</span></label>
               <input id="name" name="name" type="text" placeholder="Ingrese su nombre" />
             </div>
 
             <div className="form-details">
-              <label htmlFor="surname">Apellido</label>
+              <label htmlFor="surname">Apellido <span className='required'>*</span></label>
               <input id="surname" name="surname" type="text" placeholder="Ingrese su apellido" />
             </div>
 
             <div className="form-details">
-              <label htmlFor="dateofbirthday">Fecha de nacimiento</label>
+              <label htmlFor="dateofbirthday">Fecha de nacimiento <span className='required'>*</span></label>
               <input id="dateofbirthday" name="dateofbirthday" type="date" />
             </div>
 
@@ -37,7 +37,7 @@ export default function FormEditPartner() {
 
         <div className="items-info-details-form-accordion">
           <div className="form-details">
-            <label htmlFor="typeofdni">Tipo de documento</label>
+            <label htmlFor="typeofdni">Tipo de documento <span className='required'>*</span></label>
             <select id="typeofdni" name="typeofdni" defaultValue="">
               <option value="" disabled>Seleccione un tipo</option>
               <option value="dni">DNI</option>
@@ -49,29 +49,29 @@ export default function FormEditPartner() {
           </div>
 
           <div className="form-details">
-            <label htmlFor="DNI">DNI</label>
+            <label htmlFor="DNI">DNI <span className='required'>*</span></label>
             <input id="DNI" name="DNI" type="number" placeholder="Ingrese su DNI" />
           </div>
 
           <div className="form-details">
-            <label htmlFor="dateofinscription">Fecha de inscripción</label>
+            <label htmlFor="dateofinscription">Fecha de inscripción <span className='required'>*</span></label>
             <input id="dateofinscription" name="dateofinscription" type="date" />
           </div>
         </div>
           
         <div className="items-info-details-form-accordion">
           <div className="form-details">
-            <label htmlFor="profession">Profesión</label>
+            <label htmlFor="profession">Profesión <span className='required'>*</span></label>
             <input id="profession" name="profession" type="text" placeholder="Ingrese su profesión" />
           </div>
 
           <div className="form-details">
-            <label htmlFor="presentedby">Presentado por</label>
+            <label htmlFor="presentedby">Presentado por <span className='required'>*</span></label>
             <input id="presentedby" name="presentedby" type="text" placeholder="Presentado por" />
           </div>
 
           <div className="form-details">
-            <label htmlFor="maritalstatus">Estado civil</label>
+            <label htmlFor="maritalstatus">Estado civil <span className='required'>*</span></label>
             <select id="maritalstatus" name="maritalstatus" defaultValue="">
               <option value="" disabled>Seleccione un estado</option>
               <option value="soltero">Soltero/a</option>
@@ -85,7 +85,7 @@ export default function FormEditPartner() {
           
         <div  className="items-info-details-form-accordion">
           <div className="form-details">
-            <label htmlFor="category">Categoría</label>
+            <label htmlFor="category">Categoría <span className='required'>*</span></label>
             <select id="category" name="category" defaultValue="">
               <option value="" disabled>Seleccione una categoría</option>
               <option value="regular">Regular</option>
@@ -96,7 +96,7 @@ export default function FormEditPartner() {
           </div>
 
           <div className="form-details">
-            <label htmlFor="nacionality">Nacionalidad</label>
+            <label htmlFor="nacionality">Nacionalidad <span className='required'>*</span></label>
             <input id="nacionality" name="nacionality" type="text" placeholder="Nacionalidad" />
           </div>
         </div>
@@ -112,12 +112,12 @@ export default function FormEditPartner() {
 
               <div className="items-info-details-form-accordion">
           <div className="form-details">
-            <label htmlFor="address">Dirección</label>
+            <label htmlFor="address">Dirección <span className='required'>*</span></label>
             <input id="address" name="address" type="text" placeholder="Ingrese su dirección" />
           </div>
 
           <div className="form-details">
-            <label htmlFor="phone">Teléfono</label>
+            <label htmlFor="phone">Teléfono <span className='required'>*</span></label>
             <input id="phone" name="phone" type="tel" placeholder="Ingrese su teléfono" />
           </div>
         </div>
@@ -127,7 +127,7 @@ export default function FormEditPartner() {
 {/*habria q consumir una api aca*/}
         <div className="items-info-details-form-accordion">
           <div className="form-details">
-            <label htmlFor="locality">Localidad</label>
+            <label htmlFor="locality">Localidad <span className='required'>*</span></label>
             <select id="locality" name="locality" defaultValue="">
               <option value="" disabled>Seleccione una localidad</option>
               <option value="caba">Ciudad Autónoma de Buenos Aires</option>
@@ -142,7 +142,7 @@ export default function FormEditPartner() {
           </div>
 
           <div className="form-details">
-            <label htmlFor="postalcode">Código postal</label>
+            <label htmlFor="postalcode">Código postal <span className='required'>*</span></label>
             <input id="postalcode" name="postalcode" type="text" placeholder="Ingrese el código postal" />
           </div>
         </div>
@@ -157,12 +157,12 @@ export default function FormEditPartner() {
 
           <div className="items-info-details-form-accordion">
           <div className="form-details">
-            <label htmlFor="address">Direcciones de cobro</label>
+            <label htmlFor="address">Direcciones de cobro <span className='required'>*</span></label>
             <input id="address" name="address" type="text" placeholder="Ingrese la dirección de cobro" />
           </div>
 
           <div className="form-details">
-            <label htmlFor="phone">Hora preferida</label>
+            <label htmlFor="phone">Hora preferida <span className='required'>*</span></label>
             <input id="phone" name="phone" type="datetime-local" placeholder="Ingrese su hora de cobro" />
           </div>
         </div>

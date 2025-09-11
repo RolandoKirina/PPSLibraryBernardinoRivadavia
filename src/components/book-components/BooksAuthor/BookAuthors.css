@@ -1,0 +1,5 @@
+.book-authors-size {
+    display: flex;
+    justify-content: space-evenly;
+    width: 60em;
+}

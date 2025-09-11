@@ -3,11 +3,13 @@ export const partnerCategoryFields = [
     {
         label: 'Categoria',
         name: 'category',
-        type: 'text'
+        type: 'text',
+        required: true
     },
     {
         label: 'Importe',
         name: 'amount',
-        type: 'text'
+        type: 'text',
+        required: true
     }
 ];

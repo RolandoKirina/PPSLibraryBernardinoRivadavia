@@ -53,11 +53,10 @@
   background-color: var(--primary-light-2);
 }
 
-.popup-container{
+.popup-container-book-form{
     background: var(--primary-dark-2);
-    overflow: scroll;
-    border-radius: 10px;
-    width: 50em;   
+    overflow-y: scroll;
+    border-radius: 10px; 
     margin-top: 3em;   
     height: auto;
     max-height: 100vh;
@@ -101,3 +100,6 @@
 .books-partners-amount-size {
   width: 40%;
 }
+
+
+

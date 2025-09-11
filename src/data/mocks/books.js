@@ -1,191 +1,184 @@
 export const books = [
-
-    { 
-    id: 1, 
-    title: 'El principito', 
-    code_inventory: 202, 
+  {
+    id: 1,
+    title: 'El principito',
+    code_inventory: 202,
     codeCDU: 108,
-    editorial:'Planeta',
+    editorial: 'Planeta',
     nro_edition: 1,
-    traductor:"javier ondicol",
+    traductor: 'Javier Ondicol',
     pages: 3,
     cod_clas: 37,
-    cod_rcdu:-4,
+    cod_rcdu: -4,
     number_of_copies: 5,
-    notes: "lorem impsus",
+    notes: 'lorem impsus',
     type: 44,
-    cod_ling: "A 14",
-     authors:[
-             {
-                  id: 1,
-                name: "Antoine",
-                surname: "de Saint-Exupéry"
-            },
-            {
-                 id: 2,
-                name: "Otro",
-                surname: "Colaborador"
-            }
+    cod_ling: 'A 14',
+    authors: [
+      { id: 1, authorName: 'Antoine de Saint-Exupéry', nationality: 'Francia' },
+      { id: 2, authorName: 'Colaborador Desconocido', nationality: 'Desconocida' }
     ],
     id_supplier: 1,
     invoice_number: 1232,
-    date_of_buy: "23/07/2004",
-    loss_date: "23/07/2008",
+    date_of_buy: '23/07/2004',
+    loss_date: '23/07/2008',
     lost_partner_number: 1,
     lost: true
-
-
-    // place_edition
-    //ubication
-    },{
+  },
+  {
     id: 2,
-    title: "Cien años de soledad",
+    title: 'Cien años de soledad',
     code_inventory: 203,
     codeCDU: 109,
-    editorial: "Sudamericana",
+    editorial: 'Sudamericana',
     nro_edition: 3,
-    traductor: "Carlos Fuentes",
+    traductor: 'Carlos Fuentes',
     pages: 417,
     cod_clas: 38,
     cod_rcdu: -2,
     number_of_copies: 8,
-    notes: "Obra maestra del realismo mágico",
+    notes: 'Obra maestra del realismo mágico',
     type: 44,
-    cod_ling: "B 22",
+    cod_ling: 'B 22',
     authors: [
-        { id: 3, name: "Gabriel", surname: "García Márquez" }
+      { id: 3, authorName: 'Gabriel García Márquez', nationality: 'Colombia' },
+      { id: 9, authorName: 'Eduardo Galeano', nationality: 'Uruguay' }
     ],
     id_supplier: 2,
     invoice_number: 4567,
-    date_of_buy: "15/03/2001",
+    date_of_buy: '15/03/2001',
     loss_date: null,
     lost_partner_number: null,
     lost: false
-    }
-    ,{
+  },
+  {
     id: 4,
-    title: "Ficciones",
+    title: 'Ficciones',
     code_inventory: 205,
     codeCDU: 111,
-    editorial: "Emece",
+    editorial: 'Emece',
     nro_edition: 5,
     traductor: null,
     pages: 250,
     cod_clas: 40,
     cod_rcdu: -3,
     number_of_copies: 6,
-    notes: "Relatos filosóficos",
+    notes: 'Relatos filosóficos',
     type: 44,
-    cod_ling: "D 18",
+    cod_ling: 'D 18',
     authors: [
-        { id: 5, name: "Jorge Luis", surname: "Borges" }
+      { id: 5, authorName: 'Jorge Luis Borges', nationality: 'Argentina' },
+      { id: 10, authorName: 'Adolfo Bioy Casares', nationality: 'Argentina' }
     ],
     id_supplier: 4,
     invoice_number: 3210,
-    date_of_buy: "01/01/2000",
+    date_of_buy: '01/01/2000',
     loss_date: null,
     lost_partner_number: null,
     lost: false
-    },
-    {
+  },
+  {
     id: 5,
-    title: "La casa de los espíritus",
+    title: 'La casa de los espíritus',
     code_inventory: 206,
     codeCDU: 112,
-    editorial: "Debolsillo",
+    editorial: 'Debolsillo',
     nro_edition: 1,
-    traductor: "Magdalena Silva",
+    traductor: 'Magdalena Silva',
     pages: 400,
     cod_clas: 41,
     cod_rcdu: -5,
     number_of_copies: 4,
-    notes: "Saga familiar con elementos mágicos",
+    notes: 'Saga familiar con elementos mágicos',
     type: 44,
-    cod_ling: "E 30",
+    cod_ling: 'E 30',
     authors: [
-        { id: 6, name: "Isabel", surname: "Allende" }
+      { id: 6, authorName: 'Isabel Allende', nationality: 'Chile' },
+      { id: 7, authorName: 'Mario Vargas Llosa', nationality: 'Perú' }
     ],
     id_supplier: 5,
     invoice_number: 6543,
-    date_of_buy: "20/08/2003",
-    loss_date: "12/12/2010",
+    date_of_buy: '20/08/2003',
+    loss_date: '12/12/2010',
     lost_partner_number: 2,
     lost: true
-    },
-    {
+  },
+  {
     id: 6,
-    title: "La casa de los espíritus",
+    title: 'La casa de los espíritus',
     code_inventory: 206,
     codeCDU: 112,
-    editorial: "Debolsillo",
+    editorial: 'Debolsillo',
     nro_edition: 1,
-    traductor: "Magdalena Silva",
+    traductor: 'Magdalena Silva',
     pages: 400,
     cod_clas: 41,
     cod_rcdu: -5,
     number_of_copies: 4,
-    notes: "Saga familiar con elementos mágicos",
+    notes: 'Saga familiar con elementos mágicos',
     type: 44,
-    cod_ling: "E 30",
+    cod_ling: 'E 30',
     authors: [
-        { id: 6, name: "Isabel", surname: "Allende" }
+      { id: 6, authorName: 'Isabel Allende', nationality: 'Chile' },
+      { id: 8, authorName: 'Julio Cortázar', nationality: 'Argentina' }
     ],
     id_supplier: 5,
     invoice_number: 6543,
-    date_of_buy: "20/08/2003",
-    loss_date: "12/12/2010",
+    date_of_buy: '20/08/2003',
+    loss_date: '12/12/2010',
     lost_partner_number: 2,
     lost: true
-    },
-        {
+  },
+  {
     id: 7,
-    title: "dhskjdhsakjhdsakdhsja",
+    title: 'dhskjdhsakjhdsakdhsja',
     code_inventory: 206,
     codeCDU: 112,
-    editorial: "Debolsillo",
+    editorial: 'Debolsillo',
     nro_edition: 1,
-    traductor: "Magdalena Silva",
+    traductor: 'Magdalena Silva',
     pages: 400,
     cod_clas: 41,
     cod_rcdu: -5,
     number_of_copies: 4,
-    notes: "Saga familiar con elementos mágicos",
+    notes: 'Saga familiar con elementos mágicos',
     type: 44,
-    cod_ling: "E 30",
+    cod_ling: 'E 30',
     authors: [
-        { id: 6, name: "Isabel", surname: "Allende" }
+      { id: 6, authorName: 'Isabel Allende', nationality: 'Chile' },
+      { id: 11, authorName: 'Laura Esquivel', nationality: 'México' }
     ],
     id_supplier: 5,
     invoice_number: 6543,
-    date_of_buy: "20/08/2003",
-    loss_date: "12/12/2010",
+    date_of_buy: '20/08/2003',
+    loss_date: '12/12/2010',
     lost_partner_number: 2,
     lost: true
-    },
-
-        {
+  },
+  {
     id: 8,
-    title: "el gato watson",
+    title: 'El gato Watson',
     code_inventory: 206,
     codeCDU: 112,
-    editorial: "Debolsillo",
+    editorial: 'Debolsillo',
     nro_edition: 1,
-    traductor: "Magdalena Silva",
+    traductor: 'Magdalena Silva',
     pages: 400,
     cod_clas: 41,
     cod_rcdu: -5,
     number_of_copies: 4,
-    notes: "Saga familiar con elementos mágicos",
+    notes: 'Saga familiar con elementos mágicos',
     type: 44,
-    cod_ling: "E 30",
+    cod_ling: 'E 30',
     authors: [
-        { id: 6, name: "Isabel", surname: "Allende" }
+      { id: 6, authorName: 'Isabel Allende', nationality: 'Chile' },
+      { id: 12, authorName: 'Ricardo Piglia', nationality: 'Argentina' }
     ],
     id_supplier: 5,
     invoice_number: 6543,
-    date_of_buy: "20/08/2003",
-    loss_date: "12/12/2010",
+    date_of_buy: '20/08/2003',
+    loss_date: '12/12/2010',
     lost_partner_number: 2,
     lost: true
-    }
+  }
 ];

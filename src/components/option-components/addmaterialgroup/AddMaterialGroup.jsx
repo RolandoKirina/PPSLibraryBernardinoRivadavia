@@ -85,20 +85,20 @@ export default function AddMaterialGroup({method, createItem, updateItem, getIte
 
   return (
     <>
-        <div className='author-books-container add-material-container'>
+        <div className='add-material-container'>
           <div className='main-author-books'>
             <div className='add-loan-form-inputs add-material-inputs'>
               <div className='add-loan-retire-date input'>
-                <label>Grupo</label>
+                <label>Grupo <span className='required'>*</span></label>
                 <input type='text' value={group} onChange={(e) => setGroup(e.target.value)}/>
               </div>
               <div className='add-loan-retire-date input'>
-                <label>Cantidad</label>
+                <label>Cantidad <span className='required'>*</span></label>
                 <input type='number' value={amount} onChange={(e) => setAmount(e.target.value)}/>
               </div>
             </div>
             <div className='author-books-title'>
-              <h3>Tipo de material disponible</h3>
+              <h3>Tipo de material disponible <span className='required'>*</span></h3>
             </div>
             <div className='materials-group'>
                 <div className='group-table'>   
