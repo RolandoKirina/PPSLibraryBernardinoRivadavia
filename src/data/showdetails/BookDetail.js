@@ -22,8 +22,8 @@ export const BookDetail = [
           value: 'información',
           attribute: 'authors',
         subfields: [
-  { key: 'name', label: 'Nombre' },
-  { key: 'surname', label: 'Apellido' }
+  { key: 'authorName', label: 'Nombre' },
+  { key: 'nationality', label: 'Nacionalidad' }
 ]
         },
         { label: 'Editorial', value: 'información', attribute: 'editorial' }
