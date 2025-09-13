@@ -17,31 +17,13 @@ export default function UnpaidQuotes({changeView}) {
     { header: 'Año', accessor: 'year' },
     { header: 'Monto', accessor: 'amount' },
     { header: 'Paga', accessor: 'paid' },
-    { header: 'Fecha Pago', accessor: 'paidDate' },
-    {
-        header: 'Editar',
-        accessor: 'edit',
-        render: (_, row) => (
-            <button type='button' className="button-table" onClick={() => changeView('editUnpaidQuote')}>
-            <img src={EditIcon} alt="Editar" />
-        </button>
-        )
-    },
-    {
-        header: 'Pagar',
-        accessor: 'pay',
-        render: (_, row) => (
-            <button type='button' className="button-table" onClick={() => console.log('pagar')}>
-            <img src={MoneyIcon} alt="pagar" />
-        </button>
-        )
-    },
     ];
 
 
     return (
         <>
             <div className='unpaid-quotes-container'>
+                <h2>Cuotas impagas</h2>
                 <Table columns={columns} data={unpaidQuotes} />
             </div>
         </>

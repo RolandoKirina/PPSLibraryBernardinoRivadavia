@@ -9,3 +9,6 @@
 .unpaid-quotes-container table {
     text-align: center;
 }
+.unpaid-quotes-container h2 {
+    padding-left: 1em;
+}
