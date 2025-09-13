@@ -71,8 +71,10 @@
 .detailsInfoMenu {
     background-color: var(--primary-dark-2);
     display: flex;
+    max-width: 45em;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
 }
 
 

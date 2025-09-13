@@ -27,10 +27,6 @@
     white-space: normal;       
     word-break: break-word;
 }
-.table thead {
-  height: 5em;
-    background-color: var(--table-color-2);
-}
 
 
 .table th {
@@ -38,7 +34,7 @@
 }
 .table, th, td {
     border: 1px solid var(--table-lines);
-    border-collapse: collapse; /* evita bordes dobles */
+    border-collapse: collapse; 
   }
 
 .table tbody tr:nth-child(even) {
@@ -87,3 +83,9 @@
   .theadPrint th, .tbodyPrint td{
   border: 1px solid rgb(56, 56, 56);
   }
+
+
+  .table thead {
+  height: 5em;
+    background-color: var(--table-color)
+}

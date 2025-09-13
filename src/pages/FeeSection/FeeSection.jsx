@@ -15,6 +15,7 @@ import CardFees from '../../components/fees-components/CardFees/CardFees.jsx';
 import { FeesDetail } from '../../data/showdetails/FeesDetail.js';
 import GenericForm from '../../components/generic/GenericForm/GenericForm.jsx';
 import editnewFeesForm from '../../data/forms/FeesForms.js';
+
 import FeesBetweenDates from '../../components/fees-components/feesbetweendates/FeesBetweenDates.jsx';
 import PopUpDelete from '../../components/common/deletebtnComponent/PopUpDelete.jsx';
 import './FeeSection.css';
@@ -118,7 +119,7 @@ condition: popupdelete,
         key: 'AddPopup',
         title: 'Agregar Cuotas',
         className: 'popup-container',
-        content: <div/>,
+        content: <GenericForm title={'Añadir cuota nueva'} fields={editnewFeesForm} className="addfees"/>,
         close: () => setPopupAdd(false),
         condition: PopUpAdd
       },

@@ -110,12 +110,7 @@ a {
     padding-left: 0.75rem; 
   }
 
-.btn-list{
-  margin-top: 1em;
-  width: 50%;
-  display: flex;
-  gap: 1em;
-}
+
 /*buena estrategia para saber que elemento causa scroll horizontal*/
 /** * {
   outline: 1px solid red;

@@ -5,17 +5,23 @@ import { useEntityManager } from '../../../hooks/useEntityManager';
 import AuthorIcon from '../../../assets/img/author-icon.svg';
 import DeleteIcon from '../../../assets/img/delete-icon.svg';
 import Btn from '../../common/btn/Btn';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function BookAuthors({ authorsSelected, setAuthorsSelected }) {
-    const { items: authorItems, getItem: getAuthorItem, createItem: createAuthorItem, updateItem: updateAuthorItem, deleteItem: deleteAuthorItem } = useEntityManager(mockAuthors, 'authors');
 
+      const [signature, setSignature] = useState("");
+    const { items: authorItems, getItem: getAuthorItem, createItem: createAuthorItem, updateItem: updateAuthorItem, deleteItem: deleteAuthorItem } = useEntityManager(mockAuthors, 'authors');
+    
+   useEffect(() => {
+  const newSignature = authorsSelected.map(author => author.authorName).join(" - ");
+  setSignature(newSignature);
+}, [authorsSelected]);
     function handleAddAuthorBook(author) {
     const alreadyExists = authorsSelected.some(a => a.id === author.id);
     if (alreadyExists) return;
 
     setAuthorsSelected(prev => [...prev, author]);
-    console.log("existsssssssss");
+
 
     }
 
@@ -48,6 +54,7 @@ export default function BookAuthors({ authorsSelected, setAuthorsSelected }) {
             accessor: 'delete',
             render: (_, row) => (
                 <button type='button' className="button-table" onClick={() => {
+                   
                 handleDeleteAuthorBook(row.id);
             }}>
                 <img src={DeleteIcon} alt="Borrar" />
@@ -71,8 +78,20 @@ export default function BookAuthors({ authorsSelected, setAuthorsSelected }) {
                         <h3>Autores de este libro</h3>
                     </div>
                    <Table data={authorsSelected} columns={columnsAddedAuthors} />
-                   <Btn text="Calcular signatura" className="secondary-btn" onClick={()=> console.log("signatura")} variant="primary" />
+
+                   <div className='signature'>
+                        <h3>Signaturas:</h3>
+                          <p >
+                        {signature.trim() !== "" 
+                        ? signature 
+                        : "Todavía no se ha asignado ninguna signatura."}
+                        </p>
+                   </div>
+                   
                 </div>
+
+                
+                
         </div>
 
         </>

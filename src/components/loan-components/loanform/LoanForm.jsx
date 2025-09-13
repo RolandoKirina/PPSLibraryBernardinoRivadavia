@@ -15,6 +15,7 @@ import DeleteIcon from '../../../assets/img/delete-icon.svg';
 import AddBookIcon from '../../../assets/img/add-book-icon.svg';
 import { books } from '../../../data/mocks/authors';
 import { editLoanformFields } from '../../../data/forms/LoanForms';
+import UnpaidFees from '../unpaidfees/UnpaidFees';
 
 export default function LoanForm({createLoanItem}) {
   const [popupView, setPopupView] = useState("default");
@@ -322,16 +323,16 @@ const handleChange = (e) => {
         </>
       )}
 
-      {popupView === 'unpaidQuotes' && (
+      {popupView === 'unpaidFees' && (
         <>
           <BackviewBtn menu={'default'} changeView={setPopupView} />
-          <UnpaidQuotes changeView={setPopupView} />
+          <UnpaidFees changeView={setPopupView} />
         </>
       )}
 
-      {popupView === 'editUnpaidQuote' && (
+      {popupView === 'editUnpaidFees' && (
         <>
-          <BackviewBtn menu={'unpaidQuotes'} changeView={setPopupView} />
+          <BackviewBtn menu={'unpaidFees'} changeView={setPopupView} />
           <GenericForm title={'Editar cuota pendiente'} fields={editLoanformFields} onSubmit={(data) => console.log('Formulario enviado:', data)} />
         </>
       )}
