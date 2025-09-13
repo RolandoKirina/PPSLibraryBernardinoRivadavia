@@ -27,19 +27,19 @@ export const FeeSection = () => {
     const [popupdelete,setPopUpDelete]=useState(false);
 
     const [PopUpDetail,setPopUpDetail]=useState(false);
-
     const[PopUpPaidFees,setPopUpPaidFees]=useState(false);
 
     const[PopUpFeesBetweenDates,setPopUpFeesBetweenDates]=useState(false);
 
 
     const {items,getItem,createItem,updateItem,deleteItem} = useEntityManager(fees, "fees");
-
+    console.log(fees);
     const columns = [
-      { header: 'Numero de cuota', accessor: 'numberofFee' },
-      { header: 'Nombre de socio', accessor: 'partnerName' },
-      { header: 'Cuotas Pagas', accessor: 'paidfees' },
-      {header:'Cuotas Impagas',accessor:'unpaidfees'},
+      { header: 'Numero de cuota', accessor: 'id' },
+      { header: 'Nombre de socio', accessor: 'partnerName'},
+      {header: 'valor', accessor: 'amount'},
+      /*{ header: 'Cuotas Pagas', accessor: 'paidfees' },
+      {header:'Cuotas Impagas',accessor:'unpaidfees'},* esto ver con javi¨*/
       {
         header: 'Borrar',
         accessor: 'delete',
@@ -153,8 +153,11 @@ condition: popupdelete,
           columns={columns} data={items} popups={feesPopUp}
           actions={          
             <div className='fees-actions'>
+              
             <Btn text="Cuotas pagas" variant="primary" onClick={() => setPopUpPaidFees(true)}></Btn>
+            <Btn text="Agregar cuota" variant="primary" onClick={() => setPopupAdd(true)}></Btn>
             <Btn text="Cuotas entre fechas" variant="primary" onClick={() => setPopUpFeesBetweenDates(true)}></Btn>
+
             </div>
           }
           

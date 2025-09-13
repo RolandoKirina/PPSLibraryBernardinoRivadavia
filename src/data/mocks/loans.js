@@ -8,8 +8,8 @@ export const mockLoans = [
     partnerLastname: 'Gutiérrez',
     retiredDate: '2025-08-01',
     retiredHour: '10:30',
-    plannedDate: '2025-09-05',
-    returnedDate: '2025-09-06',
+    plannedDate: '2025-09-11',
+    returnedDate: '2025-09-13',
     employee: 'Fortunato, Jorge',
     address: 'Av. Colón 1432, Tandil',
     phone: '2494-556677'
