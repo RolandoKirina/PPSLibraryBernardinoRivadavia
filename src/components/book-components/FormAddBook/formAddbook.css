@@ -177,3 +177,6 @@ margin-bottom: 0;
   position: relative;
 }
 
+.books-author-container{
+    height: 80vh;
+}

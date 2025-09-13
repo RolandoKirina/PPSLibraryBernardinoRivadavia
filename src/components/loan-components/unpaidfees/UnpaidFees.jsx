@@ -1,10 +1,10 @@
-import './UnpaidQuotes.css';
+import './UnpaidFees.css';
 import { Table } from '../../common/table/Table';
 import MoneyIcon from '../../../assets/img/money-icon.svg';
 import EditIcon from '../../../assets/img/edit-icon.svg';
 
-export default function UnpaidQuotes({changeView}) {
-    const unpaidQuotes = [
+export default function UnpaidFees({changeView}) {
+    const unpaidfees = [
     { id: 1, month: 'Julio', year: '2025', amount: '$1200', paid: 'No', paidDate: '-' },
     { id: 2, month: 'Junio', year: '2025', amount: '$1200', paid: 'No', paidDate: '-' },
     { id: 3, month: 'Mayo', year: '2025', amount: '$1200', paid: 'No', paidDate: '-' },
@@ -17,32 +17,15 @@ export default function UnpaidQuotes({changeView}) {
     { header: 'Año', accessor: 'year' },
     { header: 'Monto', accessor: 'amount' },
     { header: 'Paga', accessor: 'paid' },
-    { header: 'Fecha Pago', accessor: 'paidDate' },
-    {
-        header: 'Editar',
-        accessor: 'edit',
-        render: (_, row) => (
-            <button type='button' className="button-table" onClick={() => changeView('editUnpaidQuote')}>
-            <img src={EditIcon} alt="Editar" />
-        </button>
-        )
-    },
-    {
-        header: 'Pagar',
-        accessor: 'pay',
-        render: (_, row) => (
-            <button type='button' className="button-table" onClick={() => console.log('pagar')}>
-            <img src={MoneyIcon} alt="pagar" />
-        </button>
-        )
-    },
+    { header: 'Fecha Pago', accessor: 'paidDate' }
     ];
 
 
     return (
         <>
             <div className='unpaid-quotes-container'>
-                <Table columns={columns} data={unpaidQuotes} />
+                <h3>Cuotas impagas</h3>
+                <Table columns={columns} data={unpaidfees} />
             </div>
         </>
     )

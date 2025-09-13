@@ -5,7 +5,7 @@
   flex-direction: column;
   align-items: center;
   border-radius: 0.2em;
-  padding: 2em 1em;
+  padding: 0.5em 0.5em;
 }
 
 .generic-form {
@@ -45,7 +45,6 @@
   gap: 2em;
   width: 100%;
   max-width: 600px;
-  margin-bottom: 1.5em;
 }
 
 .generic-inputs-width.row-layout .input {
@@ -91,12 +90,11 @@
   border-radius: 0.3em;
 }
 
-/* Botón guardar */
 .generic-btn-save {
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-top: 2em;
+  margin-top: 1em;
 }
 
 .generic-checkbox label {
@@ -151,7 +149,6 @@
   width: 18px;
   height: 18px;
   margin-right: 0.5em;
-  padding: 0;
   border: 1px solid var(--primary-light-2);
   border-radius: 4px;
   background-color: var(--white);

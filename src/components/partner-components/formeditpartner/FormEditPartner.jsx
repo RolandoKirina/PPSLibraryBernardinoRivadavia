@@ -3,15 +3,71 @@ import SaveIcon from '../../../assets/img/save-icon.svg';
 import Accordion from "../../generic/accordion/Accordion.jsx";
 import { useState } from "react";
 import "./FormEditPartner.css";
+import BackviewBtn from "../../common/backviewbtn/BackviewBtn.jsx";
+import UnpaidFees from "../../loan-components/unpaidfees/UnpaidFees.jsx";
 export default function FormEditPartner() {
+
+  const options  = ["default","unpaidfees", "pendingbooks"];
+  const [popupView, setPopupView] = useState(options[0]);
   const [activeAccordion, setActiveAccordion] = useState(null);
 
   const handleToggle = (id) => {
     setActiveAccordion(prev => prev === id ? null : id);
   };
 
-  return (
-    <form>
+
+  function renderView() {
+ 
+   switch (popupView) {
+
+      case "unpaidfees":
+        return (
+         
+          <div>
+             
+              <UnpaidFees></UnpaidFees>
+              <BackviewBtn menu={'default'} changeView={setPopupView}/>
+           
+          </div>
+           
+         
+        );
+
+      case "pendingbooks":
+        return (
+          <form>
+            <Accordion
+              title="Libros pendientes"
+              isActive={activeAccordion === 'pendingbooks'}
+              onToggle={() => handleToggle('pendingbooks')}
+            >
+              <div className="items-info-details-form-accordion">
+                <div className="form-details">
+                  <label htmlFor="booktitle">Título del libro</label>
+                  <input id="booktitle" name="booktitle" type="text" placeholder="Ingrese el título" />
+                </div>
+
+                <div className="form-details">
+                  <label htmlFor="duedate">Fecha de vencimiento</label>
+                  <input id="duedate" name="duedate" type="date" />
+                </div>
+
+                <div className="form-details">
+                  <label htmlFor="daysdelayed">Días de atraso</label>
+                  <input id="daysdelayed" name="daysdelayed" type="number" placeholder="Cantidad de días" />
+                </div>
+              </div>
+            </Accordion>
+
+           
+               <BackviewBtn menu={'default'} changeView={setPopupView}/>
+           
+          </form>
+        );
+
+      default:
+        return (
+           <form>
       <Accordion
         title="Datos personales"
         isActive={activeAccordion === 'personaldata'}
@@ -169,106 +225,102 @@ export default function FormEditPartner() {
       </Accordion>
 
          
-    <Accordion
-        title="Estado del socio"
-        isActive={activeAccordion === 'stateofpartner'}
-        onToggle={() => handleToggle('stateofpartner')}>
+   <Accordion
+  title="Estado del socio"
+  isActive={activeAccordion === 'stateofpartner'}
+  onToggle={() => handleToggle('stateofpartner')}
+>
+  <div className="items-info-details-form-accordion">
 
-         <div className="items-info-details-form-accordion">
-          <div className="form-details-checkbox">
-            <label>Estado del socio</label>
-            <div className="checkbox-group">
-             
-                     <label htmlFor="active" className="label">
-                <div className="checkbox">
-               <input className="checkbox-size"
-                  type="checkbox"
-                  id="active"
-                  name="estado"
-                  value="activo"
-                />
-                <p>Activo</p>
-                </div>
-           
-              </label>
-              
-         <div>
+    <div className="form-details-checkbox">
+      <label>Estado del socio</label>
+      <div className="checkbox-group">
+        <label htmlFor="active" className="label">
+          
+            <input
+              className="checkbox-size"type="checkbox" id="active" name="estado"
+              value="activo"
+            />
+            <p>Activo</p>
+          
+        </label>
 
-          <div className="flex">
-                <label htmlFor="inactive">
-
-                  <div className="checkbox">
-                    <input className="checkbox-size"
-                    type="checkbox"
-                    id="inactive"
-                    name="estado"
-                    value="baja"
-                  />
-                  <p>Baja</p>
-                  </div>
-                
-                </label>
-
-          </div>
-         </div>  
-        </div>
-        </div>
-        <div className="form-details">
-                <label htmlFor="reasonofwithdrawal">Motivo de baja</label>
-                <input id="reasonofwithdrawal" name="reasonofwithdrawal" type="text" placeholder="Motivo de baja" />
-              </div>
-
-
-                <div className="form-details">
-                <label htmlFor="dateofwithdrawal">Fecha de baja</label>
-                <input id="dateofwithdrawal" name="dateofwithdrawal" type="date" placeholder="Ingrese su fecha de baja" />
-                </div>
+        <label htmlFor="inactive" className="label">
       
-              
-
-
-                <div className="form-details">
-              <label htmlFor="resignationdate">Fecha de renuncia</label>
-              <input id="resignationdate" name="resignationdate" type="date" placeholder="Ingrese su fecha de renuncia" />
-              </div>
-
-         
-            
-        </div>
-
-
-      <div className="items-info-details-form-accordion">
-            <div className="">
-            <label htmlFor="observations">Observaciones</label>
-            <input id="observations" name="observations" type="text" className="inputobservations"placeholder="Ingrese sus observaciones" />
-            </div>
-        
-         
+            <input
+              className="checkbox-size"
+              type="checkbox"
+              id="inactive"
+              name="estado"
+              value="baja"
+            />
+            <p>Baja</p>
+       
+        </label>
       </div>
-        
+    </div>
 
-        <div className="btn-list">
-      <Btn
-        text="Cuotas impagas"
-        variant="secondary"
-      >
-      </Btn>
+    <div className="form-details">
+      <label htmlFor="reasonofwithdrawal">Motivo de baja</label>
+      <input
+        id="reasonofwithdrawal"
+        name="reasonofwithdrawal"
+        type="text"
+        placeholder="Motivo de baja"
+      />
+    </div>
+  </div>
+
+  <div className="items-info-details-form-accordion">
+    <div className="form-details">
+      <label htmlFor="dateofwithdrawal">Fecha de baja</label>
+      <input
+        id="dateofwithdrawal"
+        name="dateofwithdrawal"
+        type="date"
+        placeholder="Ingrese su fecha de baja"
+      />
+    </div>
+
+    <div className="form-details">
+      <label htmlFor="resignationdate">Fecha de renuncia</label>
+      <input
+        id="resignationdate"
+        name="resignationdate"
+        type="date"
+        placeholder="Ingrese su fecha de renuncia"
+      />
+    </div>
+  </div>
+
+  <div className="items-info-details-form-accordion">
+    <div className="form-details ">
+      <label htmlFor="observations">Observaciones</label>
+      <input
+        id="observations"
+        name="observations"
+        type="text"
+        className="inputobservations"
+        placeholder="Ingrese sus observaciones"
+      />
+    </div>
+  </div>
+    <div className="btn-list">
+          <Btn
+            text="Cuotas impagas"
+            variant="secondary"
+            onClick={() => setPopupView("unpaidfees")}
+          >
+          </Btn>
 
 
-      <Btn
-        text="Libros pendientes"
-        variant="secondary"
-      ></Btn>
+          <Btn
+            text="Libros pendientes"
+            variant="secondary"
+            onClick={() =>setPopupView("pendingbooks")}
+          ></Btn>
 
-</div>
-      
-      </Accordion>
-
-
-
-
-<div className="divbtncontainer">
-     <Btn
+            <Btn
         text="Guardar"
         icon={
           <div className="img-ico">
@@ -278,8 +330,24 @@ export default function FormEditPartner() {
 
          variant="primary"
       />
-</div>
+
+      </div>
+        
+
+        
+      
+      </Accordion>
+
      
     </form>
+  );
+
+  }
+}
+  return (
+
+  <div className="form-edit-partner">
+    {renderView()}
+  </div>
   );
 }

@@ -8,7 +8,7 @@ import Listing from './components/loan-components/listing/Listing.jsx';
 import GenericForm from './components/generic/GenericForm/GenericForm.jsx';
 //rutas importadas para evitar llenar todo de rutas similares
 import { loanFormRoutes, detailsRoutes, listingRoutes } from './data/Routes.js'; 
-import UnpaidQuotes from './components/loan-components/unpaidquotes/UnpaidQuotes.jsx';
+import UnpaidFees from './components/loan-components/unpaidfees/UnpaidFees.jsx';
 import Renewe from './components/loan-components/renewe/Renewe.jsx';
 import AuthorSection from './pages/AuthorSection/AuthorSection.jsx';
 import PartnerCategorySection from './pages/OptionSection/PartnerCategory/PartnerCategorySection.jsx';
@@ -93,8 +93,8 @@ function App() {
               />
             ))}
 
-            <Route path='/loans/partner/quotes' element={<Content>
-              <UnpaidQuotes />
+            <Route path='/loans/partner/fees' element={<Content>
+              <UnpaidFees />
             </Content>}/>
 
             <Route path='/books/renewes' element={<Content>

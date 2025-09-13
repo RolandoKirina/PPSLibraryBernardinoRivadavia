@@ -1,7 +1,7 @@
 import './Return.css';
 import SearchPartner from '../searchpartner/SearchPartner';
 import BackviewBtn from '../../common/backviewbtn/BackviewBtn';
-import UnpaidQuotes from '../unpaidquotes/UnpaidQuotes';
+import UnpaidFees from '../unpaidfees/UnpaidFees';
 import ShowDetails from '../../generic/ShowDetails/ShowDetails';
 import { lendBooksReturnDetails } from '../../../data/showdetails/LoanDetails';
 import { useState } from 'react';
@@ -211,15 +211,15 @@ else if(authMock.role === 'reader') {
                         <ShowDetails insidePopup={true} titleText={'Detalles de libro préstado'} isPopup={false} data={selected} detailsData={lendBooksReturnDetails} />
                     </>
                 )}
-                {popupView === 'unpaidQuotes' && (
+                {popupView === 'unpaidFees' && (
                     <>
                         <BackviewBtn menu={'default'} changeView={setPopupView} />
-                        <UnpaidQuotes changeView={setPopupView}/>
+                        <UnpaidFees changeView={setPopupView}/>
                     </>
                 )}
-                {popupView === 'editUnpaidQuote' && (
+                {popupView === 'editUnpaidFees' && (
                     <>
-                        <BackviewBtn menu={'unpaidQuotes'} changeView={setPopupView} />
+                        <BackviewBtn menu={'unpaidFees'} changeView={setPopupView} />
                         <GenericForm title={'Editar cuota pendiente'} fields={editPendingQuoteFields} onSubmit={(data) => console.log('Formulario enviado:', data)} />
                     </>
                 )}
