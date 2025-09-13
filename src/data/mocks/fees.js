@@ -1,7 +1,8 @@
 export const fees = [
   { 
     id: 1,
-    id_socio: 23,
+    id_partner: 23,
+    partnerName	: "Javier Rolando",
     month: 6,
     year: 2024,
     amount: 50,
