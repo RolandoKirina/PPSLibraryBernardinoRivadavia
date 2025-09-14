@@ -1,0 +1,14 @@
+.unpaid-quotes-container {
+    width: 50em;
+    background-color: var(--primary-dark-2);
+    margin-top: 2em;
+    margin-bottom: 2em;
+    padding: 2em;
+}
+
+.unpaid-quotes-container table {
+    text-align: center;
+}
+.unpaid-quotes-container h2 {
+    padding-left: 1em;
+}

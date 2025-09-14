@@ -39,7 +39,7 @@ export const detailsRoutes = [
 ];
 
 export const listingRoutes = [
-  'return-date',
-  'phone',
-  'loans-per-partner'
+  'LoanListingPhone',
+  'LoanListingReturnDate',
+  'LoanListingPerPartner'
 ];

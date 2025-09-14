@@ -19,7 +19,6 @@ export default function GenerateListPopup({dataByType, columnsByType, typeList, 
                             minute: '2-digit'
                             })}
                         </h4>
-                        {console.log(typeList)}
                         {(typeList === 'TypeOneFees' || typeList === 'TypeTwoFees') && (
                          <h4>Entre el: {feeDates.beforeDate} y el: {feeDates.afterDate}</h4>
                         )}
