@@ -5,3 +5,9 @@
 .dropdown-title {
     cursor: pointer;
 }
+
+.accordion-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

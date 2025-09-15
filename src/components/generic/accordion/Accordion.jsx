@@ -3,7 +3,7 @@ import ToggleIcon from '../../../assets/img/toggle-icon.svg';
 
 export default function Accordion({ title, isActive, onToggle, children }) {
   return (
-    <div>
+    <div className='accordion-container'>
       <div className="dropdown-title" onClick={onToggle}>
         <h4>{title}</h4>
         <button type="button">

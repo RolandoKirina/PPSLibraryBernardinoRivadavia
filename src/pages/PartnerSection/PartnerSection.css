@@ -6,3 +6,8 @@
 .print-partners-size {
     width: 85%;
 }
+
+.add-edit-partner-size {
+    max-height: 85vh;
+    overflow-y: auto;
+}
