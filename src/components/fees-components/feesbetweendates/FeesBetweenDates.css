@@ -1,10 +1,11 @@
 .fees-between-dates-container {
-    width: 100%;
-    display: flex;   
-    max-height: 75vh;         /* Ajustá según el diseño */
-    overflow-y: auto; 
-    position: relative;
-    background-color: var(--primary-dark-2);
+  width: 100%;
+  display: flex;
+  max-height: 75vh;
+  /* Ajustá según el diseño */
+  overflow-y: auto;
+  position: relative;
+  background-color: var(--primary-dark-2);
 }
 
 .fees-between-dates-container {
@@ -47,7 +48,7 @@
 }
 
 .fees-between-dates-filter-title h3 {
-    color: var(--white);
+  color: var(--white);
 }
 
 .filter-options {
@@ -71,12 +72,12 @@
   color: var(--secondary-light-1);
 }
 
- .fees-between-dates-container.input select {
+.fees-between-dates-container.input select {
   height: 2em;
   overflow-y: auto;
 }
 
- .fees-between-dates-container .input select option {
+.fees-between-dates-container .input select option {
   border-radius: 0.8em;
 }
 

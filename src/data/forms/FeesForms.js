@@ -24,8 +24,8 @@ export const editnewFeesForm = [
       type: 'text'
     }
   ],
-    [
-    
+  [
+
     {
       label: 'Pagada',
       name: 'paid',

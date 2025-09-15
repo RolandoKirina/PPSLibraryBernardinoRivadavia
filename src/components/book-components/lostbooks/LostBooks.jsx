@@ -38,13 +38,13 @@ export default function LostBooks() {
                 <div className='lost-books-filter-title'>
                   <h3>Fecha de pérdida</h3>
                 </div>
-                  <div className='filter-options'>
-                    <div className='input column-input'>
+                <div className='filter-options'>
+                  <div className='input column-input'>
                     <label className='exclude'>
-                        <input type="radio" name="ignoreLossDate" value="true" />
-                        Excluir fecha de retiro
+                      <input type="radio" name="ignoreLossDate" value="true" />
+                      Excluir fecha de retiro
                     </label>
-                    </div>
+                  </div>
                 </div>
                 <div className='filter-options'>
                   <div className='input column-input'>

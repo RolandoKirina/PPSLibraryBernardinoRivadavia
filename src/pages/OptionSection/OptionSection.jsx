@@ -10,7 +10,7 @@ import { authMock } from '../../data/mocks/authMock';
 import './OptionSection.css';
 
 
-export default function OptionSection(){
+export default function OptionSection() {
 
     return (
         <>
@@ -77,7 +77,7 @@ export default function OptionSection(){
                                             </div>
                                         </div>
                                     </Link>
-                                </div> 
+                                </div>
                             </>
                         ) : (
                             <>
@@ -119,7 +119,7 @@ export default function OptionSection(){
                         )}
                     </div>
                 </div>
-            </GenericSection>                        
+            </GenericSection>
         </>
     )
 }

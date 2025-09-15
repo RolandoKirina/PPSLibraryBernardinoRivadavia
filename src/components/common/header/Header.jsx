@@ -36,7 +36,7 @@ export default function Header() {
 
           <div className="header-center">
             <Link to='/' className="logo">
-             <img src={logo} alt="Logo Biblioteca Rivadavia" />
+              <img src={logo} alt="Logo Biblioteca Rivadavia" />
             </Link>
             <h1 className="title-text">
               Biblioteca Popular Bernardino Rivadavia
@@ -47,11 +47,11 @@ export default function Header() {
             {!authMock.isAuthenticated ? (
               <div className="auth-links">
                 <Link to={'/login'}>
-                Ingresar
+                  Ingresar
                 </Link>
                 <Link to={'/register'}>
-                Registrarse
-                </Link>                
+                  Registrarse
+                </Link>
               </div>
             ) : (
               <h3 className="header-msg">

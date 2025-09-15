@@ -5,18 +5,20 @@
     margin-bottom: 1em;
     background-color: var(--primary-dark-2);
     justify-content: space-evenly;
-    max-height: 70vh;         /* Ajustá según el diseño */
-    overflow-y: auto;         /* Habilita el scroll vertical */
-    padding-right: 1em;  
+    max-height: 70vh;
+    /* Ajustá según el diseño */
+    overflow-y: auto;
+    /* Habilita el scroll vertical */
+    padding-right: 1em;
 }
 
-.author-books-container .input:has(> input:focus) > label {
+.author-books-container .input:has(> input:focus)>label {
     color: var(--secondary-light-2);
 }
 
 .author-books-title {
     margin-top: 1em;
- }
+}
 
 .author-books-container h3 {
     color: var(--secondary-light-2);

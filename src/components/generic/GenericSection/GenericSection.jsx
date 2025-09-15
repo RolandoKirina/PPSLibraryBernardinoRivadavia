@@ -2,7 +2,7 @@ import './GenericSection.css';
 import PopUp from '../../common/popup-table/PopUp';
 import { Table } from '../../common/table/Table';
 
-export default function GenericSection({title, filters, columns, data, popups, actions, children}) {
+export default function GenericSection({ title, filters, columns, data, popups, actions, children }) {
     return (
         <>
             <section className='genericsection'>
@@ -12,35 +12,35 @@ export default function GenericSection({title, filters, columns, data, popups, a
 
                 <div className="genericinf">
                     <div className="generic-title">
-                            <h2>{title}</h2> 
+                        <h2>{title}</h2>
                     </div>
                     {children}
-        {columns && (
-        <Table columns={columns} data={data}>
-         
-                      
+                    {columns && (
+                        <Table columns={columns} data={data}>
 
-            {popups && popups.map(({ condition, title, className, content, close, variant }, idx) => (
-                    condition && (
-                        <PopUp
-                        key={idx}
-                        title={title}
-                        className={className || ''}
-                        onClick={close}
-                        {...(variant === 'delete' && { variant: 'delete' })}
-                        >
-                        {content}
-                        </PopUp>
-                    )
-                    ))}
-                        <div className='actions'>
-                            {actions && actions}
-                        </div>
 
-                    </Table>
-        )}       
+
+                            {popups && popups.map(({ condition, title, className, content, close, variant }, idx) => (
+                                condition && (
+                                    <PopUp
+                                        key={idx}
+                                        title={title}
+                                        className={className || ''}
+                                        onClick={close}
+                                        {...(variant === 'delete' && { variant: 'delete' })}
+                                    >
+                                        {content}
+                                    </PopUp>
+                                )
+                            ))}
+                            <div className='actions'>
+                                {actions && actions}
+                            </div>
+
+                        </Table>
+                    )}
                 </div>
-               
+
             </section>
         </>
     )

@@ -13,7 +13,7 @@ import ShowDetails from "../../components/generic/ShowDetails/ShowDetails";
 import GenericSection from "../../components/generic/GenericSection/GenericSection";
 import GenericForm from "../../components/generic/GenericForm/GenericForm";
 import { editLoanformFields } from "../../data/forms/LoanForms";
-import {loanDetailsInfo} from '../../data/showdetails/LoanDetails';
+import { loanDetailsInfo } from '../../data/showdetails/LoanDetails';
 import PopUpDelete from '../../components/common/deletebtnComponent/PopUpDelete';
 import { useEffect } from "react";
 import { mockLoans } from "../../data/mocks/loans";
@@ -21,7 +21,7 @@ import { useEntityManager } from "../../hooks/useEntityManager";
 
 import { authMock } from "../../data/mocks/authMock";
 
-export default function LoanSection({openRenewes, pendientBooks}) {
+export default function LoanSection({ openRenewes, pendientBooks }) {
     const { items: loanItems, getItem: getLoanItem, createItem: createLoanItem, updateItem: updateLoanItem, deleteItem: deleteLoanItem } = useEntityManager(mockLoans, 'loans');
     const [selected, setSelected] = useState(null);
     const [deletePopup, setDeletePopup] = useState(false);
@@ -43,60 +43,60 @@ export default function LoanSection({openRenewes, pendientBooks}) {
 
     let columns = [];
 
-    if(authMock.role === 'admin') {
+    if (authMock.role === 'admin') {
         columns = [
-        { header: 'Codigo', accessor: 'bookCode' },
-        { header: 'Título', accessor: 'bookTitle' },
-        { header: 'Nombre Socio', accessor: 'partnerName' },
-        {
-            header: 'Borrar',
-            accessor: 'delete',
-            className: "action-buttons",
-            render: (_, row) => (
-            <button className="button-table" onClick={() => {
-                setDeletePopup(true)
-                setSelected(row)
-                }}>
-                <img src={DeleteIcon} alt="Borrar" />
-            </button>
-            )
-        },
-        {
-            header: 'Editar',
-            accessor: 'edit',
-            className: "action-buttons",
-            render: (_, row) => (
-            <button className="button-table"  onClick={() => {
-                setEditPopup(true)
-                setSelected(row)
-                }}>
-                <img src={EditIcon} alt="Editar" />
-            </button>
-            )
-        },
-        {
-            header: 'Ver detalle',
-            accessor: 'details',
-            className: "action-buttons",
-            render: (_, row) => (
-            <button className="button-table" onClick={() => {
-                setSelected(row)
-                setDetailsPopup(true)
-                // getLoanDetails(row)
-                }}>
-                <img src={DetailsIcon} alt="Detalles" />
-            </button>
-            )
-        }
+            { header: 'Codigo', accessor: 'bookCode' },
+            { header: 'Título', accessor: 'bookTitle' },
+            { header: 'Nombre Socio', accessor: 'partnerName' },
+            {
+                header: 'Borrar',
+                accessor: 'delete',
+                className: "action-buttons",
+                render: (_, row) => (
+                    <button className="button-table" onClick={() => {
+                        setDeletePopup(true)
+                        setSelected(row)
+                    }}>
+                        <img src={DeleteIcon} alt="Borrar" />
+                    </button>
+                )
+            },
+            {
+                header: 'Editar',
+                accessor: 'edit',
+                className: "action-buttons",
+                render: (_, row) => (
+                    <button className="button-table" onClick={() => {
+                        setEditPopup(true)
+                        setSelected(row)
+                    }}>
+                        <img src={EditIcon} alt="Editar" />
+                    </button>
+                )
+            },
+            {
+                header: 'Ver detalle',
+                accessor: 'details',
+                className: "action-buttons",
+                render: (_, row) => (
+                    <button className="button-table" onClick={() => {
+                        setSelected(row)
+                        setDetailsPopup(true)
+                        // getLoanDetails(row)
+                    }}>
+                        <img src={DetailsIcon} alt="Detalles" />
+                    </button>
+                )
+            }
         ];
     }
-    else if(authMock.role === 'reader') {
+    else if (authMock.role === 'reader') {
         columns = [
-        { header: 'Codigo', accessor: 'bookCode' },
-        { header: 'Título', accessor: 'bookTitle' },
-        { header: 'Fecha retiro', accessor: 'retiredDate' },
-        { header: 'Fecha limite', accessor: 'plannedDate' },
-        { header: 'Fecha devolución', accessor: 'returnedDate' },
+            { header: 'Codigo', accessor: 'bookCode' },
+            { header: 'Título', accessor: 'bookTitle' },
+            { header: 'Fecha retiro', accessor: 'retiredDate' },
+            { header: 'Fecha limite', accessor: 'plannedDate' },
+            { header: 'Fecha devolución', accessor: 'returnedDate' },
         ]
     }
 
@@ -106,7 +106,7 @@ export default function LoanSection({openRenewes, pendientBooks}) {
             key: 'deletePopup',
             title: 'Borrar prestamo',
             className: 'delete-size-popup',
-            content: <PopUpDelete  title={"Prestamo"} onConfirm={
+            content: <PopUpDelete title={"Prestamo"} onConfirm={
                 () => {
                     deleteLoanItem(selected.id)
                     setDeletePopup(false)
@@ -116,29 +116,29 @@ export default function LoanSection({openRenewes, pendientBooks}) {
             condition: deletePopup,
             variant: 'delete'
         },
-         {
-             key: 'editPopup',
-             title: 'Editar préstamo',
-             className: '',
-             content: <GenericForm title={'Editar Libro en Prestamo'} fields={editLoanformFields} onSubmit={(data) => {
+        {
+            key: 'editPopup',
+            title: 'Editar préstamo',
+            className: '',
+            content: <GenericForm title={'Editar Libro en Prestamo'} fields={editLoanformFields} onSubmit={(data) => {
                 updateLoanItem(selected.id, {
                     ...selected,
                     retiredDate: data.retiredDate,
                     expectedDate: data.expectedDate,
                     returnDate: data.returnDate,
                     employee: data.employee
-                    
+
                 })
                 setEditPopup(false);
-             }}/>,
-             close: () => setEditPopup(false),
-             condition: editPopup
-         },
+            }} />,
+            close: () => setEditPopup(false),
+            condition: editPopup
+        },
         {
             key: 'addPopup',
             title: 'Agregar préstamo',
             className: 'loans-background',
-            content: <LoanForm createLoanItem={createLoanItem}/>,
+            content: <LoanForm createLoanItem={createLoanItem} />,
             close: () => setAddPopup(false),
             condition: addPopup
         },
@@ -170,23 +170,23 @@ export default function LoanSection({openRenewes, pendientBooks}) {
             key: 'renewePopup',
             title: 'Listado de reservas',
             className: 'loan-renews-size',
-            content: <Renewe isPopup={true}/>,
+            content: <Renewe isPopup={true} />,
             close: () => setRenewePopup(false),
             condition: renewePopup
         }
     ];
 
-    return (     
+    return (
         <>
             <GenericSection title={authMock.role === 'admin' ? 'Listado de préstamos' : 'Listado de tus préstamos'} filters={<LoanFilter />} columns={columns} data={loanItems} popups={loanPopups}
-            actions={
-                 <LoanButtons
-                  displayLoanform={() => setAddPopup(true)}
-                  displayReturnForm={() => setReturnsPopup(true)}
-                  displayListingsPopup={() => setListingsPopup(true)}
-                  displayRenewe={() => setRenewePopup(true)}
-                 />
-            }/>
+                actions={
+                    <LoanButtons
+                        displayLoanform={() => setAddPopup(true)}
+                        displayReturnForm={() => setReturnsPopup(true)}
+                        displayListingsPopup={() => setListingsPopup(true)}
+                        displayRenewe={() => setRenewePopup(true)}
+                    />
+                } />
         </>
     );
 

@@ -15,7 +15,7 @@ import ConfirmMessage from '../../../components/common/confirmMessage/ConfirmMes
 import { mockRemovePartnerReason } from '../../../data/mocks/removePartnerReason';
 import { useEntityManager } from '../../../hooks/useEntityManager';
 
-export default function RemovePartnerReasonSection({chooseMode}) {
+export default function RemovePartnerReasonSection({ chooseMode }) {
     const [deletePopup, setDeletePopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
@@ -23,7 +23,7 @@ export default function RemovePartnerReasonSection({chooseMode}) {
     const [confirmPopup, setConfirmPopup] = useState(false);
     const [selected, setSelected] = useState(false);
     const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockRemovePartnerReason, 'removePartnerReason');
- 
+
     function handleAddItem(data) {
         createItem(data);
         setAddPopup(false);
@@ -34,39 +34,39 @@ export default function RemovePartnerReasonSection({chooseMode}) {
         setEditPopup(false);
     }
 
-    
-     const removePartnerReasonsPopups = [
-                {
-                    key: 'deletePopup',
-                    title: 'Borrar motivo para dar de baja',
-                    className: 'delete-size-popup',
-                    content: <PopUpDelete title={"Motivo para dar de baja"} closePopup={() => setDeletePopup(false)} onConfirm={
+
+    const removePartnerReasonsPopups = [
+        {
+            key: 'deletePopup',
+            title: 'Borrar motivo para dar de baja',
+            className: 'delete-size-popup',
+            content: <PopUpDelete title={"Motivo para dar de baja"} closePopup={() => setDeletePopup(false)} onConfirm={
                 () => {
                     deleteItem(selected.id)
                     setDeletePopup(false)
                 }
             } />,
-                    close: () => setDeletePopup(false),
-                    condition: deletePopup,
-                    variant: 'delete'
-                },
+            close: () => setDeletePopup(false),
+            condition: deletePopup,
+            variant: 'delete'
+        },
 
-                {
-                    key: 'editPopup',
-                    title: 'Editar motivo para dar de baja',
-                    className: '',
-                    content: <GenericForm fields={removePartnerReasonForms} onSubmit={(data) => handleEditItem(data)}/>,
-                    close: () => setEditPopup(false),
-                    condition: editPopup
-                },
-                {
-                    key: 'addPopup',
-                    title: 'Agregar motivo para dar de baja',
-                    className: 'remove-parner-form-size',
-                    content: <GenericForm fields={removePartnerReasonForms} onSubmit={(data) => handleAddItem(data)}/>, 
-                    close: () => setAddPopup(false),
-                    condition: addPopup
-                }
+        {
+            key: 'editPopup',
+            title: 'Editar motivo para dar de baja',
+            className: '',
+            content: <GenericForm fields={removePartnerReasonForms} onSubmit={(data) => handleEditItem(data)} />,
+            close: () => setEditPopup(false),
+            condition: editPopup
+        },
+        {
+            key: 'addPopup',
+            title: 'Agregar motivo para dar de baja',
+            className: 'remove-parner-form-size',
+            content: <GenericForm fields={removePartnerReasonForms} onSubmit={(data) => handleAddItem(data)} />,
+            close: () => setAddPopup(false),
+            condition: addPopup
+        }
     ];
 
     const columns = [
@@ -75,26 +75,26 @@ export default function RemovePartnerReasonSection({chooseMode}) {
             header: 'Borrar',
             accessor: 'delete',
             render: (_, row) => (
-            <button className="button-table" onClick={() => {
-                setDeletePopup(true)
-                setSelected(row)
+                <button className="button-table" onClick={() => {
+                    setDeletePopup(true)
+                    setSelected(row)
                 }}>
-                <img src={DeleteIcon} alt="Borrar" />
-            </button>
+                    <img src={DeleteIcon} alt="Borrar" />
+                </button>
             )
         },
         {
-             header: 'Editar',
-             accessor: 'edit',
-             render: (_, row) => (
-             <button className="button-table"  onClick={() => {
-                setEditPopup(true)
-                setSelected(row);
+            header: 'Editar',
+            accessor: 'edit',
+            render: (_, row) => (
+                <button className="button-table" onClick={() => {
+                    setEditPopup(true)
+                    setSelected(row);
                 }}>
-                 <img src={EditIcon} alt="Editar" />
-             </button>
-             )
-         }         
+                    <img src={EditIcon} alt="Editar" />
+                </button>
+            )
+        }
     ];
 
     const columnsChooseMode = [
@@ -103,37 +103,37 @@ export default function RemovePartnerReasonSection({chooseMode}) {
             header: 'Elegir',
             accessor: 'choose',
             render: (_, row) => (
-            <button className="button-table"  onClick={() => setConfirmPopup(true)}>
-                <img src={ChooseIcon} alt="Elegir" />
-            </button>
+                <button className="button-table" onClick={() => setConfirmPopup(true)}>
+                    <img src={ChooseIcon} alt="Elegir" />
+                </button>
             )
         }
     ];
 
     return (
         <>
-        {!chooseMode ? (
-             <GenericSection title={'Listado de motivos para dar de baja socio'} columns={columns} data={items} popups={removePartnerReasonsPopups} actions={
-                <>
-                <div className='listbtns'>
-                    <Btn variant={'primary'} className='primary-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg'/>}/>
-                </div>
-                </>
-            }/>
-        ): (
-            <PopUp title={'Seleccionar motivo para dar de baja socio'}  className='remove-partner-reason-background'  onClick={() => setChoosePopup(false)}>
-                <Table columns={columnsChooseMode} data={items}>
-                    <div className='remove-partner-reasons-options'>
-                        <Btn className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg'/>}/>
-                    </div>
-                    {confirmPopup && (
-                        <PopUp title={'Confirmar motivo'} onClick={() => setConfirmPopup(false)}>   
-                            <ConfirmMessage text={'¿Esta seguro de elegir este motivo?'} closePopup={() => setConfirmPopup(false)}/>
-                        </PopUp>
-                    )}
-                </Table>
-            </PopUp>
-        )}
+            {!chooseMode ? (
+                <GenericSection title={'Listado de motivos para dar de baja socio'} columns={columns} data={items} popups={removePartnerReasonsPopups} actions={
+                    <>
+                        <div className='listbtns'>
+                            <Btn variant={'primary'} className='primary-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg' />} />
+                        </div>
+                    </>
+                } />
+            ) : (
+                <PopUp title={'Seleccionar motivo para dar de baja socio'} className='remove-partner-reason-background' onClick={() => setChoosePopup(false)}>
+                    <Table columns={columnsChooseMode} data={items}>
+                        <div className='remove-partner-reasons-options'>
+                            <Btn className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg' />} />
+                        </div>
+                        {confirmPopup && (
+                            <PopUp title={'Confirmar motivo'} onClick={() => setConfirmPopup(false)}>
+                                <ConfirmMessage text={'¿Esta seguro de elegir este motivo?'} closePopup={() => setConfirmPopup(false)} />
+                            </PopUp>
+                        )}
+                    </Table>
+                </PopUp>
+            )}
         </>
     )
 }

@@ -3,14 +3,14 @@ import Header from '../components/common/header/Header';
 import Footer from "../components/common/footer/Footer";
 
 export default function Layout() {
-    return (
-      <>
+  return (
+    <>
       <div className="wrapper">
-        <Header/>
+        <Header />
         <Outlet />
-        <Footer/>
+        <Footer />
       </div>
-      
-      </>
-    )
+
+    </>
+  )
 }

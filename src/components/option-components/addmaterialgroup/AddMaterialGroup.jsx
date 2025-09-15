@@ -8,26 +8,26 @@ import PopUp from '../../common/popup-table/PopUp';
 import ConfirmMessage from '../../common/confirmMessage/ConfirmMessage';
 import { useEffect } from 'react';
 
-export default function AddMaterialGroup({method, createItem, updateItem, getItemGroup, getMaterialItem, items, itemIdSelected }) {
+export default function AddMaterialGroup({ method, createItem, updateItem, getItemGroup, getMaterialItem, items, itemIdSelected }) {
   const [selectedIds, setSelectedIds] = useState([]);
   const [confirmSaveChanges, setConfirmSaveChangesPopup] = useState(false);
   const [group, setGroup] = useState('');
   const [amount, setAmount] = useState('');
-  
-   useEffect(() => {
-     if(method === 'update') {
-       let materialsData = getItemGroup(itemIdSelected);
 
-       if(materialsData && materialsData.materials) {
+  useEffect(() => {
+    if (method === 'update') {
+      let materialsData = getItemGroup(itemIdSelected);
+
+      if (materialsData && materialsData.materials) {
         let materialsId = materialsData.materials.map((material) => material.id);
 
         setSelectedIds(materialsId);
-       }
-     }
-     else {
-       setSelectedIds([]);
-     }
-   }, [method, itemIdSelected]);
+      }
+    }
+    else {
+      setSelectedIds([]);
+    }
+  }, [method, itemIdSelected]);
 
   function handleAddItem() {
 
@@ -54,7 +54,7 @@ export default function AddMaterialGroup({method, createItem, updateItem, getIte
       materials: materials
     }
 
-    updateItem(itemIdSelected, data);   
+    updateItem(itemIdSelected, data);
   }
 
 
@@ -85,48 +85,48 @@ export default function AddMaterialGroup({method, createItem, updateItem, getIte
 
   return (
     <>
-        <div className='add-material-container'>
-          <div className='main-author-books'>
-            <div className='add-loan-form-inputs add-material-inputs'>
-              <div className='add-loan-retire-date input'>
-                <label>Grupo <span className='required'>*</span></label>
-                <input type='text' value={group} onChange={(e) => setGroup(e.target.value)}/>
-              </div>
-              <div className='add-loan-retire-date input'>
-                <label>Cantidad <span className='required'>*</span></label>
-                <input type='number' value={amount} onChange={(e) => setAmount(e.target.value)}/>
-              </div>
+      <div className='add-material-container'>
+        <div className='main-author-books'>
+          <div className='add-loan-form-inputs add-material-inputs'>
+            <div className='add-loan-retire-date input'>
+              <label>Grupo <span className='required'>*</span></label>
+              <input type='text' value={group} onChange={(e) => setGroup(e.target.value)} />
             </div>
-            <div className='author-books-title'>
-              <h3>Tipo de material disponible <span className='required'>*</span></h3>
-            </div>
-            <div className='materials-group'>
-                <div className='group-table'>   
-                    <Table columns={materialColumns} data={items} />
-                </div>
-            </div>
-            <div className='save-changes-lend-books'>
-                  <Btn variant={'primary'} text={'Guardar'} onClick={() => {
-                    setConfirmSaveChangesPopup(true)
-                    }} icon={<img src={SaveIcon} alt='saveIconButton'/> }/>
+            <div className='add-loan-retire-date input'>
+              <label>Cantidad <span className='required'>*</span></label>
+              <input type='number' value={amount} onChange={(e) => setAmount(e.target.value)} />
             </div>
           </div>
-          {confirmSaveChanges && (
-            <PopUp title='Grupo de material' onClick={() => setConfirmSaveChangesPopup(false)}>
-              <ConfirmMessage text={'¿Está seguro de guardar el nuevo grupo?'} closePopup={() => setConfirmSaveChangesPopup(false)} onConfirm={() => {
-                if(method === 'add') {
-                  handleAddItem();
-                }
-                else if(method === 'update') {
-                  handleUpdateItem();
-                }
-
-                setConfirmSaveChangesPopup(false);
-                }
-                }/>
-            </PopUp>
-          )}
+          <div className='author-books-title'>
+            <h3>Tipo de material disponible <span className='required'>*</span></h3>
+          </div>
+          <div className='materials-group'>
+            <div className='group-table'>
+              <Table columns={materialColumns} data={items} />
+            </div>
+          </div>
+          <div className='save-changes-lend-books'>
+            <Btn variant={'primary'} text={'Guardar'} onClick={() => {
+              setConfirmSaveChangesPopup(true)
+            }} icon={<img src={SaveIcon} alt='saveIconButton' />} />
+          </div>
         </div>
+        {confirmSaveChanges && (
+          <PopUp title='Grupo de material' onClick={() => setConfirmSaveChangesPopup(false)}>
+            <ConfirmMessage text={'¿Está seguro de guardar el nuevo grupo?'} closePopup={() => setConfirmSaveChangesPopup(false)} onConfirm={() => {
+              if (method === 'add') {
+                handleAddItem();
+              }
+              else if (method === 'update') {
+                handleUpdateItem();
+              }
+
+              setConfirmSaveChangesPopup(false);
+            }
+            } />
+          </PopUp>
+        )}
+      </div>
 
     </>
   );

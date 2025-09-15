@@ -1,16 +1,16 @@
-  export const listOptions = [
+export const listOptions = [
   { label: 'Núm-Apey-Nomb-Direc-Tel-Cuotas-LPend-FInsc', value: 'TypeOne' },
   { label: 'Núm-Apey-Nomb-Direc-Tel-Estado-FInsc', value: 'TypeTwo' },
   { label: 'Núm-Apey-Nomb-Direc-Tel-FBaja-Motivo', value: 'TypeThree' },
   { label: 'Núm-Apey-Nomb-Direc-Tel-Present-X-FInsc', value: 'TypeFour' }
-  ];
+];
 
-  export const feesBetweenDatesListOptions = [
+export const feesBetweenDatesListOptions = [
   { label: 'Listado de cuotas pagas por categoria', value: 'TypeOneFees' },
   { label: 'Cuotas por letra y categoria', value: 'TypeTwoFees' },
-  ];
+];
 
-  export const sortOptions = [
+export const sortOptions = [
   { label: 'Apellido - Nombre', value: 'lastNameFirstName' },
   { label: 'Cantidad de cuotas impagas', value: 'unpaidFees' },
   { label: 'Cantidad de libros pendientes', value: 'pendingBooks' },
@@ -19,9 +19,9 @@
   { label: 'Fecha Nacimiento', value: 'birthDate' },
   { label: 'Motivo Baja', value: 'deactivationReason' },
   { label: 'Número de Socio', value: 'memberNumber' }
-  ];
+];
 
-  export const sortOptionsLostBooks = [
+export const sortOptionsLostBooks = [
   { label: 'Apellido del Socio', value: 'memberLastName' },
   { label: 'Código del Libro', value: 'bookCode' },
   { label: 'Fecha de Pérdida', value: 'lossDate' },
@@ -96,11 +96,11 @@ export const columnsByType = {
   ],
 
   TypeOneFees: [
-  { header: 'Número de Socio', accessor: 'memberNumber' },
-  { header: 'Apellido', accessor: 'lastName' },
-  { header: 'Nombre', accessor: 'firstName' },
-  { header: 'Monto', accessor: 'amount' },
-  { header: 'Cantidad de Cuotas', accessor: 'installments' }
+    { header: 'Número de Socio', accessor: 'memberNumber' },
+    { header: 'Apellido', accessor: 'lastName' },
+    { header: 'Nombre', accessor: 'firstName' },
+    { header: 'Monto', accessor: 'amount' },
+    { header: 'Cantidad de Cuotas', accessor: 'installments' }
   ],
   TypeTwoFees: [
     { header: 'Letra', accessor: 'letter' },
@@ -119,23 +119,23 @@ export const columnsByType = {
     { header: 'Fecha prevista', accessor: 'expectedDate' },
   ],
   LoanListingReturnDate: [
-      { header: 'Titulo', accessor: 'bookTitle' },
-      { header: 'Codigo', accessor: 'bookCode' },
-      { header: 'Numero Socio', accessor: 'partnerNumber' },
-      { header: 'Nombre Socio', accessor: 'partnerName' },
-      { header: 'Direccion', accessor: 'partnerAdress' },
-      { header: 'Fecha retiro', accessor: 'retiredDate' },
-      { header: 'Fecha prevista', accessor: 'expectedDate' },   
-      { header: 'Fecha devolución', accessor: 'returnedDate' },   
-  ],  
+    { header: 'Titulo', accessor: 'bookTitle' },
+    { header: 'Codigo', accessor: 'bookCode' },
+    { header: 'Numero Socio', accessor: 'partnerNumber' },
+    { header: 'Nombre Socio', accessor: 'partnerName' },
+    { header: 'Direccion', accessor: 'partnerAdress' },
+    { header: 'Fecha retiro', accessor: 'retiredDate' },
+    { header: 'Fecha prevista', accessor: 'expectedDate' },
+    { header: 'Fecha devolución', accessor: 'returnedDate' },
+  ],
   LoanListingPerPartner: [
-      { header: 'Titulo', accessor: 'bookTitle' },
-      { header: 'Codigo', accessor: 'bookCode' },
-      { header: 'Numero Socio', accessor: 'partnerNumber' },
-      { header: 'Nombre Socio', accessor: 'partnerName' },
-      { header: 'Direccion particular', accessor: 'partnerPhone' },
-      { header: 'Telefono particular', accessor: 'retiredDate' },
-      { header: 'Cantidad libros', accessor: 'bookAmount' },       
+    { header: 'Titulo', accessor: 'bookTitle' },
+    { header: 'Codigo', accessor: 'bookCode' },
+    { header: 'Numero Socio', accessor: 'partnerNumber' },
+    { header: 'Nombre Socio', accessor: 'partnerName' },
+    { header: 'Direccion particular', accessor: 'partnerPhone' },
+    { header: 'Telefono particular', accessor: 'retiredDate' },
+    { header: 'Cantidad libros', accessor: 'bookAmount' },
   ]
 
 };
@@ -187,7 +187,7 @@ export const dataByType = {
       pendingBooks: 2,
       registrationDate: '30/09/2021'
     },
-        {
+    {
       memberCodeSurname: '1297 VILLAGRESE',
       firstName: 'Alicia',
       address: 'Venezuela 44',
@@ -232,7 +232,7 @@ export const dataByType = {
       pendingBooks: 2,
       registrationDate: '30/09/2021'
     },
-        {
+    {
       memberCodeSurname: '1297 VILLAGRESE',
       firstName: 'Alicia',
       address: 'Venezuela 44',
@@ -277,7 +277,7 @@ export const dataByType = {
       pendingBooks: 2,
       registrationDate: '30/09/2021'
     },
-        {
+    {
       memberCodeSurname: '1297 VILLAGRESE',
       firstName: 'Alicia',
       address: 'Venezuela 44',
@@ -322,7 +322,7 @@ export const dataByType = {
       pendingBooks: 2,
       registrationDate: '30/09/2021'
     },
-        {
+    {
       memberCodeSurname: '1297 VILLAGRESE',
       firstName: 'Alicia',
       address: 'Venezuela 44',
@@ -367,7 +367,7 @@ export const dataByType = {
       pendingBooks: 2,
       registrationDate: '30/09/2021'
     },
-        {
+    {
       memberCodeSurname: '1297 VILLAGRESE',
       firstName: 'Alicia',
       address: 'Venezuela 44',
@@ -412,7 +412,7 @@ export const dataByType = {
       pendingBooks: 2,
       registrationDate: '30/09/2021'
     },
-        {
+    {
       memberCodeSurname: '1310 GÓMEZ',
       firstName: 'Laura',
       address: 'Belgrano 55',
@@ -439,7 +439,7 @@ export const dataByType = {
       pendingBooks: 2,
       registrationDate: '30/09/2021'
     },
-        {
+    {
       memberCodeSurname: '1310 GÓMEZ',
       firstName: 'Laura',
       address: 'Belgrano 55',
@@ -466,7 +466,7 @@ export const dataByType = {
       pendingBooks: 2,
       registrationDate: '30/09/2021'
     },
-    
+
   ],
 
   TypeTwo: [
@@ -659,11 +659,11 @@ export const dataByType = {
 
   TypeOneFees: [
     {
-    memberNumber: '14396',
-    lastName: 'AERUANTE',
-    firstName: 'Lucrecia',
-    amount: '6300.00 €',
-    installments: 2
+      memberNumber: '14396',
+      lastName: 'AERUANTE',
+      firstName: 'Lucrecia',
+      amount: '6300.00 €',
+      installments: 2
     },
     {
       memberNumber: '10393',
@@ -803,68 +803,68 @@ export const dataByType = {
   ],
 
   LoanListingPhone: [
-  {
-    bookTitle: 'El principito',
-    bookCode: 'BK-00012',
-    partnerNumber: '123',
-    partnerName: 'García Ana',
-    partnerPhone: '2995526739',
-    retiredDate: '04/07/2025',
-    expectedDate: '06/07/2025'
-  },
-  {
-    bookTitle: 'Cien años de soledad',
-    bookCode: 'BK-00045',
-    partnerNumber: '456',
-    partnerName: 'Pérez Carlos',
-    partnerPhone: '2994432187',
-    retiredDate: '01/07/2025',
-    expectedDate: '08/07/2025'
-  }
-],
+    {
+      bookTitle: 'El principito',
+      bookCode: 'BK-00012',
+      partnerNumber: '123',
+      partnerName: 'García Ana',
+      partnerPhone: '2995526739',
+      retiredDate: '04/07/2025',
+      expectedDate: '06/07/2025'
+    },
+    {
+      bookTitle: 'Cien años de soledad',
+      bookCode: 'BK-00045',
+      partnerNumber: '456',
+      partnerName: 'Pérez Carlos',
+      partnerPhone: '2994432187',
+      retiredDate: '01/07/2025',
+      expectedDate: '08/07/2025'
+    }
+  ],
 
-LoanListingReturnDate: [
-  {
-    bookTitle: 'El principito',
-    bookCode: 'BK-00012',
-    partnerNumber: '123',
-    partnerName: 'García Ana',
-    partnerAdress: 'Venezuela 44',
-    retiredDate: '04/07/2025',
-    expectedDate: '06/07/2025',
-    returnedDate: '06/07/2025'
-  },
-  {
-    bookTitle: 'Cien años de soledad',
-    bookCode: 'BK-00045',
-    partnerNumber: '456',
-    partnerName: 'Pérez Carlos',
-    partnerAdress: 'San Martín 102',
-    retiredDate: '01/07/2025',
-    expectedDate: '08/07/2025',
-    returnedDate: '07/07/2025'
-  }
-],
+  LoanListingReturnDate: [
+    {
+      bookTitle: 'El principito',
+      bookCode: 'BK-00012',
+      partnerNumber: '123',
+      partnerName: 'García Ana',
+      partnerAdress: 'Venezuela 44',
+      retiredDate: '04/07/2025',
+      expectedDate: '06/07/2025',
+      returnedDate: '06/07/2025'
+    },
+    {
+      bookTitle: 'Cien años de soledad',
+      bookCode: 'BK-00045',
+      partnerNumber: '456',
+      partnerName: 'Pérez Carlos',
+      partnerAdress: 'San Martín 102',
+      retiredDate: '01/07/2025',
+      expectedDate: '08/07/2025',
+      returnedDate: '07/07/2025'
+    }
+  ],
 
-LoanListingPerPartner: [
-  {
-    bookTitle: 'El principito',
-    bookCode: 'BK-00012',
-    partnerNumber: '123',
-    partnerName: 'García Ana',
-    partnerPhone: '2995526739',
-    retiredDate: '04/07/2025',
-    bookAmount: 1
-  },
-  {
-    bookTitle: 'Cien años de soledad',
-    bookCode: 'BK-00045',
-    partnerNumber: '456',
-    partnerName: 'Pérez Carlos',
-    partnerPhone: '2994432187',
-    retiredDate: '01/07/2025',
-    bookAmount: 2
-  }
-]
+  LoanListingPerPartner: [
+    {
+      bookTitle: 'El principito',
+      bookCode: 'BK-00012',
+      partnerNumber: '123',
+      partnerName: 'García Ana',
+      partnerPhone: '2995526739',
+      retiredDate: '04/07/2025',
+      bookAmount: 1
+    },
+    {
+      bookTitle: 'Cien años de soledad',
+      bookCode: 'BK-00045',
+      partnerNumber: '456',
+      partnerName: 'Pérez Carlos',
+      partnerPhone: '2994432187',
+      retiredDate: '01/07/2025',
+      bookAmount: 2
+    }
+  ]
 
 };

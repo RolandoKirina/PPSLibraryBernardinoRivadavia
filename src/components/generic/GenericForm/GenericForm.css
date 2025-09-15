@@ -40,7 +40,7 @@
 /* Layout para filas (array de arrays) */
 .generic-inputs-width.row-layout .input-row {
   display: flex;
-  
+
   align-items: center;
   gap: 2em;
   width: 100%;
@@ -68,14 +68,14 @@
 }
 
 /* Focus label */
-.generic-inputs-width .input:has(> input:focus) > label {
+.generic-inputs-width .input:has(> input:focus)>label {
   color: var(--secondary-light-2);
 }
 
 /* Inputs y selects */
 .generic-inputs-width input,
 .generic-inputs-width select {
-  
+
   height: 2.4em;
   margin-top: 0.5em;
   padding: 0 0.7em;
@@ -145,7 +145,7 @@
 
 
 .generic-inputs-width input[type="checkbox"] {
-  
+
   width: 18px;
   height: 18px;
   margin-right: 0.5em;

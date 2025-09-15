@@ -69,7 +69,7 @@ export default function LoanFilter() {
               </label>
             ))}
           </div>
-          
+
           {authMock.role === 'admin' && (
             <div className="loan-form-checkbox-group">
               <h4>Tipo de material retirado</h4>
@@ -112,7 +112,7 @@ export default function LoanFilter() {
               )}
             </div>
           )}
-          
+
 
           <div className="loan-form-input-group">
             <h4>Fecha de retiro</h4>
@@ -139,7 +139,7 @@ export default function LoanFilter() {
                 <input type="checkbox" name="onlyActiveMembers" checked={formData.onlyActiveMembers} onChange={handleChange} />
                 Solo los activos
               </label>
-            </div>           
+            </div>
           )}
 
 

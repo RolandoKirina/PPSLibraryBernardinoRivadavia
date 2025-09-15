@@ -4,21 +4,21 @@ import { useState, useEffect } from 'react';
 
 
 export default function Pagination({
- totalItems,
+  totalItems,
   itemsPerPage,
   currentPage,
   onPageChange,
   buttonsPerBlock = 4
-}   
+}
 ) {
- const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
   const [paginationBlock, setPaginationBlock] = useState(0);
 
   useEffect(() => {
-      const newBlock = Math.floor((currentPage - 1) / buttonsPerBlock);
-      setPaginationBlock(newBlock);
-    }, [currentPage, buttonsPerBlock]);
-    
+    const newBlock = Math.floor((currentPage - 1) / buttonsPerBlock);
+    setPaginationBlock(newBlock);
+  }, [currentPage, buttonsPerBlock]);
+
   const startPage = paginationBlock * buttonsPerBlock + 1;
   const endPage = Math.min(startPage + buttonsPerBlock - 1, totalPages);
   const handlePrevBlock = () => {
@@ -32,7 +32,7 @@ export default function Pagination({
       onPageChange(endPage + 1);
     }
   };
- 
+
   return (
     <div className="pagination">
       <div className="pagination-options">

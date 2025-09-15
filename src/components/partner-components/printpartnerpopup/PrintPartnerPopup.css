@@ -1,9 +1,9 @@
-
 .print-partners-container {
     width: 100%;
-    display: flex;   
-    max-height: 75vh;         /* Ajustá según el diseño */
-    overflow-y: auto; 
+    display: flex;
+    max-height: 75vh;
+    /* Ajustá según el diseño */
+    overflow-y: auto;
     position: relative;
 }
 
@@ -13,7 +13,7 @@
     justify-content: center;
     align-items: center;
     height: 100%;
-    
+
 }
 
 .partner-list-content {
@@ -79,7 +79,7 @@
     border-radius: 0.8em;
 }
 
-.partner-list-filter-option .filter-options .input:has(> select:focus) > label {
+.partner-list-filter-option .filter-options .input:has(> select:focus)>label {
     color: var(--secondary-light-2);
 }
 
@@ -101,7 +101,7 @@
 }
 
 .birthDate-checkbox div label input {
-   margin-right: 0.2em;
+    margin-right: 0.2em;
 }
 
 .registration-resignation div span {
@@ -114,7 +114,7 @@
 }
 
 #cduCodeMin {
-    width: 7em;    
+    width: 7em;
     margin-right: 1em;
 }
 
@@ -124,11 +124,12 @@
 
 .generate-list-popup-size {
     width: 80%;
-    max-height: 85vh;         /* Ajustá según el diseño */
-    overflow-y: auto; 
+    max-height: 85vh;
+    /* Ajustá según el diseño */
+    overflow-y: auto;
 }
 
-.partner-list-filter-option .filter-options .input  .exclude {
+.partner-list-filter-option .filter-options .input .exclude {
     color: var(--white);
 }
 
@@ -157,4 +158,3 @@
     overflow-y: auto;
     top: 0;
 }
-

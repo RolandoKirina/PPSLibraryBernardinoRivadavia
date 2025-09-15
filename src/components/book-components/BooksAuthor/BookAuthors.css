@@ -3,7 +3,8 @@
     justify-content: space-evenly;
     width: 60em;
 }
-.signature{
+
+.signature {
     margin-top: 1em;
     padding: 0.5em;
     width: 100%;
@@ -11,9 +12,9 @@
     background-color: var(--primary);
     border-radius: 0.5em;
     border: 1px solid var(--white);
-    
+
 }
 
-.signature p{
+.signature p {
     margin-top: 0.5em;
 }

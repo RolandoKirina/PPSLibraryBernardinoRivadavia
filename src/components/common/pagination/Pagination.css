@@ -1,27 +1,29 @@
-.pagination { 
+.pagination {
     width: 100%;
     display: flex;
     justify-content: flex-start;
-     flex-wrap: wrap;
-     box-sizing: border-box;
-  
+    flex-wrap: wrap;
+    box-sizing: border-box;
+
 }
 
 
 .pagination-options {
     display: flex;
     align-items: center;
-      flex-wrap: wrap;
-      width: 100%;
+    flex-wrap: wrap;
+    width: 100%;
 
 }
-.number-buttons{
+
+.number-buttons {
     display: flex;
-  
-  max-width: 100%;
-  box-sizing: border-box;
+
+    max-width: 100%;
+    box-sizing: border-box;
 }
-.number-buttons button:last-child{
+
+.number-buttons button:last-child {
     border-right: 0.15em solid black;
 }
 
@@ -38,8 +40,9 @@
     transition: background-color 0.3s ease;
 }
 
-.number-buttons button:hover , .number-buttons button.next-button:hover {
-    background-color: var(--secondary-hover); 
+.number-buttons button:hover,
+.number-buttons button.next-button:hover {
+    background-color: var(--secondary-hover);
 }
 
 .number-buttons button.active {

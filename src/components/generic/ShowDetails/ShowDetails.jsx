@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Accordion from '../accordion/Accordion';
 
 export default function ShowDetails({ data, isPopup, detailsData, titleText }) {
-  
+
   function fillDetailsWithData(detailsData, data) {
     if (!data) return detailsData;
 
@@ -32,25 +32,25 @@ export default function ShowDetails({ data, isPopup, detailsData, titleText }) {
       )
     );
   }
-const renderFieldValue = (value, subfields) => {
-  if (!value) return '—';
+  const renderFieldValue = (value, subfields) => {
+    if (!value) return '—';
 
-  if (Array.isArray(value)) {
-    return (
-      <ul>
-        {value.map((item, index) => (
-          <li key={index}>
-            {subfields
-              ? subfields.map(({ key, label }) => `${label}: ${item[key]}`).join(' ')
-              : Object.values(item).join(' ')}
-          </li>
-        ))}
-      </ul>
-    );
-  }
+    if (Array.isArray(value)) {
+      return (
+        <ul>
+          {value.map((item, index) => (
+            <li key={index}>
+              {subfields
+                ? subfields.map(({ key, label }) => `${label}: ${item[key]}`).join(' ')
+                : Object.values(item).join(' ')}
+            </li>
+          ))}
+        </ul>
+      );
+    }
 
-  return String(value);
-};
+    return String(value);
+  };
 
 
 
@@ -76,11 +76,11 @@ const renderFieldValue = (value, subfields) => {
                 <div className="items-info-details" key={rowIndex}>
                   {row.map((item, itemIndex) => (
                     <div className="item-details" key={itemIndex}>
-                    <div>
-                       <span>{item.label}</span>
-                         <div>{renderFieldValue(item.value, item.subfields)}</div>      
-                        </div>
+                      <div>
+                        <span>{item.label}</span>
+                        <div>{renderFieldValue(item.value, item.subfields)}</div>
                       </div>
+                    </div>
                   ))}
                 </div>
               ))}

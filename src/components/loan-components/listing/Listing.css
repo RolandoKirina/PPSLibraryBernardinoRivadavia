@@ -38,10 +38,10 @@
 }
 
 .separator {
-  height: 1em;
-  border-top: 0.15em dashed var(--white);
-  width: 100%;
-  margin-top: 0.5em;
+    height: 1em;
+    border-top: 0.15em dashed var(--white);
+    width: 100%;
+    margin-top: 0.5em;
 }
 
 .rows-info {

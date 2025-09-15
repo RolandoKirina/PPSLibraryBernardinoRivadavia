@@ -14,19 +14,19 @@ export default function PartnersBooks() {
 
         formData.forEach((value, key) => {
             if (data[key]) {
-            if (Array.isArray(data[key])) {
-                data[key].push(value);
+                if (Array.isArray(data[key])) {
+                    data[key].push(value);
+                } else {
+                    data[key] = [data[key], value];
+                }
             } else {
-                data[key] = [data[key], value];
-            }
-            } else {
-            data[key] = value;
+                data[key] = value;
             }
         });
 
         setFormValues(data);
         console.log("Formulario:", data);
-        };
+    };
 
     return (
         <>
@@ -47,7 +47,7 @@ export default function PartnersBooks() {
                                     <input type="date" name="dateTo" id="dateTo" />
                                 </div>
                             </div>
-            
+
                         </div>
 
                         <div className='partners-books-filter-result'>
@@ -56,28 +56,28 @@ export default function PartnersBooks() {
                             </div>
                             <div className='books-partners-result'>
                                 <div className='result'>
-                                <div className='result-title'>
-                                    <img src={bookIcon} alt='book-icon' />
-                                    <h4>Libros</h4>
-                                </div>
-                                <div className='result-value'>
-                                    <span>5</span>
-                                </div>
+                                    <div className='result-title'>
+                                        <img src={bookIcon} alt='book-icon' />
+                                        <h4>Libros</h4>
+                                    </div>
+                                    <div className='result-value'>
+                                        <span>5</span>
+                                    </div>
                                 </div>
                                 <div className='result'>
-                                <div className='result-title'>
-                                    <img src={personIcon} alt='person-icon' />
-                                    <h4>Socios</h4>
-                                </div>
-                                <div className='result-value'>
-                                    <span>3</span>
-                                </div>
+                                    <div className='result-title'>
+                                        <img src={personIcon} alt='person-icon' />
+                                        <h4>Socios</h4>
+                                    </div>
+                                    <div className='result-value'>
+                                        <span>3</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <div className='partners-books-btn'>
-                        <Btn variant={'primary'} text={'Buscar'} type="submit" onClick={() => console.log('cambia el result')} />
+                            <Btn variant={'primary'} text={'Buscar'} type="submit" onClick={() => console.log('cambia el result')} />
                         </div>
                     </form>
                 </div>

@@ -1,4 +1,3 @@
-
 .author-filter {
     display: flex;
     color: var(--black);
@@ -25,7 +24,8 @@
 .author-books-background {
     background-color: var(--primary-dark-2);
 }
-.btn-new{
+
+.btn-new {
     margin-top: 1em;
     margin-left: 0em;
 }

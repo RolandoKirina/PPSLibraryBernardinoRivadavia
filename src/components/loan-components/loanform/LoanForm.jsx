@@ -17,7 +17,7 @@ import { books } from '../../../data/mocks/authors';
 import { editLoanformFields } from '../../../data/forms/LoanForms';
 import UnpaidFees from '../unpaidfees/UnpaidFees';
 
-export default function LoanForm({createLoanItem}) {
+export default function LoanForm({ createLoanItem }) {
   const [popupView, setPopupView] = useState("default");
   const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockBooksLoans, 'booksLoans');
   const [confirmSaveChangesPopup, setConfirmSaveChangesPopup] = useState(false);
@@ -31,26 +31,26 @@ export default function LoanForm({createLoanItem}) {
     books: []
   });
 
-function handleAddNewLoan() {
-  loanData.books.forEach(lendBook => {
-    createLoanItem({
-      bookCode: lendBook.bookCode,
-      bookTitle: lendBook.bookTitle,
-      partnerName: loanData.partnerName,
-      partnerNumber: loanData.partnerNumber,
-      retiredDate: loanData.retiredDate,
-      expectedDate: loanData.expectedDate,
-      retiredHour: '11:00',
-      employeeCode: loanData.employeeCode
+  function handleAddNewLoan() {
+    loanData.books.forEach(lendBook => {
+      createLoanItem({
+        bookCode: lendBook.bookCode,
+        bookTitle: lendBook.bookTitle,
+        partnerName: loanData.partnerName,
+        partnerNumber: loanData.partnerNumber,
+        retiredDate: loanData.retiredDate,
+        expectedDate: loanData.expectedDate,
+        retiredHour: '11:00',
+        employeeCode: loanData.employeeCode
+      });
     });
-  });
-}
+  }
 
   function handleAddBook(book) {
     setLoanData(prev => {
       let alreadyExists = loanData.books.some(b => b.id === book.id);
 
-      if(alreadyExists) {
+      if (alreadyExists) {
         return prev;
       }
 
@@ -67,7 +67,7 @@ function handleAddNewLoan() {
     setLoanData(prev => {
       let alreadyExists = loanData.books.some(b => b.id === book.id);
 
-      if(!alreadyExists) {
+      if (!alreadyExists) {
         return prev;
       }
 
@@ -82,88 +82,88 @@ function handleAddNewLoan() {
     )
   }
 
-    const bookshelfBooksColumns = [
-            { header: 'Codigo', accessor: 'bookCode' },
-            { header: 'Título', accessor: 'bookTitle' },
-            {
-                header: 'Agregar',
-                accessor: 'add',
-                render: (_, row) => (
-                <button type='button' className="button-table" onClick={() => handleAddBook(row)}>
-                    <img src={AddBookIcon} alt="Agregar" />
-                </button>
-                )
-            }
-    ]
+  const bookshelfBooksColumns = [
+    { header: 'Codigo', accessor: 'bookCode' },
+    { header: 'Título', accessor: 'bookTitle' },
+    {
+      header: 'Agregar',
+      accessor: 'add',
+      render: (_, row) => (
+        <button type='button' className="button-table" onClick={() => handleAddBook(row)}>
+          <img src={AddBookIcon} alt="Agregar" />
+        </button>
+      )
+    }
+  ]
 
   const columns = [
-          { header: 'Código del libro', accessor: 'bookCode' },
-          { header: 'Título', accessor: 'bookTitle' },
-    ];
-
-    const lendBooksColumns = [ //igual que mainAuthorBooksColumns pero solo se muestran 3 columnas
-              { header: 'Código del libro', accessor: 'bookCode' },
-              { header: 'Título', accessor: 'bookTitle' },
-              { header: 'Posición', accessor: 'position' },
-              {
-                  header: 'Borrar',
-                  accessor: 'delete',
-                  render: (_, row) => (
-                   <button type='button' className="button-table" onClick={() => {
-                      handleDeleteBook(row);
-                  }}>
-                      <img src={DeleteIcon} alt="Borrar" />
-                  </button>
-                  )
-              }
+    { header: 'Código del libro', accessor: 'bookCode' },
+    { header: 'Título', accessor: 'bookTitle' },
   ];
 
-const handleChange = (e) => {
-  const { name, value } = e.target;
-
-  setLoanData(prev => {
-    let updated = { ...prev, [name]: value };
-
-    // Al cambiar el tipo de préstamo, limpiar y asignar según corresponda
-    if (name === 'loanType') {
-      if (value === 'retired') {
-        // Eliminar datos del lector
-        delete updated.readerDNI;
-        delete updated.readerName;
-
-        updated = {
-          ...updated,
-          partnerName: prev.partnerName || '',
-          partnerNumber: prev.partnerNumber || '',
-          memoSearch: prev.memoSearch || ''
-        };
-      } else if (value === 'in_room') {
-        // Eliminar datos del socio
-        delete updated.partnerName;
-        delete updated.partnerNumber;
-        delete updated.memoSearch;
-
-        updated = {
-          ...updated,
-          readerDNI: prev.readerDNI || '',
-          readerName: prev.readerName || ''
-        };
-      }
+  const lendBooksColumns = [ //igual que mainAuthorBooksColumns pero solo se muestran 3 columnas
+    { header: 'Código del libro', accessor: 'bookCode' },
+    { header: 'Título', accessor: 'bookTitle' },
+    { header: 'Posición', accessor: 'position' },
+    {
+      header: 'Borrar',
+      accessor: 'delete',
+      render: (_, row) => (
+        <button type='button' className="button-table" onClick={() => {
+          handleDeleteBook(row);
+        }}>
+          <img src={DeleteIcon} alt="Borrar" />
+        </button>
+      )
     }
+  ];
 
-    console.log("Datos del préstamo:", updated);
-    return updated;
-  });
-};
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setLoanData(prev => {
+      let updated = { ...prev, [name]: value };
+
+      // Al cambiar el tipo de préstamo, limpiar y asignar según corresponda
+      if (name === 'loanType') {
+        if (value === 'retired') {
+          // Eliminar datos del lector
+          delete updated.readerDNI;
+          delete updated.readerName;
+
+          updated = {
+            ...updated,
+            partnerName: prev.partnerName || '',
+            partnerNumber: prev.partnerNumber || '',
+            memoSearch: prev.memoSearch || ''
+          };
+        } else if (value === 'in_room') {
+          // Eliminar datos del socio
+          delete updated.partnerName;
+          delete updated.partnerNumber;
+          delete updated.memoSearch;
+
+          updated = {
+            ...updated,
+            readerDNI: prev.readerDNI || '',
+            readerName: prev.readerName || ''
+          };
+        }
+      }
+
+      console.log("Datos del préstamo:", updated);
+      return updated;
+    });
+  };
 
 
   const handleExtraData = (newData) => {
-  setLoanData(prev => {
-    const updated = { ...prev, ...newData };
-    console.log("Préstamo actualizado con datos externos:", updated);
-    return updated;
-  });
-};
+    setLoanData(prev => {
+      const updated = { ...prev, ...newData };
+      console.log("Préstamo actualizado con datos externos:", updated);
+      return updated;
+    });
+  };
 
 
   return (
@@ -237,18 +237,18 @@ const handleChange = (e) => {
             </div>
 
             {loanData.loanType === 'retired' ? (
-              <SearchPartner menu={setPopupView} onDataChange={handleExtraData} loanType={'retired'} 
-              partnerData={
-                {
-                  partnerName: loanData.partnerName,
-                  partnerNumber: loanData.partnerNumber,
-                  memoSearch: loanData.memoSearch 
+              <SearchPartner menu={setPopupView} onDataChange={handleExtraData} loanType={'retired'}
+                partnerData={
+                  {
+                    partnerName: loanData.partnerName,
+                    partnerNumber: loanData.partnerNumber,
+                    memoSearch: loanData.memoSearch
+                  }
                 }
-              }
               />
             ) : (
               <Reader menu={setPopupView} onDataChange={handleExtraData} loanType={'in_room'}
-                 readerData={{
+                readerData={{
                   readerDNI: loanData.readerDNI,
                   readerName: loanData.readerName
                 }}
@@ -256,32 +256,32 @@ const handleChange = (e) => {
             )}
 
             <div className='lend-books-container'>
-                <h2 className='lend-books-title'>Libros a Prestar</h2>
+              <h2 className='lend-books-title'>Libros a Prestar</h2>
 
               <Table columns={columns} data={loanData.books}>
                 <div className='add-book-to-lend'>
-                  <Btn variant={'primary'} text={'Agregar Libro'} onClick={() => setPopupView('addBook')} icon={<img src={AddBookIcon} alt='addBookIconButton'/> }/>
+                  <Btn variant={'primary'} text={'Agregar Libro'} onClick={() => setPopupView('addBook')} icon={<img src={AddBookIcon} alt='addBookIconButton' />} />
                 </div>
               </Table>
             </div>
 
             <div className='save-changes-lend-books'>
-                <Btn type={'button'} variant={'primary'} text={'Guardar'} onClick={() => {
-                  setConfirmSaveChangesPopup(true);
+              <Btn type={'button'} variant={'primary'} text={'Guardar'} onClick={() => {
+                setConfirmSaveChangesPopup(true);
 
-                  }} icon={<img src={SaveIcon} alt='saveIconButton'/> }/>
+              }} icon={<img src={SaveIcon} alt='saveIconButton' />} />
             </div>
 
           </form>
 
-            {confirmSaveChangesPopup && (
+          {confirmSaveChangesPopup && (
             <PopUp title={'Guardar préstamo'} onClick={() => setConfirmSaveChangesPopup(false)}>
               <ConfirmMessage text={'¿Está seguro de guardar el nuevo prestamo?'} closePopup={() => setConfirmSaveChangesPopup(false)} onConfirm={() => {
                 handleAddNewLoan();
                 setConfirmSaveChangesPopup(false);
-                }}/>
+              }} />
             </PopUp>
-          )}  
+          )}
         </div>
       )}
 
@@ -296,28 +296,28 @@ const handleChange = (e) => {
             <Btn className='search-book-btn' text={'Buscar libro'} onClick={() => setPopupView('searchBook')} />
           </GenericForm> */}
 
-          <BackviewBtn menu={'default'} changeView={setPopupView}/>
+          <BackviewBtn menu={'default'} changeView={setPopupView} />
           <div className='author-books-container'>
-              <div className='library-books'>
-                <div className='author-books-title'>
-                    <h3>Libros cargados en la biblioteca</h3>
-                </div>
-                <Table columns={bookshelfBooksColumns} data={books}/>
+            <div className='library-books'>
+              <div className='author-books-title'>
+                <h3>Libros cargados en la biblioteca</h3>
+              </div>
+              <Table columns={bookshelfBooksColumns} data={books} />
             </div>
             <div className='author-books'>
-                <div className='author-books-title'>
-                    <h3>Libros de este autor</h3>
-                </div>
-                <Table columns={lendBooksColumns} data={loanData.books}/>
+              <div className='author-books-title'>
+                <h3>Libros de este autor</h3>
+              </div>
+              <Table columns={lendBooksColumns} data={loanData.books} />
 
-                {/* {method === 'update' ? (
+              {/* {method === 'update' ? (
                     <Table columns={authorBooksColumns} data={authorSelected.books}/>
                 ): (
                     <Table columns={authorBooksColumns} data={authorData.books}/>
                 )} */}
             </div>
           </div>
-          
+
         </>
       )}
 
@@ -334,7 +334,7 @@ const handleChange = (e) => {
           <GenericForm title={'Editar cuota pendiente'} fields={editLoanformFields} onSubmit={(data) => console.log('Formulario enviado:', data)} />
         </>
       )}
-      
+
     </div>
   );
 }

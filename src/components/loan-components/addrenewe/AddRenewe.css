@@ -6,8 +6,10 @@
     justify-content: space-evenly;
     height: 100%;
     background-color: var(--primary-dark-2);
-    max-height: 70vh;         /* Ajustá según el diseño */
-    overflow-y: auto;         /* Habilita el scroll vertical */
+    max-height: 70vh;
+    /* Ajustá según el diseño */
+    overflow-y: auto;
+    /* Habilita el scroll vertical */
 }
 
 .renewe-books-title {
@@ -54,7 +56,7 @@
 
 .renewe-books {
     height: 100%;
-    width: 45%;  
+    width: 45%;
 }
 
 .main-renewe-btns {
@@ -100,4 +102,3 @@
 .renewe-books-container .pagination {
     width: 100%;
 }
-

@@ -8,7 +8,7 @@ export const useEntityManager = (initialItemsEntity, nameEntity) => {
     }
     try {
       return initialItemsEntity;
-      
+
       // return JSON.parse(stored);
     } catch (error) {
       console.error("Error parsing:", error);
@@ -32,9 +32,9 @@ export const useEntityManager = (initialItemsEntity, nameEntity) => {
 
   // ➕ CREATE
   const createItem = (newItem) => {
-     const itemWithId = {
-    ...newItem,
-    id: newItem.id ?? crypto.randomUUID()
+    const itemWithId = {
+      ...newItem,
+      id: newItem.id ?? crypto.randomUUID()
     };
     setItems((prev) => [...prev, itemWithId]);
   };

@@ -10,7 +10,7 @@ import BackviewBtn from '../../common/backviewbtn/BackviewBtn';
 import SaveIcon from '../../../assets/img/save-icon.svg';
 import { books } from '../../../data/mocks/authors';
 
-export default function addRenewe({menu, selected, createReneweItem }) {
+export default function addRenewe({ menu, selected, createReneweItem }) {
   const [confirmPopup, setConfirmPopup] = useState(false);
   const [popupView, setPopupView] = useState('default');
   const [reneweData, setReneweData] = useState({
@@ -21,22 +21,22 @@ export default function addRenewe({menu, selected, createReneweItem }) {
     books: []
   })
 
-function handleSaveChanges() {
-  reneweData.books.forEach(reneweBook => {
-    createReneweItem({
-      partnerNumber: reneweData.partnerNumber,
-      partnerFullName: reneweData.partnerFullName,
-      bookTitle: reneweBook.bookTitle,
-      reneweDate: reneweData.reneweDate,
-      expectedDate: reneweData.expectedDate
+  function handleSaveChanges() {
+    reneweData.books.forEach(reneweBook => {
+      createReneweItem({
+        partnerNumber: reneweData.partnerNumber,
+        partnerFullName: reneweData.partnerFullName,
+        bookTitle: reneweBook.bookTitle,
+        reneweDate: reneweData.reneweDate,
+        expectedDate: reneweData.expectedDate
+      });
     });
-  });
-}
+  }
   function handleAddBook(book) {
     setReneweData(prev => {
       let alreadyExists = reneweData.books.some(b => b.id === book.id);
 
-      if(alreadyExists) {
+      if (alreadyExists) {
         return prev;
       }
 
@@ -53,7 +53,7 @@ function handleSaveChanges() {
     setReneweData(prev => {
       let alreadyExists = reneweData.books.some(b => b.id === book.id);
 
-      if(!alreadyExists) {
+      if (!alreadyExists) {
         return prev;
       }
 
@@ -69,7 +69,7 @@ function handleSaveChanges() {
   }
 
   function handleOnChange(e) {
-    const {name, value} = e.target;
+    const { name, value } = e.target;
 
     setReneweData(prev => ({
       ...prev,
@@ -99,7 +99,7 @@ function handleSaveChanges() {
       render: (_, row) => (
         <button type='button' className="button-table" onClick={() => {
           handleDeleteBook(row);
-          }}>
+        }}>
           <img src={DeleteIcon} alt="Borrar" />
         </button>
       )
@@ -128,8 +128,8 @@ function handleSaveChanges() {
       content: <ConfirmMessage text="¿Está seguro de confirmar los cambioss?" closePopup={() => setConfirmPopup(false)} onConfirm={() => {
         setConfirmPopup(false)
         handleSaveChanges()
-        
-      }}/>,
+
+      }} />,
       close: () => setConfirmPopup(false),
       condition: confirmPopup,
     }
@@ -145,19 +145,19 @@ function handleSaveChanges() {
           <div className='add-loan-form-inputs'>
             <div className='add-loan-retire-date input'>
               <label>Numero</label>
-              <input type='text' name='partnerNumber' value={reneweData.partnerNumber} onChange={handleOnChange}/>
+              <input type='text' name='partnerNumber' value={reneweData.partnerNumber} onChange={handleOnChange} />
             </div>
             <div className='add-loan-retire-date input'>
               <label>Apellido, Nombre</label>
-              <input type='text' name='partnerFullName' value={reneweData.partnerFullName} onChange={handleOnChange}/>
+              <input type='text' name='partnerFullName' value={reneweData.partnerFullName} onChange={handleOnChange} />
             </div>
             <div className='add-loan-retire-date input'>
               <label>Fecha reserva</label>
-              <input type='date' name='reneweDate' value={reneweData.reneweDate}  onChange={handleOnChange}/>
+              <input type='date' name='reneweDate' value={reneweData.reneweDate} onChange={handleOnChange} />
             </div>
             <div className='add-loan-retire-date input'>
               <label>Fecha promesa</label>
-              <input type='date' name='expectedDate' value={reneweData.expectedDate}  onChange={handleOnChange}/>
+              <input type='date' name='expectedDate' value={reneweData.expectedDate} onChange={handleOnChange} />
             </div>
             {/*FILTRO:  <div className='add-loan-retire-date'>
               <label>Título libro</label>

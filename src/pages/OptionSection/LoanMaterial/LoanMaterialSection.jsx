@@ -28,18 +28,18 @@ export default function LoanMaterialSection() {
         setEditPopup(false);
     }
 
-     const loanMaterialsPopups = [
+    const loanMaterialsPopups = [
         {
-        key: 'deletePopup',
-        title: 'Borrar material de préstamo',
-        className: 'delete-size-popup',
-        content: <PopUpDelete title={"Material de préstamo"} closePopup={() => setDeletePopup(false)} onConfirm={
-            () => {
-                deleteItem(selected.id)
-                setDeletePopup(false)
+            key: 'deletePopup',
+            title: 'Borrar material de préstamo',
+            className: 'delete-size-popup',
+            content: <PopUpDelete title={"Material de préstamo"} closePopup={() => setDeletePopup(false)} onConfirm={
+                () => {
+                    deleteItem(selected.id)
+                    setDeletePopup(false)
+                }
             }
-            }
-        />,
+            />,
             close: () => setDeletePopup(false),
             condition: deletePopup,
             variant: 'delete'
@@ -48,7 +48,7 @@ export default function LoanMaterialSection() {
             key: 'editPopup',
             title: 'Editar material de préstamo',
             className: '',
-            content: <GenericForm fields={loanMaterialsFields} onSubmit={(data) => handleEditItem(data)}/>,
+            content: <GenericForm fields={loanMaterialsFields} onSubmit={(data) => handleEditItem(data)} />,
             close: () => setEditPopup(false),
             condition: editPopup
         },
@@ -56,7 +56,7 @@ export default function LoanMaterialSection() {
             key: 'addPopup',
             title: 'Agregar material de préstamo',
             className: '',
-            content: <GenericForm fields={loanMaterialsFields} onSubmit={(data) => handleAddItem(data)}/>,
+            content: <GenericForm fields={loanMaterialsFields} onSubmit={(data) => handleAddItem(data)} />,
             close: () => setAddPopup(false),
             condition: addPopup
         }
@@ -69,24 +69,24 @@ export default function LoanMaterialSection() {
             header: 'Borrar',
             accessor: 'delete',
             render: (_, row) => (
-            <button className="button-table" onClick={() => {
-                setDeletePopup(true)
-                setSelected(row)
+                <button className="button-table" onClick={() => {
+                    setDeletePopup(true)
+                    setSelected(row)
                 }}>
-                <img src={DeleteIcon} alt="Borrar" />
-            </button>
+                    <img src={DeleteIcon} alt="Borrar" />
+                </button>
             )
         },
         {
             header: 'Editar',
             accessor: 'edit',
             render: (_, row) => (
-            <button className="button-table"  onClick={() => {
-                setEditPopup(true)
-                setSelected(row);
+                <button className="button-table" onClick={() => {
+                    setEditPopup(true)
+                    setSelected(row);
                 }}>
-                <img src={EditIcon} alt="Editar" />
-            </button>
+                    <img src={EditIcon} alt="Editar" />
+                </button>
             )
         }
     ];
@@ -94,8 +94,8 @@ export default function LoanMaterialSection() {
     return (
         <>
             <GenericSection title={'Listado de material en préstamo'} columns={columns} data={items} popups={loanMaterialsPopups} actions={
-                <Btn variant={'primary'} className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg'/>}/>
-            }/>
+                <Btn variant={'primary'} className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg' />} />
+            } />
         </>
     )
 }

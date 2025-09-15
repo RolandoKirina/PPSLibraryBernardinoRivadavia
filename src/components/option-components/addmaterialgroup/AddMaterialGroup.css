@@ -32,15 +32,16 @@
 
 .add-material-group-background {
     background-color: var(--primary-dark-2);
-    max-height: 90vh;         /* Ajustá según el diseño */
-    overflow-y: auto;         /* Habilita el scroll vertical */
+    max-height: 90vh;
+    /* Ajustá según el diseño */
+    overflow-y: auto;
+    /* Habilita el scroll vertical */
 }
 
 .add-material-inputs {
     width: 100%;
 }
 
-.add-material-container .input:has(> input:focus) > label {
+.add-material-container .input:has(> input:focus)>label {
     color: var(--secondary-light-2);
 }
-

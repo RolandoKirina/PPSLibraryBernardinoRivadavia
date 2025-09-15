@@ -77,27 +77,27 @@ export const updateLendBookFields = [
 
 
 export const editLoanformFields = [
-    {
-        label: 'Fecha de Retiro',
-        name: 'retiredDate',
-        type: 'date'
-    },
-    {
-        label: 'Fecha Prevista',
-        name: 'expectedDate',
-        type: 'date'
-    },
-    {
-        label: 'Fecha de Devolución',
-        name: 'returnDate',
-        type: 'date'
-    },
-    {
-        label: 'Empleado Responsable',
-        name: 'employee',
-        type: 'text'
-    }
-    ];
+  {
+    label: 'Fecha de Retiro',
+    name: 'retiredDate',
+    type: 'date'
+  },
+  {
+    label: 'Fecha Prevista',
+    name: 'expectedDate',
+    type: 'date'
+  },
+  {
+    label: 'Fecha de Devolución',
+    name: 'returnDate',
+    type: 'date'
+  },
+  {
+    label: 'Empleado Responsable',
+    name: 'employee',
+    type: 'text'
+  }
+];
 
 export const reneweLoanFields = [
   {

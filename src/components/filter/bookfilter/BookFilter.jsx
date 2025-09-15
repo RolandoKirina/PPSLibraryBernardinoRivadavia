@@ -4,12 +4,12 @@ export default function BookFilter() {
 
   return (
     <aside className="book-filter-aside">
-         
-      
+
+
       <div className="book-filter-form">
-        
+
         <form>
-           <h3 className='titleh3'>Filtro de libros</h3>
+          <h3 className='titleh3'>Filtro de libros</h3>
           <div className="book-form-input-group">
             <label>Autor </label>
             <input type="text" />
@@ -20,7 +20,7 @@ export default function BookFilter() {
             <input type="text" />
           </div>
 
-           <div className="book-form-input-group cdu">
+          <div className="book-form-input-group cdu">
             <label className='labelinput'>Código de CDU </label>
 
             <div className='content'>
@@ -31,25 +31,25 @@ export default function BookFilter() {
             </div>
           </div>
 
-           <div className="book-form-input-group">
+          <div className="book-form-input-group">
             <label>Codigo de signatura </label>
             <input type="text" />
-            </div>
+          </div>
 
           <h3 className='titleh3'>Edición</h3>
 
-            <div className="book-form-input-group">
-              <label>Año </label>
-              <input type="date" />
-            </div>
+          <div className="book-form-input-group">
+            <label>Año </label>
+            <input type="date" />
+          </div>
 
 
-            <div className="book-form-input-group">
-              <label>Numero </label>
-              <input type="number" />
-            </div>
+          <div className="book-form-input-group">
+            <label>Numero </label>
+            <input type="number" />
+          </div>
 
-    
+
         </form>
       </div>
     </aside>

@@ -28,37 +28,37 @@ export default function PartnerCategorySection() {
         updateItem(selected.id, data);
         setEditPopup(false);
     }
-     const authorsPopups = [
-                {
-                    key: 'deletePopup',
-                    title: 'Borrar categoria de socio',
-                    className: 'delete-size-popup',
-                    content: <PopUpDelete title={"Categoria de socio"} closePopup={() => setDeletePopup(false)} onConfirm={
+    const authorsPopups = [
+        {
+            key: 'deletePopup',
+            title: 'Borrar categoria de socio',
+            className: 'delete-size-popup',
+            content: <PopUpDelete title={"Categoria de socio"} closePopup={() => setDeletePopup(false)} onConfirm={
                 () => {
                     deleteItem(selected.id)
                     setDeletePopup(false)
                 }
             } />,
-                    close: () => setDeletePopup(false),
-                    condition: deletePopup,
-                    variant: 'delete'
-                },
-                {
-                    key: 'editPopup',
-                    title: 'Editar categoria de socio',
-                    className: '',
-                    content: <GenericForm fields={partnerCategoryFields} onSubmit={(data) => handleEditItem(data)}/>,
-                    close: () => setEditPopup(false),
-                    condition: editPopup
-                },
-                {
-                    key: 'addPopup',
-                    title: 'Agregar categoria de socio',
-                    className: '',
-                    content: <GenericForm fields={partnerCategoryFields} onSubmit={(data) => handleAddItem(data)}/>,
-                    close: () => setAddPopup(false),
-                    condition: addPopup
-                }
+            close: () => setDeletePopup(false),
+            condition: deletePopup,
+            variant: 'delete'
+        },
+        {
+            key: 'editPopup',
+            title: 'Editar categoria de socio',
+            className: '',
+            content: <GenericForm fields={partnerCategoryFields} onSubmit={(data) => handleEditItem(data)} />,
+            close: () => setEditPopup(false),
+            condition: editPopup
+        },
+        {
+            key: 'addPopup',
+            title: 'Agregar categoria de socio',
+            className: '',
+            content: <GenericForm fields={partnerCategoryFields} onSubmit={(data) => handleAddItem(data)} />,
+            close: () => setAddPopup(false),
+            condition: addPopup
+        }
     ];
 
     const columns = [
@@ -68,24 +68,24 @@ export default function PartnerCategorySection() {
             header: 'Borrar',
             accessor: 'delete',
             render: (_, row) => (
-            <button className="button-table" onClick={() => {
-                setDeletePopup(true)
-                setSelected(row)
+                <button className="button-table" onClick={() => {
+                    setDeletePopup(true)
+                    setSelected(row)
                 }}>
-                <img src={DeleteIcon} alt="Borrar" />
-            </button>
+                    <img src={DeleteIcon} alt="Borrar" />
+                </button>
             )
         },
         {
             header: 'Editar',
             accessor: 'edit',
             render: (_, row) => (
-            <button className="button-table"  onClick={() => {
-                setEditPopup(true)
-                setSelected(row)
+                <button className="button-table" onClick={() => {
+                    setEditPopup(true)
+                    setSelected(row)
                 }}>
-                <img src={EditIcon} alt="Editar" />
-            </button>
+                    <img src={EditIcon} alt="Editar" />
+                </button>
             )
         }
     ];
@@ -93,8 +93,8 @@ export default function PartnerCategorySection() {
     return (
         <>
             <GenericSection title={'Listado de categorias de socios'} columns={columns} data={items} popups={authorsPopups} actions={
-                <Btn variant={'primary'} className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg'/>}/>
-            }/>
+                <Btn variant={'primary'} className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg' />} />
+            } />
         </>
     )
 }

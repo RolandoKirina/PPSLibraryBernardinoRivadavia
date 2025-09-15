@@ -15,15 +15,15 @@ export const BookDetail = [
     id: 2,
     title: 'Autores y publicación',
     active: false,
-     rows: [
+    rows: [
       [
         {
           label: 'Autores',
           value: 'información',
           attribute: 'authors',
           subfields: [
-          { key: 'authorName', label: 'Nombre' },
-          { key: 'nationality', label: 'Nacionalidad' }
+            { key: 'authorName', label: 'Nombre' },
+            { key: 'nationality', label: 'Nacionalidad' }
           ]
         },
         { label: 'Editorial', value: 'información', attribute: 'editorial' }

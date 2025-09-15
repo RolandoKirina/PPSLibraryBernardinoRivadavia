@@ -71,13 +71,13 @@ export default function FormEditPartner() {
 
       case "pendingbooks":
 
-      /* libros pendientes es una tabla con las columnas: 
-      Codigo de libro, titulo, fecha retiro, fecha prevista, fecha devolucion, renovacion (cantidad de renovaciones, devuelto (si/no)),
-
-      con los accesors:
-      bookCode, bookTitle, retiredDate, expectedDate, returnedDate, renewes, returned
-      
-      */
+        /* libros pendientes es una tabla con las columnas: 
+        Codigo de libro, titulo, fecha retiro, fecha prevista, fecha devolucion, renovacion (cantidad de renovaciones, devuelto (si/no)),
+  
+        con los accesors:
+        bookCode, bookTitle, retiredDate, expectedDate, returnedDate, renewes, returned
+        
+        */
         return (
           <form onSubmit={handleSubmit}>
             <Accordion

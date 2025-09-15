@@ -1,61 +1,66 @@
-body.sidebar-open { /* bloquear scroll al abrir sidebar */
+body.sidebar-open {
+  /* bloquear scroll al abrir sidebar */
   overflow: hidden;
 }
 
-.sidebar{
-    position: absolute;
-    z-index: 100;
-    background-color: var(--primary-dark-1);
-    width: 15%;
-    text-align: center;
-    height: 100vh;
-    padding: 1em;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.2);
-    transform: translateX(-100%);
-    opacity: 0;
-    transition: transform 0.4s ease, opacity 0.4s ease;
-    top: 100px; 
+.sidebar {
+  position: absolute;
+  z-index: 100;
+  background-color: var(--primary-dark-1);
+  width: 15%;
+  text-align: center;
+  height: 100vh;
+  padding: 1em;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  transform: translateX(-100%);
+  opacity: 0;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  top: 100px;
 }
 
 .sidebar-active {
   transform: translateX(0);
   opacity: 1;
-} 
-
-.sidebar ul li{
-    list-style: none;
-    color: var(--white)
 }
+
+.sidebar ul li {
+  list-style: none;
+  color: var(--white)
+}
+
 .sidebar h3 strong {
-    color: var(--accent);
+  color: var(--accent);
 }
+
 .sidebar h3 {
-    color: var(--white);
+  color: var(--white);
 }
 
-.listsidebar  li{
-    display: flex;
-    align-items: center;
-    width: 9em;
-    padding: 6%;
+.listsidebar li {
+  display: flex;
+  align-items: center;
+  width: 9em;
+  padding: 6%;
 }
 
-.iconssidebar{
-    width: 2em;
-    height: 2em;
-    margin-right: 0.5em;
+.iconssidebar {
+  width: 2em;
+  height: 2em;
+  margin-right: 0.5em;
 }
 
 .iconssidebar img {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
-.listsidebar li a{
- color:var(--white);
+
+.listsidebar li a {
+  color: var(--white);
   text-decoration: none;
 }
-.listsidebar li a:hover{
-    color:var(--accent);
+
+.listsidebar li a:hover {
+  color: var(--accent);
 }
 
 a:hover::after {
@@ -63,13 +68,13 @@ a:hover::after {
 }
 
 .listsidebar {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .sidebar-user-name {
-    padding-left: 0em;
+  padding-left: 0em;
 }
 
 .listsidebar .active-link {

@@ -14,7 +14,7 @@ export const duplicateBook = [
         name: 'ubication',
         type: 'text'
     }
-    ];
+];
 
 
 

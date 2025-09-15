@@ -1,8 +1,9 @@
 .book-ranking-container {
     width: 100%;
-    display: flex;   
-    max-height: 75vh;         /* Ajustá según el diseño */
-    overflow-y: auto; 
+    display: flex;
+    max-height: 75vh;
+    /* Ajustá según el diseño */
+    overflow-y: auto;
     position: relative;
 }
 
@@ -73,7 +74,7 @@
 
 .ranking-list-filter-option .filter-options .column-input input {
     margin-top: 0.3em;
-   
+
 }
 
 .ranking-list-filter-option .filter-options .input label {
@@ -111,6 +112,3 @@
 .ranking-list-filter-option {
     border-bottom: 0.2em solid var(--primary-dark-1);
 }
-
-
-

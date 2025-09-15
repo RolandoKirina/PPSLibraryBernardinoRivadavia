@@ -1,6 +1,6 @@
 .table {
-    width: 100%;
-    margin-bottom: 1em;
+  width: 100%;
+  margin-bottom: 1em;
 }
 
 .popup-length {
@@ -8,50 +8,59 @@
   margin-right: 0;
 }
 
-.table tbody,th{
-    font-family: 'Roboto', sans-serif;
-    color:var(--white)
+.table tbody,
+th {
+  font-family: 'Roboto', sans-serif;
+  color: var(--white)
 }
+
 .content-table {
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    flex-direction: column;
-    margin-top: 1em;
-    position: relative;
-    padding: 1em;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 1em;
+  position: relative;
+  padding: 1em;
 }
+
 .table td {
-    padding: 1.5em;
-    white-space: normal;       
-    word-break: break-word;
+  padding: 1.5em;
+  white-space: normal;
+  word-break: break-word;
 }
 
 
 .table th {
   padding: 0.5em;
 }
-.table, th, td {
-    border: 1px solid var(--table-lines);
-    border-collapse: collapse; 
-  }
+
+.table,
+th,
+td {
+  border: 1px solid var(--table-lines);
+  border-collapse: collapse;
+}
 
 .table tbody tr:nth-child(even) {
-  background-color: var(--table-color); /* fila par */
+  background-color: var(--table-color);
+  /* fila par */
 }
 
 .table tbody tr:nth-child(odd) {
-  background-color: var(--table-color-2); /* fila impar */
+  background-color: var(--table-color-2);
+  /* fila impar */
 }
 
 .button-table {
-    height: 3em;
-    width: 4em;
-    background-color: var(--primary-light-2);
-    border-radius: 0.5em;
-    border: 0;
+  height: 3em;
+  width: 4em;
+  background-color: var(--primary-light-2);
+  border-radius: 0.5em;
+  border: 0;
 }
+
 .button-table img {
   width: 70%;
   height: 60%;
@@ -61,7 +70,8 @@
   background-color: var(--primary-light);
   transition: background-color 0.30s ease-in-out;
 }
-.action-buttons{
+
+.action-buttons {
   text-align: center;
 }
 
@@ -70,22 +80,27 @@
   background-color: gray;
 }
 
-.table .tbodyPrint tr:nth-child(even), .table .tbodyPrint tr:nth-child(odd) {
+.table .tbodyPrint tr:nth-child(even),
+.table .tbodyPrint tr:nth-child(odd) {
   background-color: var(--white);
   color: black;
 }
 
-.table, th, td {
-    border: 1px solid var(--table-lines);
-    border-collapse: collapse; /* evita bordes dobles */
-  }
+.table,
+th,
+td {
+  border: 1px solid var(--table-lines);
+  border-collapse: collapse;
+  /* evita bordes dobles */
+}
 
-  .theadPrint th, .tbodyPrint td{
+.theadPrint th,
+.tbodyPrint td {
   border: 1px solid rgb(56, 56, 56);
-  }
+}
 
 
-  .table thead {
+.table thead {
   height: 5em;
-    background-color: var(--table-color)
+  background-color: var(--table-color)
 }

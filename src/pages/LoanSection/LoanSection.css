@@ -35,14 +35,15 @@ main {
 
 /* popups */
 
-.popup-delete-container{
+.popup-delete-container {
     background: var(--primary-dark-2);
     border-radius: 10px;
-    width: 50em;      /* ancho total */
+    width: 50em;
+    /* ancho total */
     height: 40em;
-      overflow-y: auto;
+    overflow-y: auto;
 }
 
 .loan-renews-size {
-  min-width: 80em;
+    min-width: 80em;
 }

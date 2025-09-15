@@ -2,22 +2,12 @@ import BookSection from './pages/BookSection/BookSection.jsx';
 import Layout from './layout/Layout';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoanSection from './pages/LoanSection/LoanSection';
-import Content from './components/common/content/Content.jsx';
-import ShowDetails from './components/generic/ShowDetails/ShowDetails.jsx';
-import Listing from './components/loan-components/listing/Listing.jsx';
-import GenericForm from './components/generic/GenericForm/GenericForm.jsx';
-//rutas importadas para evitar llenar todo de rutas similares
-import { loanFormRoutes, detailsRoutes, listingRoutes } from './data/Routes.js'; 
-import UnpaidFees from './components/loan-components/unpaidfees/UnpaidFees.jsx';
-import Renewe from './components/loan-components/renewe/Renewe.jsx';
 import AuthorSection from './pages/AuthorSection/AuthorSection.jsx';
 import PartnerCategorySection from './pages/OptionSection/PartnerCategory/PartnerCategorySection.jsx';
 import LoanMaterialSection from './pages/OptionSection/LoanMaterial/LoanMaterialSection.jsx';
 import RemovePartnerReasonSection from './pages/OptionSection/RemovePartnerReason/RemovePartnerReasonSection.jsx';
 import LoanAmountSection from './pages/OptionSection/LoanAmount/LoanAmountSection.jsx';
 import EmployeeSection from './pages/OptionSection/EmployeeSection/EmployeeSection.jsx';
-import BooksAuthor from './components/author-components/BooksAuthor/BooksAuthor.jsx';
-import Signature from './components/book-components/signature/Signature.jsx';
 import PartnerSection from './pages/PartnerSection/PartnerSection.jsx';
 import OptionSection from './pages/OptionSection/OptionSection.jsx';
 import FeeSection from './pages/FeeSection/FeeSection.jsx';
@@ -33,89 +23,29 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<Layout />}> 
-            <Route index element={<HomePage />} /> 
-            <Route path='employees' element={<EmployeeSection/>}/>
-            <Route path='login' element={<LoginSection/>}/>
-            <Route path='register' element={<RegisterSection/>}/>
-            <Route path='loans' element={<LoanSection openRenewes={false}/>}/>
-            <Route path='loans/renewes' element={<LoanSection openRenewes={true}/>}/>
-            <Route path='loans/filters/partner' element={<LoanSection openRenewes={false} pendientBooks={true}/>}/>
-            <Route path='books' element={<BookSection/>}/>
-            <Route path='partners' element={<PartnerSection/>}/>
-            <Route path='authors' element={<AuthorSection/>}/>
-            <Route path='options' element={<OptionSection />}/>
-            <Route path='options/partner-categories' element={<PartnerCategorySection/>}/>
-            <Route path='options/loan-materials' element={<LoanMaterialSection/>}/>
-            <Route path='options/remove-partner-reasons' element={<RemovePartnerReasonSection chooseMode={false}/>}/>
-            <Route path='options/loan-amount-group' element={<LoanAmountSection/>}/> 
-            {/* <Route path='options/partner-lists' element={<PartnerListSection/>}/>  */}
-            <Route path='fees' element={<FeeSection/>}/>
-
-            {loanFormRoutes.map(({ path, title, fields }, idx) => (
-              <Route
-                key={idx}
-                path={path}
-                element={
-                  <Content>
-                    <GenericForm
-                      title={title}
-                      fields={fields}
-                      onSubmit={(data) => console.log('Formulario enviado:', data)}
-                    />
-                  </Content>
-                }
-              />
-            ))}
-
-            {detailsRoutes.map(({ path, titleText, data }, idx) => (
-              <Route
-                key={idx}
-                path={path}
-                element={
-                  <Content>
-                    <ShowDetails titleText={titleText} isPopup={false} detailsData={data} />
-                  </Content>
-                }
-              />
-            ))}
-
-            {listingRoutes.map((type, idx) => (
-              <Route
-                key={idx}
-                path={`/loans/listening/${type}`}
-                element={
-                  <Content>
-                    <Listing type={type} />
-                  </Content>
-                }
-              />
-            ))}
-
-            <Route path='/loans/partner/fees' element={<Content>
-              <UnpaidFees />
-            </Content>}/>
-
-            <Route path='books/renewes' element={
-              <Content>
-                <Renewe isPopup={false} title="Listado de reservas" />
-              </Content>
-            }/> 
-
-            <Route path='books/booksauthor' element={
-              <Content>
-                <BooksAuthor />
-              </Content>
-            }/> 
-
-            <Route path='books/signature' element={
-              <Content>
-                <Signature  />
-              </Content>
-            }/> 
+          <Route path='/' element={<Layout />}>
+            <Route index element={<HomePage />} />
+            <Route path='employees' element={<EmployeeSection />} />
+            <Route path='login' element={<LoginSection />} />
+            <Route path='register' element={<RegisterSection />} />
+            <Route path='loans' element={<LoanSection openRenewes={false} />} />
+            <Route path='loans/renewes' element={<LoanSection openRenewes={true} />} />
+            {/* <Route path='loans/listening/LoanListingReturnDate' element={} />
+            <Route path='loans/listening/LoanListingPhone' element={} />
+            <Route path='loans/listening/LoanListingPerPartner' element={} /> */}
+            <Route path='loans/filters/partner' element={<LoanSection openRenewes={false} pendientBooks={true} />} />
+            <Route path='books' element={<BookSection />} />
+            <Route path='partners' element={<PartnerSection />} />
+            <Route path='authors' element={<AuthorSection />} />
+            <Route path='options' element={<OptionSection />} />
+            <Route path='options/partner-categories' element={<PartnerCategorySection />} />
+            <Route path='options/loan-materials' element={<LoanMaterialSection />} />
+            <Route path='options/remove-partner-reasons' element={<RemovePartnerReasonSection chooseMode={false} />} />
+            <Route path='options/loan-amount-group' element={<LoanAmountSection />} />
+            <Route path='fees' element={<FeeSection />} />
 
             {/* catch all dentro de Layout */}
-            <Route path="*" element={<NotFound />} /> 
+            <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
       </BrowserRouter>

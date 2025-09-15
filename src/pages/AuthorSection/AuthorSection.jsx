@@ -37,8 +37,8 @@ export default function AuthorSection() {
     function updateAuthorSelectedBooks(book) { //añadir libro a authorSelected, que son los datos de un autor seleccionado cuando se está en modo update
         let alreadyExists = selected.books.some(b => b.id === book.id);
 
-        if(!alreadyExists) {
-            
+        if (!alreadyExists) {
+
             let updatedBooks = [...selected.books, book];
 
             let updatedAuthorWithNewBook = {
@@ -51,44 +51,44 @@ export default function AuthorSection() {
             setSelected(updatedAuthorWithNewBook);
         }
     }
-    
+
     const authorsPopups = [
-            {
-                key: 'deletePopup',
-                title: 'Borrar autor',
-                className: 'delete-size-popup',
-                content: <PopUpDelete title={"Autor"} closePopup={() => setDeletePopup(false)} onConfirm={
+        {
+            key: 'deletePopup',
+            title: 'Borrar autor',
+            className: 'delete-size-popup',
+            content: <PopUpDelete title={"Autor"} closePopup={() => setDeletePopup(false)} onConfirm={
                 () => {
                     deleteAuthorItem(selected.id)
                     setDeletePopup(false)
                 }
             } />,
-                close: () => setDeletePopup(false),
-                condition: deletePopup,
-                variant: 'delete'
-            },
-            {
-                key: 'editPopup',
-                title: 'Editar autor',
-                className: 'author-books-background',
-                content: <AuthorBooks authorSelected={selected} updateAuthorSelectedBooks={updateAuthorSelectedBooks} deleteAuthorSelected={deleteAuthorSelected} method={'update'} updateAuthorItem={updateAuthorItem}/>,
-                close: () => setEditPopup(false),
-                condition: editPopup
-            },
-            {
-                key: 'addPopup',
-                title: 'Agregar autor',
-                className: 'author-books-background',
-                content: <AuthorBooks method={'add'} createAuthorItem={createAuthorItem}/>,
-                close: () => setAddPopup(false),
-                condition: addPopup
-            }
+            close: () => setDeletePopup(false),
+            condition: deletePopup,
+            variant: 'delete'
+        },
+        {
+            key: 'editPopup',
+            title: 'Editar autor',
+            className: 'author-books-background',
+            content: <AuthorBooks authorSelected={selected} updateAuthorSelectedBooks={updateAuthorSelectedBooks} deleteAuthorSelected={deleteAuthorSelected} method={'update'} updateAuthorItem={updateAuthorItem} />,
+            close: () => setEditPopup(false),
+            condition: editPopup
+        },
+        {
+            key: 'addPopup',
+            title: 'Agregar autor',
+            className: 'author-books-background',
+            content: <AuthorBooks method={'add'} createAuthorItem={createAuthorItem} />,
+            close: () => setAddPopup(false),
+            condition: addPopup
+        }
     ];
 
     let columns = [];
 
-    if(authMock.role === 'admin') {
-    columns = [
+    if (authMock.role === 'admin') {
+        columns = [
             { header: 'Nombre', accessor: 'authorName' },
             { header: 'Nacionalidad', accessor: 'nationality' },
             {
@@ -96,12 +96,12 @@ export default function AuthorSection() {
                 accessor: 'delete',
                 className: "action-buttons",
                 render: (_, row) => (
-                <button className="button-table" onClick={() => {
-                    setDeletePopup(true)
-                    setSelected(row)
+                    <button className="button-table" onClick={() => {
+                        setDeletePopup(true)
+                        setSelected(row)
                     }}>
-                    <img src={DeleteIcon} alt="Borrar" />
-                </button>
+                        <img src={DeleteIcon} alt="Borrar" />
+                    </button>
                 )
             },
             {
@@ -109,18 +109,18 @@ export default function AuthorSection() {
                 accessor: 'edit',
                 className: "action-buttons",
                 render: (_, row) => (
-                <button className="button-table"  onClick={() => {
-                    setEditPopup(true)
-                    setSelected(row);
+                    <button className="button-table" onClick={() => {
+                        setEditPopup(true)
+                        setSelected(row);
                     }}>
-                    <img src={EditIcon} alt="Editar" />
-                </button>
+                        <img src={EditIcon} alt="Editar" />
+                    </button>
                 )
             }
         ];
     }
-    else if(authMock.role === 'reader') {
-    columns = [
+    else if (authMock.role === 'reader') {
+        columns = [
             { header: 'Nombre', accessor: 'authorName' },
             { header: 'Nacionalidad', accessor: 'nationality' },
             {
@@ -128,40 +128,40 @@ export default function AuthorSection() {
                 accessor: 'edit',
                 className: "action-buttons",
                 render: (_, row) => (
-                <button className="button-table"  onClick={() => {
-                    setEditPopup(true)
-                    setSelected(row);
+                    <button className="button-table" onClick={() => {
+                        setEditPopup(true)
+                        setSelected(row);
                     }}>
-                    <img src={BookIcon} alt="Libros" />
-                </button>
+                        <img src={BookIcon} alt="Libros" />
+                    </button>
                 )
             }
-        ];        
+        ];
     }
 
-    
+
 
     return (
         <>
-            <GenericSection title={'Listado de autores'} columns={columns} data={authorItems} popups={authorsPopups} 
-            actions={
-                <>
-                <div className='author-actions'>
-                    {authMock.role === 'admin' && (
-                        <div className='btn-new'>
-                        <Btn text={'Nuevo'}  onClick={() => setAddPopup(true)} icon={<img src={PlusIcon} alt='plusIconBtn'/>} variant="primary"/> 
+            <GenericSection title={'Listado de autores'} columns={columns} data={authorItems} popups={authorsPopups}
+                actions={
+                    <>
+                        <div className='author-actions'>
+                            {authMock.role === 'admin' && (
+                                <div className='btn-new'>
+                                    <Btn text={'Nuevo'} onClick={() => setAddPopup(true)} icon={<img src={PlusIcon} alt='plusIconBtn' />} variant="primary" />
 
+                                </div>
+                            )}
+
+                            <div className='author-filter'>
+                                <label>Filtro por nombre: </label>
+                                <input type='text' name='author-name' />
+                            </div>
                         </div>
-                    )}
-                    
-                    <div className='author-filter'>
-                        <label>Filtro por nombre: </label>
-                        <input type='text' name='author-name' />
-                    </div>
-                </div>
-                
-                </>
-            }
+
+                    </>
+                }
             />
         </>
     )

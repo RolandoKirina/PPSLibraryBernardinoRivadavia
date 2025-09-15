@@ -16,31 +16,33 @@
 }
 
 .login-presentation {
-  position: relative;
-  width: 50%;
-  height: 100%;
-  background-color: var(--primary);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden; /* Para que el pseudo-elemento no se desborde */
+    position: relative;
+    width: 50%;
+    height: 100%;
+    background-color: var(--primary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    /* Para que el pseudo-elemento no se desborde */
 }
 
 .login-presentation::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url('../../assets/img/login-background.webp');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  z-index: 0;
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('../../assets/img/login-background.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 0;
 }
 
-.login-presentation > * {
-  position: relative;
-  z-index: 1; /* Asegura que el contenido esté por encima del fondo */
-} 
+.login-presentation>* {
+    position: relative;
+    z-index: 1;
+    /* Asegura que el contenido esté por encima del fondo */
+}
 
 .login-title {
     text-align: center;
@@ -141,7 +143,7 @@
     margin-top: 1em;
 }
 
-.login-form form .input:has(> input:focus) > label {
+.login-form form .input:has(> input:focus)>label {
     color: var(--primary-light-2);
 }
 

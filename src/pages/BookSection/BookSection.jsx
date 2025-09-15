@@ -2,17 +2,17 @@ import DeleteIcon from '../../assets/img/delete-icon.svg';
 import EditIcon from '../../assets/img/edit-icon.svg';
 import DetailsIcon from '../../assets/img/details-icon.svg';
 import { useState } from 'react';
-import BookFilter from  '../../components/filter/bookfilter/BookFilter.jsx';
+import BookFilter from '../../components/filter/bookfilter/BookFilter.jsx';
 import './BookSection.css';
 import PopUpDelete from '../../components/common/deletebtnComponent/PopUpDelete.jsx';
 import FormAddBook from '../../components/book-components/FormAddBook/FormAddBook.jsx';
-import {duplicateBook} from '../../data/forms/BookForms.js';
+import { duplicateBook } from '../../data/forms/BookForms.js';
 import GenericForm from '../../components/generic/GenericForm/GenericForm.jsx';
-import {BookDetail} from '../../data/showdetails/BookDetail.js';
+import { BookDetail } from '../../data/showdetails/BookDetail.js';
 import GenericSection from '../../components/generic/GenericSection/GenericSection.jsx';
 import ShowDetails from '../../components/generic/ShowDetails/ShowDetails.jsx';
-import {books }from '../../data/mocks/books.js';
-import{ useEntityManager} from '../../hooks/useEntityManager.js';
+import { books } from '../../data/mocks/books.js';
+import { useEntityManager } from '../../hooks/useEntityManager.js';
 import Btn from '../../components/common/btn/Btn.jsx';
 import PlusIcon from '../../assets/img/plus-icon.svg';
 import BookIcon from '../../assets/img/book-icon.svg';
@@ -25,19 +25,19 @@ import BookRanking from '../../components/book-components/bookranking/BookRankin
 
 const BookSection = () => {
 
-  
+
   const [selectedItem, setSelectedItem] = useState(null);
-  const [PopUpEdit,setPopupEdit]=useState(false);
-  const [PopUpAdd,setPopupAdd]=useState(false);
-  const [PopUpDeleteBook,setPopUpDelete]=useState(false);
-  const [PopUpDuplicate,setPopUpDuplicate]=useState(false);
-  const [PopUpDetail,setPopUpDetail]=useState(false);
-  const [PopUpRanking,setPopUpRanking]=useState(false);
-  const [PopUpBooksPartners,setPopUpBooksPartners]=useState(false);
-  const [PopUpLostBooks,setPopUpLostBooks]=useState(false);
+  const [PopUpEdit, setPopupEdit] = useState(false);
+  const [PopUpAdd, setPopupAdd] = useState(false);
+  const [PopUpDeleteBook, setPopUpDelete] = useState(false);
+  const [PopUpDuplicate, setPopUpDuplicate] = useState(false);
+  const [PopUpDetail, setPopUpDetail] = useState(false);
+  const [PopUpRanking, setPopUpRanking] = useState(false);
+  const [PopUpBooksPartners, setPopUpBooksPartners] = useState(false);
+  const [PopUpLostBooks, setPopUpLostBooks] = useState(false);
 
 
-  const {items,getItem,createItem,updateItem,deleteItem} = useEntityManager(books, "books");
+  const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(books, "books");
 
   const columns = [
     { header: 'Título', accessor: 'title' },
@@ -52,8 +52,8 @@ const BookSection = () => {
           onClick={() => {
             setPopUpDelete(true)
             setSelectedItem(row)
-        }}>
-        
+          }}>
+
           <img src={DeleteIcon} alt="Borrar" />
         </button>
       )
@@ -63,13 +63,13 @@ const BookSection = () => {
       accessor: 'edit',
       className: "action-buttons",
       render: (_, row) => (
-        <button className="button-table"  
-        onClick={() =>{
-          setPopupEdit(true)
-          setSelectedItem(row)
+        <button className="button-table"
+          onClick={() => {
+            setPopupEdit(true)
+            setSelectedItem(row)
           }}
-       
-       >
+
+        >
           <img src={EditIcon} alt="Editar" />
         </button>
       )
@@ -81,36 +81,37 @@ const BookSection = () => {
       render: (_, row) => (
         <button className="button-table">
           <img src={DetailsIcon} alt="Detalles" onClick={
-            ()=> {setPopUpDetail(true)
+            () => {
+              setPopUpDetail(true)
               setSelectedItem(row)
             }
-            }/>
+          } />
         </button>
       )
     }
   ];
 
-  const booksPopUp=[
+  const booksPopUp = [
     {
-        key: 'deletePopup',
-        title: 'Borrar Libro',
-        className: 'delete-size-popup',
-        content: <PopUpDelete
-                  title={"Libro"}
-                  onConfirm={() => {
-                    deleteItem(selectedItem.id);
-                    setPopUpDelete(false);
-                  }}
-                      closePopup={() => setPopUpDelete(false)}/>,
-        close: () => setPopUpDelete(false),
-        condition: PopUpDeleteBook,
-        variant: 'delete'
+      key: 'deletePopup',
+      title: 'Borrar Libro',
+      className: 'delete-size-popup',
+      content: <PopUpDelete
+        title={"Libro"}
+        onConfirm={() => {
+          deleteItem(selectedItem.id);
+          setPopUpDelete(false);
+        }}
+        closePopup={() => setPopUpDelete(false)} />,
+      close: () => setPopUpDelete(false),
+      condition: PopUpDeleteBook,
+      variant: 'delete'
     },
     {
       key: 'editPopup',
       title: 'Editar Libro',
       className: 'popup-container-book-form',
-      content: <FormEditBook selectedBook={selectedItem}/>,
+      content: <FormEditBook selectedBook={selectedItem} />,
       close: () => setPopupEdit(false),
       condition: PopUpEdit
     },
@@ -118,30 +119,30 @@ const BookSection = () => {
       key: 'AddPopup',
       title: 'Agregar Libro',
       className: 'popup-container-book-form',
-      content: <FormAddBook/>,
+      content: <FormAddBook />,
       close: () => setPopupAdd(false),
       condition: PopUpAdd
     },
     {
-    key: 'DuplicatePopUp',
-    title: 'Duplicar Libro',
-    className: 'fade-popup', 
-    content: (
-      <GenericForm 
-        fields={duplicateBook} 
-        onSubmit={(data) => {
-          duplicateBooks(data);
-          setPopUpDuplicate(false);
-        }} 
-      />
-    ),
-    close: () => setPopUpDuplicate(false),
-    condition: PopUpDuplicate
-  },
-  {
+      key: 'DuplicatePopUp',
+      title: 'Duplicar Libro',
+      className: 'fade-popup',
+      content: (
+        <GenericForm
+          fields={duplicateBook}
+          onSubmit={(data) => {
+            duplicateBooks(data);
+            setPopUpDuplicate(false);
+          }}
+        />
+      ),
+      close: () => setPopUpDuplicate(false),
+      condition: PopUpDuplicate
+    },
+    {
       key: 'SeeDetail',
       title: 'Ver detalle',
-      content: <ShowDetails data={selectedItem} detailsData={BookDetail} isPopup={true}  />,
+      content: <ShowDetails data={selectedItem} detailsData={BookDetail} isPopup={true} />,
       close: () => setPopUpDetail(false),
       condition: PopUpDetail
     },
@@ -171,36 +172,36 @@ const BookSection = () => {
     }
   ]
 
-  function duplicateBooks(data){
+  function duplicateBooks(data) {
     let bookData = getItem(data.id);
-     const maxId = Math.max(...items.map(b => b.id), 0);
+    const maxId = Math.max(...items.map(b => b.id), 0);
     const newId = maxId + 1;
     const duplicatedBook = { ...bookData, id: newId };
     createItem(duplicatedBook);
   }
   return (
     <>
-    
-      <GenericSection title="Listado de libros" filters={<BookFilter/>} 
-      columns={columns} data={items} popups={booksPopUp}
-      actions={
-        <div className='listbtns'>
-               <Btn  icon={<img src={PlusIcon}/>} onClick={() => setPopupAdd(true)} text={'Agregar libro'} variant={"primary"}/>
-               <Btn icon={<img src={PlusIcon}/>} onClick={() =>setPopUpDuplicate(true)} text={'Duplicar libro'} variant={"primary"}/>
-               <Btn icon={<img src={BookIcon}/>} onClick={() =>setPopUpRanking(true)} text={'Ranking de libros'} variant={"primary"}/>
-               <Btn icon={<img src={ReaderIcon}/>} onClick={() =>setPopUpBooksPartners(true)} text={'Libros y socios'} variant={"primary"}/>
-               <Btn icon={<img src={LostBookIcon}/>} onClick={() =>setPopUpLostBooks(true)} text={'Libros perdidos'} variant={"primary"}/>
-        </div>
-         
-      } 
-      
+
+      <GenericSection title="Listado de libros" filters={<BookFilter />}
+        columns={columns} data={items} popups={booksPopUp}
+        actions={
+          <div className='listbtns'>
+            <Btn icon={<img src={PlusIcon} />} onClick={() => setPopupAdd(true)} text={'Agregar libro'} variant={"primary"} />
+            <Btn icon={<img src={PlusIcon} />} onClick={() => setPopUpDuplicate(true)} text={'Duplicar libro'} variant={"primary"} />
+            <Btn icon={<img src={BookIcon} />} onClick={() => setPopUpRanking(true)} text={'Ranking de libros'} variant={"primary"} />
+            <Btn icon={<img src={ReaderIcon} />} onClick={() => setPopUpBooksPartners(true)} text={'Libros y socios'} variant={"primary"} />
+            <Btn icon={<img src={LostBookIcon} />} onClick={() => setPopUpLostBooks(true)} text={'Libros perdidos'} variant={"primary"} />
+          </div>
+
+        }
+
       ></GenericSection>
 
 
 
 
 
-    
+
     </>
   );
 };

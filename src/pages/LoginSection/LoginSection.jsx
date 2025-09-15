@@ -5,16 +5,16 @@ import { authMock } from '../../data/mocks/authMock';
 import { Link } from 'react-router-dom';
 
 export default function LoginSection() {
-    if(authMock.isAuthenticated) {
+    if (authMock.isAuthenticated) {
         window.location.href = '/options';
-        return null;       
+        return null;
     }
 
     return (
         <>
             <GenericSection title={'Ingresar'}>
                 <div className='login-container'>
-                     <div className='login-content'>
+                    <div className='login-content'>
                         <div className='login-presentation'></div>
                         <div className='login-form'>
                             <div className='login-form-title'>
@@ -23,22 +23,22 @@ export default function LoginSection() {
                             <form>
                                 <div className="input">
                                     <label htmlFor="email">Correo electrónico</label>
-                                    <input id="email" type="email" placeholder="Correo eléctronico"/>
+                                    <input id="email" type="email" placeholder="Correo eléctronico" />
                                 </div>
                                 <div className="input">
                                     <label htmlFor="password">Contraseña</label>
-                                    <input id="password" type="password" placeholder="Contraseña"/>
+                                    <input id="password" type="password" placeholder="Contraseña" />
                                 </div>
-                                <Btn variant={'primary'} text={'Ingresar'} onClick={() => window.location.href = '/'}/>
+                                <Btn variant={'primary'} text={'Ingresar'} onClick={() => window.location.href = '/'} />
                                 <div className='no-account-msg'>
                                     <Link to='/register'>
-                                    ¿No tienes una cuenta creada? <span>Registrate</span>
+                                        ¿No tienes una cuenta creada? <span>Registrate</span>
                                     </Link>
                                 </div>
                             </form>
 
                         </div>
-                    </div> 
+                    </div>
 
 
                 </div>
