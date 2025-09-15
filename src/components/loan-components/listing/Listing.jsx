@@ -1,6 +1,6 @@
 import './Listing.css';
 import PrintIcon from '../../../assets/img/print-icon.svg';
-import { phoneListing, returnDateListing, quantityParnerListing } from '../../../data/loan/LoanListings';
+import { phoneListing, returnDateListing, quantityParnerListing } from '../../../data/generatedlist/loanListings';
 import GenerateListPopup from '../../common/generatelistpopup/GenerateListPopup';
 import { titlesByType, columnsByType, dataByType } from '../../../data/generatedlist/generatedList';
 
