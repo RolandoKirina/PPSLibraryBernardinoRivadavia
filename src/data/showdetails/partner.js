@@ -5,12 +5,16 @@ export const DetailPartner = [
     active: false,
     rows: [
       [
-        { label: 'Número de socio', value: 'información',attribute:"id" },
-        { label: 'Nombre', value: 'información',attribute:"partnerName" },
-         { label: 'Apellido', value: 'información',attribute:"partnerSurname" },
-         {label:'DNI',value: 'información',attribute:"DNI"},
-         {label:'Estado',value:'información',attribute:"statePartner"}
+        { label: 'Número de socio', value: 'información', attribute: "id" },
+        { label: 'Nombre', value: 'información', attribute: "partnerName" },
       ],
+      [
+        { label: 'Apellido', value: 'información', attribute: "partnerSurname" },
+        { label: 'DNI', value: 'información', attribute: "DNI" },
+      ],
+      [
+        { label: 'Estado', value: 'información', attribute: "statePartner" }
+      ]
     ]
   },
   {
@@ -20,7 +24,7 @@ export const DetailPartner = [
     rows: [
       [
         { label: 'Numero de teléfono', value: 'información', attribute: 'telephone' },
-        { label: 'Dirección de cobro', value: 'información', attribute: 'collectionadress' } 
+        { label: 'Dirección de cobro', value: 'información', attribute: 'collectionadress' }
       ],
     ]
   },
@@ -31,10 +35,10 @@ export const DetailPartner = [
     rows: [
       [
         { label: 'Libros pendientes', value: 'información', attribute: 'pendingbooks' },
-        { label: 'Cuentas impagas', value: 'información', attribute: 'unpaidfees' } 
-      ],[
-         { label: 'Motivo baja', value: 'información', attribute: 'reasonwithdrawal' },
-        { label: 'Categoria', value: 'información', attribute: 'category' } 
+        { label: 'Cuentas impagas', value: 'información', attribute: 'unpaidfees' }
+      ], [
+        { label: 'Motivo baja', value: 'información', attribute: 'reasonwithdrawal' },
+        { label: 'Categoria', value: 'información', attribute: 'category' }
       ]
     ]
   }

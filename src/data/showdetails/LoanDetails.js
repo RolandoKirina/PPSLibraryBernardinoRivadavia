@@ -5,11 +5,9 @@ export const loanDetailsInfo = [
     active: false,
     rows: [
       [
-        { label: 'Código de Libro', value: 'información', attribute: 'bookCode' }
-      ],
-      [
+        { label: 'Código de Libro', value: 'información', attribute: 'bookCode' },
         { label: 'Título', value: 'información', attribute: 'bookTitle' }
-      ]
+      ],
     ]
   },
   {
@@ -36,12 +34,12 @@ export const loanDetailsInfo = [
     active: false,
     rows: [
       [
-        { label: 'Número de socio', value: 'información', attribute: 'partnerNumber' }
-      ],
-      [
         { label: 'Nombre', value: 'información', attribute: 'partnerName' },
         { label: 'Apellido', value: 'información', attribute: 'partnerLastname' }
-      ]
+      ],
+      [
+        { label: 'Número de socio', value: 'información', attribute: 'partnerNumber' }
+      ],
     ]
   },
   {

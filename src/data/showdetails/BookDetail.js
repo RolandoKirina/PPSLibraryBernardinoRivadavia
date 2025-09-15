@@ -21,10 +21,10 @@ export const BookDetail = [
           label: 'Autores',
           value: 'información',
           attribute: 'authors',
-        subfields: [
-  { key: 'authorName', label: 'Nombre' },
-  { key: 'nationality', label: 'Nacionalidad' }
-]
+          subfields: [
+          { key: 'authorName', label: 'Nombre' },
+          { key: 'nationality', label: 'Nacionalidad' }
+          ]
         },
         { label: 'Editorial', value: 'información', attribute: 'editorial' }
       ]
