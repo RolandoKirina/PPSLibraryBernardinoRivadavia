@@ -19,7 +19,6 @@ export default function LoanMaterialSection() {
     const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockLoanMaterials, 'loamMaterials');
 
     function handleAddItem(data) {
-        console.log(data);
         createItem(data);
         setAddPopup(false);
     }
@@ -30,36 +29,37 @@ export default function LoanMaterialSection() {
     }
 
      const loanMaterialsPopups = [
-                {
-                    key: 'deletePopup',
-                    title: 'Borrar material de préstamo',
-                    className: 'delete-size-popup',
-                    content: <PopUpDelete title={"Material de préstamo"} closePopup={() => setDeletePopup(false)} onConfirm={
-                () => {
-                    deleteItem(selected.id)
-                    setDeletePopup(false)
-                }
-            }/>,
-                    close: () => setDeletePopup(false),
-                    condition: deletePopup,
-                    variant: 'delete'
-                },
-                {
-                    key: 'editPopup',
-                    title: 'Editar material de préstamo',
-                    className: '',
-                    content: <GenericForm fields={loanMaterialsFields} onSubmit={(data) => handleEditItem(data)}/>,
-                    close: () => setEditPopup(false),
-                    condition: editPopup
-                },
-                {
-                    key: 'addPopup',
-                    title: 'Agregar material de préstamo',
-                    className: '',
-                    content: <GenericForm fields={loanMaterialsFields} onSubmit={(data) => handleAddItem(data)}/>,
-                    close: () => setAddPopup(false),
-                    condition: addPopup
-                }
+        {
+        key: 'deletePopup',
+        title: 'Borrar material de préstamo',
+        className: 'delete-size-popup',
+        content: <PopUpDelete title={"Material de préstamo"} closePopup={() => setDeletePopup(false)} onConfirm={
+            () => {
+                deleteItem(selected.id)
+                setDeletePopup(false)
+            }
+            }
+        />,
+            close: () => setDeletePopup(false),
+            condition: deletePopup,
+            variant: 'delete'
+        },
+        {
+            key: 'editPopup',
+            title: 'Editar material de préstamo',
+            className: '',
+            content: <GenericForm fields={loanMaterialsFields} onSubmit={(data) => handleEditItem(data)}/>,
+            close: () => setEditPopup(false),
+            condition: editPopup
+        },
+        {
+            key: 'addPopup',
+            title: 'Agregar material de préstamo',
+            className: '',
+            content: <GenericForm fields={loanMaterialsFields} onSubmit={(data) => handleAddItem(data)}/>,
+            close: () => setAddPopup(false),
+            condition: addPopup
+        }
     ];
 
     const columns = [

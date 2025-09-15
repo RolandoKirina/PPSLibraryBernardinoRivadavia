@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+import './Btn.css';
 
 export default function Btn({ type = 'button', text, icon, onClick, variant, disabled,href }) {
 
@@ -25,10 +27,9 @@ export default function Btn({ type = 'button', text, icon, onClick, variant, dis
   if (href) {
     return (
       <button className={`btn ${variantClass}`}>
-
-          <a href={href} >
-        <span className="btn-text">{text}</span>
-      </a>
+          <Link to={href} className="hrefBtn">
+                <span className="btn-text">{text}</span>
+          </Link>
       </button>
     
     );

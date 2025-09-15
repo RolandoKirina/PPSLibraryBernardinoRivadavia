@@ -10,7 +10,6 @@ import GenerateListPopup from '../../common/generatelistpopup/GenerateListPopup'
 export default function PrintPartnerPopup() {
     const { items: partnerCategories } = useEntityManager(mockPartnersCategory, 'partnerCategories');
     const { items: removePartnerReasons } = useEntityManager(mockRemovePartnerReason, 'removePartnerReason');
-    // const [generateListPopup, setGenerateListPopup] = useState(false);
     const [formValues, setFormValues] = useState({});
 
     const handleSubmit = (e) => {
@@ -31,7 +30,7 @@ export default function PrintPartnerPopup() {
     });
 
     console.log("Formulario:", data);
-    setFormValues(data); // 👈 Guardás en el estado
+    setFormValues(data); 
     };
 
     return (

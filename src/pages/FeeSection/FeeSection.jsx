@@ -34,7 +34,7 @@ export const FeeSection = () => {
 
 
     const {items,getItem,createItem,updateItem,deleteItem} = useEntityManager(fees, "fees");
-    console.log(fees);
+
     const columns = [
       { header: 'Numero de cuota', accessor: 'id' },
       { header: 'Nombre de socio', accessor: 'partnerName'},

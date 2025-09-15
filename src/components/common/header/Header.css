@@ -74,11 +74,17 @@
   transform: rotate(180deg);
 }
 
-/* Botones de autenticación */
-.auth-buttons {
+
+.auth-links {
   display: flex;
   gap: 1em;
 }
+
+.auth-links a:hover {
+  color: var(--accent);
+}
+
+
 
 .header-msg {
   color: var(--white);

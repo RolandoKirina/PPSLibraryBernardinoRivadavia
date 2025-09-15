@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Sidebar from '../sidebar/Sidebar.jsx';
 import Btn from '../btn/Btn.jsx';
 import { authMock } from '../../../data/mocks/authMock.js';
+import { Link } from 'react-router-dom';
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -34,9 +35,9 @@ export default function Header() {
           </div>
 
           <div className="header-center">
-            <a href="/" className="logo">
-              <img src={logo} alt="Logo Biblioteca Rivadavia" />
-            </a>
+            <Link to='/' className="logo">
+             <img src={logo} alt="Logo Biblioteca Rivadavia" />
+            </Link>
             <h1 className="title-text">
               Biblioteca Popular Bernardino Rivadavia
             </h1>
@@ -44,9 +45,13 @@ export default function Header() {
 
           <div className="header-right">
             {!authMock.isAuthenticated ? (
-              <div className="auth-buttons">
-                <Btn text="Ingresar" variant="login" href="/login" />
-                <Btn text="Registrarse" variant="register" href="/register" />
+              <div className="auth-links">
+                <Link to={'/login'}>
+                Ingresar
+                </Link>
+                <Link to={'/register'}>
+                Registrarse
+                </Link>                
               </div>
             ) : (
               <h3 className="header-msg">

@@ -32,7 +32,6 @@ export default function LoanForm({createLoanItem}) {
   });
 
 function handleAddNewLoan() {
-  console.log("entro");
   loanData.books.forEach(lendBook => {
     createLoanItem({
       bookCode: lendBook.bookCode,
@@ -112,7 +111,6 @@ function handleAddNewLoan() {
                   render: (_, row) => (
                    <button type='button' className="button-table" onClick={() => {
                       handleDeleteBook(row);
-                      console.log("deleted");
                   }}>
                       <img src={DeleteIcon} alt="Borrar" />
                   </button>

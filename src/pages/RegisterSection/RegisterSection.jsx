@@ -2,6 +2,7 @@ import './RegisterSection.css';
 import GenericSection from '../../components/generic/GenericSection/GenericSection';
 import Btn from '../../components/common/btn/Btn';
 import { authMock } from '../../data/mocks/authMock';
+import { Link } from 'react-router-dom';
 
 export default function RegisterSection() {
     if(authMock.isAuthenticated) {
@@ -14,15 +15,7 @@ export default function RegisterSection() {
     <GenericSection title={'Registrarse'}>
       <div className='register-container'>
         <div className='register-content'>
-          <div className='register-presentation'>
-            {/* <div className='register-info'>
-              <p>Accedé al catálogo, gestioná tus préstamos y descubrí todo lo que la biblioteca tiene para ofrecer</p>
-            </div>
-            <div className='register-login-msg'>
-              <h3>¿Ya tenés una cuenta?</h3>
-              <Btn variant={'primary'} text={'Iniciar sesión'} onClick={() => window.location.href = '/login'} />
-            </div> */}
-          </div>
+          <div className='register-presentation'></div>
 
           <div className='register-form'>
             <div className='register-form-title'>
@@ -50,13 +43,13 @@ export default function RegisterSection() {
               <Btn
                 variant={'primary'}
                 text={'Registrarse'}
-                onClick={() => window.location.href = '/options'}
+                onClick={() => window.location.href = '/'}
               />
 
               <div className='already-account-msg'>
-                <a href='/login'>
+                <Link to='/login'>
                   ¿Ya tenés una cuenta? <span>Iniciar sesión</span>
-                </a>
+                </Link>
               </div>
             </form>
           </div>

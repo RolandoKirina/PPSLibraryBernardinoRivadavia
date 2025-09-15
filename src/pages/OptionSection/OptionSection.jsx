@@ -3,15 +3,11 @@ import GenericSection from "../../components/generic/GenericSection/GenericSecti
 import employee from '../../assets/img/dark-icon/options/employee.svg';
 import dismiss from '../../assets/img/dark-icon/options/dismiss.svg';
 import materials from '../../assets/img/dark-icon/options/materials.svg';
-import booksPartners from '../../assets/img/dark-icon/options/books-partners.svg';
 import groupMaterials from '../../assets/img/dark-icon/options/group-materials.svg';
-import listLostBooks from '../../assets/img/dark-icon/options/list-lost-books.svg';
-import loanEmployees from '../../assets/img/dark-icon/options/loan-employees.svg';
 import partnerCategory from '../../assets/img/dark-icon/options/partner-category.svg';
-import partnerList from '../../assets/img/dark-icon/options/partner-list.svg';
-import quoteDates from '../../assets/img/dark-icon/options/quote-dates.svg';
 import ranking from '../../assets/img/dark-icon/options/ranking.svg';
-import { authMock } from '../../data/mocks/authMock'
+import { authMock } from '../../data/mocks/authMock';
+import './OptionSection.css';
 
 
 export default function OptionSection(){

@@ -67,7 +67,6 @@ const BookSection = () => {
         onClick={() =>{
           setPopupEdit(true)
           setSelectedItem(row)
-                      console.log(row)
           }}
        
        >

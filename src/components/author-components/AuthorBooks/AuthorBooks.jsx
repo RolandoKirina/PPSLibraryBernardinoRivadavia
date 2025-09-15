@@ -24,9 +24,7 @@ export default function AuthorBooks({authorSelected, deleteAuthorSelected, updat
         nationality: '',
         books: []
     });
-
-    console.log(authorSelected);
-
+    
     useEffect(() => {
         if (method === 'update' && authorSelected) {
             setAuthorData({
@@ -152,8 +150,6 @@ export default function AuthorBooks({authorSelected, deleteAuthorSelected, updat
                         books: authorData.books
                     }
                     createAuthorItem(newAuthor);
-
-                    console.log(newAuthor);
                 }
                 else if (method === 'update') {
                 let updatedAuthor = { 

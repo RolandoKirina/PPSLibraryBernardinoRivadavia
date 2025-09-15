@@ -65,7 +65,6 @@ export default function LoanAmountSection() {
             <button className="button-table" onClick={() => {
                 setDeletePopup(true);
                 setSelected(row);
-                console.log(row);
                 }}>
                 <img src={DeleteIcon} alt="Borrar" />
             </button>

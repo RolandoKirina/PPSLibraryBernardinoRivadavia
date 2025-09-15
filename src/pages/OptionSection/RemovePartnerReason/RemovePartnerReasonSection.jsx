@@ -30,7 +30,6 @@ export default function RemovePartnerReasonSection({chooseMode}) {
     }
 
     function handleEditItem(data) {
-        console.log(selected);
         updateItem(selected.id, data);
         setEditPopup(false);
     }
@@ -70,14 +69,6 @@ export default function RemovePartnerReasonSection({chooseMode}) {
                 }
     ];
 
-    /*
-                    {confirmPopup && (
-                        <PopUp title={'Guardar motivo'} onClick={() => setConfirmPopup(false)}>   
-                            <ConfirmMessage text={'¿Esta seguro de guardar este motivo?'} closePopup={() => setConfirmPopup(false)}/>
-                        </PopUp>
-                    )}
-                        */
-
     const columns = [
         { header: 'Motivo', accessor: 'reason' },
         {
@@ -103,11 +94,10 @@ export default function RemovePartnerReasonSection({chooseMode}) {
                  <img src={EditIcon} alt="Editar" />
              </button>
              )
-         }
-                
+         }         
     ];
 
-        const columnsChooseMode = [
+    const columnsChooseMode = [
         { header: 'Motivo', accessor: 'reason' },
         {
             header: 'Elegir',
