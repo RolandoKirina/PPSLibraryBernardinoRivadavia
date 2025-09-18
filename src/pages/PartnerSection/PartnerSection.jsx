@@ -17,12 +17,14 @@ import './PartnerSection.css';
 import PrintPartnerPopup from '../../components/partner-components/printpartnerpopup/PrintPartnerPopup.jsx';
 import PartnersBooks from '../../components/partner-components/partnersbooks/PartnersBooks.jsx';
 import ReaderIcon from '../../assets/img/reader.svg';
+import FormAddPartner from '../../components/partner-components/formaddpartner/FormAddPartner.jsx';
 export default function PartnerSection() {
 
   const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(partners, "partners");
   const [selectedItem, setSelectedItem] = useState(null);
   const [PopUpDeletePartner, setPopUpDelete] = useState(false);
   const [PopUpEdit, setPopupEdit] = useState(false);
+
   const [printListPopup, setPrintListPopup] = useState(false);
   const [PopUpBooksPartners, setPopUpBooksPartners] = useState(false);
   const [DetailData, setDetailData] = useState(null);
@@ -116,7 +118,7 @@ export default function PartnerSection() {
       key: 'AddPopup',
       title: 'Agregar Socio',
       className: 'popup-container add-edit-partner-size',
-      content: <FormEditPartner />,
+      content: <FormAddPartner />,
       close: () => setPopUpAdd(false),
       condition: PopUpAdd
     },

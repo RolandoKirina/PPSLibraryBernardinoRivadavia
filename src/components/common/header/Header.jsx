@@ -6,9 +6,13 @@ import Sidebar from '../sidebar/Sidebar.jsx';
 import Btn from '../btn/Btn.jsx';
 import { authMock } from '../../../data/mocks/authMock.js';
 import { Link } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from '../../../auth/AuthContext';
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+
+   const { auth, logout } = useContext(AuthContext);
 
   const toggleMenu = () => {
     setOpen(!open);
@@ -44,7 +48,7 @@ export default function Header() {
           </div>
 
           <div className="header-right">
-            {!authMock.isAuthenticated ? (
+            {!auth.isAuthenticated ? (
               <div className="auth-links">
                 <Link to={'/login'}>
                   Ingresar
@@ -54,10 +58,13 @@ export default function Header() {
                 </Link>
               </div>
             ) : (
+              <div>
               <h3 className="header-msg">
                 Bienvenido{' '}
-                <span className="header-name">{authMock.name}</span>
+                <span className="header-name">{auth.name}</span>
               </h3>
+               <Btn variant="primary" text="Cerrar sesión" onClick={logout} />
+               </div>
             )}
           </div>
         </div>

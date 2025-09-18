@@ -2,14 +2,11 @@ import Btn from "../../../components/common/btn/Btn.jsx";
 import SaveIcon from '../../../assets/img/save-icon.svg';
 import Accordion from "../../generic/accordion/Accordion.jsx";
 import { useState } from "react";
-import "./FormEditPartner.css";
-import BackviewBtn from "../../common/backviewbtn/BackviewBtn.jsx";
-import UnpaidFees from "../../loan-components/unpaidfees/UnpaidFees.jsx";
-import { Table } from "../../common/table/Table.jsx";
-import { pendingbooks } from "../../../data/mocks/pendingbooks.js";
+import "../formeditpartner/FormEditPartner.css";
 
-export default function FormEditPartner() {
-  const options = ["default", "unpaidfees", "pendingbooks"];
+
+export default function FormAddPartner() {
+  const options = ["default"];
   const [popupView, setPopupView] = useState(options[0]);
   const [activeAccordion, setActiveAccordion] = useState(null);
 
@@ -77,24 +74,7 @@ const columnsPendingBooks = [
   
   function renderView() {
     switch (popupView) {
-      case "unpaidfees":
-        return (
-          <div>
-            <UnpaidFees />
-            <BackviewBtn menu={'default'} changeView={setPopupView} />
-          </div>
-        );
-
-      case "pendingbooks":
-
-      
-
-        return (
-         <>
-         <Table columns={columnsPendingBooks} data={pendingbooks}></Table>
-         </>
-        );
-
+   
       default:
         return (
           <form onSubmit={handleSubmit}>
@@ -252,104 +232,7 @@ const columnsPendingBooks = [
               </div>
             </Accordion>
 
-            <Accordion
-              title="Estado del socio"
-              isActive={activeAccordion === 'stateofpartner'}
-              onToggle={() => handleToggle('stateofpartner')}>
-
-              <div className="items-info-details-form-accordion">
-                <div className="form-details">
-                  <label htmlFor="reasonofwithdrawal">Motivo de baja</label>
-                  <input
-                    id="reasonofwithdrawal"
-                    name="reasonofwithdrawal"
-                    type="text"
-                    placeholder="Motivo de baja"
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="form-details">
-                  <label htmlFor="dateofwithdrawal">Fecha de baja</label>
-                  <input
-                    id="dateofwithdrawal"
-                    name="dateofwithdrawal"
-                    type="date"
-                    placeholder="Ingrese su fecha de baja"
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-
-              <div className="items-info-details-form-accordion">
-                <div className="form-details">
-                  <label htmlFor="resignationdate">Fecha de renuncia</label>
-                  <input
-                    id="resignationdate"
-                    name="resignationdate"
-                    type="date"
-                    placeholder="Ingrese su fecha de renuncia"
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="form-details ">
-                  <label htmlFor="observations">Observaciones</label>
-                  <input
-                    id="observations"
-                    name="observations"
-                    type="text"
-                    className="inputobservations"
-                    placeholder="Ingrese sus observaciones"
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-
-              <div className="items-info-details-form-accordion">
-                <div className="form-details-checkbox">
-                  <label>Estado del socio</label>
-                  <div className="checkbox-group">
-                    <label htmlFor="active" className="label">
-                      <input
-                        className="checkbox-size"
-                        type="checkbox"
-                        id="active"
-                        name="estado"
-                        value="activo"
-                        onChange={handleChange}
-                      />
-                      <p>Activo</p>
-                    </label>
-
-                    <label htmlFor="inactive" className="label">
-                      <input
-                        className="checkbox-size"
-                        type="checkbox"
-                        id="inactive"
-                        name="estado"
-                        value="baja"
-                        onChange={handleChange}
-                      />
-                      <p>Baja</p>
-                    </label>
-                  </div>
-                </div>
-
-                <div className="partner-state-btns">
-                  <Btn
-                    text="Cuotas impagas"
-                    variant="secondary"
-                    onClick={() => setPopupView("unpaidfees")}
-                  />
-
-                  <Btn
-                    text="Libros pendientes"
-                    variant="secondary"
-                    onClick={() => setPopupView("pendingbooks")}
-                  />
-                </div>
-
-              </div>
-            </Accordion>
+          
             <Accordion
               title="Guardar socio"
               isActive={activeAccordion === 'savepartner'}
