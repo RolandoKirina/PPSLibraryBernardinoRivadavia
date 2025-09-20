@@ -1,0 +1,97 @@
+.author-books-container {
+    padding: 0;
+    width: 80em;
+    display: flex;
+    margin-bottom: 1em;
+    background-color: var(--primary-dark-2);
+    justify-content: space-evenly;
+    max-height: 70vh;
+    /* Ajustá según el diseño */
+    overflow-y: auto;
+    /* Habilita el scroll vertical */
+    padding-right: 1em;
+}
+
+.author-books-container .input:has(> input:focus)>label {
+    color: var(--secondary-light-2);
+}
+
+.author-books-title {
+    margin-top: 1em;
+}
+
+.author-books-container h3 {
+    color: var(--secondary-light-2);
+}
+
+.author-books-container h2:first {
+    color: var(--secondary-light-2);
+}
+
+.author-books-add-btn {
+    width: 98%;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    display: flex;
+}
+
+
+.author-books-add-btn button {
+    background-color: var(--primary-light-2);
+}
+
+.author-books-add-btn button:first-child {
+    margin-right: 1em;
+}
+
+.seeAllBtn {
+    width: 9em;
+    display: flex;
+}
+
+.main-author-books {
+    height: 100%;
+    width: 70%;
+}
+
+.library-books {
+    height: 100%;
+    width: 45%;
+}
+
+.author-books {
+    height: 100%;
+    width: 45%;
+}
+
+.main-author-btns {
+    width: 100%;
+    display: flex;
+    margin-top: 1em;
+}
+
+.main-author-btns button {
+    background-color: var(--primary-light-2);
+    margin-right: 1em;
+}
+
+.main-author-books .add-loan-form-inputs {
+    margin-top: 1em;
+}
+
+.editBookAuthor {
+    width: 100%;
+    color: var(--secondary-light-2);
+}
+
+.main-author-books .content-table {
+    padding: 0;
+}
+
+.main-author-books .content-table .table {
+    width: 100%;
+}
+
+.main-author-books .save-changes-lend-books {
+    margin-bottom: 0;
+}

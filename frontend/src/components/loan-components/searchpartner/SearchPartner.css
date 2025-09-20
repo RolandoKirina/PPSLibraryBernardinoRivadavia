@@ -1,0 +1,43 @@
+.search-partner-container {
+    width: 80%;
+    margin-top: 1em;
+}
+
+.search-partner-container h2 {
+    color: var(--secondary-light-2);
+}
+
+.search-partner-inputs {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1em;
+}
+
+.search-partner-inputs div {
+    display: flex;
+    flex-direction: column;
+}
+
+.search-partner-buttons {
+    margin-top: 1em;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.search-partner-buttons button {
+    margin-right: 4em;
+    height: 3em;
+    border-radius: 0.8em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    border: 0;
+    background-color: var(--primary-light-2);
+    color: var(--white);
+}
+
+.search-partner-buttons button:hover {
+    background-color: var(--primary-light);
+    transition: background-color 0.30s ease-in-out;
+}

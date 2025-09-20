@@ -1,0 +1,37 @@
+.return-form-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--primary-dark-2);
+    max-height: 70vh;
+    /* Ajustá según el diseño */
+    overflow-y: auto;
+    /* Habilita el scroll vertical */
+    padding-right: 1em;
+    width: 61em;
+    min-height: 36em;
+}
+
+.return-form-content form {
+    width: 100%;
+    margin-top: 1em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.return-all-size {
+    width: 50em;
+}
+
+.return-form-content .add-book-to-lend {
+    margin-bottom: 1em;
+}
+
+.return-form-content .search-partner-container {
+    margin-top: 0;
+}
+
+.return-form-content .details-container {
+    margin-top: 1em;
+}

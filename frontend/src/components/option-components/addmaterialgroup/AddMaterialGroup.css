@@ -1,0 +1,47 @@
+.choosed {
+    background-color: var(--black);
+}
+
+.materials-group {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.group-table {
+    width: 100%;
+}
+
+.group-table .content-table {
+    padding: 0;
+}
+
+.group-table .content-table .table {
+    width: 100%;
+}
+
+.group-table .content-table .pagination {
+    width: 100%;
+}
+
+.add-material-container {
+    margin-bottom: 1em;
+    display: flex;
+    justify-content: center;
+}
+
+.add-material-group-background {
+    background-color: var(--primary-dark-2);
+    max-height: 90vh;
+    /* Ajustá según el diseño */
+    overflow-y: auto;
+    /* Habilita el scroll vertical */
+}
+
+.add-material-inputs {
+    width: 100%;
+}
+
+.add-material-container .input:has(> input:focus)>label {
+    color: var(--secondary-light-2);
+}

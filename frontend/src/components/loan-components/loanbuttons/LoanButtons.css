@@ -1,0 +1,14 @@
+.loan-buttons {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.loan-options {
+    margin-top: 1em;
+    width: 28em;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+
+}

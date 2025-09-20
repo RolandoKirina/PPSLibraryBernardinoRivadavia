@@ -1,0 +1,104 @@
+.booksection {
+  display: flex;
+  width: 100%;
+}
+
+.bookinf {
+  width: 100%;
+}
+
+.book-title {
+  height: 6em;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: var(--primary-light);
+}
+
+.book-title h2 {
+  margin-left: 1em;
+  color: var(--white);
+  display: inline-block;
+}
+
+.inputCDU input {
+  display: flex;
+  width: 85%;
+
+}
+
+.inputCodeCDU {
+  width: 35%;
+}
+
+.cdu .content {
+  display: flex;
+  flex-direction: row;
+}
+
+.labelinput {
+  margin-bottom: 2em;
+}
+
+.select {
+  height: 2.5em;
+}
+
+.titleh3 {
+  margin-top: 1em;
+  color: var(--secondary-light-2);
+  text-align: left;
+}
+
+
+.primary-btn {
+  background-color: var(--primary-light-2);
+}
+
+.popup-container-book-form {
+  background: var(--primary-dark-2);
+  overflow-y: scroll;
+  border-radius: 10px;
+  margin-top: 3em;
+  height: auto;
+  max-height: 100vh;
+}
+
+.input {
+  display: flex;
+  flex-direction: column;
+}
+
+
+.popupduplicate {
+  background: var(--primary-dark-2);
+  border-radius: 10px;
+  width: 50em;
+  margin-top: 3em;
+  height: auto;
+  max-height: 100vh;
+}
+
+
+.fade-popup {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.fade-popup.closing {
+  opacity: 0;
+}
+
+
+.listbtns {
+  display: flex;
+  margin-top: 1em;
+}
+
+.ranking-books-size {
+  width: 85%;
+}
+
+.books-partners-amount-size {
+  width: 40%;
+}

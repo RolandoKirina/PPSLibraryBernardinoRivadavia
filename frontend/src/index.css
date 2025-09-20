@@ -1,0 +1,168 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+button {
+  cursor: pointer;
+}
+
+:root {
+  --white: #F4F5FA;
+  --primary-light-2: #4F3DD4;
+  --primary-light: #4131B3;
+  --primary: #312682;
+  --primary-dark-1: #231B5B;
+  --primary-dark-2: #16103A;
+  --secondary-light-2: #FED53B;
+  --secondary-light-1: #DEB829;
+  --secondary: #BB9B23;
+  --secondary-dark-1: #9C811D;
+  --secondary-dark-2: #806A19;
+  --placeholder-register: #5A524C;
+  --register-subtitle: #9A7E1F;
+  --table-color: #1E1B3A;
+  --table-color-2: #2A254B;
+  --table-lines: #4B4870;
+  --accent-2: #E59AE5;
+  --error: #EF1414;
+  --accent: #A33182;
+  --sucess: #7EED1E;
+  --black: #080808;
+  --font-titles: 'Merriweather', serif;
+  --font-texts: "Roboto", sans-serif;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-titles);
+}
+
+h1 {
+  font-size: 2rem;
+  color: var(--white);
+  text-align: center;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+  letter-spacing: 0.05em;
+}
+
+h4 {
+  font-size: 1.150rem;
+}
+
+p,
+span,
+label,
+input,
+select,
+a {
+  font-size: 1rem;
+}
+
+a {
+  text-decoration: none;
+  color: var(--white);
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+
+
+.my-button {
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.2em;
+  gap: 0.5em;
+  padding: 0.6em 1em;
+  border: none;
+  height: 4em;
+  border-radius: 5px;
+  max-width: 16em;
+  border: 2px solid var(--white);
+}
+
+
+
+input,
+select {
+  border-radius: 0.3em;
+  letter-spacing: 0.2em;
+}
+
+.btn-secondary {
+  background-color: var(--primary-dark-2);
+  color: var(--white);
+  height: 6em;
+  width: 11em;
+  padding: 0.8em;
+  border: solid 2px var(--primary);
+
+}
+
+input {
+  padding-left: 0.75rem;
+}
+
+
+/*buena estrategia para saber que elemento causa scroll horizontal*/
+/** * {
+  outline: 1px solid red;
+}*/
+
+
+.btn-primary {
+  background-color: var(--primary-light-2);
+  color: var(--white);
+  padding: 0.6em 1.2em;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+
+
+.centered {
+  text-align: center;
+}
+
+button:disabled {
+  opacity: 0.8;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+
+.feespopup {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 35em;
+  height: 60%;
+}

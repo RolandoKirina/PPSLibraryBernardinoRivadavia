@@ -1,0 +1,106 @@
+.details-container {
+    background-color: var(--primary-dark-2);
+    border: 0.2em solid var(--primary-light-2);
+    color: var(--white);
+    max-height: 70vh;
+    /* Ajustá según el diseño */
+    overflow-y: auto;
+    /* Habilita el scroll vertical */
+}
+
+.details-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 3em;
+    color: var(--white);
+    background-color: var(--primary-light-2);
+    position: relative;
+}
+
+
+.details-title h2 {
+    margin-right: 1em;
+}
+
+.details-close-btn {
+    background-color: black;
+    height: 2em;
+    border-radius: 1em;
+    border: 0;
+}
+
+.details-close-btn img {
+    width: 100%;
+    height: 100%;
+}
+
+.details-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.dropdown-title {
+    width: 100%;
+    height: 3em;
+    background-color: var(--primary-dark-1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dropdown-title button {
+    background-color: var(--primary-dark-1);
+    border: 0;
+    height: 1em;
+}
+
+.dropdown-title h4 {
+    margin-right: 0.25em;
+}
+
+.dropdown-title button img {
+    width: 100%;
+    height: 100%;
+}
+
+
+
+
+.detailsInfoMenu {
+    background-color: var(--primary-dark-2);
+    display: flex;
+    max-width: 45em;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.dropdown-details-menu {
+    width: 40em;
+}
+
+.items-info-details {
+    /* width: 100%; */
+    display: flex;
+    padding: 0.5em;
+    justify-content: space-between;
+    width: 20em;
+}
+
+.item-details {
+    width: 9em;
+    margin-right: 1em;
+}
+
+.item-details p {
+    margin-top: 0.5em;
+    display: inline-block;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

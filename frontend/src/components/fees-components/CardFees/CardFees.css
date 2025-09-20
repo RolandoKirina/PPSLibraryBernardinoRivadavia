@@ -1,0 +1,86 @@
+.cardfees-container {
+    display: flex;
+    justify-content: space-evenly;
+    background-color: var(--primary-dark-2);
+    padding: 1em;
+    width: 55em;
+    height: auto;
+}
+
+.cardfee {
+    color: var(--black);
+    background-color: var(--white);
+    border: 1px solid var(--primary-light-2);
+    border-radius: 0.5em;
+    padding: 0em 0.5em 0.5em 0.5em;
+    width: 16em;
+    max-height: 35em;
+    box-sizing: border-box;
+
+}
+
+.title-fee {
+    text-align: center;
+}
+
+
+ul {
+    list-style: none;
+}
+
+.form-fee {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-fee input {
+    margin: 0.5em 0;
+}
+
+li {
+
+    margin: 0.5em 0em;
+}
+
+
+.fee {
+    border: 2px solid var(--primary);
+    padding: 1em;
+    border-radius: 0.5em;
+}
+
+label {
+    margin: 0;
+}
+
+.fee:hover {
+
+    background: var(--primary-light-2);
+}
+
+.fee.selected {
+    border: 2px solid var(--primary-dark-2);
+    background: var(--primary-light);
+}
+
+.cardpaid {
+    background-color: rgb(238, 234, 234);
+}
+
+.centercardtext {
+    text-align: center;
+}
+
+.btncentercard {
+    margin-top: 1em;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.feepaid {
+    background-color: #a9a3db;
+    padding: 1em;
+    border-radius: 0.5em;
+    border: 2px solid var(--primary-dark-1);
+}

@@ -1,0 +1,96 @@
+.fees-between-dates-container {
+  width: 100%;
+  display: flex;
+  max-height: 75vh;
+  /* Ajustá según el diseño */
+  overflow-y: auto;
+  position: relative;
+  background-color: var(--primary-dark-2);
+}
+
+.fees-between-dates-container {
+  width: 100%;
+  display: flex;
+  max-height: 75vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.fees-between-dates-content {
+  width: 25%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.fees-between-dates-filters {
+  width: 100%;
+  background-color: var(--primary-dark-2);
+  border-radius: 0.625em;
+}
+
+.fees-between-dates-filter-option {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.fees-between-dates-filter-title {
+  width: 90%;
+  padding-bottom: 0.5em;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  color: var(--secondary-light-2);
+  margin-top: 1em;
+}
+
+.fees-between-dates-filter-title h3 {
+  color: var(--white);
+}
+
+.filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 1em;
+  margin-top: 0.5em;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.fees-between-dates-container .input {
+  margin: 0.5em 1em;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.fees-between-dates-container .input label {
+  margin-bottom: 0.3rem;
+  color: var(--secondary-light-1);
+}
+
+.fees-between-dates-container.input select {
+  height: 2em;
+  overflow-y: auto;
+}
+
+.fees-between-dates-container .input select option {
+  border-radius: 0.8em;
+}
+
+.fees-between-dates-btn {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 1em 0;
+}
+
+.preview-list-container {
+  width: 75%;
+  background-color: var(--white);
+  overflow-y: auto;
+  padding: 1em;
+}

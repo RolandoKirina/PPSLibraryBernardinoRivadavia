@@ -1,0 +1,103 @@
+.renewe-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--white);
+    background-color: var(--primary-dark-2);
+}
+
+.renewe-container .content-table {
+    margin-bottom: 1em;
+}
+
+.renewe-input {
+    display: flex;
+    gap: 2em;
+    align-items: end;
+    /* los inputs van a quedar alineados entre sí */
+}
+
+.renewe-inputs-items {
+
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Centra todo lo que haya dentro, incluida la tabla */
+    justify-content: space-between;
+    max-height: 70vh;
+    /* Ajustá según el diseño */
+    overflow-y: auto;
+    /* Habilita el scroll vertical */
+    padding-right: 1em;
+    /* Opcional: espacio para el scroll */
+}
+
+
+.renewe-inputs-container {
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 1em 0em;
+    align-items: center;
+    width: 90%;
+
+}
+
+.renewe-inputs-items .renewe-input {
+    height: auto;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.renewe-input div {
+    width: 40%;
+}
+
+.renewe-inputs-items .renewe-input div {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.add-renew-btn {
+    width: 98%;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.add-renew-btn button {
+    background-color: var(--primary-light-2);
+}
+
+.renewe-table-size {
+    width: 90%;
+}
+
+.renewe-title {
+    width: 100%;
+    color: var(--secondary-light-2);
+}
+
+.renewe-edit-form-size {
+    width: 30em;
+    margin: 1em 0;
+}
+
+.renewe-table-size .content-table {
+    padding: 0;
+}
+
+.renewe-table-size .content-table .table {
+    width: 100%;
+}
+
+.renewe-table-size .content-table .pagination {
+    width: 100%;
+}
+
+.renewe-table-size .content-table .add-renew-btn {
+    width: 100%;
+}

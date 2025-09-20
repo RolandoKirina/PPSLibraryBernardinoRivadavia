@@ -1,0 +1,92 @@
+.form-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 20em;
+  margin: 0.5rem;
+}
+
+.form-details label {
+  margin-bottom: 0.3rem;
+  font-weight: bold;
+  text-align: left;
+  width: 100%;
+}
+
+.form-details input,
+.form-details select {
+  height: 3em;
+  width: 100%;
+  max-width: 20em;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.items-info-details-form-accordion {
+  display: flex;
+  flex-direction: row;
+}
+
+.form-details-checkbox {
+
+  width: 20em;
+  display: flex;
+  flex-direction: column;
+  margin: 0.5rem;
+
+}
+
+
+
+
+.checkbox-group {
+  display: flex;
+
+  gap: 1em;
+}
+
+.checkbox-group .checkbox-size {
+  margin-right: 0.3em;
+  width: 0.7em;
+  height: 0.7em;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+}
+
+.marginbtn {
+  margin: 1em;
+}
+
+.divbtncontainer {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin: 1em 0 1em 0;
+}
+
+.btn-list-formeditpartner {
+  display: flex;
+  align-items: center;
+  /* margin: 1em 0em; */
+  /* margin-left: 8em; */
+  width: 100%;
+  justify-content: space-evenly;
+  /* gap: 1em; */
+  margin: 1em 0;
+}
+
+.partner-state-btns {
+  display: flex;
+  margin: 0.5rem;
+  width: 20em;
+  justify-content: space-between;
+}
+
+/*empuja el ultimo btn a la derecha*/
+/* .btn-list-formeditpartner> *:last-child {
+  margin-left: auto;
+} */

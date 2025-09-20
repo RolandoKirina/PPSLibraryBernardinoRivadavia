@@ -1,0 +1,32 @@
+si los formularios son iguales, simples y lo unico que difiere es en cantidad de labels e inputs junto con sus textos, se puede pasar un objeto por la propiedad 'fields' y se generaran los inputs y labels usando map.
+
+ademas se puede pasar una funcion por la propiedad submit para por ejemplo ver por console log la data del formulario.
+
+ej:
+
+<GenericForm fields={formFields} onSubmit={(data) => console.log('Formulario enviado:', data)}
+
+ const formFields = [
+    { label: 'Código de Libro', name: 'bookCode', type: 'text' },
+    { label: 'Título', name: 'title', type: 'text' },
+    { label: 'Fecha Prevista', name: 'expectedDate', type: 'date' },
+    { label: 'Fecha de Devolución', name: 'returnDate', type: 'date' },
+    {
+        label: 'Rol',
+        name: 'role',
+        type: 'select',
+        options: [
+        { label: 'Elige un rol', value: '' },
+        { label: 'Administrador', value: 'admin' }
+        ]
+    },
+    { label: 'Devuelto', name: 'returned', type: 'checkbox' },
+    { label: 'Renovación', name: 'renewal', type: 'checkbox' }
+];
+
+title: si el form esta puesto por ejemplo en una nueva pagina y necesita un titulo en el form, esta propiedad sirve para colocarlo
+
+ej: 
+
+<GenericForm title={'Agregar libro de autor'} fields={formFields} onSubmit={(data) => console.log('Formulario enviado:', data)}
+
