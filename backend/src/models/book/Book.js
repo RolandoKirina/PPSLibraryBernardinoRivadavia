@@ -1,7 +1,7 @@
-import SEQUELIZE from "../configs/database.js";
+import sequelize from '../../configs/database.js';
 import { DataTypes } from "sequelize";
 
-const BOOK = SEQUELIZE.define("Book", 
+const Book = sequelize.define("Book", 
     {
         id: {
             autoIncrement:true,
@@ -26,4 +26,4 @@ const BOOK = SEQUELIZE.define("Book",
     });
 
 
-export default BOOK;
+export default Book;

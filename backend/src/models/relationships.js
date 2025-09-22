@@ -1,0 +1,1 @@
+//mas adelante declarar aqui de forma centralizada las relaciones entre los modelos

@@ -1,7 +1,7 @@
-import BOOK from "../models/Book.js";
+import Book from "../models/book/Book.js";
 
 
-export const  getAll = async () => {
+export const getAll = async () => {
 
-    return  await BOOK.findAll();
+    return  await Book.findAll();
 } 

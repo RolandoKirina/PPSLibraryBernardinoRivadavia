@@ -1,15 +1,15 @@
 import express from "express";
-import SEQUELIZE from "./configs/database.js";
+import sequelize from "./configs/database.js";
 import BookRoutes from "./routes/v1/BookRoutes.js";
 
-const APP = express();
+const app = express();
 
-APP.use(express.json());
+app.use(express.json());
 
-SEQUELIZE.sync().then(() => {
+sequelize.sync().then(() => {
     console.log("se sincronizo la base");
 })
 
-APP.use("/api/v1/books",BookRoutes);
+app.use("/api/v1/books",BookRoutes);
 
-export default APP;
+export default app;
