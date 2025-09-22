@@ -16,11 +16,13 @@ import ReneweIcon from '../../../assets/img/renewe-icon.svg';
 import PopUp from '../../common/popup-table/PopUp';
 import ConfirmMessage from '../../common/confirmMessage/ConfirmMessage';
 import Btn from '../../common/btn/Btn';
-
-import { authMock } from '../../../data/mocks/authMock';
+import { useAuth } from '../../../auth/AuthContext';
+import roles from '../../../auth/roles';
 
 export default function Return() {
     //cuando se usan los inputs de partner se filtran las devoluciones y se pueden renovar, devolver o devolver todos
+
+    const { auth } = useAuth();
 
     const [confirmReturnPopup, setConfirmReturnPopup] = useState(false);
     const [confirmRenewePopup, setConfirmRenewePopup] = useState(false);
@@ -89,7 +91,7 @@ export default function Return() {
 
     let columnsReturnForm = [];
 
-    if (authMock.role === 'admin') {
+    if (auth.role === roles.admin) {
         columnsReturnForm = [
             { header: 'Código del libro', accessor: 'bookCode' },
             { header: 'Título', accessor: 'bookTitle' },
@@ -132,7 +134,7 @@ export default function Return() {
             }
         ];
     }
-    else if (authMock.role === 'reader') {
+    else if (auth.role === roles.user) {
         columnsReturnForm = [
             { header: 'Código del libro', accessor: 'bookCode' },
             { header: 'Título', accessor: 'bookTitle' },
@@ -168,7 +170,7 @@ export default function Return() {
                 {popupView === 'default' && (
                     <>
                         <form>
-                            {authMock.role === 'admin' && (
+                            {auth.role === 'admin' && (
                                 <SearchPartner menu={setPopupView} partnerData={
                                     {
                                         partnerName: partnerData.partnerName,
@@ -184,7 +186,7 @@ export default function Return() {
 
                                 <Table columns={columnsReturnForm} data={items} />
 
-                                {authMock.role === 'admin' && (
+                                {auth.role === 'admin' && (
                                     <div className='add-book-to-lend'>
                                         <Btn text={'Devolver todos'} onClick={() => setConfirmReturnAllPopup(true)} />
                                     </div>

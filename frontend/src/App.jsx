@@ -29,32 +29,35 @@ function App() {
           <Route path='login' element={<LoginSection />} />
           <Route path='register' element={<RegisterSection />} />
 
-          <Route element={<ProtectedRoute requiredRoles={routePermissions.employees}  />}>
+          <Route element={<ProtectedRoute requiredRoles={routePermissions.employees} />}>
             <Route path='employees' element={<EmployeeSection />} />
-            <Route path='options' element={<OptionSection />} />
+
             <Route path='options/partner-categories' element={<PartnerCategorySection />} />
             <Route path='options/remove-partner-reasons' element={<RemovePartnerReasonSection chooseMode={false} />} />
-            <Route path='options/loan-amount-group' element={<LoanAmountSection />} />
-            <Route path='options/loan-materials' element={<LoanMaterialSection />} />
+
             <Route path='partners' element={<PartnerSection />} />
             <Route path='fees' element={<FeeSection />} />
 
           </Route>
 
 
-<Route element={<ProtectedRoute requiredRoles={routePermissions.loggedAccess} />}>
-          <Route path='loans' element={<LoanSection openRenewes={false} />} />
-          <Route path='loans/renewes' element={<LoanSection openRenewes={true} />} />
-          <Route path='loans/filters/partner' element={<LoanSection openRenewes={false} pendientBooks={true} />} />
-  </Route>
+          <Route element={<ProtectedRoute requiredRoles={routePermissions.loggedAccess} />}>
+            <Route path='loans' element={<LoanSection openRenewes={false} />} />
+            <Route path='loans/renewes' element={<LoanSection openRenewes={true} />} />
+            <Route path='loans/filters/partner' element={<LoanSection openRenewes={false} pendientBooks={true} />} />
 
-   <Route element={<ProtectedRoute requiredRoles={routePermissions.allAccess}  />}>
-          <Route path='books' element={<BookSection />} />
-          <Route path='authors' element={<AuthorSection />} />
-  </Route>
+            <Route path='options' element={<OptionSection />} />
+            <Route path='options/loan-amount-group' element={<LoanAmountSection />} />
+            <Route path='options/loan-materials' element={<LoanMaterialSection />} />
+          </Route>
 
-      
-  <Route path="*" element={<NotFound />} />
+          <Route element={<ProtectedRoute requiredRoles={routePermissions.allAccess} />}>
+            <Route path='books' element={<BookSection />} />
+            <Route path='authors' element={<AuthorSection />} />
+          </Route>
+
+
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </BrowserRouter>

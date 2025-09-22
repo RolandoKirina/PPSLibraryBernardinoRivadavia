@@ -11,9 +11,11 @@ import BackviewBtn from '../../common/backviewbtn/BackviewBtn';
 import SaveIcon from '../../../assets/img/save-icon.svg';
 import { books } from '../../../data/mocks/authors';
 import { useEffect } from 'react';
-import { authMock } from '../../../data/mocks/authMock';
+import { useAuth } from '../../../auth/AuthContext';
+import roles from '../../../auth/roles.js';
 
 export default function AuthorBooks({ authorSelected, deleteAuthorSelected, updateAuthorSelectedBooks, method, createAuthorItem, updateAuthorItem }) {
+    const { auth } = useAuth();
     const [seeAllButton, setSeeAllButton] = useState('Prestados');
     const [confirmPopup, setConfirmPopup] = useState(false);
     const [deletePopup, setDeletePopup] = useState(false);
@@ -83,7 +85,7 @@ export default function AuthorBooks({ authorSelected, deleteAuthorSelected, upda
 
     let mainAuthorBooksColumns = [];
 
-    if (authMock.role === 'admin') {
+    if (auth.role === roles.admin) {
         mainAuthorBooksColumns = [
             { header: 'Código del libro', accessor: 'bookCode' },
             { header: 'Título', accessor: 'bookTitle' },
@@ -93,7 +95,7 @@ export default function AuthorBooks({ authorSelected, deleteAuthorSelected, upda
             { header: 'CodLing', accessor: 'codLing' }
         ];
     }
-    else if (authMock.role === 'reader') {
+    else if ((auth.role === roles.user) || (auth.role === roles.reader)) {
         mainAuthorBooksColumns = [
             { header: 'Código del libro', accessor: 'bookCode' },
             { header: 'Título', accessor: 'bookTitle' },
@@ -192,7 +194,7 @@ export default function AuthorBooks({ authorSelected, deleteAuthorSelected, upda
                             <div className='add-loan-form-inputs'>
                                 <div className='add-loan-retire-date input'>
                                     <label>Nombre <span className='required'>*</span></label>
-                                    {authMock.role === 'admin' ? (
+                                    {auth.role === roles.admin ? (
                                         <input type='text' name='authorName' value={authorData.authorName} onChange={handleAuthorChange} />
                                     ) : (
                                         <p className='readonly-field'>{authorSelected.authorName}</p>
@@ -201,7 +203,7 @@ export default function AuthorBooks({ authorSelected, deleteAuthorSelected, upda
                                 </div>
                                 <div className='add-loan-retire-date input'>
                                     <label>Nacionalidad <span className='required'>*</span></label>
-                                    {authMock.role === 'admin' ? (
+                                    {auth.role === roles.admin ? (
                                         <input type='text' name='nationality' value={authorData.nationality} onChange={handleAuthorChange} />
                                     ) : (
                                         <p className='readonly-field'>{authorSelected.nationality}</p>
@@ -213,16 +215,21 @@ export default function AuthorBooks({ authorSelected, deleteAuthorSelected, upda
                             </div>
                             <Table columns={mainAuthorBooksColumns} data={authorData.books}>
                                 <div className='main-author-btns'>
-                                    {authMock.role === 'admin' && (
-                                        <Btn variant={'primary'} onClick={() => setPopupView('addBook')} text={'Administrar libros'} />
+                                    {auth.role === roles.admin && (
+                                        <>
+                                            <Btn variant={'primary'} onClick={() => setPopupView('addBook')} text={'Administrar libros'} />
+
+                                            <Btn variant={'primary'} text={seeAllButton} onClick={() => handleSetAllbutton()} />
+                                        </>
+
                                     )}
 
-                                    <Btn variant={'primary'} text={seeAllButton} onClick={() => handleSetAllbutton()} />
+
                                 </div>
                             </Table>
 
                             <div className='save-changes-lend-books'>
-                                {authMock.role == 'admin' && (
+                                {auth.role === roles.admin && (
                                     <Btn text={'Guardar'} onClick={() => setConfirmPopup(true)} icon={<img src={SaveIcon} alt='saveIconButton' />} />
                                 )}
                             </div>

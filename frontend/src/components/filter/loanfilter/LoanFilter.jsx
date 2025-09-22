@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import './LoanFilter.css';
-import { authMock } from '../../../data/mocks/authMock';
+import { useAuth } from '../../../auth/AuthContext';
+import roles from '../../../auth/roles';
 
 export default function LoanFilter() {
+  const { auth } = useAuth();
+
   const [formData, setFormData] = useState({
     type: 'room',
     state: 'current',
@@ -70,7 +73,7 @@ export default function LoanFilter() {
             ))}
           </div>
 
-          {authMock.role === 'admin' && (
+          {auth.role === roles.admin && (
             <div className="loan-form-checkbox-group">
               <h4>Tipo de material retirado</h4>
               <label>
@@ -130,7 +133,7 @@ export default function LoanFilter() {
             <input type="date" name="returnEndDate" value={formData.returnEndDate} onChange={handleChange} />
           </div>
 
-          {authMock.role === 'admin' && (
+          {auth.role === roles.admin && (
             <div className="loan-form-checkbox-group">
               <h4>Socio</h4>
               <label>Nombre</label>

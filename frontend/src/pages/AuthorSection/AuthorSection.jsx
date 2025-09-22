@@ -11,9 +11,12 @@ import AuthorBooks from '../../components/author-components/AuthorBooks/AuthorBo
 import { useEntityManager } from '../../hooks/useEntityManager';
 import { mockAuthors } from '../../data/mocks/authors';
 
-import { authMock } from '../../data/mocks/authMock';
+import { useAuth } from '../../auth/AuthContext';
+import roles from '../../auth/roles';
 
 export default function AuthorSection() {
+    const { auth } = useAuth();
+
     const [deletePopup, setDeletePopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
@@ -87,7 +90,7 @@ export default function AuthorSection() {
 
     let columns = [];
 
-    if (authMock.role === 'admin') {
+    if (auth.role === roles.admin) {
         columns = [
             { header: 'Nombre', accessor: 'authorName' },
             { header: 'Nacionalidad', accessor: 'nationality' },
@@ -119,7 +122,7 @@ export default function AuthorSection() {
             }
         ];
     }
-    else if (authMock.role === 'reader') {
+    else if ((auth.role === roles.user || auth.role === roles.reader)) {
         columns = [
             { header: 'Nombre', accessor: 'authorName' },
             { header: 'Nacionalidad', accessor: 'nationality' },
@@ -147,7 +150,7 @@ export default function AuthorSection() {
                 actions={
                     <>
                         <div className='author-actions'>
-                            {authMock.role === 'admin' && (
+                            {auth.role === roles.admin && (
                                 <div className='btn-new'>
                                     <Btn text={'Nuevo'} onClick={() => setAddPopup(true)} icon={<img src={PlusIcon} alt='plusIconBtn' />} variant="primary" />
 

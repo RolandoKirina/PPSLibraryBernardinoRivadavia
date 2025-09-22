@@ -17,10 +17,11 @@ import AddRenewe from '../addrenewe/AddRenewe.jsx';
 import { useEntityManager } from '../../../hooks/useEntityManager.js';
 import { mockRenewes } from '../../../data/mocks/loans.js';
 
-import { authMock } from '../../../data/mocks/authMock.js';
-
+import { useAuth } from '../../../auth/AuthContext.jsx';
+import roles from '../../../auth/roles.js';
 
 export default function Renewe({ title, isPopup }) {
+    const { auth } = useAuth();
     const [deletePopup, setDeletePopup] = useState(false);
     const [popupView, setPopupView] = useState("default");
     const [selected, setSelected] = useState(null);
@@ -52,7 +53,7 @@ export default function Renewe({ title, isPopup }) {
 
     let columns = [];
 
-    if (authMock.role === 'admin') {
+    if (auth.role === roles.admin) {
         columns = [
             { header: 'Número socio', accessor: 'partnerNumber' },
             { header: 'Socio', accessor: 'partnerFullName' },
@@ -96,7 +97,7 @@ export default function Renewe({ title, isPopup }) {
             }
         ];
     }
-    else if (authMock.role === 'reader') {
+    else if (auth.role === roles.user) {
         columns = [
             { header: 'Titulo libro', accessor: 'bookTitle' },
             { header: 'Fecha reserva', accessor: 'reneweDate' },
@@ -144,7 +145,7 @@ export default function Renewe({ title, isPopup }) {
                                 </h2>
                             </div>
                             <Table columns={columns} data={reneweItems}>
-                                {authMock.role === 'admin' && (
+                                {auth.role === roles.admin && (
                                     <div className='add-renew-btn'>
                                         <Btn variant={'primary'} text={'Nueva reserva'} onClick={() => setPopupView('addRenewe')} icon={<img src={PlusIcon} alt={PlusIcon} />} />
                                     </div>

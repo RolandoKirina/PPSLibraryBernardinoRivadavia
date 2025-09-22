@@ -4,20 +4,23 @@ import PrintIcon from '../../../assets/img/print-icon.svg';
 import ReserveIcon from '../../../assets/img/reserve-icon.svg';
 import ReturnIcon from '../../../assets/img/return-icon.svg';
 import Btn from '../../common/btn/Btn';
-import { authMock } from '../../../data/mocks/authMock';
+import { useAuth } from '../../../auth/AuthContext';
+import roles from '../../../auth/roles';
 
 export default function LoanButtons({ displayLoanform, displayReturnForm, displayListingsPopup, displayRenewe }) {
+    const { auth } = useAuth();
+
     return (
         <>
             <div className='loan-buttons'>
                 <div className='loan-options'>
-                    {authMock.role === 'admin' && (
+                    {auth.role === roles.admin && (
                         <Btn icon={<img src={PlusIcon} />} onClick={displayLoanform} text={'Nuevo'} variant="primary" />
                     )}
 
                     <Btn icon={<img src={ReturnIcon} />} onClick={displayReturnForm} text={'Devoluciones'} variant="primary" />
 
-                    {authMock.role === 'admin' && (
+                    {auth.role === roles.admin && (
                         <Btn icon={<img src={PrintIcon} />} onClick={displayListingsPopup} text={'Listados'} variant="primary" />
                     )}
 

@@ -10,21 +10,21 @@ import { useNavigate } from 'react-router-dom';
 export default function RegisterSection() {
 
 
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   const { auth, login } = useContext(AuthContext);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  if (auth.isAuthenticated ) {
-   navigate('/options');
+  if (auth.isAuthenticated) {
+    navigate('/options');
     return null;
   }
 
- const handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     login({ name, role: 'reader' });
-  
+
   };
 
   return (
@@ -43,28 +43,28 @@ export default function RegisterSection() {
                 <div className='register-inputs'>
                   <div className="input">
                     <label htmlFor="name">Nombre completo</label>
-                    <input id="name" type="text" placeholder="Nombre completo" 
-                onChange={(e) => setName(e.target.value)} />
+                    <input id="name" type="text" placeholder="Nombre completo"
+                      onChange={(e) => setName(e.target.value)} />
                   </div>
 
                   <div className="input">
                     <label htmlFor="email">Correo electrónico</label>
                     <input id="email" type="email" placeholder="Correo electrónico"
-                    value={email}
-  onChange={(e) => setEmail(e.target.value)} />
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)} />
                   </div>
 
                   <div className="input">
                     <label htmlFor="password">Contraseña</label>
-                    <input id="password" type="password" placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)}  />
+                    <input id="password" type="password" placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)} />
                   </div>
                 </div>
 
                 <Btn
-                type="submit"
+                  type="submit"
                   variant={'primary'}
                   text={'Registrarse'}
-            
+
                 />
 
                 <div className='already-account-msg'>
