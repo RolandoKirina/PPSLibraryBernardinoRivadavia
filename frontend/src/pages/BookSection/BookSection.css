@@ -102,3 +102,7 @@
 .books-partners-amount-size {
   width: 40%;
 }
+
+.hidden{
+  display: none;
+}

@@ -58,12 +58,12 @@ export default function Header() {
                 </Link>
               </div>
             ) : (
-              <div>
-              <h3 className="header-msg">
-                Bienvenido{' '}
-                <span className="header-name">{auth.name}</span>
-              </h3>
-               <Btn variant="primary" text="Cerrar sesión" onClick={logout} />
+              <div className='header-msg'>
+                <h3>
+                  Bienvenido {' '}
+                  <span className="header-name">{auth.name}</span>
+                </h3>
+               <Btn variant="logout" text="Cerrar sesión" onClick={logout} />
                </div>
             )}
           </div>

@@ -87,7 +87,9 @@
 
 
 .header-msg {
+  display: flex;
   color: var(--white);
+  align-items: center;
 }
 
 .header-name {

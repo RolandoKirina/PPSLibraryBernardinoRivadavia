@@ -166,3 +166,43 @@ button:disabled {
   width: 35em;
   height: 60%;
 }
+
+.btn-logout {
+  background: var(--primary-light);
+  color: white;
+  border: none;
+  padding: 0.5em 0.5em;
+  font-size: 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+.btn-logout:hover {
+  background: var(--primary-light-2);
+  transform: scale(1.05);
+}
+
+.btn-logout:active {
+  transform: scale(0.95);
+}
+
+/* Efecto onda al hacer click */
+.btn-logout::after {
+  content: "";
+  position: absolute;
+  width: 300%;
+  height: 300%;
+  left: 50%;
+  top: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%;
+  transition: transform 0.5s ease;
+}
+
+.btn-logout:active::after {
+  transform: translate(-50%, -50%) scale(1);
+}

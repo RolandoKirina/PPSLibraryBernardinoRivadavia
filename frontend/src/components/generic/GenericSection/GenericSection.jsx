@@ -33,9 +33,10 @@ export default function GenericSection({ title, filters, columns, data, popups, 
                                     </PopUp>
                                 )
                             ))}
-                            <div className='actions'>
-                                {actions && actions}
-                            </div>
+                            {actions && (
+  <div className="actions">
+    {actions}
+  </div>)}
 
                         </Table>
                     )}

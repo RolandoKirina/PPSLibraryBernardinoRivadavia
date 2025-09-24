@@ -22,8 +22,12 @@ import FormEditBook from '../../components/book-components/formeditbook/FormEdit
 import PartnersBooks from '../../components/partner-components/partnersbooks/PartnersBooks.jsx';
 import LostBooks from '../../components/book-components/lostbooks/LostBooks.jsx';
 import BookRanking from '../../components/book-components/bookranking/BookRanking.jsx';
+import { useAuth } from '../../auth/AuthContext';
+import roles from '../../auth/roles';
 
 const BookSection = () => {
+
+  const { auth } = useAuth();
 
 
   const [selectedItem, setSelectedItem] = useState(null);
@@ -38,59 +42,71 @@ const BookSection = () => {
 
 
   const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(books, "books");
+let columns =[];
+   if (auth.role === roles.admin) {
 
-  const columns = [
-    { header: 'Título', accessor: 'title' },
-    { header: 'Código de inventario', accessor: 'code_inventory' },
-    { header: 'Codigo de CDU', accessor: 'codeCDU' },
-    {
-      header: 'Borrar',
-      accessor: 'delete',
-      className: "action-buttons",
-      render: (_, row) => (
-        <button className="button-table"
-          onClick={() => {
-            setPopUpDelete(true)
-            setSelectedItem(row)
-          }}>
+         columns = [
+          { header: 'Título', accessor: 'title' },
+          { header: 'Código de inventario', accessor: 'code_inventory' },
+          { header: 'Codigo de CDU', accessor: 'codeCDU' },
+          {
+            header: 'Borrar',
+            accessor: 'delete',
+            className: "action-buttons",
+            render: (_, row) => (
+              <button className="button-table"
+                onClick={() => {
+                  setPopUpDelete(true)
+                  setSelectedItem(row)
+                }}>
 
-          <img src={DeleteIcon} alt="Borrar" />
-        </button>
-      )
-    },
-    {
-      header: 'Editar',
-      accessor: 'edit',
-      className: "action-buttons",
-      render: (_, row) => (
-        <button className="button-table"
-          onClick={() => {
-            setPopupEdit(true)
-            setSelectedItem(row)
-          }}
+                <img src={DeleteIcon} alt="Borrar" />
+              </button>
+            )
+          },
+          {
+            header: 'Editar',
+            accessor: 'edit',
+            className: "action-buttons",
+            render: (_, row) => (
+              <button className="button-table"
+                onClick={() => {
+                  setPopupEdit(true)
+                  setSelectedItem(row)
+                }}
 
-        >
-          <img src={EditIcon} alt="Editar" />
-        </button>
-      )
-    },
-    {
-      header: 'Ver detalle',
-      accessor: 'details',
-      className: "action-buttons",
-      render: (_, row) => (
-        <button className="button-table">
-          <img src={DetailsIcon} alt="Detalles" onClick={
-            () => {
-              setPopUpDetail(true)
-              setSelectedItem(row)
-            }
-          } />
-        </button>
-      )
-    }
-  ];
+              >
+                <img src={EditIcon} alt="Editar" />
+              </button>
+            )
+          },
+          {
+            header: 'Ver detalle',
+            accessor: 'details',
+            className: "action-buttons",
+            render: (_, row) => (
+              <button className="button-table">
+                <img src={DetailsIcon} alt="Detalles" onClick={
+                  () => {
+                    setPopUpDetail(true)
+                    setSelectedItem(row)
+                  }
+                } />
+              </button>
+            )
+          }
+        ];
 
+   }
+  else if ((auth.role === roles.user || auth.role === roles.reader)) {
+
+    
+         columns = [
+          { header: 'Título', accessor: 'title' },
+          { header: 'Código de inventario', accessor: 'code_inventory' },
+          { header: 'Codigo de CDU', accessor: 'codeCDU' }];
+
+  }
   const booksPopUp = [
     {
       key: 'deletePopup',
@@ -179,31 +195,29 @@ const BookSection = () => {
     const duplicatedBook = { ...bookData, id: newId };
     createItem(duplicatedBook);
   }
-  return (
+return (
     <>
+      <GenericSection 
+  title="Listado de libros" 
+  filters={<BookFilter />}
+  columns={columns} 
+  data={items} 
+  popups={booksPopUp}
+  actions={
+    auth.role === roles.admin ? (
+      <div className="listbtns">
+        <Btn icon={<img src={PlusIcon} />} onClick={() => setPopupAdd(true)} text="Agregar libro" variant="primary" />
+        <Btn icon={<img src={PlusIcon} />} onClick={() => setPopUpDuplicate(true)} text="Duplicar libro" variant="primary" />
+        <Btn icon={<img src={BookIcon} />} onClick={() => setPopUpRanking(true)} text="Ranking de libros" variant="primary" />
+        <Btn icon={<img src={ReaderIcon} />} onClick={() => setPopUpBooksPartners(true)} text="Libros y socios" variant="primary" />
+        <Btn icon={<img src={LostBookIcon} />} onClick={() => setPopUpLostBooks(true)} text="Libros perdidos" variant="primary" />
+      </div>
+    ) : null
+  }
+/>
 
-      <GenericSection title="Listado de libros" filters={<BookFilter />}
-        columns={columns} data={items} popups={booksPopUp}
-        actions={
-          <div className='listbtns'>
-            <Btn icon={<img src={PlusIcon} />} onClick={() => setPopupAdd(true)} text={'Agregar libro'} variant={"primary"} />
-            <Btn icon={<img src={PlusIcon} />} onClick={() => setPopUpDuplicate(true)} text={'Duplicar libro'} variant={"primary"} />
-            <Btn icon={<img src={BookIcon} />} onClick={() => setPopUpRanking(true)} text={'Ranking de libros'} variant={"primary"} />
-            <Btn icon={<img src={ReaderIcon} />} onClick={() => setPopUpBooksPartners(true)} text={'Libros y socios'} variant={"primary"} />
-            <Btn icon={<img src={LostBookIcon} />} onClick={() => setPopUpLostBooks(true)} text={'Libros perdidos'} variant={"primary"} />
-          </div>
-
-        }
-
-      ></GenericSection>
-
-
-
-
-
-
+     
     </>
   );
-};
-
+}
 export default BookSection;
