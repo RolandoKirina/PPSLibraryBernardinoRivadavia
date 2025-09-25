@@ -6,7 +6,7 @@ export const getAllLoans = async (req, res) => {
         res.send(loans);
     }
     catch (error) {
-        console.error(e);
+        console.error(error);
         res.status(500).json({ msg: "Internal server error" });
     }
 }
@@ -28,7 +28,7 @@ export const getLoan = async (req, res) => {
         res.send(loan);
     }
     catch (error) {
-        console.error(e);
+        console.error(error);
         res.status(500).json({ msg: "Internal server error" });
     }
 }
@@ -45,7 +45,7 @@ export const createLoan = async (req, res) => {
         res.status(201).send(newLoan);
     }
     catch (error) {
-        console.error(e);
+        console.error(error);
         res.status(500).json({ msg: "Internal server error" });
     }
 }
@@ -67,7 +67,7 @@ export const updateLoan = async (req, res) => {
         res.status(201).send(newLoan);
     }
     catch (error) {
-        console.error(e);
+        console.error(error);
         res.status(500).json({ msg: "Internal server error" });
     }
 }
@@ -84,7 +84,7 @@ export const removeLoan = async (req, res) => {
         res.status(200).json({ msg: "Successfuly deleted loan with id: "+id});
     }
     catch (error) {
-        console.error(e);
+        console.error(error);
         res.status(500).json({ msg: "Internal server error" });
     }
 }
