@@ -12,6 +12,12 @@ import LoanTypeRoutes from './routes/v1/loan/LoanTypeRoutes.js';
 import AuthorsRoutes from './routes/v1/author/AuthorsRoutes.js';
 import BookAuthor from './routes/v1/author/BookAuthorRoutes.js';
 
+//options
+import BookTypeGroupListRoutes from './routes/v1/options/BookTypeGroupListRoutes.js';
+import BookTypeGroupRoutes from './routes/v1/options/BookTypeGroupRoutes.js';
+import EmployeesRoutes from './routes/v1/options/EmployeesRoutes.js';
+import RemoveReasonRoutes from './routes/v1/options/RemoveReasonRoutes.js';
+
 const app = express();
 
 app.use(express.json());
@@ -32,6 +38,12 @@ app.use("/api/v1/loan-types", LoanTypeRoutes);
 //author
 app.use("/api/v1/authors", AuthorsRoutes);
 app.use("/api/v1/book-authors", BookAuthor);
+
+//options
+app.use("/api/v1/book-type-groups-list", BookTypeGroupListRoutes);
+app.use("/api/v1/book-type-groups", BookTypeGroupRoutes);
+app.use("/api/v1/employees", EmployeesRoutes);
+app.use("/api/v1/remove-reasons", RemoveReasonRoutes);
 
 
 export default app;
