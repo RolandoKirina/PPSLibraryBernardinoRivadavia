@@ -1,4 +1,4 @@
-import sequelize from "../configs/database.js";
+import sequelize from "../../configs/database.js";
 import { DataTypes } from "sequelize";
 
 const Loan = sequelize.define("Loan", {
