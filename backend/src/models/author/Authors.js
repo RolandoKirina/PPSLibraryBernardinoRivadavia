@@ -1,9 +1,7 @@
-/*
-
 import sequelize from "../../configs/database.js";
 import { DataTypes } from "sequelize";
 
-const Entidad = sequelize.define("Nombre", 
+const Authors = sequelize.define("Authors", 
     {
         id: {
             autoIncrement:true,
@@ -11,17 +9,21 @@ const Entidad = sequelize.define("Nombre",
             type: DataTypes.INTEGER,
             field:"Id"
         },
+        name: {
+            type: DataTypes.STRING(100),
+            field: 'Nombre'
+        },
+        nationality: {
+            type: DataTypes.STRING(50),
+            field: 'Nacionalidad'
+        }
     },
     {
         underscored: true,
-        tableName: "nombre_Tabla_igual_a_db", 
+        tableName: "Autores", 
         timestamps:false,
         logging:true
     }
 );
 
-export default Entidad;
-
-
-
-*/
+export default Authors;
