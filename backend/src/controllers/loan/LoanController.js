@@ -64,7 +64,7 @@ export const updateLoan = async (req, res) => {
         }
 
         const newLoan = await LoanService.updateLoan(id, updates);
-        res.status(201).send(newLoan);
+        res.status(200).send(newLoan);
     }
     catch (error) {
         console.error(error);

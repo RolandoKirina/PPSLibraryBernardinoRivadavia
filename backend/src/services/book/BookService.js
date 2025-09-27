@@ -9,3 +9,25 @@ export const getAllBooks = async () => {
 export const getBook = async (id) => {
     return await BookRepository.getById(id);
 };
+
+
+export const createBook = async( book) => {
+    return await BookRepository.create(book);
+}
+
+export const updateBook = async (id, data) => {
+  const updatedBook = await BookRepository.update(id, data);
+  if (!updatedBook) {
+    
+    throw new Error("Book not found or not updated");
+  }
+  return updatedBook;
+};
+
+export const deleteBook = async (id) => {
+    const deletedBook = await BookRepository.remove(id);
+    if(!deletedBook){
+        throw new Error("Book not found or not updated");
+    }
+    return deletedBook;
+}
