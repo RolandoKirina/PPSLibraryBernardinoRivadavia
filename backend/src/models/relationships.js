@@ -12,7 +12,6 @@ import BookReservations from '../models/loan/BookReservations.js';
 import BookTypeGroup from '../models/options/BookTypeGroup.js';
 import BookTypeGroupList from '../models/options/BookTypeGroupList.js';
 import Employees from '../models/options/Employees.js';
-import RemoveReason from '../models/options/RemoveReason.js';
 
 
 //authors
@@ -27,4 +26,14 @@ Loan.hasMany(Employees, { foreignKey: 'id' });
 Employees.belongsTo(Loan, { foreignKey: 'id' });
 
 //BookReservations se relaciona con Libro
+//BookReservations.belongsTo()
 
+Reservations.hasMany(BookReservations, { foreignKey: 'reservationId'});
+BookReservations.belongsTo(Reservations, { foreignKey: 'reservationId'});
+
+Loan.hasMany(LoanBook, { foreignKey: 'loanId' });
+LoanBook.belongsTo(Loan, { foreignKey: 'loanId' });
+
+//BookTypeGroup se relaciona con BookType 
+BookTypeGroupList.hasMany(BookTypeGroup, { foreignKey: 'groupId' });
+BookTypeGroup.belongsTo(BookTypeGroupList, { foreignKey: 'groupId' });

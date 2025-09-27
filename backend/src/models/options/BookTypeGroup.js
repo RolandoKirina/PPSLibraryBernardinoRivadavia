@@ -8,7 +8,11 @@ const BookTypeGroup = sequelize.define("BookTypeGroup",
         groupId: {
             type: DataTypes.INTEGER,
             field: "IdGrupo",
-            primaryKey: true
+            primaryKey: true,
+            references: {
+                model: 'GruposTipoLibro',
+                key: 'Id'
+            }
         },
         bookTypeId: {
             type: DataTypes.INTEGER,

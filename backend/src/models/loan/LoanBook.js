@@ -5,13 +5,22 @@ const LoanBook = sequelize.define("LoanBook",
     {   
         bookCode: {
             type: DataTypes.STRING(50), 
-            field: 'CodLibro'
+            field: 'CodLibro',
+            primaryKey:true,
+            // references: {
+            //     model: 'Libros',
+            //     key: 'Codigo' 
+            // }
         },
         loanId: {
             autoIncrement:true,
             primaryKey:true,
             type: DataTypes.INTEGER,
-            field:"IdPrestamo"
+            field:"IdPrestamo",
+            references: {
+                model: 'Prestamo',
+                key: 'Id'
+            }
         },
         expectedDate: {
             type: DataTypes.DATE,
