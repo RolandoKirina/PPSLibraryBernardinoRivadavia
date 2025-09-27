@@ -12,3 +12,17 @@ export const getAllBooks = async (req,res) => {
     }
     
 }
+
+
+export const getBook = async (req,res) => {
+    try{
+        const {id} = req.params;
+        if(!id || isNaN(Number(id))){
+            return res.status(400).json("Invalid Book id")
+        }
+    }
+    catch(e){
+         console.error(e);
+        res.status(500).json({ msg: "error" });
+    }
+}
