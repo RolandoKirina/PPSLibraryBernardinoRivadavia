@@ -23,10 +23,16 @@ export const update = async (id, updates) => {
     return await Loan.findByPk(id);
 }
 
-export const remove = async (id) => {
-    return Loan.destroy({
-        where: {
-            id: id
-        }
-    })
+export const remove = async (id) =>{
+    const loan = await Loan.findByPk(id);
+
+      if (!loan) {
+        return null;
+      }
+    await loan.destroy();
+  
+    return {
+        msg: "Loan deleted successfully",
+        data: loan
+    }
 }

@@ -21,8 +21,17 @@ export const update = async (id, updates) => {
     return await Reservations.findByPk(id);
 };
 
-export const remove = async (id) => {
-    return await Reservations.destroy({
-        where: { id: id }
-    });
-};
+export const remove = async (id) =>{
+    const reservations = await Reservations.findByPk(id);
+
+      if (!reservations) {
+        return null;
+      }
+    await reservations.destroy();
+  
+    return {
+        msg: "Reservations deleted successfully",
+        data: reservations
+    }
+}
+

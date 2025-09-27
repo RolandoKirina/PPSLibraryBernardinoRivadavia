@@ -21,8 +21,16 @@ export const update = async (id, updates) => {
     return await LoanType.findByPk(id);
 };
 
-export const remove = async (id) => {
-    return await LoanType.destroy({
-        where: { id: id }
-    });
-};
+export const remove = async (id) =>{
+    const loanType = await LoanType.findByPk(id);
+
+      if (!loanType) {
+        return null;
+      }
+    await loanType.destroy();
+  
+    return {
+        msg: "LoanType deleted successfully",
+        data: loanType
+    }
+}

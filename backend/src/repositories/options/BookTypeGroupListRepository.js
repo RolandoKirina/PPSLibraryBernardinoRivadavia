@@ -17,6 +17,17 @@ export const update = async (id, updates) => {
     return await BookTypeGroupList.findByPk(id);
 };
 
-export const remove = async (id) => {
-    return await BookTypeGroupList.destroy({ where: { id } });
-};
+export const remove = async (id) =>{
+    const bookTypeGroupList = await BookTypeGroupList.findByPk(id);
+
+      if (!bookTypeGroupList) {
+        return null;
+      }
+    await bookTypeGroupList.destroy();
+  
+    return {
+        msg: "BookTypeGroupList deleted successfully",
+        data: bookTypeGroupList
+    }
+}
+

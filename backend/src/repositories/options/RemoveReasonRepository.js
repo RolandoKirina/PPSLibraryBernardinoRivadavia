@@ -17,6 +17,16 @@ export const update = async (id, updates) => {
     return await RemoveReason.findByPk(id);
 };
 
-export const remove = async (id) => {
-    return await RemoveReason.destroy({ where: { id } });
-};
+export const remove = async (id) =>{
+    const removeReason = await RemoveReason.findByPk(id);
+
+      if (!removeReason) {
+        return null;
+      }
+    await removeReason.destroy();
+  
+    return {
+        msg: "removeReason deleted successfully",
+        data: removeReason
+    }
+}
