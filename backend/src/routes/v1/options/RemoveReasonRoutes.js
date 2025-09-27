@@ -1,5 +1,6 @@
 import express from 'express';
 import * as RemoveReasonController from '../../../controllers/options/RemoveReasonController.js';
+import validateIdParam from "../../../middlewares/ValidateId.js";
 
 const router = express.Router();
 

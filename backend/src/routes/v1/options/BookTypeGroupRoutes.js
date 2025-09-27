@@ -1,5 +1,6 @@
 import express from 'express';
 import * as BookTypeGroupController from '../../../controllers/options/BookTypeGroupController.js';
+import validateIdParam from "../../../middlewares/ValidateId.js";
 
 const router = express.Router();
 
