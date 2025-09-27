@@ -26,6 +26,8 @@ sequelize.sync().then(() => {
     console.log("se sincronizo la base");
 })
 
+//Se pone en plural los recursos
+
 app.use("/api/v1/books",BookRoutes);
 
 //loan

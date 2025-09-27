@@ -1,5 +1,5 @@
 import * as BookService from "../../services/book/BookService.js";
-
+import { HTTP_STATUS } from "../../https/httpsStatus.js";
 
 export const getAllBooks = async (req,res) => {
     try{
@@ -16,13 +16,18 @@ export const getAllBooks = async (req,res) => {
 
 export const getBook = async (req,res) => {
     try{
-        const {id} = req.params;
-        if(!id || isNaN(Number(id))){
-            return res.status(400).json("Invalid Book id")
+        const book = await BookService.getBook(req.params.id);
+
+        if (!book) {
+            return res.status(HTTP_STATUS.NOT_FOUND.code).json({ msg: HTTP_STATUS.NOT_FOUND.msg });
         }
+
+        res.status(HTTP_STATUS.OK.code).json(book);
     }
     catch(e){
-         console.error(e);
-        res.status(500).json({ msg: "error" });
+        console.error(e);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });   
+    
     }
-}
+
+    }

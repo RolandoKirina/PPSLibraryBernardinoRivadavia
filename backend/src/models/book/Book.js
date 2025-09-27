@@ -89,7 +89,7 @@ const Book = sequelize.define("Book",
     },
     {
         underscored: true,
-        tableName: "libros",
+        tableName: "Libros",
         timestamps: false,
         logging: true
     }

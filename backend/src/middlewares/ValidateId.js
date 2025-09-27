@@ -1,4 +1,4 @@
-export  const validateIdParam = (label = "id") => {
+ const validateIdParam = (label = "id") => {
      return (req, res, next) => {
         const { id } = req.params;
         if (!id || isNaN(Number(id))) {
@@ -7,3 +7,4 @@ export  const validateIdParam = (label = "id") => {
         next(); 
   };
 }
+export default validateIdParam;

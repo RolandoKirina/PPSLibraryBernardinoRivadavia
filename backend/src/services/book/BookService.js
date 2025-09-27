@@ -4,3 +4,8 @@ export const getAllBooks = async () => {
     let books = await BookRepository.getAll();
     return books;
 }
+
+
+export const getBook = async (id) => {
+    return await BookRepository.getById(id);
+};
