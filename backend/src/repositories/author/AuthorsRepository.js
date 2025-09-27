@@ -21,8 +21,16 @@ export const update = async (id, updates) => {
     return await Authors.findByPk(id);
 };
 
-export const remove = async (id) => {
-    return await Authors.destroy({
-        where: { id: id }
-    });
-};
+export const remove = async (id) =>{
+    const author = await Authors.findByPk(id);
+
+      if (!author) {
+        return null;
+      }
+    await author.destroy();
+  
+    return {
+        msg: "Author deleted successfully",
+        data: author
+    }
+}

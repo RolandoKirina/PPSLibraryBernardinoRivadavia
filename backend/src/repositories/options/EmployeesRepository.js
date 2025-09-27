@@ -17,6 +17,16 @@ export const update = async (id, updates) => {
     return await Employees.findByPk(id);
 };
 
-export const remove = async (id) => {
-    return await Employees.destroy({ where: { id } });
-};
+export const remove = async (id) =>{
+    const employees = await Employees.findByPk(id);
+
+      if (!employees) {
+        return null;
+      }
+    await employees.destroy();
+  
+    return {
+        msg: "employees deleted successfully",
+        data: employees
+    }
+}
