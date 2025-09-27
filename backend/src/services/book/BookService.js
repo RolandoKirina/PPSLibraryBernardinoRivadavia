@@ -27,7 +27,7 @@ export const updateBook = async (id, data) => {
 export const deleteBook = async (id) => {
     const deletedBook = await BookRepository.remove(id);
     if(!deletedBook){
-        throw new Error("Book not found or not updated");
+        throw new Error("Book not found or already deleted");
     }
     return deletedBook;
 }

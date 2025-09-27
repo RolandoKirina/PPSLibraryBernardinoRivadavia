@@ -11,7 +11,10 @@ const BookAuthor = sequelize.define("BookAuthor",
         authorCode: {
             type: DataTypes.INTEGER,
             field: "CodAutor",
-            primaryKey: true
+            references: {
+                model: 'Autores',
+                key: 'Id'
+            }
         },
         position: {
             type: DataTypes.INTEGER,
