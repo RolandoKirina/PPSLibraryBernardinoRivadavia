@@ -1,0 +1,8 @@
+{
+  "bookCode": "LIB987654",
+  "expectedDate": "2025-10-01T00:00:00.000Z",
+  "returnedDate": null,
+  "reneweAmount": 0,
+  "returned": false,
+  "copy": 2
+}

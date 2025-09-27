@@ -1,7 +1,7 @@
 import sequelize from "../../configs/database.js";
 import { DataTypes } from "sequelize";
 
-const LoanType = sequelize.define("LoanType", 
+const Authors = sequelize.define("Authors", 
     {
         id: {
             autoIncrement:true,
@@ -9,17 +9,21 @@ const LoanType = sequelize.define("LoanType",
             type: DataTypes.INTEGER,
             field:"Id"
         },
-        description: {
+        name: {
+            type: DataTypes.STRING(100),
+            field: 'Nombre'
+        },
+        nationality: {
             type: DataTypes.STRING(50),
-            field: 'Descripcion'
+            field: 'Nacionalidad'
         }
     },
     {
         underscored: true,
-        tableName: "TipoPrestamo", 
+        tableName: "Autores", 
         timestamps:false,
         logging:true
     }
 );
 
-export default LoanType;
+export default Authors;
