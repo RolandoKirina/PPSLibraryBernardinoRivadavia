@@ -99,8 +99,12 @@ td {
   border: 1px solid rgb(56, 56, 56);
 }
 
-
 .table thead {
   height: 5em;
   background-color: var(--table-color)
 }
+
+.action-cell {
+  text-align: center;
+}
+

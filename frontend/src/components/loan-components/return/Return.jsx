@@ -18,6 +18,8 @@ import ConfirmMessage from '../../common/confirmMessage/ConfirmMessage';
 import Btn from '../../common/btn/Btn';
 import { useAuth } from '../../../auth/AuthContext';
 import roles from '../../../auth/roles';
+import { pendingbooks } from "../../../data/mocks/pendingbooks.js";
+
 
 export default function Return() {
     //cuando se usan los inputs de partner se filtran las devoluciones y se pueden renovar, devolver o devolver todos
@@ -154,7 +156,18 @@ export default function Return() {
         ];
     }
 
-
+    const columnsPendingBooks = [
+        { header: 'Código de libro', accessor: 'bookCode' },
+        { header: 'Título', accessor: 'title' },
+        { header: 'Fecha de retiro', accessor: 'retiredDate' },
+        { header: 'Fecha prevista', accessor: 'expectedDate' },
+        { header: 'Fecha de devolución', accessor: 'returnedDate' },
+        { header: 'Renovaciones', accessor: 'renewes' },
+        {
+            header: 'Devuelto', accessor: 'returned',
+            render: (value) => value ? 'Sí' : 'No'
+        }
+    ]; 
 
     const handleExtraData = (newData) => {
         setPartnerData(prev => {
@@ -219,10 +232,10 @@ export default function Return() {
                         <UnpaidFees changeView={setPopupView} />
                     </>
                 )}
-                {popupView === 'editUnpaidFees' && (
+                {popupView === 'pendingBooks' && (
                     <>
-                        <BackviewBtn menu={'unpaidFees'} changeView={setPopupView} />
-                        <GenericForm title={'Editar cuota pendiente'} fields={editPendingQuoteFields} onSubmit={(data) => console.log('Formulario enviado:', data)} />
+                        <Table columns={columnsPendingBooks} data={pendingbooks}></Table>
+                        <BackviewBtn menu={'default'} changeView={setPopupView} />
                     </>
                 )}
 

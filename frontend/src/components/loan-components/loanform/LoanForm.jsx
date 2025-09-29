@@ -16,6 +16,8 @@ import AddBookIcon from '../../../assets/img/add-book-icon.svg';
 import { books } from '../../../data/mocks/authors';
 import { editLoanformFields } from '../../../data/forms/LoanForms';
 import UnpaidFees from '../unpaidfees/UnpaidFees';
+import { pendingbooks } from "../../../data/mocks/pendingbooks.js";
+
 
 export default function LoanForm({ createLoanItem }) {
   const [popupView, setPopupView] = useState("default");
@@ -115,6 +117,19 @@ export default function LoanForm({ createLoanItem }) {
           <img src={DeleteIcon} alt="Borrar" />
         </button>
       )
+    }
+  ];
+
+  const columnsPendingBooks = [
+    { header: 'Código de libro', accessor: 'bookCode' },
+    { header: 'Título', accessor: 'title' },
+    { header: 'Fecha de retiro', accessor: 'retiredDate' },
+    { header: 'Fecha prevista', accessor: 'expectedDate' },
+    { header: 'Fecha de devolución', accessor: 'returnedDate' },
+    { header: 'Renovaciones', accessor: 'renewes' },
+    {
+      header: 'Devuelto', accessor: 'returned',
+      render: (value) => value ? 'Sí' : 'No'
     }
   ];
 
@@ -287,14 +302,6 @@ export default function LoanForm({ createLoanItem }) {
 
       {popupView === 'addBook' && (
         <>
-          {/* <BackviewBtn menu={'default'} changeView={setPopupView} />
-          <GenericForm title={'Agregar Libro en Prestamo'} fields={addLendBookFields} onSubmit={(data) => {
-            console.log(data);
-            addLoanItems(data);
-            setPopupView('default');
-            }}>
-            <Btn className='search-book-btn' text={'Buscar libro'} onClick={() => setPopupView('searchBook')} />
-          </GenericForm> */}
 
           <BackviewBtn menu={'default'} changeView={setPopupView} />
           <div className='author-books-container'>
@@ -309,12 +316,6 @@ export default function LoanForm({ createLoanItem }) {
                 <h3>Libros de este autor</h3>
               </div>
               <Table columns={lendBooksColumns} data={loanData.books} />
-
-              {/* {method === 'update' ? (
-                    <Table columns={authorBooksColumns} data={authorSelected.books}/>
-                ): (
-                    <Table columns={authorBooksColumns} data={authorData.books}/>
-                )} */}
             </div>
           </div>
 
@@ -334,6 +335,14 @@ export default function LoanForm({ createLoanItem }) {
           <GenericForm title={'Editar cuota pendiente'} fields={editLoanformFields} onSubmit={(data) => console.log('Formulario enviado:', data)} />
         </>
       )}
+
+      {popupView === 'pendingBooks' && (
+        <>
+          <Table columns={columnsPendingBooks} data={pendingbooks}></Table>
+          <BackviewBtn menu={'default'} changeView={setPopupView} />
+        </>
+      )}
+
 
     </div>
   );

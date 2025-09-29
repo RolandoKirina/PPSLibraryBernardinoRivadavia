@@ -4,6 +4,7 @@ import { useState } from "react";
 
 
 export const Table = ({ columns = [], data = [], children, popupLength, isPrintList, rowsPerPage = 5 }) => {
+  const actionAccessors = ["add", "delete", "edit", "details", "return", "renewe"];
   const [currentPage, setCurrentPage] = useState(1);
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -26,9 +27,17 @@ export const Table = ({ columns = [], data = [], children, popupLength, isPrintL
           {currentRows.map((row, i) => (
             <tr key={i}>
               {columns.map((col, j) => (
-                <td key={j} className={col.className ? col.className : ''}>
+                <td
+                  key={j}
+                  className={
+                    actionAccessors.includes(col.accessor)
+                      ? `${col.className || ""} action-cell`
+                      : col.className || ""
+                  }
+                >
                   {col.render ? col.render(row[col.accessor], row) : row[col.accessor]}
                 </td>
+
               ))}
             </tr>
           ))}

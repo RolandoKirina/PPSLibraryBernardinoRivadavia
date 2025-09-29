@@ -29,11 +29,12 @@ export default function GenericForm({ fields, onSubmit, title, children, classNa
 
     // helper para renderizar label con asterisco si es requerido
     const renderLabel = (text) => (
-      <>
+      <span className="label-text">
         {text}
         {field.required && <span className="required"> *</span>}
-      </>
+      </span>
     );
+
 
     return (
       <div

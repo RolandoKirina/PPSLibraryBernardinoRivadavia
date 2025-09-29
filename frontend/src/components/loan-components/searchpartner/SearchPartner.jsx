@@ -56,7 +56,7 @@ export default function SearchPartner({ menu, onDataChange, loanType, partnerDat
 
       <div className='search-partner-buttons'>
         <Btn text={'Cuotas Impagas'} onClick={() => menu('unpaidFees')} />
-        <Btn text={'Libros Pendientes'} onClick={() => redirect('loans/filters/partner')} />
+        <Btn text={'Libros Pendientes'} onClick={() => menu('pendingBooks')} />
         <Btn text={'Memo del Socio'} onClick={() => setMemoPopup(true)} />
       </div>
 

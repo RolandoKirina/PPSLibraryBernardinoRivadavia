@@ -154,3 +154,13 @@
   background-color: var(--white);
   cursor: pointer;
 }
+
+.label-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2em; /* espacio pequeño entre label y * */
+}
+
+.required {
+  color: red; /* o tu color de alerta */
+}

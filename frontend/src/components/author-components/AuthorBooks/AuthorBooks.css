@@ -59,6 +59,11 @@
     width: 45%;
 }
 
+.library-books .content-table, .author-books .content-table {
+    padding: 1em 0;
+}
+
+
 .author-books {
     height: 100%;
     width: 45%;

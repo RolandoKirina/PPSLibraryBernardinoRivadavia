@@ -18,16 +18,18 @@ export default function FormEditPartner() {
   const handleToggle = (id) => {
     setActiveAccordion(prev => prev === id ? null : id);
   };
-const columnsPendingBooks = [
-  { header: 'Código de libro', accessor: 'bookCode' },
-  { header: 'Título', accessor: 'title' },
-  { header: 'Fecha de retiro', accessor: 'retiredDate' },
-  { header: 'Fecha prevista', accessor: 'expectedDate' },
-  { header: 'Fecha de devolución', accessor: 'returnedDate' },
-  { header: 'Renovaciones', accessor: 'renewes' },
-  { header: 'Devuelto', accessor: 'returned',  
-   render: (value) => value ? 'Sí' : 'No' }
-];
+  const columnsPendingBooks = [
+    { header: 'Código de libro', accessor: 'bookCode' },
+    { header: 'Título', accessor: 'title' },
+    { header: 'Fecha de retiro', accessor: 'retiredDate' },
+    { header: 'Fecha prevista', accessor: 'expectedDate' },
+    { header: 'Fecha de devolución', accessor: 'returnedDate' },
+    { header: 'Renovaciones', accessor: 'renewes' },
+    {
+      header: 'Devuelto', accessor: 'returned',
+      render: (value) => value ? 'Sí' : 'No'
+    }
+  ];
 
 
   const handleChange = (e) => {
@@ -74,7 +76,7 @@ const columnsPendingBooks = [
 
 
 
-  
+
   function renderView() {
     switch (popupView) {
       case "unpaidfees":
@@ -87,12 +89,13 @@ const columnsPendingBooks = [
 
       case "pendingbooks":
 
-      
+
 
         return (
-         <>
-         <Table columns={columnsPendingBooks} data={pendingbooks}></Table>
-         </>
+          <> {/* quizas deberia ser un componente */}
+            <Table columns={columnsPendingBooks} data={pendingbooks}></Table>
+            <BackviewBtn menu={'default'} changeView={setPopupView} />
+          </>
         );
 
       default:

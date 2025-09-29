@@ -23,15 +23,12 @@
     margin-top: 1em;
     width: 100%;
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
 }
 
 .search-partner-buttons button {
-    margin-right: 4em;
     height: 3em;
     border-radius: 0.8em;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
     border: 0;
     background-color: var(--primary-light-2);
     color: var(--white);
