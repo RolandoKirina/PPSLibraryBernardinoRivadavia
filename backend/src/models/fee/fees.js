@@ -1,7 +1,7 @@
 import sequelize from '../../configs/database.js';
 import { DataTypes } from "sequelize";
 
-const Fee = sequelize.define("Fee", 
+const Fees = sequelize.define("Fees", 
 {
     id: {
         autoIncrement: true,
@@ -45,4 +45,4 @@ const Fee = sequelize.define("Fee",
     logging: true
 });
 
-export default Fee;
+export default Fees;
