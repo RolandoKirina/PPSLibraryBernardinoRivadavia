@@ -1,5 +1,5 @@
 import express from "express";
-import sequelize from "./configs/database.js";
+import { sequelize } from "./models/index.js";
 import BookRoutes from "./routes/v1/book/BookRoutes.js";
 //loan
 import LoanRoutes from "./routes/v1/loan/LoanRoutes.js";
@@ -22,7 +22,7 @@ const app = express();
 
 app.use(express.json());
 
-sequelize.sync().then(() => {
+sequelize.sync({ alter: true }).then(() => {
     console.log("se sincronizo la base");
 })
 
