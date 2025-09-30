@@ -1,7 +1,18 @@
 import Authors from '../../models/author/Authors.js';
+import { Op } from 'sequelize';
 
 export const getAll = async () => {
     return await Authors.findAll();
+};
+
+export const getAllByName = async (name) => {
+    return await Authors.findAll({
+        where: {
+            name: {
+                [Op.iLike]: `%${name}%`
+            }
+        }
+    });
 };
 
 export const getOne = async (id) => {

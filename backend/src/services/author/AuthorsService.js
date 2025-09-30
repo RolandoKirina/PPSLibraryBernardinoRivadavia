@@ -4,6 +4,10 @@ export const getAllAuthors = async () => {
     return await AuthorsRepository.getAll();
 };
 
+export const getAllAuthorsByName = async (name) => {
+    return await AuthorsRepository.getAllByName(name);
+};
+
 export const getAuthor = async (id) => {
     return await AuthorsRepository.getOne(id);
 };

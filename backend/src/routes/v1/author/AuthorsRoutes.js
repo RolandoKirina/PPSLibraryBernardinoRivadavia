@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.get('/', AuthorsController.getAllAuthors);
 router.get('/:id', validateIdParam("authorId"), AuthorsController.getAuthor);
+router.get('/by-name/:name', AuthorsController.getAllAuthorsByName);
 router.post('/', AuthorsController.createAuthor);
 router.put('/:id', validateIdParam("authorId"), AuthorsController.updateAuthor);
 
@@ -14,5 +15,8 @@ router.put('/:id', validateIdParam("authorId"), AuthorsController.updateAuthor);
 // router.patch('/:id', AuthorsController.patchAuthor);
 
 router.delete('/:id', validateIdParam("authorId"), AuthorsController.removeAuthor);
+
+//author by name
+
 
 export default router;
