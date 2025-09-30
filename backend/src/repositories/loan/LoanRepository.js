@@ -1,8 +1,14 @@
 import Loan from '../../models/loan/Loan.js';
 
-export const getAll = async () => {
-    return await Loan.findAll();
-}
+export const getAll = async ({ where, order, limit, offset, include }) => {
+  return await Loan.findAll({
+    where,
+    order,
+    limit,
+    offset,
+    include
+  });
+};
 
 export const getOne = async (id) => {
     return await Loan.findByPk(id);

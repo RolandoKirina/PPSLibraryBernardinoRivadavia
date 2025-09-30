@@ -1,9 +1,13 @@
 import * as LoanService from '../../services/loan/LoanService.js';
 import { HTTP_STATUS } from '../../https/httpsStatus.js';
+import { buildLoanFilters } from '../../utils/buildLoanFilters.js';
 
 export const getAllLoans = async (req, res) => {
     try {
-        const loans = await LoanService.getAllLoans();
+        const queryOptions = buildLoanFilters(req.query);
+
+        const loans = await LoanService.getAllLoans(queryOptions);
+
         res.status(HTTP_STATUS.OK.code).send(loans);
     } catch (error) {
         console.error(error);
