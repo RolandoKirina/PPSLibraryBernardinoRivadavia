@@ -1,16 +1,21 @@
 import sequelize from "../../configs/database.js";
 import { DataTypes } from "sequelize";
+import Book from "../book/Book.js";
 
 const BookReservations = sequelize.define("BookReservations", 
     {
+        idBook: {
+        type: DataTypes.INTEGER,
+        field: 'IdBook', 
+        references: {
+            model: Book,
+            key: 'id'
+        },
+        allowNull: false
+        },
         bookCode: { 
             type: DataTypes.STRING(10),
             field:"CodLibro",
-            primaryKey: true,
-            // references: {
-            //     model: 'Libros',
-            //     key: 'Codigo' 
-            // }
         },
         reservationId: {
             autoIncrement:true,

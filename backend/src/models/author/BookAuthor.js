@@ -1,12 +1,20 @@
 import sequelize from "../../configs/database.js";
 import { DataTypes } from "sequelize";
+import Book from "../book/Book.js";
 
 const BookAuthor = sequelize.define("BookAuthor", 
     {
+        idBook: {
+            type: DataTypes.INTEGER,
+            field: 'IdBook', 
+            references: {
+                model: Book,
+                key: 'id'
+            },
+        },
         bookCode: {
             type: DataTypes.STRING(50),
             field: "CodLibro",
-            primaryKey: true
         },
         authorCode: {
             type: DataTypes.INTEGER,

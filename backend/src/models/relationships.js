@@ -52,6 +52,7 @@ LoanBook.belongsTo(Book, { foreignKey: 'idBook' });
 //Prestamo pertenece a socio
 Loan.belongsTo(Partner, { foreignKey: 'id' });
 
+
 //socio tiene muchos Prestamo
 
 
