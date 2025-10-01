@@ -14,11 +14,11 @@ const Reservations = sequelize.define("Reservations",
             field: 'TituloLibro'
         },
         reservationDate: {
-            type: DataTypes.DATE,
+            type: DataTypes.DATEONLY,
             field: 'FechaReserva'
         },
         expectedDate: {
-            type: DataTypes.DATE,
+            type: DataTypes.DATEONLY,
             field: 'FechaPrometida'
         },
         partnerNumber: {

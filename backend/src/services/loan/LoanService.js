@@ -1,7 +1,11 @@
 import * as LoanRepository from '../../repositories/loan/LoanRepository.js';
 
-export const getAllLoans = async (filters) => {
-    return await LoanRepository.getAll(filters);
+// export const getAllLoans = async (filters) => {
+//     return await LoanRepository.getAll(filters);
+// }
+
+export const getAllLoans = async () => {
+    return await LoanRepository.getAll();
 }
 
 export const getLoan = async (id) => {

@@ -1,12 +1,52 @@
 import Loan from '../../models/loan/Loan.js';
+import LoanBook from '../../models/loan/LoanBook.js';
+import Book from '../../models/book/Book.js';
+import Employee from '../../models/options/Employees.js';
+import Partner from '../../models/partner/partner.js';
 
-export const getAll = async ({ where, order, limit, offset, include }) => {
+
+// export const getAll = async ({ where, order, limit, offset, include }) => {
+//   return await Loan.findAll({
+//     where,
+//     order,
+//     limit,
+//     offset,
+//     include
+//   });
+// };
+
+export const getAll = async () => {
+
   return await Loan.findAll({
-    where,
-    order,
-    limit,
-    offset,
-    include
+    attributes: ['withdrawalTime', 'retiredDate'],
+    include: [
+            {
+                model: Partner,
+                attributes: [
+                    [Col('id'),'partnerNumber'],
+                    [Col('homePhone'), 'phone'],
+                    [Col('homeAdress'), 'address'],
+                    [Col('name'), 'partnerName'],
+                    [Col('surname'), 'partnerLastname'],
+                ]
+            },
+            {
+                model: LoanBook,
+                attributes: ['bookCode', 'expectedDate', 'returnedDate'],
+                include: [
+                    {
+                    model: Book,
+                    attributes: [
+                      [Col('title'),'bookTitle']
+                    ]
+                    }
+                ]
+            },
+            {
+                model: Employee,
+                attributes: ['name'],
+            }
+        ]
   });
 };
 

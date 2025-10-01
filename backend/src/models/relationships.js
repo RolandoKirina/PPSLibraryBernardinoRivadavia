@@ -16,6 +16,7 @@ import BookTypeGroupList from '../models/options/BookTypeGroupList.js';
 import Employees from '../models/options/Employees.js';
 import BookKey from './book/BookKey.js';
 import BookType from './book/BookType.js';
+import Partner from './partner/partner.js';
 
 //authors
 //Autor tiene muchos LibroAutor
@@ -47,6 +48,14 @@ Loan.hasMany(LoanBook, { foreignKey: 'loanId' });
 //PrestamoLibro pertenece a Prestamo y Libro
 LoanBook.belongsTo(Loan, { foreignKey: 'loanId' });
 LoanBook.belongsTo(Book, { foreignKey: 'idBook' });
+
+//Prestamo pertenece a socio
+Loan.belongsTo(Partner, { foreignKey: 'id' });
+
+
+//socio tiene muchos Prestamo
+
+
 
 //BookTypeGroup se relaciona con BookType 
 BookTypeGroupList.hasMany(BookTypeGroup, { foreignKey: 'groupId' });
