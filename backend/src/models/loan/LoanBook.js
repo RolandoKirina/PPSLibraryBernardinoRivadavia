@@ -23,11 +23,11 @@ const LoanBook = sequelize.define("LoanBook",
             }
         },
         expectedDate: {
-            type: DataTypes.DATE,
+            type: DataTypes.DATEONLY,
             field: 'FechaPrevista'
         },
         returnedDate: {
-            type: DataTypes.DATE,
+            type: DataTypes.DATEONLY,
             field: 'FechaDevolucion'
         },
         reneweAmount: {

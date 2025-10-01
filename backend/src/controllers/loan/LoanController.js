@@ -2,11 +2,17 @@ import * as LoanService from '../../services/loan/LoanService.js';
 import { HTTP_STATUS } from '../../https/httpsStatus.js';
 import { buildLoanFilters } from '../../utils/buildLoanFilters.js';
 
+
+import { Col, Literal } from 'sequelize/lib/utils';
+
 export const getAllLoans = async (req, res) => {
     try {
-        const queryOptions = buildLoanFilters(req.query);
 
-        const loans = await LoanService.getAllLoans(queryOptions);
+        // const queryOptions = buildLoanFilters(req.query);
+
+        // const loans = await LoanService.getAllLoans({...queryOptions, include});
+
+        const loans = await LoanService.getAllLoans();
 
         res.status(HTTP_STATUS.OK.code).send(loans);
     } catch (error) {
