@@ -33,11 +33,17 @@ Loan.hasMany(LoanType, { foreignKey: 'id' });
 //TipoPrestamo pertenece a Prestamo
 LoanType.belongsTo(Loan, { foreignKey: 'id' });
 
-//Prestamo tiene muchos empleados
-Loan.hasMany(Employees, { foreignKey: 'id' });
 
-//Empleado pertenece a Prestamo
-Employees.belongsTo(Loan, { foreignKey: 'id' });
+Employees.hasMany(Loan, { foreignKey: 'employeeId' }); // Un empleado tiene muchos préstamos
+Loan.belongsTo(Employees, {
+  foreignKey: {
+    name: 'employeeId',
+    allowNull: false
+  },
+  onDelete: 'RESTRICT',
+  onUpdate: 'CASCADE'
+});
+
 
 //Reservas tiene muchos ReservaLibro
 Reservations.hasMany(BookReservations, { foreignKey: 'reservationId'});

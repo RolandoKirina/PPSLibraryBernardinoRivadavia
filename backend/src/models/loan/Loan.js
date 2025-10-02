@@ -1,6 +1,8 @@
 import sequelize from "../../configs/database.js";
 import { DataTypes } from "sequelize";
 import Partner from "../partner/partner.js";
+import Employees from "../options/Employees.js";
+import LoanType from "./LoanType.js";
 
 const Loan = sequelize.define("Loan", {
   id: {
@@ -19,7 +21,11 @@ const Loan = sequelize.define("Loan", {
   },
   loanType: {
     type: DataTypes.INTEGER,
-    field: "TipoPrestamo"
+    field: "TipoPrestamo",
+    references: {
+      model: LoanType,
+      key: 'Id'
+    }
   },
   retiredDate: {
     type: DataTypes.DATEONLY,
@@ -31,7 +37,11 @@ const Loan = sequelize.define("Loan", {
   },
   employeeId: {
     type: DataTypes.INTEGER,
-    field: "IdEmpleado"
+    field: "IdEmpleado",
+    references: {
+      model: Employees,
+      key: 'Id'
+    }
   },
   name: {
     type: DataTypes.STRING(50),

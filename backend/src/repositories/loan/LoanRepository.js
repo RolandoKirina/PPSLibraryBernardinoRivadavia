@@ -3,7 +3,7 @@ import LoanBook from '../../models/loan/LoanBook.js';
 import Book from '../../models/book/Book.js';
 import Employee from '../../models/options/Employees.js';
 import Partner from '../../models/partner/partner.js';
-
+import sequelize from '../../configs/database.js';
 
 // export const getAll = async ({ where, order, limit, offset, include }) => {
 //   return await Loan.findAll({
@@ -23,11 +23,11 @@ export const getAll = async () => {
             {
                 model: Partner,
                 attributes: [
-                    [Col('id'),'partnerNumber'],
-                    [Col('homePhone'), 'phone'],
-                    [Col('homeAdress'), 'address'],
-                    [Col('name'), 'partnerName'],
-                    [Col('surname'), 'partnerLastname'],
+                    [sequelize.col('id'),'partnerNumber'],
+                    [sequelize.col('homePhone'), 'phone'],
+                    [sequelize.col('homeAdress'), 'address'],
+                    [sequelize.col('name'), 'partnerName'],
+                    [sequelize.col('surname'), 'partnerLastname'],
                 ]
             },
             {
@@ -37,7 +37,7 @@ export const getAll = async () => {
                     {
                     model: Book,
                     attributes: [
-                      [Col('title'),'bookTitle']
+                      [sequelize.col('title'),'bookTitle']
                     ]
                     }
                 ]

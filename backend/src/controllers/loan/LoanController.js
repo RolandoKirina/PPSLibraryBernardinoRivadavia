@@ -2,9 +2,6 @@ import * as LoanService from '../../services/loan/LoanService.js';
 import { HTTP_STATUS } from '../../https/httpsStatus.js';
 import { buildLoanFilters } from '../../utils/buildLoanFilters.js';
 
-
-import { Col, Literal } from 'sequelize/lib/utils';
-
 export const getAllLoans = async (req, res) => {
     try {
 

@@ -8,10 +8,6 @@ const Employees = sequelize.define("Employees",
             primaryKey: true,
             type: DataTypes.INTEGER,
             field: "Id",
-            references: {
-                model: "Prestamo",
-                key: "Id"
-            }
         },
         name: {
             type: DataTypes.STRING(100),
