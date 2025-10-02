@@ -9,9 +9,21 @@ const Partner = sequelize.define("Partner",
         type: DataTypes.INTEGER,
         field: "numero"
     },
-    categoryId: {
+    idCategory: {
         type: DataTypes.SMALLINT,
-        field: "IdCategoria"
+        field: "IdCategoria",
+          references: {
+            model: 'PartnerCategory',
+            key: 'idCategory'
+        }
+    },
+    idState: {
+        type: DataTypes.SMALLINT,
+        field: "IdEstado", // nombre institucional
+        references: {
+            model: 'StatePartner',
+            key: 'idState'
+        }
     },
     surname: {
         type: DataTypes.STRING(25),

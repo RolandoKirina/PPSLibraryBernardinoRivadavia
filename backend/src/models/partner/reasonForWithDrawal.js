@@ -3,7 +3,7 @@ import { DataTypes } from "sequelize";
 
 const reasonForWithDrawal = sequelize.define("reasonForWithDrawal", 
 {
-    id: {
+    idReason: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
