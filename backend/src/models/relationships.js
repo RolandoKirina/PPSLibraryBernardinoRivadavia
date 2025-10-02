@@ -44,18 +44,19 @@ export default function applyRelationships(models) {
   LoanBook.belongsTo(Loan, { foreignKey: 'loanId' });
   LoanBook.belongsTo(Book, { foreignKey: 'idBook' });
 
-  //Prestamo pertenece a socio
-  Loan.belongsTo(Partner, { foreignKey: 'id' });
-
+  //socio tiene muchos Prestamo
   Partner.hasMany(Loan, { foreignKey: 'partnerId' });
+  //Prestamo pertenece a socio
   Loan.belongsTo(Partner, { foreignKey: 'partnerId' });
 
-  //BookTypeGroup se relaciona con BookType 
+  //BookTypeGroupList tiene muchos con BookTypeGroup 
   BookTypeGroupList.hasMany(BookTypeGroup, { foreignKey: 'groupId' });
+  //BookType tiene muchos BookTypeGroup
+  BookType.hasMany(BookTypeGroup, { foreignKey: 'bookTypeId'})
 
   //TipoGrupoLibro pertenece a GrupoTipoLibro y TipoLibro
   BookTypeGroup.belongsTo(BookTypeGroupList, { foreignKey: 'groupId' });
-  BookTypeGroup.belongsTo(BookType, { foreignKey: 'id' });
+  BookTypeGroup.belongsTo(BookType, { foreignKey: 'bookTypeId' });
 
   // ReservaLibro pertenece a Libro y Reserva
   BookReservations.belongsTo(Book, { foreignKey: 'idBook' });

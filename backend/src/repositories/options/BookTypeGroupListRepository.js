@@ -1,7 +1,23 @@
 import BookTypeGroupList from '../../models/options/BookTypeGroupList.js';
+import BookTypeGroup from '../../models/options/BookTypeGroup.js';
+import BookType from '../../models/book/BookType.js';
 
 export const getAll = async () => {
-    return await BookTypeGroupList.findAll();
+    return await BookTypeGroupList.findAll({
+        attributes: ['group', 'maxAmount'],
+        include: [
+            { 
+                model: BookTypeGroup,
+                attributes: ['groupId', 'bookTypeId'],
+                include: [
+                    {
+                        model: BookType,
+                        attributes: ['typeName', 'loanDays']
+                    }
+                ]
+            }
+        ]
+    });
 };
 
 export const getOne = async (id) => {

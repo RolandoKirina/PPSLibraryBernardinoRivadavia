@@ -5,7 +5,7 @@ import Book from '../../models/book/Book.js';
 
 export const getAll = async () => {
     return await Authors.findAll({
-        attributes: ['name', 'nationality'],
+        attributes: ['id', 'name', 'nationality'],
         include: [
            {
             model: BookAuthor,
@@ -23,7 +23,7 @@ export const getAll = async () => {
 
 export const getAllByName = async (name) => {
     return await Authors.findAll({
-        attributes: ['name', 'nationality'],
+        attributes: ['id', 'name', 'nationality'],
         include: [
            {
             model: BookAuthor,
