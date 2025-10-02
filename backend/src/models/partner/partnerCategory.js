@@ -3,8 +3,8 @@ import { DataTypes } from "sequelize";
 
 const PartnerCategory = sequelize.define("PartnerCategory", 
 {
-    id: {
-        type: DataTypes.INTEGER,
+    idCategory: {
+        type: DataTypes.SMALLINT,
         primaryKey: true,
         autoIncrement: true,
         field: "Id"

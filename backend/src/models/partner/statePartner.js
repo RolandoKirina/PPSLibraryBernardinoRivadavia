@@ -3,7 +3,7 @@ import { DataTypes } from "sequelize";
 
 const statePartner = sequelize.define("statePartner", 
 {
-    id: {
+    idState: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,

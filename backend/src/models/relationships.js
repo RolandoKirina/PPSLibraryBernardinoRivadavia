@@ -2,8 +2,15 @@
 //authors
 import Author from '../models/author/Authors.js';
 import BookAuthor from '../models/author/BookAuthor.js';
+
+//books
+
 import Book from './book/Book.js';
 import Key from './book/Key.js';
+import BookKey from './book/BookKey.js';
+import BookType from './book/BookType.js';
+import Signs from './book/Signs.js';
+
 //loans
 import Loan from '../models/loan/Loan.js';
 import LoanBook from '../models/loan/LoanBook.js';
@@ -14,9 +21,25 @@ import BookReservations from '../models/loan/BookReservations.js';
 import BookTypeGroup from '../models/options/BookTypeGroup.js';
 import BookTypeGroupList from '../models/options/BookTypeGroupList.js';
 import Employees from '../models/options/Employees.js';
-import BookKey from './book/BookKey.js';
-import BookType from './book/BookType.js';
+
+//partner
 import Partner from './partner/partner.js';
+import PartnerCategory from './partner/partnerCategory.js';
+import Reader from './partner/reader.js';
+import ReasonForWithdrawal from './partner/reasonForWithdrawal.js';
+import StatePartner from './partner/statePartner.js';
+import Locality from './partner/locality.js';
+import MaritalStatus from './partner/maritalStatus.js';
+
+
+//fee
+
+import Fee from './fee/fee.js';
+import LastGeneration from './fee/LastGeneration.js';
+import statePartner from './partner/statePartner.js';
+
+//partner has a lot of loans
+
 
 //authors
 //Autor tiene muchos LibroAutor
@@ -59,9 +82,8 @@ LoanBook.belongsTo(Book, { foreignKey: 'idBook' });
 Loan.belongsTo(Partner, { foreignKey: 'id' });
 
 
-//socio tiene muchos Prestamo
-
-
+Partner.hasMany(Loan,{foreignKey: 'partnerId'})
+Loan.belongsTo(Partner,{foreignKey:'partnerId'})
 
 //BookTypeGroup se relaciona con BookType 
 BookTypeGroupList.hasMany(BookTypeGroup, { foreignKey: 'groupId' });
@@ -85,6 +107,15 @@ BookKey.belongsTo(Book, { foreignKey: 'idBook' });
 
 // Claves tiene muchas ClaveLibro
 Key.hasMany(BookKey, { foreignKey: 'id' });
-
-// Libro tiene muchas ClaveLibro
 Book.hasMany(BookKey, { foreignKey: 'idBook' });
+
+
+PartnerCategory.hasMany(Partner, {foreignKey: 'idCategory'})
+Partner.belongsTo(PartnerCategory,{foreignKey:'idCategory'})
+
+
+Partner.belongsTo(ReasonForWithdrawal,{foreignKey: 'idReason'})
+ReasonForWithdrawal.hasMany(Partner, { foreignKey: 'idReason' });
+
+Partner.belongsTo(StatePartner,{foreignKey: 'idState'})
+statePartner.hasMany(Partner,{foreignKey:'idState'})
