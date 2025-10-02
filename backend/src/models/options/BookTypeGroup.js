@@ -13,7 +13,7 @@ const BookTypeGroup = sequelize.define("BookTypeGroup",
             primaryKey: true,
             references: {
                 model: BookTypeGroupList,
-                key: 'Id'
+                key: 'id'
             }
         },
         bookTypeId: {
@@ -22,7 +22,7 @@ const BookTypeGroup = sequelize.define("BookTypeGroup",
             primaryKey: true,
             references: {
                 model: BookType,
-                key: 'Id'
+                key: 'id'
             }
         }
     },

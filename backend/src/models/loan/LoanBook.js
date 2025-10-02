@@ -4,21 +4,21 @@ import Book from "../book/Book.js";
 
 const LoanBook = sequelize.define("LoanBook", 
     {   
-        idBook: {
+        bookId: {
             type: DataTypes.INTEGER,
             field: 'IdBook', 
             references: {
                 model: Book,
                 key: 'id'
             },
+            primaryKey:true,
         },
         bookCode: {
             type: DataTypes.STRING(50), 
             field: 'CodLibro',
         },
         loanId: {
-            autoIncrement:true,
-            primaryKey:true,
+            primaryKey: true,
             type: DataTypes.INTEGER,
             field:"IdPrestamo",
             references: {

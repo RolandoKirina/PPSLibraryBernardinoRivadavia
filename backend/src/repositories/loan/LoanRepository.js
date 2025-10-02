@@ -20,7 +20,7 @@ export const getAll = async () => {
     include: [
       {
         model: Partner,
-        attributes: ['id', 'homePhone', 'homeAdress', 'name', 'surname']
+        attributes: ['id', 'homePhone', 'homeAddress', 'name', 'surname']
       },
       {
         model: LoanBook,

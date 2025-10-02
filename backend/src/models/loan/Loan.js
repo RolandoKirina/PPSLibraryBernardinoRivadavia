@@ -17,7 +17,8 @@ const Loan = sequelize.define("Loan", {
     references: {
       model: Partner,
       key: 'id'
-    }
+    },
+    allowNull: false
   },
   loanType: {
     type: DataTypes.INTEGER,
@@ -41,7 +42,8 @@ const Loan = sequelize.define("Loan", {
     references: {
       model: Employees,
       key: 'Id'
-    }
+    },
+    allowNull: false
   },
   name: {
     type: DataTypes.STRING(50),
