@@ -21,7 +21,7 @@ export const getAll = async () => {
     attributes: ['withdrawalTime', 'retiredDate'],
     include: [
             {
-                model: Partner,
+                model: Partner, 
                 attributes: [
                     [sequelize.col('id'),'partnerNumber'],
                     [sequelize.col('homePhone'), 'phone'],

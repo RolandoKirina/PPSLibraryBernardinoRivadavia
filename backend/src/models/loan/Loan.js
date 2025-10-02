@@ -16,7 +16,7 @@ const Loan = sequelize.define("Loan", {
     field: "partnerId",
     references: {
       model: Partner,
-      key: 'partnerId'
+      key: 'id'
     }
   },
   loanType: {

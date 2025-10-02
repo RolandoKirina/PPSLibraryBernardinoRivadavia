@@ -1,5 +1,5 @@
-// models/index.js
 import sequelize from '../configs/database.js';
+import applyRelationships from './relationships.js';
 
 // Author
 import Author from './author/Authors.js';
@@ -43,6 +43,40 @@ import Reader from './partner/reader.js';
 import reasonForWithDrawal from './partner/reasonForWithdrawal.js';
 import typeDocument from './partner/typeDocument.js';
 
+// Construir objeto de modelos con nombres tal cual están definidos
+const models = {
+  Author,
+  BookAuthor,
+  Book,
+  BookType,
+  Key,
+  BookKey,
+  Signs,
+  Fees,
+  LastGeneration,
+  PartnerCategory,
+  BookReservations,
+  Loan,
+  LoanBook,
+  LoanType,
+  Reservations,
+  BookTypeGroup,
+  BookTypeGroupList,
+  Employees,
+  RemoveReason,
+  Locality,
+  MaritalStatus,
+  Partner,
+  statePartner,
+  Reader,
+  reasonForWithDrawal,
+  typeDocument
+};
+
+// Aplicar todas las relaciones
+applyRelationships(models);
+
+// Exportar todo con nombres intactos
 export {
   sequelize,
   Author,
@@ -70,5 +104,5 @@ export {
   statePartner,
   Reader,
   reasonForWithDrawal,
-  typeDocument,
+  typeDocument
 };

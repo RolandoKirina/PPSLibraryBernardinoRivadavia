@@ -3,11 +3,11 @@ import { DataTypes } from "sequelize";
 
 const Partner = sequelize.define("Partner", 
 {   
-    partnerId: {
+    id: {
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER,
-        field: "partnerId"
+        field: "id"
     },
     partnerNumber: {
         type: DataTypes.INTEGER,
