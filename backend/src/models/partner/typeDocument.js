@@ -1,4 +1,5 @@
-// models/TipoDocumento.js
+import sequelize from "../../configs/database.js";
+import { DataTypes } from "sequelize";
 
   const typeDocument = sequelize.define('typeDocument', {
     Id: {

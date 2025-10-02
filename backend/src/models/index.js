@@ -13,9 +13,8 @@ import BookKey from './book/BookKey.js';
 import Signs from './book/Signs.js';
 
 // Fee
-import Fees from './fee/Fees.js';
+import Fees from './fee/fee.js';
 import LastGeneration from './fee/LastGeneration.js';
-import PartnerCategory from './fee/PartnerCategory.js';
 
 // Loan
 import BookReservations from './loan/BookReservations.js';
@@ -33,10 +32,16 @@ import RemoveReason from './options/RemoveReason.js'; // si existe
 // Partner
 import Locality from './partner/locality.js';
 import MaritalStatus from './partner/maritalStatus.js';
-import Partner from './partner/Partner.js';
+import Partner from './partner/partner.js';
+import PartnerCategory from './partner/partnerCategory.js';
 // import PartnerFeeWithDrawal from './partner/PartnerFeeWithDrawal.js';
 // import PartnerPass from './partner/PartnerPass.js';
 // import TypeDocument from './partner/typeDocument.js';
+
+import statePartner from './partner/statePartner.js';
+import Reader from './partner/reader.js';
+import reasonForWithDrawal from './partner/reasonForWithdrawal.js';
+import typeDocument from './partner/typeDocument.js';
 
 export {
   sequelize,
@@ -62,7 +67,8 @@ export {
   Locality,
   MaritalStatus,
   Partner,
-//   PartnerFeeWithDrawal,
-//   PartnerPass,
-//   TypeDocument
+  statePartner,
+  Reader,
+  reasonForWithDrawal,
+  typeDocument,
 };

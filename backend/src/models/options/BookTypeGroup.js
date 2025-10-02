@@ -2,6 +2,8 @@
 
 import sequelize from "../../configs/database.js";
 import { DataTypes } from "sequelize";
+import BookTypeGroupList from "./BookTypeGroupList.js";
+import BookType from "../book/BookType.js";
 
 const BookTypeGroup = sequelize.define("BookTypeGroup", 
     {
@@ -10,14 +12,18 @@ const BookTypeGroup = sequelize.define("BookTypeGroup",
             field: "IdGrupo",
             primaryKey: true,
             references: {
-                model: 'GruposTipoLibro',
+                model: BookTypeGroupList,
                 key: 'Id'
             }
         },
         bookTypeId: {
             type: DataTypes.INTEGER,
             field: "IdTipoLibro",
-            primaryKey: true
+            primaryKey: true,
+            references: {
+                model: BookType,
+                key: 'Id'
+            }
         }
     },
     {

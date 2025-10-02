@@ -69,7 +69,7 @@ Loan.belongsTo(Employees, {
 
 
 //Reservas tiene muchos ReservaLibro
-Reservations.hasMany(BookReservations, { foreignKey: 'reservationId'});
+Reservations.hasMany(BookReservations, { foreignKey: 'reservationId' });
 
 //Prestamo tiene muchos PrestamoLibro
 Loan.hasMany(LoanBook, { foreignKey: 'loanId' });
@@ -79,11 +79,8 @@ LoanBook.belongsTo(Loan, { foreignKey: 'loanId' });
 LoanBook.belongsTo(Book, { foreignKey: 'idBook' });
 
 //Prestamo pertenece a socio
-Loan.belongsTo(Partner, { foreignKey: 'id' });
-
-
-Partner.hasMany(Loan,{foreignKey: 'partnerId'})
-Loan.belongsTo(Partner,{foreignKey:'partnerId'})
+Partner.hasMany(Loan, { foreignKey: 'partnerId' });
+Loan.belongsTo(Partner, { foreignKey: 'partnerId' });
 
 //BookTypeGroup se relaciona con BookType 
 BookTypeGroupList.hasMany(BookTypeGroup, { foreignKey: 'groupId' });
@@ -110,12 +107,12 @@ Key.hasMany(BookKey, { foreignKey: 'id' });
 Book.hasMany(BookKey, { foreignKey: 'idBook' });
 
 
-PartnerCategory.hasMany(Partner, {foreignKey: 'idCategory'})
-Partner.belongsTo(PartnerCategory,{foreignKey:'idCategory'})
+PartnerCategory.hasMany(Partner, { foreignKey: 'idCategory' })
+Partner.belongsTo(PartnerCategory, { foreignKey: 'idCategory' })
 
 
-Partner.belongsTo(ReasonForWithdrawal,{foreignKey: 'idReason'})
+Partner.belongsTo(ReasonForWithdrawal, { foreignKey: 'idReason' })
 ReasonForWithdrawal.hasMany(Partner, { foreignKey: 'idReason' });
 
-Partner.belongsTo(StatePartner,{foreignKey: 'idState'})
-statePartner.hasMany(Partner,{foreignKey:'idState'})
+Partner.belongsTo(StatePartner, { foreignKey: 'idState' })
+statePartner.hasMany(Partner, { foreignKey: 'idState' })

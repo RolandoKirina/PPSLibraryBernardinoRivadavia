@@ -2,10 +2,14 @@ import sequelize from '../../configs/database.js';
 import { DataTypes } from "sequelize";
 
 const Partner = sequelize.define("Partner", 
-{
-    id: {
+{   
+    partnerId: {
         autoIncrement: true,
         primaryKey: true,
+        type: DataTypes.INTEGER,
+        field: "partnerId"
+    },
+    partnerNumber: {
         type: DataTypes.INTEGER,
         field: "numero"
     },
@@ -13,16 +17,16 @@ const Partner = sequelize.define("Partner",
         type: DataTypes.SMALLINT,
         field: "IdCategoria",
           references: {
-            model: 'PartnerCategory',
-            key: 'idCategory'
+            model: 'CategoriaSocio',
+            key: 'Id'
         }
     },
     idState: {
         type: DataTypes.SMALLINT,
         field: "IdEstado", // nombre institucional
         references: {
-            model: 'StatePartner',
-            key: 'idState'
+            model: 'EstadoSocio',
+            key: 'Id'
         }
     },
     surname: {

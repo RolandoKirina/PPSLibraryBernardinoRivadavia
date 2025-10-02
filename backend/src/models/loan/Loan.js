@@ -11,12 +11,12 @@ const Loan = sequelize.define("Loan", {
     type: DataTypes.INTEGER,
     field: "Id"
   },
-  partnerNumber: {
+  partnerId: {
     type: DataTypes.INTEGER,
-    field: "NumSocio",
+    field: "partnerId",
     references: {
       model: Partner,
-      key: 'numero'
+      key: 'partnerId'
     }
   },
   loanType: {

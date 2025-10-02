@@ -1,6 +1,7 @@
 import sequelize from "../../configs/database.js";
 import { DataTypes } from "sequelize";
 import Book from "../book/Book.js";
+import Reservations from "./Reservations.js";
 
 const BookReservations = sequelize.define("BookReservations", 
     {
@@ -17,13 +18,17 @@ const BookReservations = sequelize.define("BookReservations",
             type: DataTypes.STRING(10),
             field:"CodLibro",
         },
-        reservationId: {
+        bookReservationId: {
             autoIncrement:true,
             primaryKey:true,
             type: DataTypes.INTEGER,
-            field:"IdReserva",
+            field:"IdReservasLibro",
+        },
+        reservationId: {
+            type: DataTypes.INTEGER,
+            field: 'IdReserva',
             references: {
-                model: 'Reservas',
+                model: Reservations,
                 key: 'Id'
             }
         },
