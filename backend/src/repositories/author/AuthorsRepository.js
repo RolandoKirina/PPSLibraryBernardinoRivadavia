@@ -1,12 +1,41 @@
 import Authors from '../../models/author/Authors.js';
 import { Op } from 'sequelize';
+import BookAuthor from '../../models/author/BookAuthor.js';
+import Book from '../../models/book/Book.js';
 
 export const getAll = async () => {
-    return await Authors.findAll();
+    return await Authors.findAll({
+        attributes: ['name', 'nationality'],
+        include: [
+           {
+            model: BookAuthor,
+            attributes: ['position'],
+            include: [
+                {
+                    model: Book,
+                    attributes: ['codeInventory', 'title', 'codeClasification', 'codeCdu', 'codeLing']
+                }
+            ]
+           }
+        ]
+    });
 };
 
 export const getAllByName = async (name) => {
     return await Authors.findAll({
+        attributes: ['name', 'nationality'],
+        include: [
+           {
+            model: BookAuthor,
+            attributes: ['position'],
+            include: [
+                {
+                    model: Book,
+                    attributes: ['codeInventory', 'title', 'codeClasification', 'codeCdu', 'codeLing']
+                }
+            ]
+           }
+        ],
         where: {
             name: {
                 [Op.iLike]: `%${name}%`

@@ -1,9 +1,8 @@
 import Loan from '../../models/loan/Loan.js';
 import LoanBook from '../../models/loan/LoanBook.js';
 import Book from '../../models/book/Book.js';
-import Employee from '../../models/options/Employees.js';
+import Employees from '../../models/options/Employees.js';
 import Partner from '../../models/partner/partner.js';
-import sequelize from '../../configs/database.js';
 
 // export const getAll = async ({ where, order, limit, offset, include }) => {
 //   return await Loan.findAll({
@@ -16,37 +15,28 @@ import sequelize from '../../configs/database.js';
 // };
 
 export const getAll = async () => {
-
   return await Loan.findAll({
     attributes: ['withdrawalTime', 'retiredDate'],
     include: [
-            {
-                model: Partner, 
-                attributes: [
-                    [sequelize.col('id'),'partnerNumber'],
-                    [sequelize.col('homePhone'), 'phone'],
-                    [sequelize.col('homeAdress'), 'address'],
-                    [sequelize.col('name'), 'partnerName'],
-                    [sequelize.col('surname'), 'partnerLastname'],
-                ]
-            },
-            {
-                model: LoanBook,
-                attributes: ['bookCode', 'expectedDate', 'returnedDate'],
-                include: [
-                    {
-                    model: Book,
-                    attributes: [
-                      [sequelize.col('title'),'bookTitle']
-                    ]
-                    }
-                ]
-            },
-            {
-                model: Employee,
-                attributes: ['name'],
-            }
+      {
+        model: Partner,
+        attributes: ['id', 'homePhone', 'homeAdress', 'name', 'surname']
+      },
+      {
+        model: LoanBook,
+        attributes: ['bookCode', 'expectedDate', 'returnedDate'],
+        include: [
+          {
+            model: Book,
+            attributes: ['title']
+          }
         ]
+      },
+      {
+        model: Employees,
+        attributes: ['name']
+      }
+    ]
   });
 };
 
