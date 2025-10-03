@@ -7,22 +7,22 @@ import BookType from "../book/BookType.js";
 
 const BookTypeGroup = sequelize.define("BookTypeGroup", 
     {
-        groupId: {
+        groupIdFk: {
             type: DataTypes.INTEGER,
             field: "IdGrupo",
             primaryKey: true,
             references: {
                 model: BookTypeGroupList,
-                key: 'id'
+                key: 'bookTypeGroupId'
             }
         },
-        bookTypeId: {
+        bookTypeIdFk: {
             type: DataTypes.INTEGER,
             field: "IdTipoLibro",
             primaryKey: true,
             references: {
                 model: BookType,
-                key: 'id'
+                key: 'bookTypeId'
             }
         }
     },
