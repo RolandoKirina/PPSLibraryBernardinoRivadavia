@@ -24,7 +24,7 @@ export default function applyRelationships(models) {
   //TipoPrestamo pertenece a Prestamo
   LoanType.belongsTo(Loan, { foreignKey: 'id' });
 
-  Employees.hasMany(Loan, { foreignKey: 'employeeId' }); // Un empleado tiene muchos préstamos
+  Employees.hasMany(Loan, { foreignKey: 'employeeId' }); 
   Loan.belongsTo(Employees, {
     foreignKey: {
       name: 'employeeId',
