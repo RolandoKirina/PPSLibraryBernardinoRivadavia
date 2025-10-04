@@ -1,6 +1,11 @@
 import sequelize from '../configs/database.js';
 import applyRelationships from './relationships.js';
 
+import Task from './options/Task.js';
+import Project from './options/Project.js';
+import Student from './options/Student.js';
+
+
 // Author
 import Author from './author/Authors.js';
 import BookAuthor from './author/BookAuthor.js';
@@ -45,6 +50,9 @@ import typeDocument from './partner/typeDocument.js';
 
 // Construir objeto de modelos con nombres tal cual están definidos
 const models = {
+  Student,
+  Task,
+  Project,
   Author,
   BookAuthor,
   Book,
@@ -79,6 +87,9 @@ applyRelationships(models);
 // Exportar todo con nombres intactos
 export {
   sequelize,
+  Student,
+  Task,
+  Project,
   Author,
   BookAuthor,
   Book,

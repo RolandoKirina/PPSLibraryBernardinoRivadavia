@@ -22,8 +22,9 @@ const app = express();
 
 app.use(express.json());
 
-sequelize.sync({ force: true }).then(() => {
+sequelize.sync({ alter: true }).then(() => {
     console.log("se sincronizo la base");
+
 })
 
 //Se pone en plural los recursos
