@@ -1,4 +1,4 @@
-import BookType from "../../models/book/BookType.js";
+import BookType from "../../models/options/BookType.js";
 
 export const getAll = async () => {
     return await BookType.findAll();

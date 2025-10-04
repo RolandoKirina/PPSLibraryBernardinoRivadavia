@@ -3,14 +3,23 @@ import { DataTypes } from "sequelize";
 
 const BookKey = sequelize.define("BookKey", 
 {
+
+    id: {
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER,
+      field: "id"
+    },
     keyId: {
         type: DataTypes.INTEGER,
-        primaryKey: true,
         field: "IdClave"
+    },
+    BookId: {
+      type: DataTypes.INTEGER,
+      field: "bookId"
     },
     bookCode: {
         type: DataTypes.STRING(50),
-        primaryKey: true,
         field: "CodLibro"
     }
 },

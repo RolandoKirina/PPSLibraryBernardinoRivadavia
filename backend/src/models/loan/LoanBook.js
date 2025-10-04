@@ -2,30 +2,27 @@ import sequelize from "../../configs/database.js";
 import { DataTypes } from "sequelize";
 import Book from "../book/Book.js";
 
-const LoanBook = sequelize.define("LoanBook", 
-    {   
-        bookId: {
+const LoanBook = sequelize.define("LoanBook",
+    {
+        LoanBookId: {
             type: DataTypes.INTEGER,
-            field: 'IdBook', 
-            references: {
-                model: Book,
-                key: 'id'
-            },
-            primaryKey:true,
+            field: 'LoanBookId',
+            autoIncrement: true,
+            primaryKey: true,
         },
-        bookCode: {
-            type: DataTypes.STRING(50), 
-            field: 'CodLibro',
+        BookId: {
+            type: DataTypes.INTEGER,
+            field: 'IdBook',
         },
         loanId: {
-            primaryKey: true,
             type: DataTypes.INTEGER,
-            field:"IdPrestamo",
-            references: {
-                model: 'Prestamo',
-                key: 'Id'
-            }
+            field: "IdPrestamo",
         },
+        bookCode: {
+            type: DataTypes.STRING(50),
+            field: 'CodLibro',
+        },
+
         expectedDate: {
             type: DataTypes.DATEONLY,
             field: 'FechaPrevista'
@@ -50,8 +47,8 @@ const LoanBook = sequelize.define("LoanBook",
     {
         underscored: true,
         tableName: "PrestamoLibro",
-        timestamps:false,
-        logging:true
+        timestamps: false,
+        logging: true
     }
 );
 

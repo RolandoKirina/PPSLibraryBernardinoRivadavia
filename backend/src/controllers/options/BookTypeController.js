@@ -1,4 +1,4 @@
-import * as BookTypeService from "../../services/book/BookTypeService.js";
+import * as BookTypeService from "../../services/options/BookTypeService.js";
 import { HTTP_STATUS } from "../../https/httpsStatus.js";
 
 export const getAllBookTypes = async (req, res) => {

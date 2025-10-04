@@ -21,7 +21,7 @@ const Fees = sequelize.define("Fees",
         type: DataTypes.DECIMAL(10, 2),
         field: "Monto"
     },
-    id_partner: {
+    idPartner: {
         type: DataTypes.INTEGER,
         field: "IdSocio"
     },

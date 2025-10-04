@@ -14,19 +14,11 @@ const Loan = sequelize.define("Loan", {
   partnerId: {
     type: DataTypes.INTEGER,
     field: "partnerId",
-    references: {
-      model: Partner,
-      key: 'id'
-    },
     allowNull: false
   },
   loanType: {
     type: DataTypes.INTEGER,
     field: "TipoPrestamo",
-    references: {
-      model: LoanType,
-      key: 'Id'
-    }
   },
   retiredDate: {
     type: DataTypes.DATEONLY,
@@ -39,10 +31,6 @@ const Loan = sequelize.define("Loan", {
   employeeId: {
     type: DataTypes.INTEGER,
     field: "IdEmpleado",
-    references: {
-      model: Employees,
-      key: 'Id'
-    },
     allowNull: false
   },
   name: {

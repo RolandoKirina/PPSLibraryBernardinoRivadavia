@@ -16,18 +16,19 @@ const Partner = sequelize.define("Partner",
     idCategory: {
         type: DataTypes.SMALLINT,
         field: "IdCategoria",
-          references: {
-            model: 'CategoriaSocio',
-            key: 'Id'
-        }
+    },
+
+    LocalityId: {
+        type: DataTypes.INTEGER,
+        field: "IdLocal_part"
     },
     idState: {
         type: DataTypes.SMALLINT,
-        field: "IdEstado", // nombre institucional
-        references: {
-            model: 'EstadoSocio',
-            key: 'Id'
-        }
+        field: "IdEstado",
+    },
+    idReason: {
+        type: DataTypes.INTEGER,
+        field: "Motivo_Baj"
     },
     surname: {
         type: DataTypes.STRING(25),
@@ -45,11 +46,12 @@ const Partner = sequelize.define("Partner",
         type: DataTypes.SMALLINT,
         field: "tipo_docum"
     },
+    
     documentNumber: {
         type: DataTypes.STRING(20),
         field: "nro_docum"
     },
-    maritalStatus: {
+    MaritalStatusId: {
         type: DataTypes.SMALLINT,
         field: "est_civil"
     },
@@ -117,18 +119,12 @@ const Partner = sequelize.define("Partner",
         type: DataTypes.STRING(255),
         field: "Observaciones"
     },
-    withdrawalReason: {
-        type: DataTypes.STRING(100),
-        field: "Motivo_Baj"
-    },
+  
     workLocationId: {
         type: DataTypes.INTEGER,
         field: "IdLocal_trab"
     },
-    homeLocationId: {
-        type: DataTypes.INTEGER,
-        field: "IdLocal_part"
-    },
+    
     collector: {
         type: DataTypes.INTEGER,
         field: "Cobrador"
@@ -148,7 +144,7 @@ const Partner = sequelize.define("Partner",
 },
 {
     underscored: true,
-    tableName: "Socios",
+    tableName: "socio",
     timestamps: false,
     logging: true
 });

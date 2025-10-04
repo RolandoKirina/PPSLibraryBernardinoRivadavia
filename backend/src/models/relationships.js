@@ -1,4 +1,3 @@
-// Archivo centralizado de relaciones entre modelos, usando models como parámetro
 export default function applyRelationships(models) {
   const {
     Author, BookAuthor, Book, Key, BookKey, BookType, Signs,
@@ -6,122 +5,72 @@ export default function applyRelationships(models) {
     BookTypeGroup, BookTypeGroupList, Employees,
     Partner, PartnerCategory, Reader, reasonForWithDrawal,
     statePartner, Locality, MaritalStatus,
-    Fees, LastGeneration, Student, Task, Project
+    Fees
   } = models;
 
+  Author.hasMany(BookAuthor, { foreignKey: 'authorCode' ,sourceKey:"id"});
 
-//Sequelize no maneja bien las relaciones automáticas (como hasMany, belongsTo, include, etc.) cuando el modelo no tiene una clave primaria única.
+  BookAuthor.belongsTo(Author, { foreignKey: 'authorCode', targetKey:"id"});
 
-//no hace falta usar references en los modelos.
+  BookAuthor.belongsTo(Book, { foreignKey: 'BookId', targetKey: "BookId"});
 
-//es mejor que las tablas intermedias tengan atributo id propio, por si en un futuro se escala añadiendo timestamps, etc. y facilita todas las consultas
+  Loan.hasMany(LoanType, { foreignKey: 'id', sourceKey:"id"});
 
-// 🔁 Un Project tiene muchas Tasks
-Project.hasMany(Task, {
-  foreignKey: "projectId", // 🧠 nombre lógico del atributo en Task que actúa como clave foránea hacia Project
-  sourceKey: "id",         // 🧠 nombre lógico del atributo en Project que actúa como clave primaria
-  as: "tasks"              // 🔖 alias para acceder desde Project: project.tasks
-});
+  LoanType.belongsTo(Loan, { foreignKey: 'id' , targetKey:"id"});
 
-// 🔁 Un Student tiene muchas Tasks
-Student.hasMany(Task, {
-  foreignKey: "studentId", // 🧠 nombre lógico del atributo en Task que actúa como clave foránea hacia Student
-  sourceKey: "id",         // 🧠 nombre lógico del atributo en Student que actúa como clave primaria
-  as: "tasks"              // 🔖 alias para acceder desde Student: student.tasks
-});
+  Employees.hasMany(Loan, { foreignKey: 'employeeId', sourceKey:"id" }); 
 
-// 🔁 Cada Task pertenece a un Project
-Task.belongsTo(Project, {
-  foreignKey: "projectId", // 🧠 nombre lógico en Task que apunta a Project
-  targetKey: "id",         // 🧠 nombre lógico en Project que se referencia
-  as: "project"            // 🔖 alias para acceder desde Task: task.project
-});
+  Loan.belongsTo(Employees, {foreignKey: 'employeeId',targetKey:"id" });
 
-// 🔁 Cada Task pertenece a un Student
-Task.belongsTo(Student, {
-  foreignKey: "studentId", // 🧠 nombre lógico en Task que apunta a Student
-  targetKey: "id",         // 🧠 nombre lógico en Student que se referencia
-  as: "student"            // 🔖 alias para acceder desde Task: task.student
-});
+  Reservations.hasMany(BookReservations, { foreignKey: 'reservationId', sourceKey:"id" });
 
+  Loan.hasMany(LoanBook, { foreignKey: 'loanId', sourceKey:"id" });
 
+  LoanBook.belongsTo(Loan, { foreignKey: 'loanId' , targetKey:"id"});
+  LoanBook.belongsTo(Book, { foreignKey: 'BookId', targetKey:"BookId" });
 
-  //authors
-  //Autor tiene muchos LibroAutor
-  Author.hasMany(BookAuthor, { foreignKey: 'authorCode' });
+  Book.hasMany(LoanBook, { foreignKey: 'BookId' , sourceKey:"BookId" });
 
-  //LibroAutor pertenece a Autor y a Libro
-  BookAuthor.belongsTo(Author, { foreignKey: 'authorCode' });
-  BookAuthor.belongsTo(Book, { foreignKey: 'idBook' });
+  Partner.hasMany(Loan, { foreignKey: 'partnerId', sourceKey:"id" });
+  Loan.belongsTo(Partner, { foreignKey: 'partnerId',targetKey:"id"});
 
-  //loans
-  //Prestamo tiene muchos TipoPrestamo
-  Loan.hasMany(LoanType, { foreignKey: 'id' });
+  BookReservations.belongsTo(Book, { foreignKey: 'BookId' , targetKey: "BookId"});
 
-  //TipoPrestamo pertenece a Prestamo
-  LoanType.belongsTo(Loan, { foreignKey: 'id' });
+  Book.hasMany(BookReservations, { foreignKey: 'BookId', sourceKey: "BookId"});
 
-  Employees.hasMany(Loan, { foreignKey: 'employeeId' }); 
-  Loan.belongsTo(Employees, {
-    foreignKey: {
-      name: 'employeeId',
-      allowNull: false
-    },
-    onDelete: 'RESTRICT',
-    onUpdate: 'CASCADE'
-  });
+  Reservations.hasMany(BookReservations, { foreignKey: 'reservationId', sourceKey:"id"});
 
-  //Reservas tiene muchos ReservaLibro
-  Reservations.hasMany(BookReservations, { foreignKey: 'reservationId' });
+  BookReservations.belongsTo(Reservations, { foreignKey: 'reservationId',targetKey:"id"});
 
-  //Prestamo tiene muchos PrestamoLibro
-  Loan.hasMany(LoanBook, { foreignKey: 'loanId' });
+  BookKey.belongsTo(Key, { foreignKey: 'keyId',targetKey:"id"});
+  BookKey.belongsTo(Book, { foreignKey: 'BookId',targetKey:"BookId" });
 
-  //PrestamoLibro pertenece a Prestamo y Libro
-  LoanBook.belongsTo(Loan, { foreignKey: 'id' });
-  LoanBook.belongsTo(Book, { foreignKey: 'idBook' });
+  Key.hasMany(BookKey, { foreignKey: 'keyId', sourceKey: "id"});
+  Book.hasMany(BookKey, { foreignKey: 'BookId', sourceKey: "BookId"});
 
-  //Libro tiene muchos PrestamoLibro
-  Book.hasMany(LoanBook, { foreignKey: 'bookId' });
+  PartnerCategory.hasMany(Partner, { foreignKey: 'idCategory', sourceKey: "idCategory" });
+  Partner.belongsTo(PartnerCategory, { foreignKey: 'idCategory', targetKey:"idCategory" });
 
-  //socio tiene muchos Prestamo
-  Partner.hasMany(Loan, { foreignKey: 'partnerId' });
-  //Prestamo pertenece a socio
-  Loan.belongsTo(Partner, { foreignKey: 'partnerId' });
+  reasonForWithDrawal.hasMany(Partner, { foreignKey: 'idReason', sourceKey:"idReason" });
 
-  // ReservaLibro pertenece a Libro y Reserva
-  BookReservations.belongsTo(Book, { foreignKey: 'idBook' });
-  BookReservations.belongsTo(Reservations, { foreignKey: 'reservationId' });
+  Partner.belongsTo(reasonForWithDrawal, { foreignKey: 'idReason' ,targetKey:"idReason"});
 
-  //libro tiene muchas reservas
-  Book.hasMany(BookReservations, { foreignKey: 'idBook' }); //se pone la FK en bookreservations
-
-  // Reserva tiene muchas ReservaLibro
-  Reservations.hasMany(BookReservations, { foreignKey: 'reservationId' });
-
-  BookKey.belongsTo(Key, { foreignKey: 'id' });
-  BookKey.belongsTo(Book, { foreignKey: 'idBook' });
-
-  // Claves tiene muchas ClaveLibro
-  Key.hasMany(BookKey, { foreignKey: 'id' });
-  Book.hasMany(BookKey, { foreignKey: 'idBook' });
-
-  PartnerCategory.hasMany(Partner, { foreignKey: 'idCategory' });
-  Partner.belongsTo(PartnerCategory, { foreignKey: 'idCategory' });
-
-  Partner.belongsTo(reasonForWithDrawal, { foreignKey: 'idReason' });
-  reasonForWithDrawal.hasMany(Partner, { foreignKey: 'idReason' });
-
-  Partner.belongsTo(statePartner, { foreignKey: 'idState' });
-  statePartner.hasMany(Partner, { foreignKey: 'idState' });
+  Partner.belongsTo(statePartner, { foreignKey: 'idState', targetKey:"idState" });
+  statePartner.hasMany(Partner, { foreignKey: 'idState', sourceKey: "idState"});
 
 
-  BookTypeGroupList.hasMany(BookTypeGroup, { foreignKey: 'groupIdFk' });
+  BookTypeGroupList.hasMany(BookTypeGroup, { foreignKey: 'BookTypeGroupListId', sourceKey:"bookTypeGroupListId"});
   
-  BookTypeGroup.belongsTo(BookTypeGroupList, { foreignKey: 'bookTypeGroupId' });
+  BookTypeGroup.belongsTo(BookTypeGroupList, { foreignKey: 'BookTypeGroupListId' ,targetKey:"bookTypeGroupListId"});
 
-  BookTypeGroup.belongsTo(BookType, { foreignKey: 'bookTypeId' }); 
+  BookTypeGroup.belongsTo(BookType, { foreignKey: 'bookTypeId', targetKey: "bookTypeId"}); 
 
-  BookType.hasMany(BookTypeGroup, { foreignKey: 'bookTypeIdFk' })
+  BookType.hasMany(BookTypeGroup, { foreignKey: 'bookTypeId', sourceKey:"bookTypeId" })
 
+
+  Partner.hasMany(Fees,{foreignKey:"idPartner", sourceKey:"id"})
+  Fees.belongsTo(Partner,{foreignKey:"idPartner", sourceKey:"id"})
+
+  Partner.belongsTo(Locality,{foreignKey:"LocalityId", sourceKey:"id"})
+  Partner.belongsTo(MaritalStatus,{foreignKey:"MaritalStatusId", sourceKey:"id"})
 }

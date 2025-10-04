@@ -1,4 +1,4 @@
-import * as BookTypeRepository from "../../repositories/book/BookTypeRepository.js";
+import * as BookTypeRepository from "../../repositories/options/BookTypeRepository.js";
 
 export const getAllBookTypes = async () => {
     const bookTypes = await BookTypeRepository.getAll();

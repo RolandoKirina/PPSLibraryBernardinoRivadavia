@@ -5,7 +5,7 @@ import { DataTypes } from "sequelize";
 
 const BookTypeGroupList = sequelize.define("BookTypeGroupList", 
     {
-        bookTypeGroupId: {
+        bookTypeGroupListId: {
             autoIncrement: true,
             primaryKey: true,
             type: DataTypes.INTEGER,

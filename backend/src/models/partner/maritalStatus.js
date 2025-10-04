@@ -4,7 +4,7 @@ import { DataTypes } from "sequelize";
 const MaritalStatus = sequelize.define("MaritalStatus", 
 {
     id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.SMALLINT,
         primaryKey: true,
         autoIncrement: true,
         field: "Id"

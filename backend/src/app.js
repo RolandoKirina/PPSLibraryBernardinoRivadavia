@@ -15,6 +15,7 @@ import BookAuthor from './routes/v1/author/BookAuthorRoutes.js';
 //options
 import BookTypeGroupListRoutes from './routes/v1/options/BookTypeGroupListRoutes.js';
 import BookTypeGroupRoutes from './routes/v1/options/BookTypeGroupRoutes.js';
+import BookTypeRoutes from './routes/v1/options/BookTypeRoutes.js';
 import EmployeesRoutes from './routes/v1/options/EmployeesRoutes.js';
 import RemoveReasonRoutes from './routes/v1/options/RemoveReasonRoutes.js';
 
@@ -30,7 +31,6 @@ sequelize.sync({ alter: true }).then(() => {
 //Se pone en plural los recursos
 
 app.use("/api/v1/books",BookRoutes);
-
 //loan
 app.use("/api/v1/loans", LoanRoutes);
 app.use("/api/v1/book-reservations", BookReservationsRoutes);
@@ -47,6 +47,7 @@ app.use("/api/v1/book-type-groups-list", BookTypeGroupListRoutes);
 app.use("/api/v1/book-type-groups", BookTypeGroupRoutes);
 app.use("/api/v1/employees", EmployeesRoutes);
 app.use("/api/v1/remove-reasons", RemoveReasonRoutes);
+app.use("/api/v1/book-types",BookTypeRoutes);
 
 
 export default app;

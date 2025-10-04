@@ -3,7 +3,7 @@ import { DataTypes } from "sequelize";
 
 const Book = sequelize.define("Book", 
   {
-    idBook: {
+    BookId: {
       autoIncrement: true,
       primaryKey: true,
       type: DataTypes.INTEGER,

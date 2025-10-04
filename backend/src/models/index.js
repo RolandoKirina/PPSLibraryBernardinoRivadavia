@@ -1,10 +1,6 @@
 import sequelize from '../configs/database.js';
 import applyRelationships from './relationships.js';
 
-import Task from './options/Task.js';
-import Project from './options/Project.js';
-import Student from './options/Student.js';
-
 
 // Author
 import Author from './author/Authors.js';
@@ -12,7 +8,6 @@ import BookAuthor from './author/BookAuthor.js';
 
 // Book
 import Book from './book/Book.js';
-import BookType from './book/BookType.js';
 import Key from './book/Key.js';
 import BookKey from './book/BookKey.js';
 import Signs from './book/Signs.js';
@@ -33,6 +28,7 @@ import BookTypeGroup from './options/BookTypeGroup.js';
 import BookTypeGroupList from './options/BookTypeGroupList.js';
 import Employees from './options/Employees.js';
 import RemoveReason from './options/RemoveReason.js'; // si existe
+import BookType from './options/BookType.js';
 
 // Partner
 import Locality from './partner/locality.js';
@@ -50,9 +46,7 @@ import typeDocument from './partner/typeDocument.js';
 
 // Construir objeto de modelos con nombres tal cual están definidos
 const models = {
-  Student,
-  Task,
-  Project,
+
   Author,
   BookAuthor,
   Book,
@@ -87,9 +81,6 @@ applyRelationships(models);
 // Exportar todo con nombres intactos
 export {
   sequelize,
-  Student,
-  Task,
-  Project,
   Author,
   BookAuthor,
   Book,

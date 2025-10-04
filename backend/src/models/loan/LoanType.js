@@ -8,10 +8,7 @@ const LoanType = sequelize.define("LoanType",
             type: DataTypes.INTEGER,
             field:"Id",
             primaryKey: true,
-            references: {
-                model: 'Prestamo',
-                key: 'Id'
-            }
+            
         },
         description: {
             type: DataTypes.STRING(50),
