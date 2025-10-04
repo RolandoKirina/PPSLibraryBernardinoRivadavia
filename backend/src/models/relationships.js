@@ -6,8 +6,45 @@ export default function applyRelationships(models) {
     BookTypeGroup, BookTypeGroupList, Employees,
     Partner, PartnerCategory, Reader, reasonForWithDrawal,
     statePartner, Locality, MaritalStatus,
-    Fees, LastGeneration
+    Fees, LastGeneration, Student, Task, Project
   } = models;
+
+
+//Sequelize no maneja bien las relaciones automáticas (como hasMany, belongsTo, include, etc.) cuando el modelo no tiene una clave primaria única.
+
+//no hace falta usar references en los modelos.
+
+//es mejor que las tablas intermedias tengan atributo id propio, por si en un futuro se escala añadiendo timestamps, etc. y facilita todas las consultas
+
+// 🔁 Un Project tiene muchas Tasks
+Project.hasMany(Task, {
+  foreignKey: "projectId", // 🧠 nombre lógico del atributo en Task que actúa como clave foránea hacia Project
+  sourceKey: "id",         // 🧠 nombre lógico del atributo en Project que actúa como clave primaria
+  as: "tasks"              // 🔖 alias para acceder desde Project: project.tasks
+});
+
+// 🔁 Un Student tiene muchas Tasks
+Student.hasMany(Task, {
+  foreignKey: "studentId", // 🧠 nombre lógico del atributo en Task que actúa como clave foránea hacia Student
+  sourceKey: "id",         // 🧠 nombre lógico del atributo en Student que actúa como clave primaria
+  as: "tasks"              // 🔖 alias para acceder desde Student: student.tasks
+});
+
+// 🔁 Cada Task pertenece a un Project
+Task.belongsTo(Project, {
+  foreignKey: "projectId", // 🧠 nombre lógico en Task que apunta a Project
+  targetKey: "id",         // 🧠 nombre lógico en Project que se referencia
+  as: "project"            // 🔖 alias para acceder desde Task: task.project
+});
+
+// 🔁 Cada Task pertenece a un Student
+Task.belongsTo(Student, {
+  foreignKey: "studentId", // 🧠 nombre lógico en Task que apunta a Student
+  targetKey: "id",         // 🧠 nombre lógico en Student que se referencia
+  as: "student"            // 🔖 alias para acceder desde Task: task.student
+});
+
+
 
   //authors
   //Autor tiene muchos LibroAutor
