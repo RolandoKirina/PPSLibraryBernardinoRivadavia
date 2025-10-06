@@ -1,4 +1,4 @@
-import Reader from '../../models/partner/reader.js';
+import Reader from '../../models/partner/Reader.js';
 
 export const getAll = async () => {
     return await Reader.findAll();

@@ -15,7 +15,7 @@ const Book = sequelize.define("Book",
     },
     codeCdu: {
       type: DataTypes.STRING(50),
-      field: "codigo_cdu"
+      field: "Cod_rcdu"
     },
     title: {
       type: DataTypes.STRING(255),
@@ -23,68 +23,68 @@ const Book = sequelize.define("Book",
     },
     editorial: {
       type: DataTypes.STRING(50),
-      field: "editorial"
+      field: "Editorial"
     },
     numberEdition: {
       type: DataTypes.SMALLINT,
-      field: "numero_de_edicion"
+      field: "Nro_edic"
     },
     yearEdition: {
       type: DataTypes.SMALLINT,
-      field: "anio_de_edicion"
+      field: "Anio_edic"
     },
     translator: {
       type: DataTypes.STRING(40),
-      field: "traductor"
+      field: "Traductor"
     },
     codeClasification: {
       type: DataTypes.STRING(50),
-      field: "codigo_clasificacion"
+      field: "Cod_Clas"
     },
     numberOfCopies: {
       type: DataTypes.SMALLINT,
-      field: "cantidad_de_ejemplares"
+      field: "Cant_ejemplar"
     },
     notes: {
       type: DataTypes.STRING(255),
-      field: "notas"
+      field: "Notas"
     },
     type: {
       type: DataTypes.INTEGER,
-      field: "tipo"
+      field: "Tipo"
     },
     codeLing: {
       type: DataTypes.STRING(50),
-      field: "codigo_linguistico"
+      field: "Cod_Ling"
     },
     authors: {
       type: DataTypes.STRING(255),
-      field: "autores"
+      field: "Autores"
     },
     idSupplier: {
       type: DataTypes.INTEGER,
-      field: "id_proveedor"
+      field: "IdProveedor"
     },
     invoiceNumber: {
       type: DataTypes.STRING(12),
-      field: "numero_de_factura"
+      field: "NumFactura"
     },
     dateOfBuy: {
       type: DataTypes.DATE,
-      field: "fecha_de_compra"
+      field: "FechaCompra"
     },
     lossDate: {
       type: DataTypes.DATE,
-      field: "fecha_de_perdida",
+      field: "FechaPerdida",
       allowNull: true
     },
     lostPartnerNumber: {
       type: DataTypes.INTEGER,
-      field: "numero_de_socio_de_perdida"
+      field: "NumSocioPerdida"
     },
     lost: {
       type: DataTypes.BOOLEAN,
-      field: "perdido"
+      field: "Perdido"
     }
   },
   {

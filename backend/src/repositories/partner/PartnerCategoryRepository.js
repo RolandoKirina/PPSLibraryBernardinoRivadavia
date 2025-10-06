@@ -1,4 +1,4 @@
-import PartnerCategory from '../../models/partner/partnerCategory.js';
+import PartnerCategory from '../../models/partner/PartnerCategory.js';
 
 export const getAll = async () => {
     return await PartnerCategory.findAll();

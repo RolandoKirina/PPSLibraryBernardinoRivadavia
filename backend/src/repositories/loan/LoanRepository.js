@@ -2,7 +2,7 @@ import Loan from '../../models/loan/Loan.js';
 import LoanBook from '../../models/loan/LoanBook.js';
 import Book from '../../models/book/Book.js';
 import Employees from '../../models/options/Employees.js';
-import Partner from '../../models/partner/partner.js';
+import Partner from '../../models/partner/Partner.js';
 
 // export const getAll = async ({ where, order, limit, offset, include }) => {
 //   return await Loan.findAll({

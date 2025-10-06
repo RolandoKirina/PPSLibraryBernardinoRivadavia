@@ -1,4 +1,4 @@
-import ReasonForWithdrawal from '../../models/partner/reasonForWithdrawal.js';
+import ReasonForWithdrawal from '../../models/partner/ReasonForWithdrawal.js';
 
 export const getAll = async () => {
     return await ReasonForWithdrawal.findAll();

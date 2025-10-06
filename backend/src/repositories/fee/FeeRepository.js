@@ -1,4 +1,4 @@
-import Fee from "../../models/fee/fee.js";
+import Fee from "../../models/fee/Fee.js";
 
 export const getAll = async () => {
     return await Fee.findAll();
