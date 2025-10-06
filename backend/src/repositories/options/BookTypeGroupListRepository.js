@@ -8,7 +8,7 @@ export const getAll = async () => {
         include: [
             { 
                 model: BookTypeGroup,
-                attributes: ['groupId', 'bookTypeId'],
+                attributes: ['BookTypeGroupListId', 'bookTypeId'],
                 include: [
                     {
                         model: BookType,

@@ -10,6 +10,8 @@ const BookTypeGroup = sequelize.define("BookTypeGroup",
         BookTypeGroupId:{
             type: DataTypes.INTEGER,
             field: "IdGrupoTipoLibro",   
+            primaryKey: true,
+            autoIncrement: true
         },
         BookTypeGroupListId: {
             type: DataTypes.INTEGER,

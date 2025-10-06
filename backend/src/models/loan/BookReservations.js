@@ -5,7 +5,6 @@ import Reservations from "./Reservations.js";
 
 const BookReservations = sequelize.define("BookReservations", 
     {
-
         bookReservationId: {
             autoIncrement:true,
             primaryKey:true,

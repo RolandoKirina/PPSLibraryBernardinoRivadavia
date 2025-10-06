@@ -43,12 +43,11 @@ const Partner = sequelize.define("Partner",
         field: "fecha_nac"
     },
     documentType: {
-        type: DataTypes.SMALLINT,
-        field: "tipo_docum"
+      type: DataTypes.SMALLINT,
+      field: "tipo_docum"
     },
-    
     documentNumber: {
-        type: DataTypes.STRING(20),
+        type: DataTypes.STRING(10),
         field: "nro_docum"
     },
     MaritalStatusId: {

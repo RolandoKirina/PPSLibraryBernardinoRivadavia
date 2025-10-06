@@ -5,7 +5,7 @@ export default function applyRelationships(models) {
     BookTypeGroup, BookTypeGroupList, Employees,
     Partner, PartnerCategory, Reader, reasonForWithDrawal,
     statePartner, Locality, MaritalStatus,
-    Fees
+    Fees, typeDocument
   } = models;
 
   Author.hasMany(BookAuthor, { foreignKey: 'authorCode' ,sourceKey:"id"});
@@ -14,9 +14,11 @@ export default function applyRelationships(models) {
 
   BookAuthor.belongsTo(Book, { foreignKey: 'BookId', targetKey: "BookId"});
 
-  Loan.hasMany(LoanType, { foreignKey: 'id', sourceKey:"id"});
+  Book.hasMany(BookAuthor, { foreignKey: 'BookId' ,sourceKey:"BookId"});
 
-  LoanType.belongsTo(Loan, { foreignKey: 'id' , targetKey:"id"});
+  LoanType.hasMany(Loan, { foreignKey: 'id', sourceKey:"id"});
+
+  Loan.belongsTo(LoanType, { foreignKey: 'id' , targetKey:"id"});
 
   Employees.hasMany(Loan, { foreignKey: 'employeeId', sourceKey:"id" }); 
 
@@ -65,12 +67,18 @@ export default function applyRelationships(models) {
 
   BookTypeGroup.belongsTo(BookType, { foreignKey: 'bookTypeId', targetKey: "bookTypeId"}); 
 
-  BookType.hasMany(BookTypeGroup, { foreignKey: 'bookTypeId', sourceKey:"bookTypeId" })
+  BookType.hasMany(BookTypeGroup, { foreignKey: 'bookTypeId', sourceKey:"bookTypeId" });
+
+  BookType.hasMany(Book, { foreignKey: "type", sourceKey: "bookTypeId"});
+  Book.belongsTo(BookType, { foreignKey: "type", targetKey: "bookTypeId"});
 
 
-  Partner.hasMany(Fees,{foreignKey:"idPartner", sourceKey:"id"})
-  Fees.belongsTo(Partner,{foreignKey:"idPartner", sourceKey:"id"})
+  Partner.hasMany(Fees,{foreignKey:"idPartner", sourceKey:"id"});
+  Fees.belongsTo(Partner,{foreignKey:"idPartner", sourceKey:"id"});
 
-  Partner.belongsTo(Locality,{foreignKey:"LocalityId", sourceKey:"id"})
-  Partner.belongsTo(MaritalStatus,{foreignKey:"MaritalStatusId", sourceKey:"id"})
+  Partner.belongsTo(Locality,{foreignKey:"LocalityId", sourceKey:"id"});
+  Partner.belongsTo(MaritalStatus,{foreignKey:"MaritalStatusId", sourceKey:"id"});
+
+  typeDocument.hasMany(Partner, { foreignKey: "documentType", sourceKey: "Id"});
+  Partner.belongsTo(typeDocument, { foreignKey: "documentType", targetKey: "Id"});
 }

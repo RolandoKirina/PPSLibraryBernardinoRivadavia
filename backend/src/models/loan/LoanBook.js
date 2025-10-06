@@ -12,7 +12,7 @@ const LoanBook = sequelize.define("LoanBook",
         },
         BookId: {
             type: DataTypes.INTEGER,
-            field: 'IdBook',
+            field: 'BookId',
         },
         loanId: {
             type: DataTypes.INTEGER,

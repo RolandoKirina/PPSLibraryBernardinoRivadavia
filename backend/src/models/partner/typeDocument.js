@@ -6,9 +6,11 @@ import { DataTypes } from "sequelize";
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
+      field: "Id"
     },
-    TipoDocumento: {
+    documentType: {
       type: DataTypes.STRING(50),
+      field: "documentType"
     }
   }, {
     tableName: 'TipoDocumento',
