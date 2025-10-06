@@ -10,58 +10,96 @@ export const buildLoanFilters = (query) => {
     endDate,
     returnStartDate,
     returnEndDate,
-    memberName,
+    partnerName,
+    partnerSurname,
     onlyActiveMembers,
     bookTitle,
     bookCode,
     limit,
     offset,
     sortBy,
-    direction
+    direction,
+    employeeName
   } = query;
 
-  const where = {};
+  // Filtros principales
+  const whereLoan = {}; //por fecha de retiro
+  const whereLoanType = {}; //por tipo de prestamos
+  const whereLoanBook = {}; //por estado de prestamo (si returnedDate existe, fue devuelto, si no es actual)
+  const whereBookType = {}; //por tipo de material retirado (typeName, vinculado a book)
+  const wherePartner = {}; //por partnerName
+  const whereBook = {};  //por titulo y codigo
+  const whereEmployee = {};
 
-  if (type && type !== 'all') where.type = type;
-  if (state && state !== 'all') where.state = state;
 
-  if (materialType === 'specific' && selectedMaterial) {
-    where.materialType = selectedMaterial;
+  if (type && type !== 'all') whereLoanType.description = type;
+  if (state && state !== 'all') {
+    if (state === 'returned') {
+      // préstamos devueltos
+      whereLoanBook.returnedDate = { [Op.ne]: null };
+    } else if (state === 'active') {
+      // préstamos activos (sin devolver)
+      whereLoanBook.returnedDate = { [Op.is]: null };
+    }
   }
 
-  if (startDate) where.loanDate = { [Op.gte]: new Date(startDate) };
+  if (materialType === 'specific' && selectedMaterial) {
+    whereBookType.typeName = selectedMaterial;
+  }
+
+  if (startDate) whereLoan.retiredDate = { [Op.gte]: new Date(startDate) };
   if (endDate) {
-    where.loanDate = {
-      ...(where.loanDate || {}),
+    whereLoan.retiredDate = {
+      ...(whereLoan.retiredDate || {}),
       [Op.lte]: new Date(endDate)
     };
   }
 
-  if (returnStartDate) where.returnDate = { [Op.gte]: new Date(returnStartDate) };
+  if (returnStartDate) whereLoanBook.returnedDate = { [Op.gte]: new Date(returnStartDate) };
   if (returnEndDate) {
-    where.returnDate = {
-      ...(where.returnDate || {}),
+    whereLoanBook.returnedDate = {
+      ...(whereLoanBook.returnedDate || {}),
       [Op.lte]: new Date(returnEndDate)
     };
   }
 
-  if (memberName) where.memberName = { [Op.iLike]: `%${memberName}%` };
-  if (onlyActiveMembers === 'true') where.memberActive = true;
+  if (partnerName && partnerName.trim() !== '') {
+    wherePartner.name = { [Op.iLike]: `%${partnerName.trim()}%` };
+  }
 
-  if (bookTitle) where.bookTitle = { [Op.iLike]: `%${bookTitle}%` };
-  if (bookCode) where.bookCode = bookCode;
+  if (partnerSurname && partnerSurname.trim() !== '') {
+    wherePartner.surname = { [Op.iLike]: `%${partnerSurname.trim()}%` };
+  }
+
+  if (onlyActiveMembers === 'true') {
+    wherePartner.isActive = 1; // solo activos (en la db no tienen fecha de renuncia)
+  } else if (onlyActiveMembers === 'false') {
+    wherePartner.isActive = 2; // solo inactivos (tienen fecha de renuncia)
+  }
+
+  if (bookTitle) whereBook.title = { [Op.iLike]: `%${bookTitle}%` };
+  if (bookCode) whereBook.codeInventory = bookCode;
+
+  if (employeeName) whereEmployee.name = { [Op.iLike]: `%${employeeName}%` };
 
   const parsedLimit = parseInt(limit);
   const parsedOffset = parseInt(offset);
 
   const order = sortBy
     ? [[sortBy, direction === 'asc' ? 'ASC' : 'DESC']]
-    : [['loanDate', 'DESC']];
+    : undefined;
 
   return {
-    where,
+    whereLoan,
+    whereLoanType,
+    whereLoanBook,
+    whereBookType,
+    wherePartner,
+    whereBook,
+    whereEmployee,
     order,
     limit: isNaN(parsedLimit) ? 20 : parsedLimit,
     offset: isNaN(parsedOffset) ? 0 : parsedOffset
   };
+
 };

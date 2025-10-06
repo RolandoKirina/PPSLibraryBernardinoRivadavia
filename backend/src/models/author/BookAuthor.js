@@ -4,9 +4,15 @@ import Book from "../book/Book.js";
 
 const BookAuthor = sequelize.define("BookAuthor", 
     {
-        idBook: {
+        bookAuthorId: {
             type: DataTypes.INTEGER,
-            field: 'IdBook', 
+            field: 'bookAuthorId',
+            primaryKey: true,
+            autoIncrement: true
+        },
+        BookId: {
+            type: DataTypes.INTEGER,
+            field: 'BookId', 
         },
         bookCode: {
             type: DataTypes.STRING(50),
