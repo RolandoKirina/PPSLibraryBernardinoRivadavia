@@ -92,8 +92,8 @@ VALUES
 -- ===== SOCIO =====
 INSERT INTO socio (numero, "IdCategoria", "IdLocal_part", "IdEstado", "Motivo_Baj", apellido, nombre, fecha_nac, tipo_docum, nro_docum, est_civil, nacionalid, dir_part, tel_part, fecha_insc, est_socio)
 VALUES
-(1001, 1, 1, 1, 1, 'Pérez', 'Juan', '1990-05-12', 1, '30111222', 1, 'Argentina', 'Av. Corrientes 123', '1122334455', '2020-01-10', TRUE),
-(1002, 2, 2, 1, 1, 'González', 'Laura', '1985-07-03', 1, '29444333', 2, 'Argentina', 'Calle San Martín 45', '1133445566', '2021-02-15', TRUE);
+(1001, 1, 1, 1, 1, 'Pérez', 'Juan', '1990-05-12', 1, '30111222', 1, 'Argentina', 'Av. Corrientes 123', '1122334455', '2020-01-10', 1),
+(1002, 2, 2, 1, 1, 'González', 'Laura', '1985-07-03', 1, '29444333', 2, 'Argentina', 'Calle San Martín 45', '1133445566', '2021-02-15', 1);
 
 -- ===== CUOTAS =====
 INSERT INTO "Cuotas" ("Mes", "Anio", "Monto", "IdSocio", "Paga", "FechaPago")

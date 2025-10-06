@@ -18,7 +18,8 @@ export const buildLoanFilters = (query) => {
     limit,
     offset,
     sortBy,
-    direction
+    direction,
+    employeeName
   } = query;
 
   // Filtros principales
@@ -30,9 +31,6 @@ export const buildLoanFilters = (query) => {
   const whereBook = {};  //por titulo y codigo
   const whereEmployee = {};
 
-
-
-  const where = {};
 
   if (type && type !== 'all') whereLoanType.description = type;
   if (state && state !== 'all') {
@@ -73,11 +71,16 @@ export const buildLoanFilters = (query) => {
     wherePartner.surname = { [Op.iLike]: `%${partnerSurname.trim()}%` };
   }
 
-  //AVERIGUAR que es un socio activo
-  // if (onlyActiveMembers === 'true') wherePartner.memberActive = true;
+  if (onlyActiveMembers === 'true') {
+    wherePartner.isActive = 1; // solo activos (en la db no tienen fecha de renuncia)
+  } else if (onlyActiveMembers === 'false') {
+    wherePartner.isActive = 2; // solo inactivos (tienen fecha de renuncia)
+  }
 
   if (bookTitle) whereBook.title = { [Op.iLike]: `%${bookTitle}%` };
   if (bookCode) whereBook.codeInventory = bookCode;
+
+  if (employeeName) whereEmployee.name = { [Op.iLike]: `%${employeeName}%` };
 
   const parsedLimit = parseInt(limit);
   const parsedOffset = parseInt(offset);

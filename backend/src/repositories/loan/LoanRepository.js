@@ -60,9 +60,9 @@ export const getAll = async (filters) => {
       },
       {
         model: Employees,
-        attributes: ['name']
-        // where: Object.keys(whereEmployee).length ? whereEmployee : undefined,
-        // required: Object.keys(whereEmployee).length > 0
+        attributes: ['name'],
+        where: Object.keys(whereEmployee).length ? whereEmployee : undefined,
+        required: Object.keys(whereEmployee).length > 0
       }
     ],
     order,
