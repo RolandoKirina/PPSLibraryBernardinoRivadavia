@@ -10,6 +10,6 @@ export const getQuantityBooksAndPartners = async (req, res) => {
         res.json(response);
     } catch (e) {
         console.error(e);
-       res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
 };
