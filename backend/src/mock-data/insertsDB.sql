@@ -1,162 +1,109 @@
--- ===== AUTORES =====
-INSERT INTO "Autores" ("Nombre", "Nacionalidad")
-VALUES 
-('Gabriel García Márquez', 'Colombiana'),
-('Julio Cortázar', 'Argentina'),
-('Isabel Allende', 'Chilena');
-
--- ===== TIPO LIBRO =====
-INSERT INTO "TipoLibro" ("TipoLibro", "DiasPrestamo")
-VALUES 
-('Novela', 15),
-('Ensayo', 10),
-('Referencia', 3);
-
--- ===== LIBROS =====
-INSERT INTO "Libros" (codigo, codigo_cdu, titulo, editorial, numero_de_edicion, anio_de_edicion, traductor, codigo_clasificacion, cantidad_de_ejemplares, notas, tipo, codigo_linguistico, autores, id_proveedor, numero_de_factura, fecha_de_compra, perdido)
-VALUES
-('L001', '82-3', 'Cien Años de Soledad', 'Sudamericana', 1, 1967, NULL, 'NOV', 5, 'Primera edición', 1, 'ES', 'Gabriel García Márquez', NULL, NULL, NOW(), FALSE),
-('L002', '82-3', 'Rayuela', 'Sudamericana', 3, 1963, NULL, 'NOV', 3, NULL, 1, 'ES', 'Julio Cortázar', NULL, NULL, NOW(), FALSE),
-('L003', '81-4', 'La Casa de los Espíritus', 'Plaza & Janés', 1, 1982, NULL, 'NOV', 2, NULL, 1, 'ES', 'Isabel Allende', NULL, NULL, NOW(), FALSE);
-
--- ===== AUTOR LIBRO =====
-INSERT INTO "AutorLibro" ("BookId", "CodLibro", "CodAutor", "Posicion")
-VALUES
-(1, 'L001', 1, 1),
-(2, 'L002', 2, 1),
-(3, 'L003', 3, 1);
-
--- ===== CLAVES =====
-INSERT INTO "Claves" ("Clave")
-VALUES 
-('Realismo mágico'),
-('Literatura latinoamericana'),
-('Narrativa contemporánea');
-
--- ===== CLAVES LIBRO =====
-INSERT INTO "ClavesLibro" ("IdClave", "bookId", "CodLibro")
-VALUES
-(1, 1, 'L001'),
-(2, 2, 'L002'),
-(3, 3, 'L003');
-
--- ===== SIGNS =====
-INSERT INTO signs (desde, hasta, numero)
-VALUES
-('A', 'D', 1),
-('E', 'H', 2),
-('I', 'L', 3);
-
--- ===== CATEGORIA SOCIO =====
+-- ====== CATEGORÍAS DE SOCIOS ======
 INSERT INTO "CategoriaSocio" ("Categoria", "Importe")
 VALUES
-('Estudiante', 1500.00),
-('Regular', 2500.00),
-('Premium', 4000.00);
+('Activo', 1500.00),
+('Jubilado', 800.00);
 
--- ===== LOCALIDADES =====
+-- ====== LOCALIDADES ======
 INSERT INTO "Localidades" ("Localidad", "CPostal")
 VALUES
 ('Buenos Aires', '1000'),
-('Rosario', '2000'),
-('Córdoba', '5000');
+('Rosario', '2000');
 
--- ===== ESTADO SOCIO =====
+-- ====== ESTADOS DE SOCIO ======
 INSERT INTO "EstadoSocio" ("Estado")
 VALUES
 ('Activo'),
-('Suspendido'),
-('Baja');
+('Inactivo');
 
--- ===== MOTIVO BAJA =====
+-- ====== MOTIVOS DE BAJA ======
 INSERT INTO "MotivoBaja" ("Motivo")
 VALUES
 ('Renuncia'),
-('Fallecimiento'),
-('Incumplimiento de pagos');
+('Fallecimiento');
 
--- ===== TIPO DOCUMENTO =====
+-- ====== TIPO DE DOCUMENTO ======
 INSERT INTO "TipoDocumento" ("documentType")
 VALUES
 ('DNI'),
-('Pasaporte'),
-('Cédula');
+('Pasaporte');
 
--- ===== ESTADO CIVIL =====
+-- ====== ESTADO CIVIL ======
 INSERT INTO "EstadoCivil" ("EstadoCivil")
 VALUES
 ('Soltero'),
 ('Casado'),
 ('Divorciado');
 
--- ===== SOCIO =====
-INSERT INTO socio (numero, "IdCategoria", "IdLocal_part", "IdEstado", "Motivo_Baj", apellido, nombre, fecha_nac, tipo_docum, nro_docum, est_civil, nacionalid, dir_part, tel_part, fecha_insc, est_socio)
-VALUES
-(1001, 1, 1, 1, 1, 'Pérez', 'Juan', '1990-05-12', 1, '30111222', 1, 'Argentina', 'Av. Corrientes 123', '1122334455', '2020-01-10', 1),
-(1002, 2, 2, 1, 1, 'González', 'Laura', '1985-07-03', 1, '29444333', 2, 'Argentina', 'Calle San Martín 45', '1133445566', '2021-02-15', 1);
-
--- ===== CUOTAS =====
-INSERT INTO "Cuotas" ("Mes", "Anio", "Monto", "IdSocio", "Paga", "FechaPago")
-VALUES
-(9, 2025, 2500.00, 1, TRUE, NOW()),
-(10, 2025, 2500.00, 1, FALSE, NULL),
-(9, 2025, 4000.00, 2, TRUE, NOW());
-
--- ===== ULTIMA GENERACION =====
-INSERT INTO "UltimaGeneracion" ("Mes", "Anio", "Fecha")
-VALUES
-(9, 2025, '2025-09-30');
-
--- ===== RESERVAS =====
-INSERT INTO "Reservas" ("TituloLibro", "FechaReserva", "FechaPrometida", "NumSocio", "Comentarios")
-VALUES
-('Rayuela', '2025-09-20', '2025-09-30', 1001, 'Retirar antes de fin de mes'),
-('Cien Años de Soledad', '2025-09-25', '2025-10-05', 1002, 'Solicitado para taller');
-
--- ===== RESERVAS LIBRO =====
-INSERT INTO "ReservasLibro" ("IdBook", "IdReserva", "CodLibro", "TituloLibro")
-VALUES
-(2, 1, 'L002', 'Rayuela'),
-(1, 2, 'L001', 'Cien Años de Soledad');
-
--- ===== EMPLEADOS =====
+-- ====== EMPLEADOS ======
 INSERT INTO "Empleados" ("Nombre", "Codigo")
 VALUES
-('María López', 'E001'),
-('Carlos Ruiz', 'E002');
+('María López', 'EMP01'),
+('Carlos Gómez', 'EMP02');
 
--- ===== TIPO PRESTAMO =====
+-- ====== TIPO DE PRÉSTAMO ======
 INSERT INTO "TipoPrestamo" ("Descripcion")
 VALUES
 ('Normal'),
-('Especial');
+('Urgente');
 
--- ===== PRESTAMO =====
-INSERT INTO "Prestamo" ("Id", "partnerId", "TipoPrestamo", "FechaRetiro", "HoraRetiro", "IdEmpleado", "Nombre", "DNI")
+-- ====== TIPO DE LIBRO ======
+INSERT INTO "TipoLibro" ("TipoLibro", "DiasPrestamo")
 VALUES
-(1, 1, 1, '2025-09-15', '10:00', 1, 'Juan Pérez', '30111222'),
-(2, 2, 2, '2025-09-18', '15:30', 2, 'Laura González', '29444333');
+('Novela', 15),
+('Ensayo', 10);
 
--- ===== PRESTAMO LIBRO =====
-INSERT INTO "PrestamoLibro" ("BookId", "IdPrestamo", "CodLibro", "FechaPrevista", "Devuelto", "Ejemplar")
+-- ====== AUTORES ======
+INSERT INTO "Autores" ("Nombre", "Nacionalidad")
 VALUES
-(1, 1, 'L001', '2025-09-30', TRUE, 1),
-(2, 2, 'L002', '2025-10-05', FALSE, 1);
+('Jorge Luis Borges', 'Argentina'),
+('Gabriel García Márquez', 'Colombia');
 
--- ===== GRUPOS TIPO LIBRO =====
-INSERT INTO "GruposTipoLibro" ("Grupo", "CantMaxima")
+-- ====== LIBROS ======
+INSERT INTO "Libros" (codigo, "Cod_rcdu", titulo, "Editorial", "Nro_edic", "Anio_edic", "Traductor", "Cod_Clas", "Cant_ejemplar", "Notas", "Tipo", "Cod_Ling", "Autores", "IdProveedor", "NumFactura", "FechaCompra", "Perdido")
 VALUES
-('Ficción', 3),
-('No Ficción', 2);
+('L001', 'RC001', 'El Aleph', 'Emecé', 3, 1949, '—', 'A1', 5, 'Cuentos fantásticos', 1, 'ESP', 'Jorge Luis Borges', 1, 'F001', '2020-01-10', FALSE),
+('L002', 'RC002', 'Cien años de soledad', 'Sudamericana', 1, 1967, '—', 'A2', 3, 'Realismo mágico', 2, 'ESP', 'Gabriel García Márquez', 1, 'F002', '2021-03-15', FALSE);
 
--- ===== TIPO LIBRO GRUPO =====
-INSERT INTO "TipoLibroGrupo" ("IdGrupo", "IdTipoLibro")
+-- ====== AUTORES LIBRO ======
+INSERT INTO "AutorLibro" ("BookId", "CodLibro", "CodAutor", "Posicion")
 VALUES
-(1, 1),
-(2, 2);
+(1, 'L001', 1, 1),
+(2, 'L002', 2, 1);
 
--- ===== LECTORES =====
-INSERT INTO "Lectores" ("DNI", "Nombre")
+-- ====== SOCIOS ======
+INSERT INTO socio (numero, "IdCategoria", "IdLocal_part", "IdEstado", "Motivo_Baj", apellido, nombre, fecha_nac, tipo_docum, nro_docum, est_civil, nacionalid, dir_part, tel_part, fecha_insc, est_socio)
 VALUES
-('30111222', 'Juan Pérez'),
-('29444333', 'Laura González');
+(1001, 1, 1, 1, 1, 'Pérez', 'Juan', '1990-05-12', 1, '30111222', 1, 'Argentina', 'Av. Corrientes 123', '1122334455', '2020-01-10', 1),
+(1002, 2, 2, 1, 1, 'González', 'Laura', '1985-07-03', 1, '29444333', 2, 'Argentina', 'Calle San Martín 45', '1133445566', '2021-02-15', 2);
+
+-- ====== PRÉSTAMOS ======
+INSERT INTO "Prestamo" ("partnerId", "TipoPrestamo", "FechaRetiro", "HoraRetiro", "IdEmpleado", "Nombre", "DNI")
+VALUES
+(1, 1, '2023-01-05', '10:30', 1, 'Juan Pérez', '30111222'),
+(2, 2, '2023-02-10', '11:15', 2, 'Laura González', '29444333');
+
+-- ====== PRÉSTAMO LIBRO ======
+INSERT INTO "PrestamoLibro" ("BookId", "IdPrestamo", "CodLibro", "FechaPrevista", "FechaDevolucion", "CantRenovacion", "Devuelto", "Ejemplar")
+VALUES
+(1, 1, 'L001', '2023-01-20', '2023-01-18', 0, TRUE, 1),
+(2, 2, 'L002', '2023-02-25', NULL, 1, FALSE, 1);
+
+-- ====== CUOTAS ======
+INSERT INTO "Cuotas" ("Mes", "Anio", "Monto", "IdSocio", "Paga", "FechaPago")
+VALUES
+(1, 2023, 1500.00, 1, TRUE, '2023-01-05'),
+(2, 2023, 1500.00, 1, TRUE, '2023-02-05'),
+(1, 2023, 800.00, 2, FALSE, NULL);
+
+-- ====== RESERVAS ======
+INSERT INTO "Reservas" ("TituloLibro", "FechaReserva", "FechaPrometida", "NumSocio", "Comentarios")
+VALUES
+('El Aleph', '2023-03-01', '2023-03-10', 1, 'Reserva prioritaria'),
+('Cien años de soledad', '2023-03-05', '2023-03-15', 2, 'Pendiente de devolución');
+
+-- ====== RESERVAS LIBRO ======
+INSERT INTO "ReservasLibro" ("IdBook", "IdReserva", "CodLibro", "TituloLibro")
+VALUES
+(1, 1, 'L001', 'El Aleph'),
+(2, 2, 'L002', 'Cien años de soledad');
