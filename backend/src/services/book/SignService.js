@@ -1,4 +1,4 @@
-import * as SignRepository from "../../repositories/signs/SignRepository.js";
+import * as SignRepository from "../../repositories/book/SignRepository.js";
 
 export const getAllSigns = async () => {
     const signs = await SignRepository.getAll();

@@ -32,8 +32,8 @@ import BookType from './options/BookType.js';
 
 // Partner
 import Locality from './partner/locality.js';
-import MaritalStatus from './partner/maritalStatus.js';
-import Partner from './partner/partner.js';
+import MaritalStatus from './partner/MaritalStatus.js';
+import Partner from './partner/Partner.js';
 import PartnerCategory from './partner/partnerCategory.js';
 // import PartnerFeeWithDrawal from './partner/PartnerFeeWithDrawal.js';
 // import PartnerPass from './partner/PartnerPass.js';
@@ -42,7 +42,7 @@ import PartnerCategory from './partner/partnerCategory.js';
 import statePartner from './partner/statePartner.js';
 import Reader from './partner/reader.js';
 import reasonForWithDrawal from './partner/reasonForWithdrawal.js';
-import typeDocument from './partner/typeDocument.js';
+import typeDocument from './partner/TypeDocument.js';
 
 // Construir objeto de modelos con nombres tal cual están definidos
 const models = {

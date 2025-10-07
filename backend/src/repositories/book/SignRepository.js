@@ -1,4 +1,4 @@
-import Sign from "../../models/signs/Sign.js";
+import Sign from "../../models/book/Signs.js";
 
 export const getAll = async () => {
     return await Sign.findAll();

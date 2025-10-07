@@ -1,4 +1,4 @@
-import * as FeeService from "../../services/fees/FeeService.js";
+import * as FeeService from "../../services/fee/FeeService.js";
 import { HTTP_STATUS } from "../../https/httpsStatus.js";
 
 export const getAllFees = async (req, res) => {

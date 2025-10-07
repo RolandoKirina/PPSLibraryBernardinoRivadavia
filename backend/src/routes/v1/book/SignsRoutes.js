@@ -1,5 +1,5 @@
 import express from "express";
-import * as SignController from "../../../controllers/signs/SignController.js";
+import * as SignController from "../../../controllers/book/SignController.js";
 import validateIdParam from "../../../middlewares/ValidateId.js";
 
 const router = express.Router();

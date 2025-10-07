@@ -1,4 +1,4 @@
-import * as LastGenerationRepository from "../../repositories/lastGeneration/LastGenerationRepository.js";
+import * as LastGenerationRepository from "../../repositories/fee/LastGenerationRepository.js";
 
 export const getAllLastGenerations = async () => {
     const lastGenerations = await LastGenerationRepository.getAll();

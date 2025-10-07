@@ -1,4 +1,4 @@
-import * as FeeRepository from "../../repositories/fees/FeeRepository.js";
+import * as FeeRepository from "../../repositories/fee/FeeRepository.js";
 
 export const getAllFees = async () => {
     const fees = await FeeRepository.getAll();

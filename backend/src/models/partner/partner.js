@@ -107,7 +107,7 @@ const Partner = sequelize.define("Partner",
         field: "horapref"
     },
     isActive: {
-        type: DataTypes.SMALLINT,
+        type: DataTypes.BOOLEAN,
         field: "est_socio"
     },
     withdrawalDate: {

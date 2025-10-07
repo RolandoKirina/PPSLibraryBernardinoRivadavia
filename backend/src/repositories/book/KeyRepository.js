@@ -1,4 +1,4 @@
-import Key from "../../models/key/Key.js";
+import Key from "../../models/book/Key.js";
 
 export const getAll = async () => {
     return await Key.findAll();

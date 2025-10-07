@@ -6,7 +6,7 @@ import BookRoutes from "./routes/v1/book/BookRoutes.js";
 import BookKeyRoutes from "./routes/v1/book/BookKeyRoutes.js";
 import KeyRouter from "./routes/v1/book/KeyRouter.js";
 import SignsRouter from "./routes/v1/book/SignsRoutes.js";
-
+import StatsBookRoutes from "./routes/v1/book/StatsBookRoutes.js";
 // fee
 import FeeRouter from "./routes/v1/fee/FeeRouter.js";
 import LastGenerationRouter from "./routes/v1/fee/LastGenerationRouter.js";
@@ -47,6 +47,9 @@ sequelize.sync({ alter: true }).then(() => {
 });
 
 app.use("/api/v1/books", BookRoutes);
+app.use("/api/v1/books/ranking", BookRoutes);
+app.use("/api/v1/stats-books", StatsBookRoutes);
+
 app.use("/api/v1/book-keys", BookKeyRoutes);
 app.use("/api/v1/keys", KeyRouter);
 app.use("/api/v1/signs", SignsRouter);

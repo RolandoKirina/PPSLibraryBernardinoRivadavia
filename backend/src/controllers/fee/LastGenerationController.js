@@ -1,4 +1,4 @@
-import * as LastGenerationService from "../../services/lastGeneration/LastGenerationService.js";
+import * as LastGenerationService from "../../services/fee/LastGenerationService.js";
 import { HTTP_STATUS } from "../../https/httpsStatus.js";
 
 export const getAllLastGenerations = async (req, res) => {

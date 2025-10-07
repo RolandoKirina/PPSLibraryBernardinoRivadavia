@@ -5,6 +5,11 @@ export const getAllBooks = async () => {
     return books;
 }
 
+export const getRanking = async () => {
+    let ranking = await BookRepository.getAll();
+    return ranking;
+}
+
 
 export const getBook = async (id) => {
     return await BookRepository.getById(id);

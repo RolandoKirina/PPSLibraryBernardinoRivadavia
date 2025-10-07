@@ -1,4 +1,18 @@
 import Book from "../../models/book/Book.js";
+import Author from "../../models/author/Authors.js";
+
+export const getRanking = async () => {
+  return await Book.findAll({
+    include: [
+      {
+        model: Author,
+        attributes: ['name'],  
+      },
+    ],
+    attributes: ['BookId', 'title', 'codeCdu', 'numberOfCopies']
+  });
+};
+
 
 
 export const getAll = async () => {

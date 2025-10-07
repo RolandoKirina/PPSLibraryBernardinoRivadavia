@@ -1,5 +1,5 @@
 import express from "express";
-import * as KeyController from "../../../controllers/key/KeyController.js";
+import * as KeyController from "../../../controllers/book/KeyController.js";
 import validateIdParam from "../../../middlewares/ValidateId.js";
 
 const router = express.Router();

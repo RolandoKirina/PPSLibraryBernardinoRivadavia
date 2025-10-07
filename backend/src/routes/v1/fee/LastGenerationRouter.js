@@ -1,5 +1,5 @@
 import express from "express";
-import * as LastGenerationController from "../../../controllers/lastGeneration/LastGenerationController.js";
+import * as LastGenerationController from "../../../controllers/fee/LastGenerationController.js";
 import validateIdParam from "../../../middlewares/ValidateId.js";
 
 const router = express.Router();

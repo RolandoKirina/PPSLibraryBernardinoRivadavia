@@ -1,13 +1,13 @@
 import express from "express";
-import * as LocalityController from "../../../controllers/locality/LocalityController.js";
+import * as PartnerController from "../../../controllers/partner/PartnerController.js";
 import validateIdParam from "../../../middlewares/ValidateId.js";
 
 const router = express.Router();
 
-router.get("/", LocalityController.getAllLocalities);
-router.get("/:id", validateIdParam("Locality id"), LocalityController.getLocality);
-router.post("/", LocalityController.createLocality);
-router.put("/:id", validateIdParam("Locality id"), LocalityController.updateLocality);
-router.delete("/:id", validateIdParam("Locality id"), LocalityController.deleteLocality);
+router.get("/", PartnerController.getAllPartners);
+router.get("/:id", validateIdParam("Partner id"), PartnerController.getPartner);
+router.post("/", PartnerController.createPartner);
+router.put("/:id", validateIdParam("Partner id"), PartnerController.updatePartner);
+router.delete("/:id", validateIdParam("Partner id"), PartnerController.removePartner);
 
 export default router;

@@ -1,6 +1,6 @@
 import sequelize from "../../configs/database.js";
 import { DataTypes } from "sequelize";
-import Partner from "../partner/partner.js";
+import Partner from "../partner/Partner.js";
 import Employees from "../options/Employees.js";
 import LoanType from "./LoanType.js";
 

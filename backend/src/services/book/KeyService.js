@@ -1,4 +1,4 @@
-import * as KeyRepository from "../../repositories/key/KeyRepository.js";
+import * as KeyRepository from "../../repositories/book/KeyRepository.js";
 
 export const getAllKeys = async () => {
     const keys = await KeyRepository.getAll();

@@ -2,13 +2,9 @@ import Loan from '../../models/loan/Loan.js';
 import LoanBook from '../../models/loan/LoanBook.js';
 import Book from '../../models/book/Book.js';
 import Employees from '../../models/options/Employees.js';
-<<<<<<< HEAD
 import Partner from '../../models/partner/Partner.js';
-=======
-import Partner from '../../models/partner/partner.js';
 import LoanType from '../../models/loan/LoanType.js';
 import BookType from "../../models/options/BookType.js";
->>>>>>> c6accfae8decfd880726fcbaf4a58d362cd5d5e4
 
 export const getAll = async (filters) => {
   const {

@@ -1,6 +1,5 @@
-import * as KeyService from "../../services/key/KeyService.js";
+import * as KeyService from "../../services/book/KeyService.js";
 import { HTTP_STATUS } from "../../https/httpsStatus.js";
-import Key from "../../models/key/Key.js";
 
 export const getAllKeys = async (req, res) => {
     try {

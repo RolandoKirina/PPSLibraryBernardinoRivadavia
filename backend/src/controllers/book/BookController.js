@@ -13,7 +13,17 @@ export const getAllBooks = async (req,res) => {
     }
     
 }
+ export const getRanking = async (req,res) =>{
+    try{
+        const ranking = await BookService.getRanking();
+        res.json(ranking);
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({ msg: "error" });
 
+    }
+ }
 
 export const getBook = async (req,res) => {
     try{

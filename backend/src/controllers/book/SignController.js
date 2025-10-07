@@ -1,6 +1,5 @@
-import * as SignService from "../../services/signs/SignService.js";
+import * as SignService from "../../services/book/SignService.js";
 import { HTTP_STATUS } from "../../https/httpsStatus.js";
-import Sign from "../../models/signs/Sign.js";
 
 export const getAllSigns = async (req, res) => {
     try {
