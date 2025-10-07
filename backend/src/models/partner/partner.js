@@ -107,7 +107,7 @@ const Partner = sequelize.define("Partner",
         field: "horapref"
     },
     isActive: {
-        type: DataTypes.SMALLINT, //cambie boolean por small int ya que la db maneja 1 y 2 como true y false
+        type: DataTypes.SMALLINT, 
         field: "est_socio"
     },
     withdrawalDate: {

@@ -4,8 +4,12 @@ export const getAllBookAuthors = async () => {
     return await BookAuthorRepository.getAll();
 };
 
-export const getBookAuthor = async (id) => {
+export const getBookAuthorById = async (id) => {
     return await BookAuthorRepository.getOne(id);
+};
+
+export const bookAuthorAlreadyExists = async (authorCode, bookId) => {
+    return await BookAuthorRepository.alreadyExists(authorCode, bookId);
 };
 
 export const createBookAuthor = async (bookAuthor) => {
@@ -20,7 +24,7 @@ export const updateBookAuthor = async (id, updates) => {
     return await BookAuthorRepository.update(id, updates);
 };
 
-export const removeBookAuthor = async (id) => {
+export const removeBookAuthorById = async (id) => {
     const existingBookAuthor = await BookAuthorRepository.getOne(id);
 
     if (!existingBookAuthor) throw new Error("BookAuthor not found");
