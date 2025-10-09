@@ -6,15 +6,15 @@ import * as AuthorsController from '../../../controllers/author/AuthorsControlle
 const router = express.Router();
 
 router.get('/', AuthorsController.getAllAuthors);
-router.get('/:id', validateIdParam("authorId"), AuthorsController.getAuthor);
+router.get('/:id', validateIdParam("id"), AuthorsController.getAuthor);
 router.get('/by-name/:name', AuthorsController.getAllAuthorsByName);
 router.post('/', AuthorsController.createAuthor);
-router.put('/:id', validateIdParam("authorId"), AuthorsController.updateAuthor);
+router.put('/:id', validateIdParam("id"), AuthorsController.updateAuthor);
 
 // quizás añadir patch
 // router.patch('/:id', AuthorsController.patchAuthor);
 
-router.delete('/:id', validateIdParam("authorId"), AuthorsController.removeAuthor);
+router.delete('/:id', validateIdParam("id"), AuthorsController.removeAuthor);
 
 //author by name
 

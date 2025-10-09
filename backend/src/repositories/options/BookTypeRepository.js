@@ -13,7 +13,7 @@ export const create = async (bookType) => {
 };
 
 export const update = async (id, bookType) => {
-    const [rowsUpdated] = await BookType.update(bookType, { where: { id } });
+    const [rowsUpdated] = await BookType.update(bookType, { where: { bookTypeId: id } });
     if (rowsUpdated === 0) {
         return null;
     }

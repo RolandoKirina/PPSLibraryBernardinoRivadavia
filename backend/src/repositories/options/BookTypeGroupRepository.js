@@ -8,6 +8,18 @@ export const getOne = async (id) => {
     return await BookTypeGroup.findByPk(id);
 };
 
+export const alreadyExists = async (BookTypeGroupListId, bookTypeId) => {
+    const existingBookTypeGroup = await BookTypeGroup.findAll({
+        where: {
+            BookTypeGroupListId: BookTypeGroupListId,
+            bookTypeId: bookTypeId
+        },
+        limit: 1
+    });
+
+    return existingBookTypeGroup[0];
+};
+
 export const create = async (data) => {
     return await BookTypeGroup.create(data);
 };

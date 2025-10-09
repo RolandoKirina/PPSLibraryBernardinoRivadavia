@@ -34,6 +34,12 @@ export const createBookTypeGroup = async (req, res) => {
             return res.status(HTTP_STATUS.BAD_REQUEST.code).json({ msg: "Invalid body" });
         }
 
+        const bookTypeGroupFound = await bookTypeGroupAlreadyExists(data.BookTypeGroupListId, data.bookTypeId);
+
+        if(bookTypeGroupFound) {
+            return res.status(HTTP_STATUS.BAD_REQUEST.code).json({ msg: "The group already has that type book" });   
+        }
+
         const result = await BookTypeGroupService.createBookTypeGroup(data);
         res.status(HTTP_STATUS.CREATED.code).send(result);
     } catch (error) {
@@ -59,7 +65,7 @@ export const updateBookTypeGroup = async (req, res) => {
     }
 };
 
-export const removeBookTypeGroup = async (req, res) => {
+export const removeBookTypeGroupById = async (req, res) => {
     try {
         const { id } = req.params;
 
@@ -68,5 +74,34 @@ export const removeBookTypeGroup = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+    }
+};
+
+export const removeBookTypeGroup = async (req, res) => {
+    try {
+         const { bookTypeId, groupListId } = req.params;
+
+         const found = await bookTypeGroupAlreadyExists(groupListId, bookTypeId);
+
+        if(!found) {
+            res.status(HTTP_STATUS.NOT_FOUND.code).json({ msg: `BookTypeGroup not found with bookTypeId: ${bookTypeId} and groupListId: ${groupListId}` });
+        }
+
+        await BookTypeGroupService.removeBookTypeGroupById(found.BookTypeGroupId);
+        res.status(HTTP_STATUS.OK.code).json({ msg: `Successfully deleted bookTypeGroup with bookTypeId: ${bookTypeId} and groupListId: ${groupListId}` });
+
+    } catch (error) {
+        console.error(error);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+    }
+};
+
+export const bookTypeGroupAlreadyExists = async (BookTypeGroupListId, bookTypeId) => {
+    try {
+        const bookTypeGroup = await BookTypeGroupService.bookTypeGroupAlreadyExists(BookTypeGroupListId, bookTypeId);
+  
+        return bookTypeGroup;
+    } catch (error) {
+        console.error(error);
     }
 };

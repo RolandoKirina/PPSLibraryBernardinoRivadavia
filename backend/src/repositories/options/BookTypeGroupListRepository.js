@@ -29,7 +29,7 @@ export const create = async (data) => {
 };
 
 export const update = async (id, updates) => {
-    await BookTypeGroupList.update(updates, { where: { id } });
+    await BookTypeGroupList.update(updates, { where: { bookTypeGroupListId: id } });
     return await BookTypeGroupList.findByPk(id);
 };
 
