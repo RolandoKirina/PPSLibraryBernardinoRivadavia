@@ -16,9 +16,9 @@ export default function applyRelationships(models) {
 
   Book.hasMany(BookAuthor, { foreignKey: 'BookId' ,sourceKey:"BookId"});
 
-  LoanType.hasMany(Loan, { foreignKey: 'id', sourceKey:"id"});
+  LoanType.hasMany(Loan, { foreignKey: 'loanType', sourceKey:"id"});
 
-  Loan.belongsTo(LoanType, { foreignKey: 'id' , targetKey:"id"});
+  Loan.belongsTo(LoanType, { foreignKey: 'loanType' , targetKey:"id"});
 
   Employees.hasMany(Loan, { foreignKey: 'employeeId', sourceKey:"id" }); 
 
