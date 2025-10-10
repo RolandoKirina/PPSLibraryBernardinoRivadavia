@@ -1,162 +1,183 @@
--- ===== AUTORES =====
-INSERT INTO "Autores" ("Nombre", "Nacionalidad")
-VALUES 
+-- -------------------------------
+-- 1️⃣ Autores
+-- -------------------------------
+INSERT INTO "Autores" ("Nombre", "Nacionalidad") VALUES
+('Antoine de Saint-Exupéry', 'Francesa'),
 ('Gabriel García Márquez', 'Colombiana'),
-('Julio Cortázar', 'Argentina'),
-('Isabel Allende', 'Chilena');
+('George Orwell', 'Británica'),
+('Miguel de Cervantes', 'Española');
 
--- ===== TIPO LIBRO =====
-INSERT INTO "TipoLibro" ("TipoLibro", "DiasPrestamo")
-VALUES 
-('Novela', 15),
-('Ensayo', 10),
-('Referencia', 3);
+-- -------------------------------
+-- 2️⃣ TipoLibro
+-- -------------------------------
+INSERT INTO "TipoLibro" ("TipoLibro", "DiasPrestamo") VALUES
+('Novela', 14),
+('Cuento', 7),
+('Historia', 21);
 
--- ===== LIBROS =====
-INSERT INTO "Libros" (codigo, codigo_cdu, titulo, editorial, numero_de_edicion, anio_de_edicion, traductor, codigo_clasificacion, cantidad_de_ejemplares, notas, tipo, codigo_linguistico, autores, id_proveedor, numero_de_factura, fecha_de_compra, perdido)
-VALUES
-('L001', '82-3', 'Cien Años de Soledad', 'Sudamericana', 1, 1967, NULL, 'NOV', 5, 'Primera edición', 1, 'ES', 'Gabriel García Márquez', NULL, NULL, NOW(), FALSE),
-('L002', '82-3', 'Rayuela', 'Sudamericana', 3, 1963, NULL, 'NOV', 3, NULL, 1, 'ES', 'Julio Cortázar', NULL, NULL, NOW(), FALSE),
-('L003', '81-4', 'La Casa de los Espíritus', 'Plaza & Janés', 1, 1982, NULL, 'NOV', 2, NULL, 1, 'ES', 'Isabel Allende', NULL, NULL, NOW(), FALSE);
+-- -------------------------------
+-- 3️⃣ Libros
+-- -------------------------------
+INSERT INTO "Libros" (codigo, "Cod_rcdu", titulo, "Editorial", "Nro_edic", "Anio_edic", "Cant_ejemplar", "Tipo") VALUES
+('LB001', 'CR001', 'El Principito', 'Editorial A', 1, 1943, 3, 1),
+('LB002', 'CR002', 'Cien Años de Soledad', 'Editorial B', 1, 1967, 2, 1),
+('LB003', 'CR003', '1984', 'Editorial C', 1, 1949, 4, 1),
+('LB004', 'CR004', 'Don Quijote', 'Editorial D', 2, 1605, 1, 2);
 
--- ===== AUTOR LIBRO =====
-INSERT INTO "AutorLibro" ("BookId", "CodLibro", "CodAutor", "Posicion")
-VALUES
-(1, 'L001', 1, 1),
-(2, 'L002', 2, 1),
-(3, 'L003', 3, 1);
+-- -------------------------------
+-- 4️⃣ AutorLibro
+-- -------------------------------
+INSERT INTO "AutorLibro" ("BookId", "CodLibro", "CodAutor", "Posicion") VALUES
+(1, 'LB001', 1, 1),
+(2, 'LB002', 2, 1),
+(3, 'LB003', 3, 1),
+(4, 'LB004', 4, 1);
 
--- ===== CLAVES =====
-INSERT INTO "Claves" ("Clave")
-VALUES 
-('Realismo mágico'),
-('Literatura latinoamericana'),
-('Narrativa contemporánea');
+-- -------------------------------
+-- 5️⃣ Claves
+-- -------------------------------
+INSERT INTO "Claves" ("Clave") VALUES
+('Ficción'), ('Clásico'), ('Literatura Juvenil');
 
--- ===== CLAVES LIBRO =====
-INSERT INTO "ClavesLibro" ("IdClave", "bookId", "CodLibro")
-VALUES
-(1, 1, 'L001'),
-(2, 2, 'L002'),
-(3, 3, 'L003');
+-- -------------------------------
+-- 6️⃣ ClavesLibro
+-- -------------------------------
+INSERT INTO "ClavesLibro" ("IdClave", "bookId", "CodLibro") VALUES
+(1, 1, 'LB001'),
+(2, 2, 'LB002'),
+(3, 3, 'LB003');
 
--- ===== SIGNS =====
-INSERT INTO signs (desde, hasta, numero)
-VALUES
-('A', 'D', 1),
-('E', 'H', 2),
-('I', 'L', 3);
+-- -------------------------------
+-- 7️⃣ Signs
+-- -------------------------------
+INSERT INTO signs (desde, hasta, numero) VALUES
+('A', 'B', 100),
+('C', 'D', 200);
 
--- ===== CATEGORIA SOCIO =====
-INSERT INTO "CategoriaSocio" ("Categoria", "Importe")
-VALUES
-('Estudiante', 1500.00),
-('Regular', 2500.00),
-('Premium', 4000.00);
+-- -------------------------------
+-- 8️⃣ UltimaGeneracion
+-- -------------------------------
+INSERT INTO "UltimaGeneracion" ("Mes", "Anio", "Fecha") VALUES
+(9, 2025, '2025-09-01');
 
--- ===== LOCALIDADES =====
-INSERT INTO "Localidades" ("Localidad", "CPostal")
-VALUES
+-- -------------------------------
+-- 9️⃣ CategoriaSocio
+-- -------------------------------
+INSERT INTO "CategoriaSocio" ("Categoria", "Importe") VALUES
+('Regular', 100.00),
+('Premium', 200.00);
+
+-- -------------------------------
+-- 10️⃣ Localidades
+-- -------------------------------
+INSERT INTO "Localidades" ("Localidad", "CPostal") VALUES
 ('Buenos Aires', '1000'),
-('Rosario', '2000'),
-('Córdoba', '5000');
+('Cordoba', '5000');
 
--- ===== ESTADO SOCIO =====
-INSERT INTO "EstadoSocio" ("Estado")
-VALUES
-('Activo'),
-('Suspendido'),
-('Baja');
+-- -------------------------------
+-- 11️⃣ EstadoSocio
+-- -------------------------------
+INSERT INTO "EstadoSocio" ("Estado") VALUES
+('Activo'), ('Inactivo');
 
--- ===== MOTIVO BAJA =====
-INSERT INTO "MotivoBaja" ("Motivo")
-VALUES
-('Renuncia'),
-('Fallecimiento'),
-('Incumplimiento de pagos');
+-- -------------------------------
+-- 12️⃣ MotivoBaja
+-- -------------------------------
+INSERT INTO "MotivoBaja" ("Motivo") VALUES
+('Renuncia'), ('Mora');
 
--- ===== TIPO DOCUMENTO =====
-INSERT INTO "TipoDocumento" ("documentType")
-VALUES
-('DNI'),
-('Pasaporte'),
-('Cédula');
+-- -------------------------------
+-- 13️⃣ TipoDocumento
+-- -------------------------------
+INSERT INTO "TipoDocumento" ("documentType") VALUES
+('DNI'), ('Pasaporte');
 
--- ===== ESTADO CIVIL =====
-INSERT INTO "EstadoCivil" ("EstadoCivil")
-VALUES
-('Soltero'),
-('Casado'),
-('Divorciado');
+-- -------------------------------
+-- 14️⃣ EstadoCivil
+-- -------------------------------
+INSERT INTO "EstadoCivil" ("EstadoCivil") VALUES
+('Soltero'), ('Casado');
 
--- ===== SOCIO =====
-INSERT INTO socio (numero, "IdCategoria", "IdLocal_part", "IdEstado", "Motivo_Baj", apellido, nombre, fecha_nac, tipo_docum, nro_docum, est_civil, nacionalid, dir_part, tel_part, fecha_insc, est_socio)
-VALUES
-(1001, 1, 1, 1, 1, 'Pérez', 'Juan', '1990-05-12', 1, '30111222', 1, 'Argentina', 'Av. Corrientes 123', '1122334455', '2020-01-10', 1),
-(1002, 2, 2, 1, 1, 'González', 'Laura', '1985-07-03', 1, '29444333', 2, 'Argentina', 'Calle San Martín 45', '1133445566', '2021-02-15', 1);
+-- -------------------------------
+-- 15️⃣ Socio
+-- -------------------------------
+INSERT INTO socio (numero, "IdCategoria", "IdLocal_part", "IdEstado", "Motivo_Baj", apellido, nombre, fecha_nac, tipo_docum, nro_docum, est_civil, nacionalid, fecha_insc, est_socio) VALUES
+(1, 1, 1, 1, NULL, 'Gomez', 'Ana', '1990-03-12', 1, '12345678', 1, 'ARG', '2020-01-15', true),
+(2, 1, 1, 1, NULL, 'Perez', 'Carlos', '1985-07-22', 1, '87654321', 1, 'ARG', '2019-06-10', true),
+(3, 2, 2, 1, NULL, 'Lopez', 'Maria', '2000-11-05', 1, '11223344', 2, 'ARG', '2021-03-01', true),
+(4, 2, 2, 2, 2, 'Martinez', 'Juan', '1995-09-18', 1, '44332211', 1, 'ARG', '2018-08-20', false);
 
--- ===== CUOTAS =====
-INSERT INTO "Cuotas" ("Mes", "Anio", "Monto", "IdSocio", "Paga", "FechaPago")
-VALUES
-(9, 2025, 2500.00, 1, TRUE, NOW()),
-(10, 2025, 2500.00, 1, FALSE, NULL),
-(9, 2025, 4000.00, 2, TRUE, NOW());
+-- -------------------------------
+-- 16️⃣ Empleados
+-- -------------------------------
+INSERT INTO "Empleados" ("Nombre", "Codigo") VALUES
+('Javier Perez', 'EMP001'),
+('Lucia Gomez', 'EMP002');
 
--- ===== ULTIMA GENERACION =====
-INSERT INTO "UltimaGeneracion" ("Mes", "Anio", "Fecha")
-VALUES
-(9, 2025, '2025-09-30');
+-- -------------------------------
+-- 17️⃣ TipoPrestamo
+-- -------------------------------
+INSERT INTO "TipoPrestamo" ("Descripcion") VALUES
+('Normal'), ('Urgente');
 
--- ===== RESERVAS =====
-INSERT INTO "Reservas" ("TituloLibro", "FechaReserva", "FechaPrometida", "NumSocio", "Comentarios")
-VALUES
-('Rayuela', '2025-09-20', '2025-09-30', 1001, 'Retirar antes de fin de mes'),
-('Cien Años de Soledad', '2025-09-25', '2025-10-05', 1002, 'Solicitado para taller');
+-- -------------------------------
+-- 18️⃣ Prestamo
+-- -------------------------------
+INSERT INTO "Prestamo" ("Id", "partnerId", "TipoPrestamo", "FechaRetiro", "HoraRetiro", "IdEmpleado", "Nombre", "DNI") VALUES
+(1, 1, 1, '2025-01-05', '10:00', 1, 'Ana Gomez', '12345678'),
+(2, 2, 1, '2025-01-06', '11:30', 1, 'Carlos Perez', '87654321'),
+(3, 1, 1, '2025-02-10', '09:15', 2, 'Ana Gomez', '12345678'),
+(4, 3, 2, '2025-02-15', '14:00', 2, 'Maria Lopez', '11223344');
 
--- ===== RESERVAS LIBRO =====
-INSERT INTO "ReservasLibro" ("IdBook", "IdReserva", "CodLibro", "TituloLibro")
-VALUES
-(2, 1, 'L002', 'Rayuela'),
-(1, 2, 'L001', 'Cien Años de Soledad');
+-- -------------------------------
+-- 19️⃣ PrestamoLibro
+-- -------------------------------
+INSERT INTO "PrestamoLibro" ("BookId", "IdPrestamo", "CodLibro", "FechaPrevista", "FechaDevolucion", "Devuelto") VALUES
+(1, 1, 'LB001', '2025-01-20', NULL, false),
+(2, 2, 'LB002', '2025-01-21', '2025-01-21', true),
+(3, 3, 'LB003', '2025-02-25', NULL, false),
+(1, 3, 'LB001', '2025-02-25', NULL, false),
+(4, 4, 'LB004', '2025-03-01', '2025-03-01', true);
 
--- ===== EMPLEADOS =====
-INSERT INTO "Empleados" ("Nombre", "Codigo")
-VALUES
-('María López', 'E001'),
-('Carlos Ruiz', 'E002');
+-- -------------------------------
+-- 20️⃣ GruposTipoLibro
+-- -------------------------------
+INSERT INTO "GruposTipoLibro" ("Grupo", "CantMaxima") VALUES
+('Literatura', 10),
+('Ciencia', 5);
 
--- ===== TIPO PRESTAMO =====
-INSERT INTO "TipoPrestamo" ("Descripcion")
-VALUES
-('Normal'),
-('Especial');
-
--- ===== PRESTAMO =====
-INSERT INTO "Prestamo" ("Id", "partnerId", "TipoPrestamo", "FechaRetiro", "HoraRetiro", "IdEmpleado", "Nombre", "DNI")
-VALUES
-(1, 1, 1, '2025-09-15', '10:00', 1, 'Juan Pérez', '30111222'),
-(2, 2, 2, '2025-09-18', '15:30', 2, 'Laura González', '29444333');
-
--- ===== PRESTAMO LIBRO =====
-INSERT INTO "PrestamoLibro" ("BookId", "IdPrestamo", "CodLibro", "FechaPrevista", "Devuelto", "Ejemplar")
-VALUES
-(1, 1, 'L001', '2025-09-30', TRUE, 1),
-(2, 2, 'L002', '2025-10-05', FALSE, 1);
-
--- ===== GRUPOS TIPO LIBRO =====
-INSERT INTO "GruposTipoLibro" ("Grupo", "CantMaxima")
-VALUES
-('Ficción', 3),
-('No Ficción', 2);
-
--- ===== TIPO LIBRO GRUPO =====
-INSERT INTO "TipoLibroGrupo" ("IdGrupo", "IdTipoLibro")
-VALUES
+-- -------------------------------
+-- 21️⃣ TipoLibroGrupo
+-- -------------------------------
+INSERT INTO "TipoLibroGrupo" ("IdGrupo", "IdTipoLibro") VALUES
 (1, 1),
-(2, 2);
+(1, 2),
+(2, 3);
 
--- ===== LECTORES =====
-INSERT INTO "Lectores" ("DNI", "Nombre")
-VALUES
-('30111222', 'Juan Pérez'),
-('29444333', 'Laura González');
+-- -------------------------------
+-- 22️⃣ Cuotas
+-- -------------------------------
+INSERT INTO "Cuotas" ("Mes", "Anio", "Monto", "IdSocio", "Paga", "FechaPago") VALUES
+(9, 2025, 100.00, 1, true, '2025-09-01'),
+(9, 2025, 200.00, 2, false, NULL);
+
+-- -------------------------------
+-- 23️⃣ Lectores
+-- -------------------------------
+INSERT INTO "Lectores" ("DNI", "Nombre") VALUES
+('12345678', 'Ana Gomez'),
+('87654321', 'Carlos Perez');
+
+-- -------------------------------
+-- 24️⃣ Reservas
+-- -------------------------------
+INSERT INTO "Reservas" ("TituloLibro", "FechaReserva", "FechaPrometida", "NumSocio", "Comentarios") VALUES
+('El Principito', '2025-09-01', '2025-09-15', 1, 'Reservado por 15 días'),
+('1984', '2025-09-05', '2025-09-20', 2, 'Reservado por 15 días');
+
+-- -------------------------------
+-- 25️⃣ ReservasLibro
+-- -------------------------------
+INSERT INTO "ReservasLibro" ("IdBook", "IdReserva", "CodLibro", "TituloLibro") VALUES
+(1, 1, 'LB001', 'El Principito'),
+(3, 2, 'LB003', '1984');
