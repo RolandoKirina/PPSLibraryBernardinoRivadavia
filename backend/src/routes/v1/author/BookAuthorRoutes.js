@@ -12,6 +12,14 @@ router.put('/:id', validateIdParam("bookAuthorId"), BookAuthorController.updateB
 // quizás añadir patch
 // router.patch('/:id', BookAuthorController.patchBookAuthor);
 
-router.delete('/:id', validateIdParam("bookAuthorId"), BookAuthorController.removeBookAuthor);
+router.delete('/:id', validateIdParam("bookAuthorId"), BookAuthorController.removeBookAuthorById);
+
+router.delete('/book/:bookId/author/:authorCode', 
+  validateIdParam("authorCode"), 
+  validateIdParam("bookId"), 
+  BookAuthorController.removeBookAuthor
+);
+
+
 
 export default router;

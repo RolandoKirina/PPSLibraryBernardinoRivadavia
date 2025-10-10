@@ -8,6 +8,12 @@ router.get('/', BookTypeGroupController.getAllBookTypeGroups);
 router.get('/:id', BookTypeGroupController.getBookTypeGroup);
 router.post('/', BookTypeGroupController.createBookTypeGroup);
 router.put('/:id', BookTypeGroupController.updateBookTypeGroup);
-router.delete('/:id', BookTypeGroupController.removeBookTypeGroup);
+router.delete('/:id', BookTypeGroupController.removeBookTypeGroupById);
+
+router.delete('/book-type/:bookTypeId/group-list/:groupListId', 
+  validateIdParam("bookTypeId"), 
+  validateIdParam("groupListId"), 
+  BookTypeGroupController.removeBookTypeGroup
+);
 
 export default router;
