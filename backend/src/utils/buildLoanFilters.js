@@ -2,7 +2,7 @@ import { Op } from "sequelize";
 
 export const buildLoanFilters = (query) => {
   const {
-    type,
+    type, 
     state,
     materialType,
     selectedMaterial,
@@ -17,7 +17,7 @@ export const buildLoanFilters = (query) => {
     bookCode,
     limit,
     offset,
-    sortBy,
+    sortBy, 
     direction,
     employeeName
   } = query;

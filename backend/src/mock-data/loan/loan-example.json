@@ -1,10 +1,10 @@
-
-
 {
-    "partnerNumber": 1234,
-    "loanType": 2,
-    "withdrawalTime": "14:30",
-    "employeeId": 7,
-    "name": "Lucía Fernández",
-    "dni": "30123456"
+  "partnerId": 1,
+  "loanType": 1,
+  "retiredDate": "2025-10-09",
+  "withdrawalTime": "14:30",
+  "employeeId": 1,
+  "name": "Juan Pérez",
+  "dni": "12345678"
 }
+

@@ -6,13 +6,13 @@ import * as LoanBookController from '../../../controllers/loan/LoanBookControlle
 const router = express.Router();
 
 router.get('/', LoanBookController.getAllLoanBooks);
-router.get('/:id', validateIdParam("loanBookId"), LoanBookController.getLoanBook);
+router.get('/:id', validateIdParam("id"), LoanBookController.getLoanBook);
 router.post('/', LoanBookController.createLoanBook);
-router.put('/:id', validateIdParam("loanBookId"), LoanBookController.updateLoanBook);
+router.put('/:id', validateIdParam("id"), LoanBookController.updateLoanBook);
 
 // quizás añadir patch
 // router.patch('/:id', LoanBookController.patchLoanBook);
 
-router.delete('/:id', validateIdParam("loanBookId"), LoanBookController.removeLoanBook);
+router.delete('/:id', validateIdParam("id"), LoanBookController.removeLoanBook);
 
 export default router;
