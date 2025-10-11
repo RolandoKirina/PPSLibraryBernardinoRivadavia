@@ -7,7 +7,7 @@ export const getAllBooks = async (filters) => {
 }
 
 export const getRanking = async () => {
-    let ranking = await BookRepository.getAll();
+    let ranking = await BookRepository.getRanking();
     return ranking;
 }
 

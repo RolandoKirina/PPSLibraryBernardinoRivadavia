@@ -60,3 +60,61 @@ export const buildBookFilters = (query) => {
     offset: isNaN(parsedOffset) ? 0 : parsedOffset
   };
 }
+
+
+
+export const buildRankingBookFilters = (query) => {
+  const {
+    retiredDate,
+    cduBooksRetiredPartner,
+    bookCodeRetiredBooks,
+    orderByStatus,
+    orderBy,
+    limit,
+    offset
+  } = query;
+
+  const whereRetiredDate = {};
+  const whereCDURetiredPartner = {};
+  const whereBookCodeRetiredBooks = {};
+  const whereOrderByStatus = {};
+  const whereOrderBy = {};
+
+  if (retiredDate && retiredDate.trim() !== '') {
+    whereRetiredDate.retiredDate = retiredDate.trim(); // Se puede adaptar a Date.parse si el formato lo requiere
+  }
+
+  if (cduBooksRetiredPartner && cduBooksRetiredPartner.trim() !== '') {
+    whereCDURetiredPartner.codeCDU = cduBooksRetiredPartner.trim();
+  }
+
+  if (bookCodeRetiredBooks && bookCodeRetiredBooks.trim() !== '') {
+    whereBookCodeRetiredBooks.codeInventory = bookCodeRetiredBooks.trim();
+  }
+
+
+
+if (orderByStatus && orderByStatus.trim() !== '') {
+  order.push(['status', orderByStatus.trim().toUpperCase() === 'ASC' ? 'ASC' : 'DESC']);
+}
+ let order = undefined;
+
+  if (orderBy && orderBy.trim() !== '') {
+    order = sortBy
+      ? [[sortBy.trim(), direction === 'asc' ? 'ASC' : 'DESC']]
+      : undefined;
+  }
+
+  const parsedLimit = parseInt(limit);
+  const parsedOffset = parseInt(offset);
+
+  return {
+    whereRetiredDate,
+    whereCDURetiredPartner,
+    whereBookCodeRetiredBooks,
+    whereOrderByStatus,
+    whereOrderBy,
+    limit: isNaN(parsedLimit) ? 20 : parsedLimit,
+    offset: isNaN(parsedOffset) ? 0 : parsedOffset
+  };
+};
