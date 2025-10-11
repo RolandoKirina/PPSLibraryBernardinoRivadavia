@@ -37,11 +37,12 @@ import BookTypeGroupRoutes from "./routes/v1/options/BookTypeGroupRoutes.js";
 import BookTypeRoutes from "./routes/v1/options/BookTypeRoutes.js";
 import EmployeesRoutes from "./routes/v1/options/EmployeesRoutes.js";
 import RemoveReasonRoutes from "./routes/v1/options/RemoveReasonRoutes.js";
+import cors from "cors";
 
 const app = express();
 
 app.use(express.json());
-
+app.use(cors());
 sequelize.sync({ alter: true }).then(() => {
   console.log("Se sincronizó la base de datos");
 });

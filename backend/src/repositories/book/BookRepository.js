@@ -1,11 +1,11 @@
 import Book from "../../models/book/Book.js";
-import Author from "../../models/author/Authors.js";
-
+import Authors from "../../models/author/Authors.js";
+import BookAuthor from "../../models/author/BookAuthor.js";
 export const getRanking = async () => {
   return await Book.findAll({
     include: [
       {
-        model: Author,
+        model: Authors,
         attributes: ['name'],  
       },
     ],
@@ -13,12 +13,50 @@ export const getRanking = async () => {
   });
 };
 
+export const getAll = async (filters) => {
+  const {
+    whereAuthor,
+    whereCodeInventory,
+    whereCodeCDU,
+    whereCodeSignature,
+    whereEdition,
+    whereYearEdition,
+    whereNumberEdition,
+    order,
+    limit,
+    offset
+  } = filters;
+
+  return await Book.findAll({
+    where: {
+      ...whereCodeInventory,
+      ...whereCodeCDU,
+      ...whereCodeSignature,
+      ...whereEdition,
+      ...whereYearEdition,
+      ...whereNumberEdition,
+    },
+    include: [
+      {
+        model: BookAuthor,
+        attributes: ["bookAuthorId"],
+        include: [
+          {
+            model: Authors,
+            where: whereAuthor,
+            attributes: ["name"]
+          }
+        ]
+      }
+    ],
+    order,
+    limit,
+    offset,
+     attributes: ["title", "codeInventory", "codeCDU"],
+  });
+};
 
 
-export const getAll = async () => {
-
-    return  await Book.findAll();
-} 
 
 export const getById = async (id) => {
     return await Book.findByPk(id);
