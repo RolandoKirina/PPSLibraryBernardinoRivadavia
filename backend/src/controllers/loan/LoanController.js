@@ -4,7 +4,6 @@ import { buildLoanFilters } from '../../utils/buildLoanFilters.js';
 
 export const getAllLoans = async (req, res) => {
     try {
-
         const queryOptions = buildLoanFilters(req.query);
 
         const loans = await LoanService.getAllLoans(queryOptions);
