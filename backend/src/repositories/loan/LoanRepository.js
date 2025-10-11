@@ -71,6 +71,43 @@ export const getAll = async (filters) => {
   });
 };
 
+export const getAllReturns = async (filters) => {
+  const {
+    wherePartner,
+    order,
+    limit,
+    offset
+  } = filters;
+
+  return await Loan.findAll({
+    attributes: ['retiredDate'],
+    include: [
+      {
+        model: Partner,
+        attributes: ['id', 'name', 'surname', 'observations'],
+        where: Object.keys(wherePartner).length ? wherePartner : undefined,
+        required: Object.keys(wherePartner).length > 0
+      },
+      {
+        model: LoanBook,
+        attributes: ['LoanBookId', 'bookCode', 'expectedDate', 'reneweAmount'],
+        include: [
+          {
+            model: Book,
+            attributes: ['BookId', 'title'],
+          }
+        ]
+      }
+    ],
+    order,
+    limit,
+    offset
+  });
+};
+
+
+
+
 
 export const getOne = async (id) => {
   return await Loan.findByPk(id);

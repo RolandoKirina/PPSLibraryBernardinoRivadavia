@@ -1,12 +1,25 @@
 import * as LoanService from '../../services/loan/LoanService.js';
 import { HTTP_STATUS } from '../../https/httpsStatus.js';
-import { buildLoanFilters } from '../../utils/buildLoanFilters.js';
+import { buildLoanFilters, buildReturnFilters } from '../../utils/buildLoanFilters.js';
 
 export const getAllLoans = async (req, res) => {
     try {
         const queryOptions = buildLoanFilters(req.query);
 
         const loans = await LoanService.getAllLoans(queryOptions);
+
+        res.status(HTTP_STATUS.OK.code).send(loans);
+    } catch (error) {
+        console.error(error);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+    }
+};
+
+export const getAllReturns = async (req, res) => {
+    try {
+        const queryOptions = buildReturnFilters(req.query);
+
+        const loans = await LoanService.getAllReturns(queryOptions);
 
         res.status(HTTP_STATUS.OK.code).send(loans);
     } catch (error) {

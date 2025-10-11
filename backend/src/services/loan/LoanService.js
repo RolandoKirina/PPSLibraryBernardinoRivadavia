@@ -4,6 +4,10 @@ export const getAllLoans = async (filters) => {
     return await LoanRepository.getAll(filters);
 }
 
+export const getAllReturns= async (filters) => {
+    return await LoanRepository.getAllReturns(filters);
+}
+
 // export const getAllLoans = async () => {
 //     return await LoanRepository.getAll();
 // }
