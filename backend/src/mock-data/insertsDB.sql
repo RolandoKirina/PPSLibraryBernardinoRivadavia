@@ -102,10 +102,10 @@ INSERT INTO "EstadoCivil" ("EstadoCivil") VALUES
 -- 15️⃣ Socio
 -- -------------------------------
 INSERT INTO socio (numero, "IdCategoria", "IdLocal_part", "IdEstado", "Motivo_Baj", apellido, nombre, fecha_nac, tipo_docum, nro_docum, est_civil, nacionalid, fecha_insc, est_socio) VALUES
-(1, 1, 1, 1, NULL, 'Gomez', 'Ana', '1990-03-12', 1, '12345678', 1, 'ARG', '2020-01-15', true),
-(2, 1, 1, 1, NULL, 'Perez', 'Carlos', '1985-07-22', 1, '87654321', 1, 'ARG', '2019-06-10', true),
-(3, 2, 2, 1, NULL, 'Lopez', 'Maria', '2000-11-05', 1, '11223344', 2, 'ARG', '2021-03-01', true),
-(4, 2, 2, 2, 2, 'Martinez', 'Juan', '1995-09-18', 1, '44332211', 1, 'ARG', '2018-08-20', false);
+(1, 1, 1, 1, NULL, 'Gomez', 'Ana', '1990-03-12', 1, '12345678', 1, 'ARG', '2020-01-15', 1),
+(2, 1, 1, 1, NULL, 'Perez', 'Carlos', '1985-07-22', 1, '87654321', 1, 'ARG', '2019-06-10', 1),
+(3, 2, 2, 1, NULL, 'Lopez', 'Maria', '2000-11-05', 1, '11223344', 2, 'ARG', '2021-03-01', 2),
+(4, 2, 2, 2, 2, 'Martinez', 'Juan', '1995-09-18', 1, '44332211', 1, 'ARG', '2018-08-20', 2);
 
 -- -------------------------------
 -- 16️⃣ Empleados
