@@ -1,18 +1,25 @@
 import * as BookService from "../../services/book/BookService.js";
 import { HTTP_STATUS } from "../../https/httpsStatus.js";
 import Book from "../../models/book/Book.js";
-
+import { buildBookFilters } from "../../utils/buildBookFilters.js";
 export const getAllBooks = async (req,res) => {
     try{
-        const books = await BookService.getAllBooks();
-        res.json(books); 
+
+       
+        const queryOptions = buildBookFilters(req.query);
+        const books = await BookService.getAllBooks(queryOptions);
+      
+        res.status(HTTP_STATUS.OK.code).send(books);    
+
     }
     catch(e){
         console.error(e);
-    res.status(500).json({ msg: "error" });
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
     
 }
+
+
  export const getRanking = async (req,res) =>{
     try{
         const ranking = await BookService.getRanking();

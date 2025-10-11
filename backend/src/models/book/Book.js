@@ -13,7 +13,7 @@ const Book = sequelize.define("Book",
       type: DataTypes.STRING(50),
       field: "codigo"
     },
-    codeCdu: {
+    codeCDU: {
       type: DataTypes.STRING(50),
       field: "Cod_rcdu"
     },
@@ -57,7 +57,8 @@ const Book = sequelize.define("Book",
       type: DataTypes.STRING(50),
       field: "Cod_Ling"
     },
-    authors: {
+    /*codigo signatura*/
+    codeSignature: {
       type: DataTypes.STRING(255),
       field: "Autores"
     },

@@ -11,7 +11,7 @@ import GenericForm from '../../components/generic/GenericForm/GenericForm.jsx';
 import { BookDetail } from '../../data/showdetails/BookDetail.js';
 import GenericSection from '../../components/generic/GenericSection/GenericSection.jsx';
 import ShowDetails from '../../components/generic/ShowDetails/ShowDetails.jsx';
-import { books } from '../../data/mocks/books.js';
+//import { books } from '../../data/mocks/books.js';
 import { useEntityManager } from '../../hooks/useEntityManager.js';
 import Btn from '../../components/common/btn/Btn.jsx';
 import PlusIcon from '../../assets/img/plus-icon.svg';
@@ -24,12 +24,12 @@ import LostBooks from '../../components/book-components/lostbooks/LostBooks.jsx'
 import BookRanking from '../../components/book-components/bookranking/BookRanking.jsx';
 import { useAuth } from '../../auth/AuthContext';
 import roles from '../../auth/roles';
-
+import { useEffect } from 'react';
 const BookSection = () => {
-
+ 
   const { auth } = useAuth();
 
-
+ const [books, setBooks] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [PopUpEdit, setPopupEdit] = useState(false);
   const [PopUpAdd, setPopupAdd] = useState(false);
@@ -39,15 +39,60 @@ const BookSection = () => {
   const [PopUpRanking, setPopUpRanking] = useState(false);
   const [PopUpBooksPartners, setPopUpBooksPartners] = useState(false);
   const [PopUpLostBooks, setPopUpLostBooks] = useState(false);
+  const [error, setError] = useState(null);
+  const BASE_URL = "http://localhost:4000/api/v1";
+  const [formData, setFormData] = useState({
+    author: "",
+    codeInventory: "",
+    codeCDU: "",
+    codeSignature: "",
+    yearEdition: "",
+    numberEdition: ""
+  });
+   const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    const updated = { ...formData, [name]: value };
+    setFormData(updated);
+  };
+
+  const getBooks = async (filters) => {
+    const query = new URLSearchParams(filters).toString();
+    const response = await fetch(`${BASE_URL}/books?${query}`);
+    if (!response.ok) throw new Error("Error al obtener libros");
+    return await response.json();
+  };
+
+ const filters  =  
+
+     useEffect(() => {
+    const delay = setTimeout(() => {
+      const filters = Object.fromEntries(
+        Object.entries(formData).filter(([_, v]) => v !== "")
+      );
+      getBooks(filters)
+        .then((res) => {
+          if (Array.isArray(res)) {
+            setBooks(res);
+          } else {
+            console.warn("Respuesta inesperada:", res);
+          }
+        })
+        .catch((err) => console.error("Error al obtener libros:", err));
+    }, 500); // debounce para evitar spam de requests
+
+    return () => clearTimeout(delay);
+  }, [formData]);
+
+  //const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(books, "books");
 
 
-  const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(books, "books");
+
 let columns =[];
    if (auth.role === roles.admin) {
 
          columns = [
           { header: 'Título', accessor: 'title' },
-          { header: 'Código de inventario', accessor: 'code_inventory' },
+          { header: 'Código de inventario', accessor: 'codeInventory' },
           { header: 'Codigo de CDU', accessor: 'codeCDU' },
           {
             header: 'Borrar',
@@ -103,7 +148,7 @@ let columns =[];
     
          columns = [
           { header: 'Título', accessor: 'title' },
-          { header: 'Código de inventario', accessor: 'code_inventory' },
+          { header: 'Código de inventario', accessor: 'codeInventory' },
           { header: 'Codigo de CDU', accessor: 'codeCDU' }];
 
   }
@@ -199,9 +244,9 @@ return (
     <>
       <GenericSection 
   title="Listado de libros" 
-  filters={<BookFilter />}
+  filters={      <BookFilter formData={formData} onChange={handleFilterChange} />}
   columns={columns} 
-  data={items} 
+  data={books} 
   popups={booksPopUp}
   actions={
     auth.role === roles.admin ? (

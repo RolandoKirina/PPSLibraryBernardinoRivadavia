@@ -98,7 +98,7 @@ export const buildLoanFilters = (query) => {
     whereBook,
     whereEmployee,
     order,
-    limit: isNaN(parsedLimit) ? 20 : parsedLimit,
+    limit: isNaN(parsedLimit) ? 5 : parsedLimit,
     offset: isNaN(parsedOffset) ? 0 : parsedOffset
   };
 
