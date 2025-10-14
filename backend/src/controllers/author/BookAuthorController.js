@@ -36,17 +36,14 @@ export const createBookAuthor = async (req, res) => {
             return res.status(HTTP_STATUS.BAD_REQUEST.code).json({ msg: "Invalid bookAuthor body" });
         }
 
-        //encontrar si el bookId y authorCode ya existen bajo un authorcode, si existe, no crearlo
-        const bookAuthorFound = await bookAuthorAlreadyExists(bookAuthor.authorCode, bookAuthor.BookId);
-
-        if(bookAuthorFound) {
-            return res.status(HTTP_STATUS.BAD_REQUEST.code).json({ msg: "The author already has that book" });   
-        }
-
         const newBookAuthor = await BookAuthorService.createBookAuthor(bookAuthor);
         res.status(HTTP_STATUS.CREATED.code).send(newBookAuthor);
     } catch (error) {
         console.error(error);
+        if (error.original && error.original.message) {
+            return res.status(HTTP_STATUS.BAD_REQUEST.code).json({ msg: error.original.message });
+        }
+
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
 };
@@ -86,12 +83,12 @@ export const removeBookAuthor = async (req, res) => {
 
         const bookAuthorFound = await bookAuthorAlreadyExists(authorCode, bookId);
 
-        if(!bookAuthorFound) {
+        if (!bookAuthorFound) {
             res.status(HTTP_STATUS.NOT_FOUND.code).json({ msg: `BookAuthor not found with bookId: ${bookId} and authorCode: ${authorCode}` });
         }
-        
-        await BookAuthorService.removeBookAuthorById(bookAuthorFound.bookAuthorId);  
-        
+
+        await BookAuthorService.removeBookAuthorById(bookAuthorFound.bookAuthorId);
+
         res.status(HTTP_STATUS.OK.code).json({ msg: `Successfully deleted bookAuthor with bookId: ${bookId} and authorCode: ${authorCode}` });
     } catch (error) {
         console.error(error);

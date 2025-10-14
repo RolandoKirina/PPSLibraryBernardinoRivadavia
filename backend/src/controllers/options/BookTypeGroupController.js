@@ -34,16 +34,15 @@ export const createBookTypeGroup = async (req, res) => {
             return res.status(HTTP_STATUS.BAD_REQUEST.code).json({ msg: "Invalid body" });
         }
 
-        const bookTypeGroupFound = await bookTypeGroupAlreadyExists(data.BookTypeGroupListId, data.bookTypeId);
-
-        if(bookTypeGroupFound) {
-            return res.status(HTTP_STATUS.BAD_REQUEST.code).json({ msg: "The group already has that type book" });   
-        }
-
         const result = await BookTypeGroupService.createBookTypeGroup(data);
         res.status(HTTP_STATUS.CREATED.code).send(result);
     } catch (error) {
         console.error(error);
+
+        if (error.original && error.original.message) {
+            return res.status(HTTP_STATUS.BAD_REQUEST.code).json({ msg: error.original.message });
+        }
+
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
 };

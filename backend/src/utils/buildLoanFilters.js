@@ -103,3 +103,49 @@ export const buildLoanFilters = (query) => {
   };
 
 };
+
+
+export const buildReturnFilters = (query) => {
+    const {
+        partnerNumber,
+        partnerName,
+        partnerSurname,
+        memo,
+        limit,
+        offset,
+        sortBy,
+        direction
+    } = query;
+
+    const wherePartner = {};
+
+    if (partnerName?.trim()) {
+        wherePartner.name = { [Op.iLike]: `%${partnerName.trim()}%` };
+    }
+
+    if (partnerSurname?.trim()) {
+        wherePartner.surname = { [Op.iLike]: `%${partnerSurname.trim()}%` };
+    }
+
+    if (partnerNumber) {
+        wherePartner.id = partnerNumber; // o usar Op.iLike si es string
+    }
+
+    if (memo?.trim()) {
+        wherePartner.memo = { [Op.iLike]: `%${memo.trim()}%` };
+    }
+
+    const parsedLimit = parseInt(limit);
+    const parsedOffset = parseInt(offset);
+
+    const order = sortBy
+        ? [[sortBy, direction === 'asc' ? 'ASC' : 'DESC']]
+        : undefined;
+
+    return {
+        wherePartner,
+        order,
+        limit: isNaN(parsedLimit) ? 20 : parsedLimit,
+        offset: isNaN(parsedOffset) ? 0 : parsedOffset
+    };
+};
