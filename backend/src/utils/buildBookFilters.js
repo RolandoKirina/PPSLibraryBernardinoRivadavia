@@ -62,7 +62,6 @@ export const buildBookFilters = (query) => {
 }
 
 
-
 export const buildRankingBookFilters = (query) => {
   const {
     retiredDate,
@@ -70,39 +69,33 @@ export const buildRankingBookFilters = (query) => {
     bookCodeRetiredBooks,
     orderByStatus,
     orderBy,
+    direction,
     limit,
     offset
   } = query;
 
-  const whereRetiredDate = {};
-  const whereCDURetiredPartner = {};
-  const whereBookCodeRetiredBooks = {};
-  const whereOrderByStatus = {};
-  const whereOrderBy = {};
+  const whereRetiredDate = retiredDate?.trim()
+    ? { loanDate: { [Op.gte]: retiredDate.trim() } }
+    : {};
 
-  if (retiredDate && retiredDate.trim() !== '') {
-    whereRetiredDate.retiredDate = retiredDate.trim(); // Se puede adaptar a Date.parse si el formato lo requiere
-  }
+  const whereCDURetiredPartner = cduBooksRetiredPartner?.trim()
+    ? { codeCDU: cduBooksRetiredPartner.trim() }
+    : {};
 
-  if (cduBooksRetiredPartner && cduBooksRetiredPartner.trim() !== '') {
-    whereCDURetiredPartner.codeCDU = cduBooksRetiredPartner.trim();
-  }
+  const whereBookCodeRetiredBooks = bookCodeRetiredBooks?.trim()
+    ? { codeInventory: bookCodeRetiredBooks.trim() }
+    : {};
 
-  if (bookCodeRetiredBooks && bookCodeRetiredBooks.trim() !== '') {
-    whereBookCodeRetiredBooks.codeInventory = bookCodeRetiredBooks.trim();
-  }
+  const whereOrderByStatus = orderByStatus?.trim()
+    ? { status: orderByStatus.trim() }
+    : {};
 
+  let order = [];
 
-
-if (orderByStatus && orderByStatus.trim() !== '') {
-  order.push(['status', orderByStatus.trim().toUpperCase() === 'ASC' ? 'ASC' : 'DESC']);
-}
- let order = undefined;
-
-  if (orderBy && orderBy.trim() !== '') {
-    order = sortBy
-      ? [[sortBy.trim(), direction === 'asc' ? 'ASC' : 'DESC']]
-      : undefined;
+  if (orderBy?.trim() === 'status') {
+    order = [[{ model: LoanBook }, { model: Loan }, { model: Partner }, 'status', direction?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC']];
+  } else if (orderBy?.trim()) {
+    order = [[orderBy.trim(), direction?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC']];
   }
 
   const parsedLimit = parseInt(limit);
@@ -113,8 +106,8 @@ if (orderByStatus && orderByStatus.trim() !== '') {
     whereCDURetiredPartner,
     whereBookCodeRetiredBooks,
     whereOrderByStatus,
-    whereOrderBy,
-    limit: isNaN(parsedLimit) ? 20 : parsedLimit,
+    order,
+    limit: isNaN(parsedLimit) ? 5 : parsedLimit,
     offset: isNaN(parsedOffset) ? 0 : parsedOffset
   };
 };

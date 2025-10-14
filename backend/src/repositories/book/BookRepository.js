@@ -1,7 +1,9 @@
 import Book from "../../models/book/Book.js";
 import Authors from "../../models/author/Authors.js";
 import BookAuthor from "../../models/author/BookAuthor.js";
-
+import LoanBook from "../../models/loan/LoanBook.js"
+import Partner from "../../models/partner/Partner.js";
+import Loan from "../../models/loan/Loan.js";
 export const getAll = async (filters) => {
   const {
     whereAuthor,
@@ -47,47 +49,62 @@ export const getAll = async (filters) => {
 
 export const getRanking = async (filters) => {
   const {
-    whereAuthor,
-    whereCodeInventory,
-    whereCodeCDU,
-    whereCodeSignature,
-    whereEdition,
-    whereYearEdition,
-    whereNumberEdition,
-    order,
-    limit,
+    whereCDURetiredPartner,
+    whereBookCodeRetiredBooks,
+    whereOrderByStatus,
+    whereRetiredDate,
+    order,           
+    limit,          
     offset
+
   } = filters;
 
   return await Book.findAll({
     where: {
-      ...whereCodeInventory,
-      ...whereCodeCDU,
-      ...whereCodeSignature,
-      ...whereEdition,
-      ...whereYearEdition,
-      ...whereNumberEdition,
+      ...whereCDURetiredPartner,
+      ...whereBookCodeRetiredBooks,
     },
     include: [
       {
         model: BookAuthor,
+        required: true,
         attributes: ["bookAuthorId"],
         include: [
           {
             model: Authors,
-            where: whereAuthor,
+            required: true,
             attributes: ["name"]
+          }
+        ]
+      },
+      {
+        model: LoanBook,
+        required: true,
+        attributes: ["LoanBookId"],
+        include: [
+          {
+            model: Loan,
+            required: true,
+            attributes: ["retiredDate"],
+            where: whereRetiredDate,
+            include: [
+              {
+                model: Partner,
+                required: true,
+                where: whereOrderByStatus,
+                attributes: ["id", "name", "isActive"]
+              }
+            ]
           }
         ]
       }
     ],
+    attributes: ['BookId', "codeInventory",'title','codeCDU'],
     order,
     limit,
-    offset,
-    attributes: ['BookId', 'title', 'codeCdu', 'numberOfCopies']
+    offset
   });
 };
-
 
 export const getById = async (id) => {
     return await Book.findByPk(id);

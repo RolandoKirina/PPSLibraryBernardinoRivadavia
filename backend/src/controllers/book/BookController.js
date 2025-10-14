@@ -6,7 +6,6 @@ import { buildBookFilters } from "../../utils/buildBookFilters.js";
 export const getAllBooks = async (req,res) => {
     try{
 
-       
         const queryOptions = buildBookFilters(req.query);
         const books = await BookService.getAllBooks(queryOptions);
       
@@ -23,7 +22,8 @@ export const getAllBooks = async (req,res) => {
 
  export const getRanking = async (req,res) =>{
     try{
-        const ranking = await BookService.getRanking();
+        const queryOptions = await BookService.getRanking(req.query);
+        const ranking =  await BookService.getRanking(queryOptions);
         res.status(HTTP_STATUS.OK.code).send(ranking);    
     }
     catch(e){
