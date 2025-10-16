@@ -64,6 +64,23 @@ export const updateBookTypeGroup = async (req, res) => {
     }
 };
 
+export const updateBookTypesInGroup = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updates = req.body;
+
+        if (!updates) {
+            return res.status(HTTP_STATUS.BAD_REQUEST.code).json({ msg: "Invalid body" });
+        }
+
+        const result = await BookTypeGroupService.updateBookTypesInGroup(id, updates);
+        res.status(HTTP_STATUS.OK.code).send(result);
+    } catch (error) {
+        console.error(error);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+    }
+};
+
 export const removeBookTypeGroupById = async (req, res) => {
     try {
         const { id } = req.params;

@@ -22,8 +22,25 @@ export const updateBookTypeGroup = async (id, updates) => {
     return await BookTypeGroupRepository.update(id, updates);
 };
 
+export const updateBookTypesInGroup = async (groupId, updates) => {
+  await BookTypeGroupRepository.removeAll(groupId);
+
+  const newLinks = updates.map(bookTypeId =>
+    BookTypeGroupRepository.create({
+      BookTypeGroupListId: groupId,
+      bookTypeId
+    })
+  );
+
+  return await Promise.all(newLinks); // espera que se creen todos
+};
+
 export const removeBookTypeGroupById = async (id) => {
     const existing = await BookTypeGroupRepository.getOne(id);
     if (!existing) throw new Error("BookTypeGroup not found");
     return await BookTypeGroupRepository.remove(id);
+};
+
+export const removeAll = async (id) => {
+    return await BookTypeGroupRepository.removeAll(id);
 };

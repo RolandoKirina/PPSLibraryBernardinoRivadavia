@@ -43,3 +43,12 @@ export const remove = async (id) =>{
     }
 }
 
+export const removeAll = async (id) =>{
+    const response =  await BookTypeGroup.destroy({ where: { BookTypeGroupListId: id } });
+  
+    return {
+        msg: "BookTypeGroups deleted successfully",
+        data: response
+    }
+}
+

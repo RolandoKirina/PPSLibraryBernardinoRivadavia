@@ -9,7 +9,7 @@ import ConfirmMessage from '../../common/confirmMessage/ConfirmMessage';
 import { useEffect } from 'react';
 import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
 
-export default function AddMaterialGroup({ method, createGroupItem, updateGroupItem, items, closePopup }) {
+export default function AddMaterialGroup({ method, createGroupItem, updateGroupItem, items, itemSelected, closePopup }) {
 
   const [selectedIds, setSelectedIds] = useState([]);
   const [confirmSaveChanges, setConfirmSaveChangesPopup] = useState(false);
@@ -17,6 +17,15 @@ export default function AddMaterialGroup({ method, createGroupItem, updateGroupI
   const [amount, setAmount] = useState('');
 
   const BASE_URL = "http://localhost:4000/api/v1";
+
+  useEffect(() => {
+    if (method === 'update') {
+      const ids = itemSelected.BookTypeGroups.map(btGroup => btGroup.bookTypeId);
+      setSelectedIds(ids);
+      setGroup(itemSelected.group || '');
+      setAmount(itemSelected.maxAmount || '');
+    }
+  }, [method]);
 
   const {
     items: bookTypeGroups,
@@ -27,32 +36,63 @@ export default function AddMaterialGroup({ method, createGroupItem, updateGroupI
   } = useEntityManagerAPI("book-type-groups");
 
   async function handleAddItem() {
-  try {
-    const newGroup = await createGroupItem({
-      group,
-      maxAmount: amount
-    });
+    try {
+      const newGroup = await createGroupItem({
+        group,
+        maxAmount: amount
+      });
 
-    const newGroupId = newGroup.bookTypeGroupListId;
+      const newGroupId = newGroup.bookTypeGroupListId;
 
-    await Promise.all(
-      selectedIds.map(bookTypeId =>
-        createBookTypeGroup({
-          BookTypeGroupListId: newGroupId,
-          bookTypeId
-        })
-      )
-    );
+      await Promise.all(
+        selectedIds.map(bookTypeId =>
+          createBookTypeGroup({
+            BookTypeGroupListId: newGroupId,
+            bookTypeId
+          })
+        )
+      );
 
-    closePopup();
+      closePopup();
 
-  } catch (error) {
-    console.error("Error al crear grupo o materiales:", error);
+    } catch (error) {
+      console.error("Error al crear grupo o materiales:", error);
+    }
   }
-}
+
+  async function updateBookTypesSelected(selectedIds) {
+    try {
+      const res = await fetch(`${BASE_URL}/book-type-groups/groupId/${itemSelected.bookTypeGroupListId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(selectedIds)
+      });
+      if (!res.ok) throw new Error("Error al actualizar");
+      const updated = await res.json();
+      }
+    catch (error) {
+      console.error("Error al crear grupo o materiales:", error);
+    }
+  }
 
 
-  function handleUpdateItem() {
+  async function handleUpdateItem() {
+    try {
+      const res = await updateGroupItem(itemSelected.bookTypeGroupListId, {
+        group: group,
+        maxAmount: amount
+      })
+
+      console.log(selectedIds);
+
+      await updateBookTypesSelected(selectedIds);
+      
+      closePopup();
+
+    } catch (error) {
+      console.error("Error al crear grupo o materiales:", error);
+    }
+
   }
 
 

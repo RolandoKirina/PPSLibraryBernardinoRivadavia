@@ -4,7 +4,7 @@ import { useState } from "react";
 
 
 export const Table = ({ columns = [], data = [], children, popupLength, isPrintList, rowsPerPage = 5 }) => {
-  const actionAccessors = ["add", "delete", "edit", "details", "return", "renewe"];
+  const actionAccessors = ["add", "delete", "edit", "details", "return", "renewe", "choose"];
   const [currentPage, setCurrentPage] = useState(1);
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;

@@ -20,18 +20,6 @@ export const getAll = async () => {
     });
 };
 
-export const getLastId = async () => {
-    const lastId = await BookTypeGroupList.findAll({
-        attributes: ["bookTypeGroupListId"],
-        order: [["bookTypeGroupListId", "DESC"]],
-        limit: 1
-    });
-
-    if(lastId) {
-        return lastId[0].bookTypeGroupListId;
-    }
-};
-
 export const getOne = async (id) => {
     return await BookTypeGroupList.findByPk(id);
 };

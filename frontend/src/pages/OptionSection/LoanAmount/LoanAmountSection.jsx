@@ -80,7 +80,7 @@ export default function LoanAmountSection() {
             key: 'editPopup',
             title: 'Editar Grupo de tipo de material',
             className: 'add-material-group-background',
-            content: <AddMaterialGroup method={'update'} createItem={createItem} updateItem={updateItem} items={getBookTypes} itemIdSelected={selected.bookTypeGroupsId} />,
+            content: <AddMaterialGroup method={'update'} createItem={createItem} updateGroupItem={updateItem} items={bookTypes} itemSelected={selected} closePopup={() => setEditPopup(false)} />,
             close: () => setEditPopup(false),
             condition: editPopup
         },

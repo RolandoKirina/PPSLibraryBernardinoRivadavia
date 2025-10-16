@@ -50,6 +50,7 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
     if (!res.ok) throw new Error("Error al actualizar");
     const updated = await res.json();
     setItems((prev) => prev.map((item) => (item.id === id ? updated : item)));
+    return updated;
   };
 
   // ❌ DELETE
@@ -59,6 +60,7 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
     });
     if (!res.ok) throw new Error("Error al eliminar");
     setItems((prev) => prev.filter((item) => item.id !== id));
+    return res;
   };
 
   return {
