@@ -171,9 +171,9 @@ INSERT INTO "Lectores" ("DNI", "Nombre") VALUES
 -- -------------------------------
 -- 24️⃣ Reservas
 -- -------------------------------
-INSERT INTO "Reservas" ("TituloLibro", "FechaReserva", "FechaPrometida", "NumSocio", "Comentarios") VALUES
-('El Principito', '2025-09-01', '2025-09-15', 1, 'Reservado por 15 días'),
-('1984', '2025-09-05', '2025-09-20', 2, 'Reservado por 15 días');
+INSERT INTO "Reservas" ("TituloLibro", "FechaReserva", "FechaPrometida", "NumSocio", "partnerId", "Comentarios") VALUES
+('El Principito', '2025-09-01', '2025-09-15', 1, 1, 'Reservado por 15 días'),
+('1984', '2025-09-05', '2025-09-20', 2, 1, 'Reservado por 15 días');
 
 -- -------------------------------
 -- 25️⃣ ReservasLibro

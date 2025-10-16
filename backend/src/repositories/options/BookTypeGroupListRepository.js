@@ -4,7 +4,7 @@ import BookType from '../../models/options/BookType.js';
 
 export const getAll = async () => {
     return await BookTypeGroupList.findAll({
-        attributes: ['group', 'maxAmount'],
+        attributes: ['bookTypeGroupListId', 'group', 'maxAmount'],
         include: [
             { 
                 model: BookTypeGroup,
@@ -12,7 +12,7 @@ export const getAll = async () => {
                 include: [
                     {
                         model: BookType,
-                        attributes: ['typeName', 'loanDays']
+                        attributes: ['bookTypeId', 'typeName', 'loanDays']
                     }
                 ]
             }

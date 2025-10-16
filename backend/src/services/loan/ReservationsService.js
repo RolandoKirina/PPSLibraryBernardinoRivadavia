@@ -1,7 +1,7 @@
 import * as ReservationsRepository from '../../repositories/loan/ReservationsRepository.js';
 
-export const getAllReservations = async () => {
-    return await ReservationsRepository.getAll();
+export const getAllReservations = async (filters) => {
+    return await ReservationsRepository.getAll(filters);
 };
 
 export const getReservation = async (id) => {

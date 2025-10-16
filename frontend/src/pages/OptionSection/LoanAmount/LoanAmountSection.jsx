@@ -10,14 +10,66 @@ import AddMaterialGroup from '../../../components/option-components/addmaterialg
 import { mockLoanAmountGroup } from '../../../data/mocks/loanAmount';
 import { useEntityManager } from '../../../hooks/useEntityManager';
 import { mockLoanMaterials } from '../../../data/mocks/loanMaterials';
+import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
+import { useEffect } from 'react';
 
 export default function LoanAmountSection() {
     const [deletePopup, setDeletePopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
     const [selected, setSelected] = useState(false);
-    const { items: groupItems, getItem: getGroupItem, createItem, updateItem, deleteItem } = useEntityManager(mockLoanAmountGroup, 'loanAmountGroups');
-    const { items: materialsItems, getItem: getMaterialItem, deleteItem: deleteMaterialItem } = useEntityManager(mockLoanMaterials, 'loanMaterials');
+    // const { items: groupItems, getItem: getGroupItem, createItem, updateItem, deleteItem } = useEntityManager(mockLoanAmountGroup, 'loanAmountGroups');
+    const {
+    items: groupItems,
+    getItems: getGroupItem,
+    // getItem: getGroupItem,
+    deleteItem,
+    createItem,
+    updateItem
+    } = useEntityManagerAPI("book-type-groups-list");
+
+    const [bookTypes, setBookTypes] = useState([]);
+
+    useEffect(() => {
+  getGroupItem(); // solo dispara la carga
+}, []);
+
+useEffect(() => {
+  if (groupItems.length > 0) {
+    const allBookTypes = getAllBookTypes(groupItems);
+    setBookTypes(allBookTypes);
+  }
+}, [groupItems]);
+
+//     useEffect(() => {
+//   const delay = setTimeout(() => {
+
+//     getGroupItem(); // usa el método del hook directamente
+
+//     if (groupItems.length > 0) {
+//         console.log(groupItems);
+//         console.log(groupItems);
+//         console.log(groupItems);
+//         console.log(groupItems);
+//         console.log(groupItems);
+//       const allBookTypes = getAllBookTypes(groupItems);
+//       console.log(allBookTypes);
+//       setBookTypes(allBookTypes);
+//     }
+
+//   }, 500); // debounce para evitar spam de requests
+
+//   return () => clearTimeout(delay);
+// }, []);
+
+    function getAllBookTypes() {
+        return groupItems.flatMap(group =>
+            group.BookTypeGroups.map(btGroup => btGroup.BookType)
+        );
+    }
+
+
+    // const { items: groupItems, getItem: getGroupItem, createItem, updateItem, deleteItem } = useEntityManagerAPI(mockLoanAmountGroup, 'loanAmountGroups');
 
     const loanMaterialsPopups = [
         {
@@ -38,7 +90,7 @@ export default function LoanAmountSection() {
             key: 'editPopup',
             title: 'Editar Grupo de tipo de material',
             className: 'add-material-group-background',
-            content: <AddMaterialGroup method={'update'} createItem={createItem} updateItem={updateItem} getItemGroup={getGroupItem} getMaterialItem={getMaterialItem} items={materialsItems} itemIdSelected={selected.id} />,
+            // content: <AddMaterialGroup method={'update'} createItem={createItem} updateItem={updateItem} getItemGroup={getGroupItem} getMaterialItem={getMaterialItem} items={materialsItems} itemIdSelected={selected.id} />,
             close: () => setEditPopup(false),
             condition: editPopup
         },
@@ -48,7 +100,8 @@ export default function LoanAmountSection() {
             className: 'add-material-group-background',
             content:
                 <>
-                    <AddMaterialGroup method={'add'} createItem={createItem} updateItem={updateItem} getItemGroup={getGroupItem} getMaterialItem={getMaterialItem} items={materialsItems} />
+                     <AddMaterialGroup method={'add'} createItem={createItem} updateItem={updateItem} getItemGroup={getGroupItem} items={bookTypes} /> 
+                           {/* <AddMaterialGroup method={'add'} createItem={createItem} updateItem={updateItem} getItemGroup={getGroupItem} getMaterialItem={getMaterialItem} items={materialsItems} />  */}
                 </>,
             close: () => setAddPopup(false),
             condition: addPopup
@@ -56,8 +109,8 @@ export default function LoanAmountSection() {
     ];
 
     const columns = [
-        { header: 'Descripción grupo', accessor: 'groupDescription' },
-        { header: 'Días préstamo', accessor: 'loanDays' },
+        { header: 'Descripción grupo', accessor: 'group' },
+        { header: 'Días préstamo', accessor: 'maxAmount' },
         {
             header: 'Borrar',
             accessor: 'delete',

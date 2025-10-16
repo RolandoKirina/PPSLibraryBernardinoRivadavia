@@ -15,6 +15,7 @@ export default function AddMaterialGroup({ method, createItem, updateItem, getIt
   const [amount, setAmount] = useState('');
 
   useEffect(() => {
+    
     if (method === 'update') {
       let materialsData = getItemGroup(itemIdSelected);
 
@@ -59,7 +60,7 @@ export default function AddMaterialGroup({ method, createItem, updateItem, getIt
 
 
   const materialColumns = [
-    { header: 'Material', accessor: 'description' },
+    { header: 'Material', accessor: 'typeName' },
     {
       header: 'Elegir',
       accessor: 'choose',

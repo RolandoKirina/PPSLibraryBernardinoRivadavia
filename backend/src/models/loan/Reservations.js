@@ -1,13 +1,13 @@
 import sequelize from "../../configs/database.js";
 import { DataTypes } from "sequelize";
 
-const Reservations = sequelize.define("Reservations", 
+const Reservations = sequelize.define("Reservations",
     {
         id: {
-            autoIncrement:true,
-            primaryKey:true,
+            autoIncrement: true,
+            primaryKey: true,
             type: DataTypes.INTEGER,
-            field:"Id"
+            field: "Id"
         },
         bookTitle: {
             type: DataTypes.STRING(100),
@@ -25,6 +25,11 @@ const Reservations = sequelize.define("Reservations",
             type: DataTypes.INTEGER,
             field: 'NumSocio'
         },
+        partnerId: {
+            type: DataTypes.INTEGER,
+            field: "partnerId",
+            allowNull: false
+        },
         comments: {
             type: DataTypes.STRING(255),
             field: 'Comentarios'
@@ -32,9 +37,9 @@ const Reservations = sequelize.define("Reservations",
     },
     {
         underscored: true,
-        tableName: "Reservas", 
-        timestamps:false,
-        logging:true
+        tableName: "Reservas",
+        timestamps: false,
+        logging: true
     }
 );
 

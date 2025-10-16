@@ -44,6 +44,9 @@ export default function applyRelationships(models) {
 
   BookReservations.belongsTo(Reservations, { foreignKey: 'reservationId',targetKey:"id"});
 
+  Reservations.belongsTo(Partner, { foreignKey: 'partnerId', targetKey: 'id' });
+  Partner.hasMany(Reservations, { foreignKey: 'partnerId', sourceKey: 'id' });
+
   BookKey.belongsTo(Key, { foreignKey: 'keyId',targetKey:"id"});
   BookKey.belongsTo(Book, { foreignKey: 'BookId',targetKey:"BookId" });
 

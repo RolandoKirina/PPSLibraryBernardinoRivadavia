@@ -1,9 +1,11 @@
 import * as ReservationsService from '../../services/loan/ReservationsService.js';
 import { HTTP_STATUS } from '../../https/httpsStatus.js';
+import { buildReservationFilters } from '../../utils/buildReservationFilters.js';
 
 export const getAllReservations = async (req, res) => {
     try {
-        const reservations = await ReservationsService.getAllReservations();
+        const queryOptions = buildReservationFilters(req.query);
+        const reservations = await ReservationsService.getAllReservations(queryOptions);
         res.status(HTTP_STATUS.OK.code).send(reservations);
     } catch (error) {
         console.error(error);
