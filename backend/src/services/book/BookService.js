@@ -6,8 +6,8 @@ export const getAllBooks = async (filters) => {
     return books;
 }
 
-export const getRanking = async () => {
-    let ranking = await BookRepository.getAll();
+export const getRanking = async (filters) => {
+    let ranking = await BookRepository.getRanking(filters);
     return ranking;
 }
 

@@ -30,8 +30,10 @@ const BookAuthor = sequelize.define("BookAuthor",
     {
         underscored: true,
         tableName: "AutorLibro",
+        freezeTableName: true,
         timestamps: false,
-        logging: true
+        logging: true,
+        
     }
 );
 

@@ -1,18 +1,9 @@
 import Book from "../../models/book/Book.js";
 import Authors from "../../models/author/Authors.js";
 import BookAuthor from "../../models/author/BookAuthor.js";
-export const getRanking = async () => {
-  return await Book.findAll({
-    include: [
-      {
-        model: Authors,
-        attributes: ['name'],  
-      },
-    ],
-    attributes: ['BookId', 'title', 'codeCdu', 'numberOfCopies']
-  });
-};
-
+import LoanBook from "../../models/loan/LoanBook.js"
+import Partner from "../../models/partner/Partner.js";
+import Loan from "../../models/loan/Loan.js";
 export const getAll = async (filters) => {
   const {
     whereAuthor,
@@ -56,6 +47,65 @@ export const getAll = async (filters) => {
   });
 };
 
+export const getRanking = async (filters) => {
+  const {
+    whereBooks,
+    whereRetiredDate,
+    whereByStatus,
+    order,
+    limit,
+    offset
+  } = filters;
+
+
+  if (filters.orderBy === 'partnerStatus') {
+    order = [
+      [sequelize.literal(`"LoanBooks->Loan->Partner"."est_socio" ${filters.direction}`)]
+    ];
+  }
+  return await Book.findAll({
+    where: whereBooks,
+    include: [
+      {
+        model: BookAuthor,
+        required: true,
+        attributes: ["authorCode", "BookId"],
+        include: [
+          {
+            model: Authors,
+            required: true,
+            attributes: ["name"]
+          }
+        ]
+      },
+      {
+        model: LoanBook,
+        required: true,
+        attributes: ["BookId", "loanId"],
+        include: [
+          {
+            model: Loan,
+            required: true,
+            attributes: ["retiredDate"],
+            where: whereRetiredDate,
+            include: [
+              {
+                model: Partner,
+                required: true,
+                attributes: ["id", "name", "isActive"],
+                where: whereByStatus
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    order,
+    attributes: ["BookId", "codeInventory", "title", "codeCDU"],
+    limit,
+    offset
+  });
+};
 
 
 export const getById = async (id) => {

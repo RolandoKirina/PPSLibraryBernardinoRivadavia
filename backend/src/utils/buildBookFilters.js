@@ -1,6 +1,8 @@
 import {Op} from "sequelize";
-
-
+import Loan from "../models/loan/Loan.js";
+import LoanBook from "../models/loan/LoanBook.js";
+import Partner from "../models/partner/Partner.js";
+import sequelize from "../configs/database.js";
 export const buildBookFilters = (query) => {
     const{
         author,
@@ -60,3 +62,46 @@ export const buildBookFilters = (query) => {
     offset: isNaN(parsedOffset) ? 0 : parsedOffset
   };
 }
+
+export const buildFilterRanking = (query) => {
+  const {
+    retiredDate,
+    cduBooksRetiredPartner,
+    bookCodeRetiredBooks,
+    direction,
+    limit,
+    offset
+  } = query;
+
+  const whereBooks = {}
+  
+
+  if (cduBooksRetiredPartner && cduBooksRetiredPartner.trim() !== '') {
+    whereBooks.codeCDU = cduBooksRetiredPartner.trim();
+  }
+  
+  if (bookCodeRetiredBooks && bookCodeRetiredBooks.trim() !== '') {
+    whereBooks.codeInventory = bookCodeRetiredBooks.trim();
+  }
+  
+
+  const whereRetiredDate = retiredDate?.trim()
+    ? { retiredDate: { [Op.gte]: retiredDate.trim() } }
+    : {};
+
+
+  const order = [
+    [sequelize.literal(`"LoanBooks->Loan->Partner"."est_socio" ${direction?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC'}`)]
+  ];
+  //const parsedLimit = parseInt(limit);
+  //const parsedOffset = parseInt(offset);*/
+  const directionNormalized = direction?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
+  return {
+    whereBooks,    
+    whereRetiredDate,
+    order,
+    direction: directionNormalized
+    //limit: isNaN(parsedLimit) ? 5 : parsedLimit,
+    //offset: isNaN(parsedOffset) ? 0 : parsedOffset
+  };
+};
