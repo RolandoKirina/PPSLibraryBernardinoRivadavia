@@ -1,7 +1,7 @@
 import * as BookService from "../../services/book/BookService.js";
 import { HTTP_STATUS } from "../../https/httpsStatus.js";
 import Book from "../../models/book/Book.js";
-import { buildBookFilters } from "../../utils/buildBookFilters.js";
+import { buildBookFilters, buildFilterRanking } from "../../utils/buildBookFilters.js";
 
 export const getAllBooks = async (req,res) => {
     try{
@@ -22,7 +22,7 @@ export const getAllBooks = async (req,res) => {
 
  export const getRanking = async (req,res) =>{
     try{
-        const queryOptions = await BookService.getRanking(req.query);
+        const queryOptions = buildFilterRanking(req.query);
         const ranking =  await BookService.getRanking(queryOptions);
         res.status(HTTP_STATUS.OK.code).send(ranking);    
     }

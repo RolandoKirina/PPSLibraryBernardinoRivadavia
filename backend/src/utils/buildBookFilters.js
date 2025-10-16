@@ -1,6 +1,8 @@
 import {Op} from "sequelize";
-
-
+import Loan from "../models/loan/Loan.js";
+import LoanBook from "../models/loan/LoanBook.js";
+import Partner from "../models/partner/Partner.js";
+import sequelize from "../configs/database.js";
 export const buildBookFilters = (query) => {
     const{
         author,
@@ -61,53 +63,44 @@ export const buildBookFilters = (query) => {
   };
 }
 
-
-export const buildRankingBookFilters = (query) => {
+export const buildFilterRanking = (query) => {
   const {
     retiredDate,
     cduBooksRetiredPartner,
     bookCodeRetiredBooks,
-    orderByStatus,
-    orderBy,
     direction,
     limit,
     offset
   } = query;
 
-  const whereRetiredDate = retiredDate?.trim()
-    ? { loanDate: { [Op.gte]: retiredDate.trim() } }
-    : {};
+  const whereBooks = {}
+  
 
-  const whereCDURetiredPartner = cduBooksRetiredPartner?.trim()
-    ? { codeCDU: cduBooksRetiredPartner.trim() }
-    : {};
-
-  const whereBookCodeRetiredBooks = bookCodeRetiredBooks?.trim()
-    ? { codeInventory: bookCodeRetiredBooks.trim() }
-    : {};
-
-  const whereOrderByStatus = orderByStatus?.trim()
-    ? { status: orderByStatus.trim() }
-    : {};
-
-  let order = [];
-
-  if (orderBy?.trim() === 'status') {
-    order = [[{ model: LoanBook }, { model: Loan }, { model: Partner }, 'status', direction?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC']];
-  } else if (orderBy?.trim()) {
-    order = [[orderBy.trim(), direction?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC']];
+  if (cduBooksRetiredPartner && cduBooksRetiredPartner.trim() !== '') {
+    whereBooks.codeCDU = cduBooksRetiredPartner.trim();
   }
+  
+  if (bookCodeRetiredBooks && bookCodeRetiredBooks.trim() !== '') {
+    whereBooks.codeInventory = bookCodeRetiredBooks.trim();
+  }
+  
 
-  const parsedLimit = parseInt(limit);
-  const parsedOffset = parseInt(offset);
+  const whereRetiredDate = retiredDate?.trim()
+    ? { retiredDate: { [Op.gte]: retiredDate.trim() } }
+    : {};
+
+
+const order = [
+  [sequelize.literal(`"LoanBooks->Loan->Partner"."est_socio" ${direction?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC'}`)]
+];
+  //const parsedLimit = parseInt(limit);
+  //const parsedOffset = parseInt(offset);*/
 
   return {
+    whereBooks,    
     whereRetiredDate,
-    whereCDURetiredPartner,
-    whereBookCodeRetiredBooks,
-    whereOrderByStatus,
     order,
-    limit: isNaN(parsedLimit) ? 5 : parsedLimit,
-    offset: isNaN(parsedOffset) ? 0 : parsedOffset
+    //limit: isNaN(parsedLimit) ? 5 : parsedLimit,
+    //offset: isNaN(parsedOffset) ? 0 : parsedOffset
   };
 };

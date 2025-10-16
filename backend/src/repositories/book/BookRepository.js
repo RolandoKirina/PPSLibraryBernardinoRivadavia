@@ -49,26 +49,23 @@ export const getAll = async (filters) => {
 
 export const getRanking = async (filters) => {
   const {
-    whereCDURetiredPartner,
-    whereBookCodeRetiredBooks,
-    whereOrderByStatus,
+    whereBooks,
     whereRetiredDate,
-    order,           
-    limit,          
+    whereByStatus,
+    order,
+    limit,
     offset
-
   } = filters;
 
+  console.log(filters);
+
   return await Book.findAll({
-    where: {
-      ...whereCDURetiredPartner,
-      ...whereBookCodeRetiredBooks,
-    },
+    where: whereBooks,
     include: [
       {
         model: BookAuthor,
         required: true,
-        attributes: ["bookAuthorId"],
+        attributes: ["authorCode", "BookId"],
         include: [
           {
             model: Authors,
@@ -80,7 +77,7 @@ export const getRanking = async (filters) => {
       {
         model: LoanBook,
         required: true,
-        attributes: ["LoanBookId"],
+        attributes: ["BookId", "loanId"],
         include: [
           {
             model: Loan,
@@ -91,20 +88,21 @@ export const getRanking = async (filters) => {
               {
                 model: Partner,
                 required: true,
-                where: whereOrderByStatus,
-                attributes: ["id", "name", "isActive"]
+                attributes: ["id", "name", "isActive"],
+                where: whereByStatus
               }
             ]
           }
         ]
       }
     ],
-    attributes: ['BookId', "codeInventory",'title','codeCDU'],
     order,
+    attributes: ["BookId", "codeInventory", "title", "codeCDU"],
     limit,
     offset
   });
 };
+
 
 export const getById = async (id) => {
     return await Book.findByPk(id);
