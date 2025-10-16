@@ -90,16 +90,17 @@ export const buildFilterRanking = (query) => {
     : {};
 
 
-const order = [
-  [sequelize.literal(`"LoanBooks->Loan->Partner"."est_socio" ${direction?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC'}`)]
-];
+  const order = [
+    [sequelize.literal(`"LoanBooks->Loan->Partner"."est_socio" ${direction?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC'}`)]
+  ];
   //const parsedLimit = parseInt(limit);
   //const parsedOffset = parseInt(offset);*/
-
+  const directionNormalized = direction?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
   return {
     whereBooks,    
     whereRetiredDate,
     order,
+    direction: directionNormalized
     //limit: isNaN(parsedLimit) ? 5 : parsedLimit,
     //offset: isNaN(parsedOffset) ? 0 : parsedOffset
   };

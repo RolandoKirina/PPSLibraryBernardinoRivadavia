@@ -57,8 +57,12 @@ export const getRanking = async (filters) => {
     offset
   } = filters;
 
-  console.log(filters);
 
+  if (filters.orderBy === 'partnerStatus') {
+    order = [
+      [sequelize.literal(`"LoanBooks->Loan->Partner"."est_socio" ${filters.direction}`)]
+    ];
+  }
   return await Book.findAll({
     where: whereBooks,
     include: [
