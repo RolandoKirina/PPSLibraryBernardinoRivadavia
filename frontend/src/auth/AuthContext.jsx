@@ -10,7 +10,7 @@ export const AuthProvider = ({children}) => {
 
   const [auth, setAuth] = useState({
         isAuthenticated: false,
-        role: "reader",
+        role: "admin",
         name: null,
         
   });
@@ -24,7 +24,7 @@ export const AuthProvider = ({children}) => {
 
    const logout = () => setAuth({
     isAuthenticated: false,
-    role: "reader",
+    role: "admin",
     name: null,
   });
 

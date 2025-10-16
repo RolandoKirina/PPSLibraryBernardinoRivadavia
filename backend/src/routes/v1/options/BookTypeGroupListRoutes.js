@@ -5,6 +5,7 @@ import validateIdParam from "../../../middlewares/ValidateId.js";
 const router = express.Router();
 
 router.get('/', BookTypeGroupListController.getAllBookTypeGroupLists);
+router.get('/lastId', BookTypeGroupListController.getLastBookTypeGroupListId);
 router.get('/:id', BookTypeGroupListController.getBookTypeGroupList);
 router.post('/', BookTypeGroupListController.createBookTypeGroupList);
 router.put('/:id', BookTypeGroupListController.updateBookTypeGroupList);

@@ -11,6 +11,18 @@ export const getAllBookTypeGroupLists = async (req, res) => {
     }
 };
 
+export const getLastBookTypeGroupListId = async (req, res) => {
+    try {
+        const result = await BookTypeGroupListService.getLastBookTypeGroupListId();
+        res.status(HTTP_STATUS.OK.code).send(result);
+    } catch (error) {
+        console.error(error);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+    }
+};
+
+
+
 export const getBookTypeGroupList = async (req, res) => {
     try {
         const { id } = req.params;

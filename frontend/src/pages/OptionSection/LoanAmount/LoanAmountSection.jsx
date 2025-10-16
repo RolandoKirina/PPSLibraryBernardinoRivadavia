@@ -18,58 +18,48 @@ export default function LoanAmountSection() {
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
     const [selected, setSelected] = useState(false);
-    // const { items: groupItems, getItem: getGroupItem, createItem, updateItem, deleteItem } = useEntityManager(mockLoanAmountGroup, 'loanAmountGroups');
     const {
-    items: groupItems,
-    getItems: getGroupItem,
-    // getItem: getGroupItem,
-    deleteItem,
-    createItem,
-    updateItem
+        items: groupItems,
+        getItems: getGroupItem,
+        // getItem: getGroupItem,
+        deleteItem,
+        createItem,
+        updateItem
     } = useEntityManagerAPI("book-type-groups-list");
 
-    const [bookTypes, setBookTypes] = useState([]);
+    const {
+        items: bookTypes,
+        getItems: getBookTypes,
+        // getItem: getGroupItem,
+        deleteItem: deleteBookType,
+        createItem: createBookType,
+        updateItem: updateBookType
+    } = useEntityManagerAPI("book-types");
+
+    //const [bookTypes, setBookTypes] = useState([]);
 
     useEffect(() => {
-  getGroupItem(); // solo dispara la carga
-}, []);
+        getGroupItem(); // solo dispara la carga
+        getBookTypes();
+    }, [groupItems]);
 
-useEffect(() => {
-  if (groupItems.length > 0) {
-    const allBookTypes = getAllBookTypes(groupItems);
-    setBookTypes(allBookTypes);
-  }
-}, [groupItems]);
+    // useEffect(() => {
+    //     if (groupItems.length > 0) {
+    //         const allBookTypes = getAllBookTypes(groupItems);
+    //         setBookTypes(allBookTypes);
+    //     }
+    // }, [groupItems]);
 
-//     useEffect(() => {
-//   const delay = setTimeout(() => {
-
-//     getGroupItem(); // usa el método del hook directamente
-
-//     if (groupItems.length > 0) {
-//         console.log(groupItems);
-//         console.log(groupItems);
-//         console.log(groupItems);
-//         console.log(groupItems);
-//         console.log(groupItems);
-//       const allBookTypes = getAllBookTypes(groupItems);
-//       console.log(allBookTypes);
-//       setBookTypes(allBookTypes);
-//     }
-
-//   }, 500); // debounce para evitar spam de requests
-
-//   return () => clearTimeout(delay);
-// }, []);
 
     function getAllBookTypes() {
-        return groupItems.flatMap(group =>
-            group.BookTypeGroups.map(btGroup => btGroup.BookType)
-        );
+        return groupItems.map(group => ({
+            group: group.group,
+            maxAmount: group.maxAmount,
+            bookTypes: Array.isArray(group.BookTypeGroups)
+            ? group.BookTypeGroups.map(btGroup => btGroup.BookType)
+            : []
+        }));
     }
-
-
-    // const { items: groupItems, getItem: getGroupItem, createItem, updateItem, deleteItem } = useEntityManagerAPI(mockLoanAmountGroup, 'loanAmountGroups');
 
     const loanMaterialsPopups = [
         {
@@ -78,7 +68,7 @@ useEffect(() => {
             className: 'delete-size-popup',
             content: <PopUpDelete title={"Grupo de tipo de material"} closePopup={() => setDeletePopup(false)} onConfirm={
                 () => {
-                    deleteItem(selected.id)
+                    deleteItem(selected.bookTypeGroupListId)
                     setDeletePopup(false)
                 }
             } />,
@@ -90,7 +80,7 @@ useEffect(() => {
             key: 'editPopup',
             title: 'Editar Grupo de tipo de material',
             className: 'add-material-group-background',
-            // content: <AddMaterialGroup method={'update'} createItem={createItem} updateItem={updateItem} getItemGroup={getGroupItem} getMaterialItem={getMaterialItem} items={materialsItems} itemIdSelected={selected.id} />,
+            content: <AddMaterialGroup method={'update'} createItem={createItem} updateItem={updateItem} items={getBookTypes} itemIdSelected={selected.bookTypeGroupsId} />,
             close: () => setEditPopup(false),
             condition: editPopup
         },
@@ -100,8 +90,8 @@ useEffect(() => {
             className: 'add-material-group-background',
             content:
                 <>
-                     <AddMaterialGroup method={'add'} createItem={createItem} updateItem={updateItem} getItemGroup={getGroupItem} items={bookTypes} /> 
-                           {/* <AddMaterialGroup method={'add'} createItem={createItem} updateItem={updateItem} getItemGroup={getGroupItem} getMaterialItem={getMaterialItem} items={materialsItems} />  */}
+                    <AddMaterialGroup method={'add'} createGroupItem={createItem} updateGroupItem={updateItem} items={bookTypes} closePopup={() => setAddPopup(false)}/>
+                    {/* <AddMaterialGroup method={'add'} createItem={createItem} updateItem={updateItem} getItemGroup={getGroupItem} getMaterialItem={getMaterialItem} items={materialsItems} />  */}
                 </>,
             close: () => setAddPopup(false),
             condition: addPopup

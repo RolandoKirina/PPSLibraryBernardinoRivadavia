@@ -7,55 +7,52 @@ import SaveIcon from '../../../assets/img/save-icon.svg';
 import PopUp from '../../common/popup-table/PopUp';
 import ConfirmMessage from '../../common/confirmMessage/ConfirmMessage';
 import { useEffect } from 'react';
+import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
 
-export default function AddMaterialGroup({ method, createItem, updateItem, getItemGroup, getMaterialItem, items, itemIdSelected }) {
+export default function AddMaterialGroup({ method, createGroupItem, updateGroupItem, items, closePopup }) {
+
   const [selectedIds, setSelectedIds] = useState([]);
   const [confirmSaveChanges, setConfirmSaveChangesPopup] = useState(false);
   const [group, setGroup] = useState('');
   const [amount, setAmount] = useState('');
 
-  useEffect(() => {
-    
-    if (method === 'update') {
-      let materialsData = getItemGroup(itemIdSelected);
+  const BASE_URL = "http://localhost:4000/api/v1";
 
-      if (materialsData && materialsData.materials) {
-        let materialsId = materialsData.materials.map((material) => material.id);
+  const {
+    items: bookTypeGroups,
+    getItems: getBookTypeGroups,
+    deleteItem: deleteBookTypeGroup,
+    createItem: createBookTypeGroup,
+    updateItem: updateBookTypeGroup
+  } = useEntityManagerAPI("book-type-groups");
 
-        setSelectedIds(materialsId);
-      }
-    }
-    else {
-      setSelectedIds([]);
-    }
-  }, [method, itemIdSelected]);
-
-  function handleAddItem() {
-
-    const materials = selectedIds
-      .map(id => getMaterialItem(id))
-      .filter(item => item); // filtra nulos por si algún ID no existe
-
-
-    createItem({
-      groupDescription: group,
-      loanDays: amount,
-      materials: materials
+  async function handleAddItem() {
+  try {
+    const newGroup = await createGroupItem({
+      group,
+      maxAmount: amount
     });
+
+    const newGroupId = newGroup.bookTypeGroupListId;
+
+    await Promise.all(
+      selectedIds.map(bookTypeId =>
+        createBookTypeGroup({
+          BookTypeGroupListId: newGroupId,
+          bookTypeId
+        })
+      )
+    );
+
+    closePopup();
+
+  } catch (error) {
+    console.error("Error al crear grupo o materiales:", error);
   }
+}
+
 
   function handleUpdateItem() {
-    const materials = selectedIds
-      .map(id => getMaterialItem(id))
-      .filter(item => item); // filtra nulos por si algún ID no existe
-
-    let data = {
-      groupDescription: group,
-      loanDays: amount,
-      materials: materials
-    }
-
-    updateItem(itemIdSelected, data);
   }
 
 
@@ -66,14 +63,14 @@ export default function AddMaterialGroup({ method, createItem, updateItem, getIt
       accessor: 'choose',
       render: (_, row) => (
         <button
-          key={`select-${row.id}-${selectedIds.includes(row.id)}`} // fuerza re-render si cambia
+          key={`select-${row.bookTypeId}-${selectedIds.includes(row.bookTypeId)}`} // fuerza re-render si cambia
           type="button"
-          className={`button-table ${selectedIds.includes(row.id) ? 'choosed' : ''}`}
+          className={`button-table ${selectedIds.includes(row.bookTypeId) ? 'choosed' : ''}`}
           onClick={() => {
             setSelectedIds(prev => {
-              const updated = prev.includes(row.id)
-                ? prev.filter(id => id !== row.id)
-                : [...prev, row.id];
+              const updated = prev.includes(row.bookTypeId)
+                ? prev.filter(bookTypeId => bookTypeId !== row.bookTypeId)
+                : [...prev, row.bookTypeId];
               return updated;
             });
           }}
