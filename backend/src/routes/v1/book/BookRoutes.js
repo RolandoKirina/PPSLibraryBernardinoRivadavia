@@ -5,14 +5,13 @@ import validateIdParam from "../../../middlewares/ValidateId.js";
 
 const router = express.Router();
 
+router.get('/lost-book', BookController.getLostBooks);
+
 router.get("/",BookController.getAllBooks);
-
 router.get('/ranking', BookController.getRanking);
-
-router.get("/:id", validateIdParam("id"), BookController.getBook);
-
+/*router.get("/:id", validateIdParam("id"), BookController.getBook);
 
 router.post("/",BookController.createBook);
 router.put("/:id", validateIdParam("id"), BookController.updateBook);
-router.delete("/:id",validateIdParam("id"), BookController.deleteBook);
+router.delete("/:id",validateIdParam("id"), BookController.deleteBook);*/
 export default router;

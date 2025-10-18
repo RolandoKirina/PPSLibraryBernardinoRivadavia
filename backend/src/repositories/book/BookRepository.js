@@ -4,6 +4,7 @@ import BookAuthor from "../../models/author/BookAuthor.js";
 import LoanBook from "../../models/loan/LoanBook.js"
 import Partner from "../../models/partner/Partner.js";
 import Loan from "../../models/loan/Loan.js";
+import sequelize from "../../configs/database.js";
 export const getAll = async (filters) => {
   const {
     whereAuthor,
@@ -31,11 +32,13 @@ export const getAll = async (filters) => {
       {
         model: BookAuthor,
         attributes: ["bookAuthorId"],
+        as: "BookAuthors",
         include: [
           {
             model: Authors,
             where: whereAuthor,
-            attributes: ["name"]
+            attributes: ["name"],
+            as: "Author"
           }
         ]
       }
@@ -57,22 +60,25 @@ export const getRanking = async (filters) => {
     offset
   } = filters;
 
-
+  let finalOrder = order;
   if (filters.orderBy === 'partnerStatus') {
-    order = [
+    finalOrder = [
       [sequelize.literal(`"LoanBooks->Loan->Partner"."est_socio" ${filters.direction}`)]
     ];
   }
+
   return await Book.findAll({
     where: whereBooks,
     include: [
       {
         model: BookAuthor,
+        as: "BookAuthors", // <- alias agregado
         required: true,
         attributes: ["authorCode", "BookId"],
         include: [
           {
             model: Authors,
+            as: "Author", // <- alias agregado
             required: true,
             attributes: ["name"]
           }
@@ -80,17 +86,20 @@ export const getRanking = async (filters) => {
       },
       {
         model: LoanBook,
+        as: "BookLoans", // <- alias agregado
         required: true,
         attributes: ["BookId", "loanId"],
         include: [
           {
             model: Loan,
+            as: "Loan", // <- alias agregado
             required: true,
             attributes: ["retiredDate"],
             where: whereRetiredDate,
             include: [
               {
                 model: Partner,
+                as: "Partner", // <- alias agregado
                 required: true,
                 attributes: ["id", "name", "isActive"],
                 where: whereByStatus
@@ -100,12 +109,40 @@ export const getRanking = async (filters) => {
         ]
       }
     ],
-    order,
+    order: finalOrder,
     attributes: ["BookId", "codeInventory", "title", "codeCDU"],
     limit,
     offset
   });
 };
+
+export const getLostBook = async () => {
+  return await Book.findAll({
+    where: { lost: true },
+    include: [
+      {
+        model: LoanBook,
+        as: "BookLoans", 
+        required: true, 
+        include: [
+          {
+            model: Loan,
+            as: "Loan",
+            required: true, 
+            include: [
+              { model: Partner, as: "Partner", required: true } 
+            ]
+          }
+        ]
+      }
+    ],
+    order: [["lossDate", "DESC"]],
+    limit: 5,
+    offset: 0,
+    subQuery: false
+  });
+};
+
 
 
 export const getById = async (id) => {

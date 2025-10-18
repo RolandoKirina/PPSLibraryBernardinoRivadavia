@@ -3,6 +3,8 @@ import Loan from "../models/loan/Loan.js";
 import LoanBook from "../models/loan/LoanBook.js";
 import Partner from "../models/partner/Partner.js";
 import sequelize from "../configs/database.js";
+import Sequelize from "sequelize";
+
 export const buildBookFilters = (query) => {
     const{
         author,
@@ -63,6 +65,49 @@ export const buildBookFilters = (query) => {
   };
 }
 
+
+export const buildFilterLostBook = (query) => {
+  const { LossDate, orderBy, direction, limit, offset } = query;
+
+  const whereBooks = {
+    ...(LossDate?.trim() && { lossDate: { [Op.lte]: LossDate.trim() } }),
+    lost: true
+  };
+
+  const directionNormalized = direction?.toUpperCase() === "ASC" ? "ASC" : "DESC";
+
+  let finalorder = [];
+
+  switch (orderBy?.trim()) {
+    case "partnerStatus":
+      finalorder = [[{ val: `"BookLoans->Loan->Partner"."isActive"` }, directionNormalized]];
+      break;
+    case "Apellido Socio":
+      finalorder = [[{ val: `"BookLoans->Loan->Partner"."surname"` }, directionNormalized]];
+      break;
+    case "Número Socio":
+      finalorder = [[{ val: `"BookLoans->Loan->Partner"."partnerNumber"` }, directionNormalized]];
+      break;
+    case "Código Libro":
+      finalorder = [["codeInventory", directionNormalized]];
+      break;
+    case "Título Libro":
+      finalorder = [["title", directionNormalized]];
+      break;
+    case "Fecha pérdida":
+    default:
+      finalorder = [["lossDate", directionNormalized]];
+      break;
+  }
+
+  return {
+    whereBooks,
+    order: finalorder,
+    limit: parseInt(limit) || 5,
+    offset: parseInt(offset) || 0
+  };
+};
+
 export const buildFilterRanking = (query) => {
   const {
     retiredDate,
@@ -75,7 +120,6 @@ export const buildFilterRanking = (query) => {
 
   const whereBooks = {}
   
-
   if (cduBooksRetiredPartner && cduBooksRetiredPartner.trim() !== '') {
     whereBooks.codeCDU = cduBooksRetiredPartner.trim();
   }
@@ -91,18 +135,20 @@ export const buildFilterRanking = (query) => {
 
 
   const order = [
-    [sequelize.literal(`"LoanBooks->Loan->Partner"."est_socio" ${direction?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC'}`)]
+    [sequelize.literal(`"BookLoans->Loan->Partner"."est_socio" ${direction?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC'}`)]
   ];
-  //const parsedLimit = parseInt(limit);
-  //const parsedOffset = parseInt(offset);*/
+
+  const parsedLimit = parseInt(limit);
+  const parsedOffset = parseInt(offset);
   const directionNormalized = direction?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
+
   return {
     whereBooks,    
     whereRetiredDate,
     order,
-    direction: directionNormalized
-    //limit: isNaN(parsedLimit) ? 5 : parsedLimit,
-    //offset: isNaN(parsedOffset) ? 0 : parsedOffset
+    direction: directionNormalized,
+    limit: isNaN(parsedLimit) ? 5 : parsedLimit,
+    offset: isNaN(parsedOffset) ? 0 : parsedOffset
   };
 };
 

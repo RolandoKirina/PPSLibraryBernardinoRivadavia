@@ -8,80 +8,66 @@ export default function applyRelationships(models) {
     Fees, typeDocument
   } = models;
 
-  Author.hasMany(BookAuthor, { foreignKey: 'authorCode' ,sourceKey:"id"});
+  Author.hasMany(BookAuthor, { as: "BookAuthors", foreignKey: "authorCode", sourceKey: "id" });
+  BookAuthor.belongsTo(Author, { as: "Author", foreignKey: "authorCode", targetKey: "id" });
 
-  BookAuthor.belongsTo(Author, { foreignKey: 'authorCode', targetKey:"id"});
+  Book.hasMany(BookAuthor, { as: "BookAuthors", foreignKey: "BookId", sourceKey: "BookId" });
+  BookAuthor.belongsTo(Book, { as: "Book", foreignKey: "BookId", targetKey: "BookId" });
 
-  BookAuthor.belongsTo(Book, { foreignKey: 'BookId', targetKey: "BookId"});
+  LoanType.hasMany(Loan, { as: "Loans", foreignKey: "loanType", sourceKey: "id" });
+  Loan.belongsTo(LoanType, { as: "LoanType", foreignKey: "loanType", targetKey: "id" });
 
-  Book.hasMany(BookAuthor, { foreignKey: 'BookId' ,sourceKey:"BookId"});
+  Employees.hasMany(Loan, { as: "Loans", foreignKey: "employeeId", sourceKey: "id" });
+  Loan.belongsTo(Employees, { as: "Employee", foreignKey: "employeeId", targetKey: "id" });
 
-  LoanType.hasMany(Loan, { foreignKey: 'loanType', sourceKey:"id"});
+  Loan.hasMany(LoanBook, { as: "LoanBooks", foreignKey: "loanId", sourceKey: "id" });
+  LoanBook.belongsTo(Loan, { as: "Loan", foreignKey: "loanId", targetKey: "id" });
 
-  Loan.belongsTo(LoanType, { foreignKey: 'loanType' , targetKey:"id"});
+  Book.hasMany(LoanBook, { as: "BookLoans", foreignKey: "BookId", sourceKey: "BookId" });
+  LoanBook.belongsTo(Book, { as: "Book", foreignKey: "BookId", targetKey: "BookId" });
 
-  Employees.hasMany(Loan, { foreignKey: 'employeeId', sourceKey:"id" }); 
+  Partner.hasMany(Loan, { as: "Loans", foreignKey: "partnerId", sourceKey: "id" });
+  Loan.belongsTo(Partner, { as: "Partner", foreignKey: "partnerId", targetKey: "id" });
 
-  Loan.belongsTo(Employees, {foreignKey: 'employeeId',targetKey:"id" });
+  Reservations.hasMany(BookReservations, { as: "BookReservations", foreignKey: "reservationId", sourceKey: "id" });
+  BookReservations.belongsTo(Reservations, { as: "Reservation", foreignKey: "reservationId", targetKey: "id" });
 
-  Reservations.hasMany(BookReservations, { foreignKey: 'reservationId', sourceKey:"id" });
+  Book.hasMany(BookReservations, { as: "BookReservations", foreignKey: "BookId", sourceKey: "BookId" });
+  BookReservations.belongsTo(Book, { as: "Book", foreignKey: "BookId", targetKey: "BookId" });
 
-  Loan.hasMany(LoanBook, { foreignKey: 'loanId', sourceKey:"id" });
+  Partner.hasMany(Reservations, { as: "Reservations", foreignKey: "partnerId", sourceKey: "id" });
+  Reservations.belongsTo(Partner, { as: "Partner", foreignKey: "partnerId", targetKey: "id" });
 
-  LoanBook.belongsTo(Loan, { foreignKey: 'loanId' , targetKey:"id"});
-  LoanBook.belongsTo(Book, { foreignKey: 'BookId', targetKey:"BookId" });
+  Key.hasMany(BookKey, { as: "BookKeys", foreignKey: "keyId", sourceKey: "id" });
+  BookKey.belongsTo(Key, { as: "Key", foreignKey: "keyId", targetKey: "id" });
 
-  Book.hasMany(LoanBook, { foreignKey: 'BookId' , sourceKey:"BookId" });
+  Book.hasMany(BookKey, { as: "BookKeys", foreignKey: "BookId", sourceKey: "BookId" });
+  BookKey.belongsTo(Book, { as: "Book", foreignKey: "BookId", targetKey: "BookId" });
 
-  Partner.hasMany(Loan, { foreignKey: 'partnerId', sourceKey:"id" });
-  Loan.belongsTo(Partner, { foreignKey: 'partnerId',targetKey:"id"});
+  PartnerCategory.hasMany(Partner, { as: "Partners", foreignKey: "idCategory", sourceKey: "idCategory" });
+  Partner.belongsTo(PartnerCategory, { as: "PartnerCategory", foreignKey: "idCategory", targetKey: "idCategory" });
 
-  BookReservations.belongsTo(Book, { foreignKey: 'BookId' , targetKey: "BookId"});
+  reasonForWithDrawal.hasMany(Partner, { as: "Partners", foreignKey: "idReason", sourceKey: "idReason" });
+  Partner.belongsTo(reasonForWithDrawal, { as: "ReasonForWithdrawal", foreignKey: "idReason", targetKey: "idReason" });
 
-  Book.hasMany(BookReservations, { foreignKey: 'BookId', sourceKey: "BookId"});
+  statePartner.hasMany(Partner, { as: "Partners", foreignKey: "idState", sourceKey: "idState" });
+  Partner.belongsTo(statePartner, { as: "StatePartner", foreignKey: "idState", targetKey: "idState" });
 
-  Reservations.hasMany(BookReservations, { foreignKey: 'reservationId', sourceKey:"id"});
+  BookTypeGroupList.hasMany(BookTypeGroup, { as: "BookTypeGroups", foreignKey: "BookTypeGroupListId", sourceKey: "bookTypeGroupListId" });
+  BookTypeGroup.belongsTo(BookTypeGroupList, { as: "BookTypeGroupList", foreignKey: "BookTypeGroupListId", targetKey: "bookTypeGroupListId" });
 
-  BookReservations.belongsTo(Reservations, { foreignKey: 'reservationId',targetKey:"id"});
+  BookType.hasMany(BookTypeGroup, { as: "BookTypeGroups", foreignKey: "bookTypeId", sourceKey: "bookTypeId" });
+  BookTypeGroup.belongsTo(BookType, { as: "BookType", foreignKey: "bookTypeId", targetKey: "bookTypeId" });
 
-  Reservations.belongsTo(Partner, { foreignKey: 'partnerId', targetKey: 'id' });
-  Partner.hasMany(Reservations, { foreignKey: 'partnerId', sourceKey: 'id' });
+  BookType.hasMany(Book, { as: "Books", foreignKey: "type", sourceKey: "bookTypeId" });
+  Book.belongsTo(BookType, { as: "BookType", foreignKey: "type", targetKey: "bookTypeId" });
 
-  BookKey.belongsTo(Key, { foreignKey: 'keyId',targetKey:"id"});
-  BookKey.belongsTo(Book, { foreignKey: 'BookId',targetKey:"BookId" });
+  Partner.hasMany(Fees, { as: "Fees", foreignKey: "idPartner", sourceKey: "id" });
+  Fees.belongsTo(Partner, { as: "Partner", foreignKey: "idPartner", targetKey: "id" });
 
-  Key.hasMany(BookKey, { foreignKey: 'keyId', sourceKey: "id"});
-  Book.hasMany(BookKey, { foreignKey: 'BookId', sourceKey: "BookId"});
+  Partner.belongsTo(Locality, { as: "Locality", foreignKey: "LocalityId", targetKey: "id" });
+  Partner.belongsTo(MaritalStatus, { as: "MaritalStatus", foreignKey: "MaritalStatusId", targetKey: "id" });
 
-  PartnerCategory.hasMany(Partner, { foreignKey: 'idCategory', sourceKey: "idCategory" });
-  Partner.belongsTo(PartnerCategory, { foreignKey: 'idCategory', targetKey:"idCategory" });
-
-  reasonForWithDrawal.hasMany(Partner, { foreignKey: 'idReason', sourceKey:"idReason" });
-
-  Partner.belongsTo(reasonForWithDrawal, { foreignKey: 'idReason' ,targetKey:"idReason"});
-
-  Partner.belongsTo(statePartner, { foreignKey: 'idState', targetKey:"idState" });
-  statePartner.hasMany(Partner, { foreignKey: 'idState', sourceKey: "idState"});
-
-
-  BookTypeGroupList.hasMany(BookTypeGroup, { foreignKey: 'BookTypeGroupListId', sourceKey:"bookTypeGroupListId"});
-  
-  BookTypeGroup.belongsTo(BookTypeGroupList, { foreignKey: 'BookTypeGroupListId' ,targetKey:"bookTypeGroupListId"});
-
-  BookTypeGroup.belongsTo(BookType, { foreignKey: 'bookTypeId', targetKey: "bookTypeId"}); 
-
-  BookType.hasMany(BookTypeGroup, { foreignKey: 'bookTypeId', sourceKey:"bookTypeId" });
-
-  BookType.hasMany(Book, { foreignKey: "type", sourceKey: "bookTypeId"});
-  Book.belongsTo(BookType, { foreignKey: "type", targetKey: "bookTypeId"});
-
-
-  Partner.hasMany(Fees,{foreignKey:"idPartner", sourceKey:"id"});
-  Fees.belongsTo(Partner,{foreignKey:"idPartner", sourceKey:"id"});
-
-  Partner.belongsTo(Locality,{foreignKey:"LocalityId", sourceKey:"id"});
-  Partner.belongsTo(MaritalStatus,{foreignKey:"MaritalStatusId", sourceKey:"id"});
-
-  typeDocument.hasMany(Partner, { foreignKey: "documentType", sourceKey: "Id"});
-  Partner.belongsTo(typeDocument, { foreignKey: "documentType", targetKey: "Id"});
+  typeDocument.hasMany(Partner, { as: "Partners", foreignKey: "documentType", sourceKey: "Id" });
+  Partner.belongsTo(typeDocument, { as: "TypeDocument", foreignKey: "documentType", targetKey: "Id" });
 }
