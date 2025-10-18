@@ -170,22 +170,10 @@ textarea {
     margin-left: 0.4em;
 }
 
-.formeditbook .input .cdu div {
+.formeditbook .input   {
     display: flex;
 }
 
-.formeditbook .input .cdu .cdu-options {
-    width: 100%;
-    justify-content: space-between;
-}
-
-.formeditbook .input .cdu .cdu-options:first-child {
-    width: 50%;
-}
-
-.formeditbook .input .cdu .cdu-options input:last-child {
-    width: 30%;
-}
 
 .form-add-book-size {
     background-color: var(--primary-dark-2);

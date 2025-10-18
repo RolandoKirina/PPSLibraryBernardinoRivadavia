@@ -4,8 +4,7 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  // 🔄 GET ALL (con filtros opcionales)
+  
   const getItems = async (filters = {}) => {
     setLoading(true);
     setError(null);
@@ -27,8 +26,9 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
     }
   };
 
-  // ➕ CREATE
+
   const createItem = async (newItem) => {
+
     const res = await fetch(`${baseUrl}/${entityName}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -40,7 +40,6 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
     return created;
   };
 
-  // 📝 UPDATE
   const updateItem = async (id, updatedData) => {
     const res = await fetch(`${baseUrl}/${entityName}/${id}`, {
       method: "PUT",
@@ -53,7 +52,6 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
     return updated;
   };
 
-  // ❌ DELETE
   const deleteItem = async (id) => {
     const res = await fetch(`${baseUrl}/${entityName}/${id}`, {
       method: "DELETE"

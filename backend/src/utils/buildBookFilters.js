@@ -105,3 +105,4 @@ export const buildFilterRanking = (query) => {
     //offset: isNaN(parsedOffset) ? 0 : parsedOffset
   };
 };
+
