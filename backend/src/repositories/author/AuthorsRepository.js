@@ -13,7 +13,7 @@ export const getAll = async () => {
             include: [
                 {
                     model: Book,
-                    attributes: ['codeInventory', 'title', 'codeClasification', 'codeCdu', 'codeLing']
+                    attributes: ['codeInventory', 'title', 'codeClasification', 'codeCDU', 'codeLing']
                 }
             ]
            }
@@ -54,6 +54,7 @@ export const create = async (author) => {
 
 // A diferencia de patch, los updates deben tener todos los campos de la entidad
 export const update = async (id, updates) => {
+
     await Authors.update(updates, {
         where: { id: id }
     });

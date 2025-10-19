@@ -10,13 +10,24 @@ import DeleteIcon from '../../../assets/img/delete-icon.svg';
 import EditIcon from '../../../assets/img/edit-icon.svg';
 import { useEntityManager } from '../../../hooks/useEntityManager';
 import { mockLoanMaterials } from '../../../data/mocks/loanMaterials';
+import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
+import { useEffect } from 'react';
 
 export default function LoanMaterialSection() {
     const [deletePopup, setDeletePopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
     const [selected, setSelected] = useState(false);
-    const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockLoanMaterials, 'loamMaterials');
+   // const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockLoanMaterials, 'loamMaterials');
+
+    const {
+           items,
+           getItems,
+           // getItem: getGroupItem,
+           deleteItem,
+           createItem,
+           updateItem
+    } = useEntityManagerAPI("book-types");
 
     function handleAddItem(data) {
         createItem(data);
@@ -24,9 +35,13 @@ export default function LoanMaterialSection() {
     }
 
     function handleEditItem(data) {
-        updateItem(selected.id, data);
+        updateItem(selected.bookTypeId, data);
         setEditPopup(false);
     }
+
+    useEffect(() => {
+        getItems(); 
+    }, [items]);
 
     const loanMaterialsPopups = [
         {
@@ -35,7 +50,7 @@ export default function LoanMaterialSection() {
             className: 'delete-size-popup',
             content: <PopUpDelete title={"Material de préstamo"} closePopup={() => setDeletePopup(false)} onConfirm={
                 () => {
-                    deleteItem(selected.id)
+                    deleteItem(selected.bookTypeId)
                     setDeletePopup(false)
                 }
             }
@@ -63,7 +78,7 @@ export default function LoanMaterialSection() {
     ];
 
     const columns = [
-        { header: 'Descripción', accessor: 'description' },
+        { header: 'Descripción', accessor: 'typeName' },
         { header: 'Días préstamo', accessor: 'loanDays' },
         {
             header: 'Borrar',

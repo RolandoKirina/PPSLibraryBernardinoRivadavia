@@ -47,6 +47,13 @@ export const getAll = async (filters) => {
   });
 };
 
+export const getAllWithFields = async () => {
+
+  return await Book.findAll({
+    attributes: ["BookId", "title", "codeInventory", "codeCDU", "codeLing", "codeClasification"],
+  });
+};
+
 export const getRanking = async (filters) => {
   const {
     whereBooks,

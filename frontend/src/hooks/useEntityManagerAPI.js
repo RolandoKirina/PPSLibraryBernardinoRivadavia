@@ -13,7 +13,7 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
     const query = Object.keys(filters).length
       ? `?${new URLSearchParams(filters).toString()}`
       : "";
-
+    
     try {
       const res = await fetch(`${baseUrl}/${entityName}${query}`);
       if (!res.ok) throw new Error("Error al obtener datos");

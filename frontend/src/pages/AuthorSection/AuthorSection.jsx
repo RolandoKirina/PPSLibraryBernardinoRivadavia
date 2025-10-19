@@ -10,22 +10,39 @@ import BookIcon from '../../assets/img/add-book-icon.svg';
 import AuthorBooks from '../../components/author-components/AuthorBooks/AuthorBooks';
 import { useEntityManager } from '../../hooks/useEntityManager';
 import { mockAuthors } from '../../data/mocks/authors';
+import { useEntityManagerAPI } from '../../hooks/useEntityManagerAPI';
 
 import { useAuth } from '../../auth/AuthContext';
 import roles from '../../auth/roles';
 
+import { useEffect } from 'react';
+
 export default function AuthorSection() {
     const { auth } = useAuth();
+
+    const {
+           items,
+           getItems,
+           // getItem: getGroupItem,
+           deleteItem,
+           createItem,
+           updateItem
+    } = useEntityManagerAPI("authors");
+
+    useEffect(() => {
+        getItems(); 
+    }, [items]);
 
     const [deletePopup, setDeletePopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
     const [selected, setSelected] = useState(false);
     const [booksPopup, setBooksPopup] = useState(false);
-    const { items: authorItems, getItem: getAuthorItem, createItem: createAuthorItem, updateItem: updateAuthorItem, deleteItem: deleteAuthorItem } = useEntityManager(mockAuthors, 'authors');
+    //const { items: authorItems, getItem: getAuthorItem, createItem: createAuthorItem, updateItem: updateAuthorItem, deleteItem: deleteAuthorItem } = useEntityManager(mockAuthors, 'authors');
 
     function deleteAuthorSelected(id) {
-        let updatedBooks = selected.books.filter(book => book.id !== id);
+        console.log(id);
+    /*  let updatedBooks = selected.books.filter(book => book.id !== id);
 
         let updatedAuthor = {
             ...selected,
@@ -34,11 +51,25 @@ export default function AuthorSection() {
 
         updateAuthorItem(selected.id, updatedAuthor);
 
-        setSelected(updatedAuthor);
+        setSelected(updatedAuthor);*/
+
+        deleteItem(id);
+    }
+
+    function updateAuthorSelected(id, data) {
+        console.log(data);
+        console.log({
+            name: data.name,
+            nationality: data.nationality
+        });
+        updateItem(id, {
+            name: data.name,
+            nationality: data.nationality
+        });
     }
 
     function updateAuthorSelectedBooks(book) { //añadir libro a authorSelected, que son los datos de un autor seleccionado cuando se está en modo update
-        let alreadyExists = selected.books.some(b => b.id === book.id);
+       /* let alreadyExists = selected.books.some(b => b.id === book.id);
 
         if (!alreadyExists) {
 
@@ -52,7 +83,8 @@ export default function AuthorSection() {
             updateAuthorItem(selected.id, updatedAuthorWithNewBook);
 
             setSelected(updatedAuthorWithNewBook);
-        }
+        }*/
+
     }
 
     const authorsPopups = [
@@ -62,7 +94,7 @@ export default function AuthorSection() {
             className: 'delete-size-popup',
             content: <PopUpDelete title={"Autor"} closePopup={() => setDeletePopup(false)} onConfirm={
                 () => {
-                    deleteAuthorItem(selected.id)
+                    deleteAuthorSelected(selected.id)
                     setDeletePopup(false)
                 }
             } />,
@@ -74,7 +106,7 @@ export default function AuthorSection() {
             key: 'editPopup',
             title: 'Editar autor',
             className: 'author-books-background',
-            content: <AuthorBooks authorSelected={selected} updateAuthorSelectedBooks={updateAuthorSelectedBooks} deleteAuthorSelected={deleteAuthorSelected} method={'update'} updateAuthorItem={updateAuthorItem} />,
+            content: <AuthorBooks authorSelected={selected} updateAuthorSelectedBooks={updateAuthorSelectedBooks} deleteAuthorSelected={deleteAuthorSelected} method={'update'} updateAuthorItem={updateAuthorSelected} />,
             close: () => setEditPopup(false),
             condition: editPopup
         },
@@ -82,7 +114,7 @@ export default function AuthorSection() {
             key: 'addPopup',
             title: 'Agregar autor',
             className: 'author-books-background',
-            content: <AuthorBooks method={'add'} createAuthorItem={createAuthorItem} />,
+            content: <AuthorBooks method={'add'} createAuthorItem={createItem} />,
             close: () => setAddPopup(false),
             condition: addPopup
         }
@@ -92,7 +124,7 @@ export default function AuthorSection() {
 
     if (auth.role === roles.admin) {
         columns = [
-            { header: 'Nombre', accessor: 'authorName' },
+            { header: 'Nombre', accessor: 'name' },
             { header: 'Nacionalidad', accessor: 'nationality' },
             {
                 header: 'Borrar',
@@ -124,7 +156,7 @@ export default function AuthorSection() {
     }
     else if ((auth.role === roles.user || auth.role === roles.reader)) {
         columns = [
-            { header: 'Nombre', accessor: 'authorName' },
+            { header: 'Nombre', accessor: 'name' },
             { header: 'Nacionalidad', accessor: 'nationality' },
             {
                 header: 'Ver libros',
@@ -142,11 +174,9 @@ export default function AuthorSection() {
         ];
     }
 
-
-
     return (
         <>
-            <GenericSection title={'Listado de autores'} columns={columns} data={authorItems} popups={authorsPopups}
+            <GenericSection title={'Listado de autores'} columns={columns} data={items} popups={authorsPopups}
                 actions={
                     <>
                         <div className='author-actions'>

@@ -10,14 +10,23 @@ import DeleteIcon from '../../../assets/img/delete-icon.svg';
 import EditIcon from '../../../assets/img/edit-icon.svg';
 import { useEntityManager } from '../../../hooks/useEntityManager';
 import { mockPartnersCategory } from '../../../data/mocks/partnersCategory';
-
+import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
+import { useEffect } from 'react';
 
 export default function PartnerCategorySection() {
     const [deletePopup, setDeletePopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
     const [selected, setSelected] = useState(null);
-    const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockPartnersCategory, 'partnersCategory');
+
+    const {
+           items,
+           getItems,
+           // getItem: getGroupItem,
+           deleteItem,
+           createItem,
+           updateItem
+    } = useEntityManagerAPI("partner-categories");
 
     function handleAddItem(data) {
         createItem(data);
@@ -25,9 +34,14 @@ export default function PartnerCategorySection() {
     }
 
     function handleEditItem(data) {
-        updateItem(selected.id, data);
+        updateItem(selected.idCategory, data);
         setEditPopup(false);
     }
+
+    useEffect(() => {
+        getItems(); 
+    }, [items]);
+
     const authorsPopups = [
         {
             key: 'deletePopup',
@@ -35,7 +49,7 @@ export default function PartnerCategorySection() {
             className: 'delete-size-popup',
             content: <PopUpDelete title={"Categoria de socio"} closePopup={() => setDeletePopup(false)} onConfirm={
                 () => {
-                    deleteItem(selected.id)
+                    deleteItem(selected.idCategory)
                     setDeletePopup(false)
                 }
             } />,
@@ -62,13 +76,14 @@ export default function PartnerCategorySection() {
     ];
 
     const columns = [
-        { header: 'Categoria', accessor: 'category' },
+        { header: 'Categoria', accessor: 'name' },
         { header: 'Importe', accessor: 'amount' },
         {
             header: 'Borrar',
             accessor: 'delete',
             render: (_, row) => (
                 <button className="button-table" onClick={() => {
+                    console.log(row);
                     setDeletePopup(true)
                     setSelected(row)
                 }}>

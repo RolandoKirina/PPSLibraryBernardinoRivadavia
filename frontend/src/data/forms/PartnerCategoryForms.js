@@ -2,7 +2,7 @@
 export const partnerCategoryFields = [
     {
         label: 'Categoria',
-        name: 'category',
+        name: 'name',
         type: 'text',
         required: true
     },

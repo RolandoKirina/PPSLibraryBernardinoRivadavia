@@ -13,6 +13,11 @@ import { useEntityManager } from '../../../hooks/useEntityManager';
 import { mockEmployees } from '../../../data/mocks/employee';
 import EmployeeForm from '../../../components/option-components/EmployeeForm/EmployeeForm';
 import EmployeeLoansGraphic from '../../../components/option-components/EmployeeLoansGraphic/EmployeeLoansGraphic';
+import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
+import { useEffect } from 'react';
+import GenericForm from '../../../components/generic/GenericForm/GenericForm';
+import { employeeFields } from '../../../data/forms/EmployeeForms';
+
 export default function EmployeeSection() {
     const [deletePopup, setDeletePopup] = useState(false);
     const [detailsPopup, setDetailsPopup] = useState(false);
@@ -21,7 +26,29 @@ export default function EmployeeSection() {
     const [addPopup, setAddPopup] = useState(false);
     const [selected, setSelected] = useState(false);
 
-    const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockEmployees, 'employees');
+    const {
+           items,
+           getItems,
+           // getItem: getGroupItem,
+           deleteItem,
+           createItem,
+           updateItem
+    } = useEntityManagerAPI("employees");
+
+    useEffect(() => {
+        getItems(); 
+    }, [items]);
+
+    function handleAddItem(data) {
+        createItem(data);
+        setAddPopup(false);
+    }
+
+    function handleEditItem(data) {
+        updateItem(selected.id, data);
+        setEditPopup(false);
+    }
+
 
     const employeePopups = [
         {
@@ -50,7 +77,7 @@ export default function EmployeeSection() {
             key: 'addPopup',
             title: 'Añadir empleado',
             className: 'employee-form-size',
-            content: <EmployeeForm method={'add'} createItem={createItem} />,
+            content: <GenericForm fields={employeeFields} onSubmit={(data) => handleAddItem(data)} />,
             close: () => setAddPopup(false),
             condition: addPopup
         },
@@ -58,7 +85,7 @@ export default function EmployeeSection() {
             key: 'editPopup',
             title: 'Editar empleado',
             className: 'employee-form-size',
-            content: <EmployeeForm method={'update'} updateItem={updateItem} selected={selected} />,
+            content: <GenericForm fields={employeeFields} onSubmit={(data) => handleEditItem(data)} />,
             close: () => setEditPopup(false),
             condition: editPopup
         },
@@ -73,7 +100,7 @@ export default function EmployeeSection() {
     ];
 
     const columns = [
-        { header: 'Nombre', accessor: 'fullname' },
+        { header: 'Nombre', accessor: 'name' },
         { header: 'Codigo', accessor: 'id' },
         {
             header: 'Borrar',
@@ -96,18 +123,6 @@ export default function EmployeeSection() {
                     setSelected(row)
                 }}>
                     <img src={EditIcon} alt="Editar" />
-                </button>
-            )
-        },
-        {
-            header: 'Ver detalle',
-            accessor: 'details',
-            render: (_, row) => (
-                <button className="button-table" onClick={() => {
-                    setDetailsPopup(true)
-                    setSelected(row)
-                }}>
-                    <img src={DetailsIcon} alt="Detalles" />
                 </button>
             )
         }

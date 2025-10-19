@@ -14,6 +14,8 @@ import { Table } from '../../../components/common/table/Table';
 import ConfirmMessage from '../../../components/common/confirmMessage/ConfirmMessage';
 import { mockRemovePartnerReason } from '../../../data/mocks/removePartnerReason';
 import { useEntityManager } from '../../../hooks/useEntityManager';
+import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
+import { useEffect } from 'react';
 
 export default function RemovePartnerReasonSection({ chooseMode }) {
     const [deletePopup, setDeletePopup] = useState(false);
@@ -22,9 +24,21 @@ export default function RemovePartnerReasonSection({ chooseMode }) {
     const [choosePopup, setChoosePopup] = useState(false);
     const [confirmPopup, setConfirmPopup] = useState(false);
     const [selected, setSelected] = useState(false);
-    const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockRemovePartnerReason, 'removePartnerReason');
+
+    const {
+        items,
+        getItems,
+        deleteItem,
+        createItem,
+        updateItem
+    } = useEntityManagerAPI("remove-reasons");
+
+    useEffect(() => {
+        getItems(); 
+    }, [items]);
 
     function handleAddItem(data) {
+        console.log(data);
         createItem(data);
         setAddPopup(false);
     }
