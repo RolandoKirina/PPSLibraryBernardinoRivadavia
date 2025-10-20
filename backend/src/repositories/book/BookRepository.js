@@ -20,6 +20,7 @@ export const getAll = async (filters) => {
   } = filters;
 
   return await Book.findAll({
+    subQuery: false, //usarlo cuando hay includes + order + limit
     where: {
       ...whereCodeInventory,
       ...whereCodeCDU,
@@ -31,12 +32,14 @@ export const getAll = async (filters) => {
     include: [
       {
         model: BookAuthor,
-        attributes: ["bookAuthorId"],
+        as: 'BookAuthors',
+        attributes: ['bookAuthorId'],
         include: [
           {
             model: Authors,
+            as: 'Author',
             where: whereAuthor,
-            attributes: ["name"]
+            attributes: ['name']
           }
         ]
       }
@@ -44,9 +47,10 @@ export const getAll = async (filters) => {
     order,
     limit,
     offset,
-     attributes: ["title", "codeInventory", "codeCDU"],
+    attributes: ['title', 'codeInventory', 'codeCDU']
   });
 };
+
 
 export const getAllWithFields = async () => {
 
@@ -65,54 +69,55 @@ export const getRanking = async (filters) => {
     offset
   } = filters;
 
-
-  if (filters.orderBy === 'partnerStatus') {
-    order = [
-      [sequelize.literal(`"LoanBooks->Loan->Partner"."est_socio" ${filters.direction}`)]
-    ];
-  }
   return await Book.findAll({
-    where: whereBooks,
-    include: [
-      {
-        model: BookAuthor,
-        required: true,
-        attributes: ["authorCode", "BookId"],
-        include: [
-          {
-            model: Authors,
-            required: true,
-            attributes: ["name"]
-          }
-        ]
-      },
-      {
-        model: LoanBook,
-        required: true,
-        attributes: ["BookId", "loanId"],
-        include: [
-          {
-            model: Loan,
-            required: true,
-            attributes: ["retiredDate"],
-            where: whereRetiredDate,
-            include: [
-              {
-                model: Partner,
-                required: true,
-                attributes: ["id", "name", "isActive"],
-                where: whereByStatus
-              }
-            ]
-          }
-        ]
-      }
-    ],
-    order,
-    attributes: ["BookId", "codeInventory", "title", "codeCDU"],
-    limit,
-    offset
-  });
+  where: whereBooks,
+  subQuery: false,
+  include: [
+    {
+      model: BookAuthor,
+      as: 'BookAuthors',
+      required: true,
+      attributes: ['authorCode', 'BookId'],
+      include: [
+        {
+          model: Authors,
+          as: 'Author',
+          required: true,
+          attributes: ['name']
+        }
+      ]
+    },
+    {
+      model: LoanBook,
+      as: 'BookLoans',
+      required: true,
+      attributes: ['BookId', 'loanId'],
+      include: [
+        {
+          model: Loan,
+          as: 'Loan',
+          required: true,
+          attributes: ['retiredDate'],
+          where: whereRetiredDate,
+          include: [
+            {
+              model: Partner,
+              as: 'Partner',
+              required: true,
+              attributes: ['id', 'name', 'isActive'],
+              where: whereByStatus
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  order,
+  attributes: ['BookId', 'codeInventory', 'title', 'codeCDU'],
+  limit,
+  offset
+});
+
 };
 
 export const getLostBooks = async (filters) => {

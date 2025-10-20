@@ -91,15 +91,21 @@ export const buildFilterRanking = (query) => {
     ? { retiredDate: { [Op.gte]: retiredDate.trim() } }
     : {};
 
-
-  const order = [
-    [sequelize.literal(`"LoanBooks->Loan->Partner"."est_socio" ${direction?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC'}`)]
-  ];
-
   const parsedLimit = parseInt(limit);
   const parsedOffset = parseInt(offset);
 
   const directionNormalized = direction?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
+
+  const order = [
+        [
+          { model: LoanBook, as: 'BookLoans' },
+          { model: Loan, as: 'Loan' },
+          { model: Partner, as: 'Partner' },
+          'isActive',
+          directionNormalized
+        ]
+      ];
+
   return {
     whereBooks,
     whereRetiredDate,
