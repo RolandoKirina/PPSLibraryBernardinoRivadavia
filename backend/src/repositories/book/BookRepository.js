@@ -1,10 +1,9 @@
-import Book from "../../models/book/Book.js";
-import Authors from "../../models/author/Authors.js";
-import BookAuthor from "../../models/author/BookAuthor.js";
-import LoanBook from "../../models/loan/LoanBook.js"
-import Partner from "../../models/partner/Partner.js";
-import Loan from "../../models/loan/Loan.js";
-import sequelize from "../../configs/database.js";
+import Book from '../../models/book/Book.js';
+import BookAuthors from '../../models/author/BookAuthor.js';
+import BookLoans from '../../models/loan/LoanBook.js';
+import Author from '../../models/author/Authors.js';
+import Loan from '../../models/loan/Loan.js';
+import Partner from '../../models/partner/Partner.js';
 export const getAll = async (filters) => {
   const {
     whereAuthor,
@@ -48,72 +47,54 @@ export const getAll = async (filters) => {
     offset,
      attributes: ["title", "codeInventory", "codeCDU"],
   });
-};
-
-export const getRanking = async (filters) => {
+};export const getRanking = async (filters) => {
   const {
-    whereBooks,
-    whereRetiredDate,
-    whereByStatus,
-    order,
-    limit,
-    offset
+    whereBooks = {},
+    orderBy,
+    direction = 'DESC',
+    limit = 5,
+    offset = 0
   } = filters;
 
-  let finalOrder = order;
-  if (filters.orderBy === 'partnerStatus') {
+  let finalOrder = [];
+
+  if (orderBy === 'partnerStatus') {
+    // usa el alias completo generado por Sequelize
     finalOrder = [
-      [sequelize.literal(`"LoanBooks->Loan->Partner"."est_socio" ${filters.direction}`)]
+      [sequelize.literal(`"BookLoans->Loan->Partner"."est_socio" ${direction}`)]
     ];
   }
 
-  return await Book.findAll({
-    where: whereBooks,
-    include: [
-      {
-        model: BookAuthor,
-        as: "BookAuthors", // <- alias agregado
-        required: true,
-        attributes: ["authorCode", "BookId"],
-        include: [
-          {
-            model: Authors,
-            as: "Author", // <- alias agregado
-            required: true,
-            attributes: ["name"]
-          }
-        ]
-      },
-      {
-        model: LoanBook,
-        as: "BookLoans", // <- alias agregado
-        required: true,
-        attributes: ["BookId", "loanId"],
-        include: [
-          {
-            model: Loan,
-            as: "Loan", // <- alias agregado
-            required: true,
-            attributes: ["retiredDate"],
-            where: whereRetiredDate,
-            include: [
-              {
-                model: Partner,
-                as: "Partner", // <- alias agregado
-                required: true,
-                attributes: ["id", "name", "isActive"],
-                where: whereByStatus
-              }
-            ]
-          }
-        ]
-      }
-    ],
-    order: finalOrder,
-    attributes: ["BookId", "codeInventory", "title", "codeCDU"],
-    limit,
-    offset
-  });
+  Book.findAll({
+  include: [
+    {
+      model: BookAuthors,
+      as: 'BookAuthors', // 🔑 debe coincidir con el alias de la asociación
+      include: [
+        {
+          model: Author,
+          as: 'Author' // si también tiene alias
+        }
+      ]
+    },
+    {
+      model: BookLoans,
+      as: 'BookLoans', // igual, si definiste alias en la asociación
+      include: [
+        {
+          model: Loan,
+          as: 'Loan', // si tiene alias
+          include: [
+            { model: Partner, as: 'Partner' } // si tiene alias
+          ]
+        }
+      ]
+    }
+  ],
+  limit: 5,
+  offset: 0
+});
+
 };
 
 export const getLostBook = async () => {
