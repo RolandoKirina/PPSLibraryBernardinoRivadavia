@@ -127,19 +127,23 @@ export const getLostBooks = async (filters) => {
 
   return await Book.findAll({
     where: whereBooks,
+    subQuery: false, //evita que se haga una subconsulta para aplicar limit
     include: [
       {
         model: LoanBook,
+        as: 'BookLoans',
         attributes: ["BookId", "loanId"],
         required: true,
         include: [
           {
             model: Loan,
+            as: 'Loan',
             required: true,
             attributes: ["id"],
             include:[
               {
                 model: Partner,
+                as: 'Partner',
                 required: true,
                 attributes: ["partnerNumber", "surname", "name", "homeAddress", "homePhone"]
               }
@@ -149,7 +153,9 @@ export const getLostBooks = async (filters) => {
       }
     ],
     order,
-     attributes: ["lossDate", "codeInventory", "title"],
+    attributes: ["lossDate", "codeInventory", "title"],
+    limit,
+    offset
   });
 };
 

@@ -1,37 +1,39 @@
-import {Op} from "sequelize";
+import { Op } from "sequelize";
 import Loan from "../models/loan/Loan.js";
 import LoanBook from "../models/loan/LoanBook.js";
 import Partner from "../models/partner/Partner.js";
 import sequelize from "../configs/database.js";
 export const buildBookFilters = (query) => {
-    const{
-        author,
-        codeInventory,
-        codeCDU,
-        codeSignature, 
-        yearEdition,
-        numberEdition,
-        limit, 
-        offset
-    } = query;
+  const {
+    author,
+    codeInventory,
+    codeCDU,
+    codeSignature,
+    yearEdition,
+    numberEdition,
+    limit,
+    offset
+  } = query;
 
-    const whereAuthor ={};
-    const whereCodeInventory = {};
-    const whereCodeCDU ={};
-    const whereCodeSignature = {};
-    const whereYearEdition = {};
-    const whereNumberEdition = {};
+  const whereAuthor = {};
+  const whereCodeInventory = {};
+  const whereCodeCDU = {};
+  const whereCodeSignature = {};
+  const whereYearEdition = {};
+  const whereNumberEdition = {};
 
 
-   
+
   if (author && author.trim() !== '') {
-    whereAuthor.name = { [Op.iLike]: `%${author.trim()}%`
-  }}
+    whereAuthor.name = {
+      [Op.iLike]: `%${author.trim()}%`
+    }
+  }
 
   if (codeInventory && codeInventory.trim() !== '') {
     whereCodeInventory.codeInventory = codeInventory.trim();
   }
-  
+
   if (codeCDU && codeCDU.trim() !== '') {
     whereCodeCDU.codeCDU = codeCDU.trim();
   }
@@ -40,9 +42,9 @@ export const buildBookFilters = (query) => {
     whereCodeSignature.codeSignature = codeSignature.trim();
   }
 
-    if (yearEdition) {
+  if (yearEdition) {
     whereYearEdition.yearEdition = parseInt(yearEdition);
-    }
+  }
 
 
   if (numberEdition) {
@@ -51,7 +53,7 @@ export const buildBookFilters = (query) => {
   const parsedLimit = parseInt(limit);
   const parsedOffset = parseInt(offset);
 
-     return {
+  return {
     whereAuthor,
     whereCodeInventory,
     whereCodeCDU,
@@ -74,16 +76,16 @@ export const buildFilterRanking = (query) => {
   } = query;
 
   const whereBooks = {}
-  
+
 
   if (cduBooksRetiredPartner && cduBooksRetiredPartner.trim() !== '') {
     whereBooks.codeCDU = cduBooksRetiredPartner.trim();
   }
-  
+
   if (bookCodeRetiredBooks && bookCodeRetiredBooks.trim() !== '') {
     whereBooks.codeInventory = bookCodeRetiredBooks.trim();
   }
-  
+
 
   const whereRetiredDate = retiredDate?.trim()
     ? { retiredDate: { [Op.gte]: retiredDate.trim() } }
@@ -99,7 +101,7 @@ export const buildFilterRanking = (query) => {
 
   const directionNormalized = direction?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
   return {
-    whereBooks,    
+    whereBooks,
     whereRetiredDate,
     order,
     direction: directionNormalized,
@@ -110,10 +112,10 @@ export const buildFilterRanking = (query) => {
 
 export const buildFilterLostBook = (query) => {
   const { lossStartDate, lossEndDate, orderBy, direction, limit, offset } = query;
-  
- const whereBooks = {};
 
- whereBooks.lost = true; 
+  const whereBooks = {};
+
+  whereBooks.lost = true;
 
   if (lossStartDate) whereBooks.lossDate = { [Op.gte]: new Date(lossStartDate) };
   if (lossEndDate) {
@@ -131,35 +133,40 @@ export const buildFilterLostBook = (query) => {
   switch (orderBy?.trim()) {
     case "Apellido Socio":
       order = [
-      [sequelize.literal(`"LoanBooks->Loan->Partner"."apellido" ${directionNormalized}`)]
+        [
+          { model: LoanBook, as: 'BookLoans' },
+          { model: Loan, as: 'Loan' },
+          { model: Partner, as: 'Partner' },
+          'surname',
+          directionNormalized
+        ]
       ];
       break;
     case "Número Socio":
       order = [
-      [sequelize.literal(`"LoanBooks->Loan->Partner"."numero" ${directionNormalized}`)]
+        [
+          { model: LoanBook, as: 'BookLoans' },
+          { model: Loan, as: 'Loan' },
+          { model: Partner, as: 'Partner' },
+          'partnerNumber',
+          directionNormalized
+        ]
       ];
       break;
     case "Código Libro":
-      order = [
-      [sequelize.literal(`"codigo" ${directionNormalized}`)]
-      ];
-      break; 
+      order = [['codeInventory', directionNormalized]];
+      break;
     case "Título Libro":
-      order = [
-      [sequelize.literal(`"titulo" ${directionNormalized}`)]
-      ];
-      break; 
+      order = [['title', directionNormalized]];
+      break;
     case "Fecha pérdida":
-      order = [
-       [sequelize.literal(`"FechaPerdida" ${directionNormalized}`)]
-      ];
+      order = [['lossDate', directionNormalized]];
       break;
     default:
-      order = [
-       [sequelize.literal(`"FechaPerdida" ${directionNormalized}`)]
-      ];
+      order = [['lossDate', directionNormalized]];
       break;
   }
+
 
   const parsedLimit = parseInt(limit);
   const parsedOffset = parseInt(offset);
