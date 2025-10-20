@@ -9,10 +9,12 @@ export const getAll = async () => {
         include: [
            {
             model: BookAuthor,
+            as: 'BookAuthors',
             attributes: ['position'],
             include: [
                 {
                     model: Book,
+                    as: 'Book',
                     attributes: ['codeInventory', 'title', 'codeClasification', 'codeCDU', 'codeLing']
                 }
             ]
@@ -27,11 +29,13 @@ export const getAllByName = async (name) => {
         include: [
            {
             model: BookAuthor,
+            as: 'BookAuthors',
             attributes: ['position'],
             include: [
                 {
                     model: Book,
-                    attributes: ['codeInventory', 'title', 'codeClasification', 'codeCdu', 'codeLing']
+                    as: 'Book',
+                    attributes: ['codeInventory', 'title', 'codeClasification', 'codeCDU', 'codeLing']
                 }
             ]
            }

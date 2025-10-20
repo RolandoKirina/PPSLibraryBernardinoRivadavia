@@ -6,7 +6,7 @@ import validateIdParam from "../../../middlewares/ValidateId.js";
 const router = express.Router();
 
 router.get("/",BookController.getAllBooks);
-router.get("/with-fields",BookController.getAllBooksWithFields);
+router.get("/withFields",BookController.getAllBooksWithFields);
 
 router.get('/ranking', BookController.getRanking);
 
