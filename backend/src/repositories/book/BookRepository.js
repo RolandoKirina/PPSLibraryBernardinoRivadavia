@@ -66,64 +66,6 @@ export const getAllWithFields = async () => {
     offset = 0
   } = filters;
 
-<<<<<<< HEAD
-  let finalOrder = [];
-
-  if (orderBy === 'partnerStatus') {
-    // usa el alias completo generado por Sequelize
-    finalOrder = [
-      [sequelize.literal(`"BookLoans->Loan->Partner"."est_socio" ${direction}`)]
-    ];
-  }
-
-  Book.findAll({
-  include: [
-    {
-      model: BookAuthors,
-      as: 'BookAuthors', // 🔑 debe coincidir con el alias de la asociación
-      include: [
-        {
-          model: Author,
-          as: 'Author' // si también tiene alias
-        }
-      ]
-    },
-    {
-      model: BookLoans,
-      as: 'BookLoans', // igual, si definiste alias en la asociación
-      include: [
-        {
-          model: Loan,
-          as: 'Loan', // si tiene alias
-          include: [
-            { model: Partner, as: 'Partner' } // si tiene alias
-          ]
-        }
-      ]
-    }
-  ],
-  limit: 5,
-  offset: 0
-});
-
-};
-
-export const getLostBook = async () => {
-  return await Book.findAll({
-    where: { lost: true },
-    include: [
-      {
-        model: LoanBook,
-        as: "BookLoans", 
-        required: true, 
-        include: [
-          {
-            model: Loan,
-            as: "Loan",
-            required: true, 
-            include: [
-              { model: Partner, as: "Partner", required: true } 
-=======
   return await Book.findAll({
   where: whereBooks,
   subQuery: false,
@@ -207,23 +149,15 @@ export const getLostBooks = async (filters) => {
                 required: true,
                 attributes: ["partnerNumber", "surname", "name", "homeAddress", "homePhone"]
               }
->>>>>>> 57d89bfa66d9f9537b199c7b9e6c542e1e06702b
             ]
           }
         ]
       }
     ],
-<<<<<<< HEAD
-    order: [["lossDate", "DESC"]],
-    limit: 5,
-    offset: 0,
-    subQuery: false
-=======
     order,
     attributes: ["lossDate", "codeInventory", "title"],
     limit,
     offset
->>>>>>> 57d89bfa66d9f9537b199c7b9e6c542e1e06702b
   });
 };
 
