@@ -71,11 +71,11 @@ const Book = sequelize.define("Book",
       field: "NumFactura"
     },
     dateOfBuy: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
       field: "FechaCompra"
     },
     lossDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
       field: "FechaPerdida",
       allowNull: true
     },

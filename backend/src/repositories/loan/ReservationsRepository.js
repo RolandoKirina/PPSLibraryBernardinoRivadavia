@@ -2,45 +2,49 @@ import { Book, BookReservations, Partner } from '../../models/index.js';
 import Reservations from '../../models/loan/Reservations.js';
 
 export const getAll = async (filters) => {
-    const {
-        whereReservation,
-        wherePartner,
-        whereBook,
-        order,
-        limit,
-        offset
-    } = filters;
+  const {
+    whereReservation,
+    wherePartner,
+    whereBook,
+    order,
+    limit,
+    offset
+  } = filters;
 
-    return await Reservations.findAll({
-        attributes: ["reservationDate", "expectedDate"],
-        where: Object.keys(whereReservation).length ? whereReservation : undefined,
-        required: Object.keys(whereReservation).length > 0,
+  return await Reservations.findAll({
+    subQuery: false,
+    attributes: ['reservationDate', 'expectedDate'],
+    where: Object.keys(whereReservation).length ? whereReservation : undefined,
+    required: Object.keys(whereReservation).length > 0,
+    include: [
+      {
+        model: Partner,
+        as: 'Partner',
+        attributes: ['partnerNumber', 'name', 'surname'],
+        where: Object.keys(wherePartner).length ? wherePartner : undefined,
+        required: Object.keys(wherePartner).length > 0
+      },
+      {
+        model: BookReservations,
+        as: 'BookReservations',
+        attributes: ['BookId', 'reservationId'],
         include: [
-            {
-                model: Partner,
-                attributes: ["partnerNumber", "name", "surname"],
-                where: Object.keys(wherePartner).length ? wherePartner : undefined,
-                required: Object.keys(wherePartner).length > 0,
-            },
-            {
-                model: BookReservations,
-                attributes: ["BookId", "reservationId"],
-                include: [
-                    {
-                        model: Book,
-                        attributes: ["title"],
-                        where: Object.keys(whereBook).length ? whereBook : undefined,
-                        required: Object.keys(whereBook).length > 0,
-                    }
-                ]
-            }
-        ],
-        order,
-        limit,
-        offset
-    });
-
+          {
+            model: Book,
+            as: 'Book',
+            attributes: ['title'],
+            where: Object.keys(whereBook).length ? whereBook : undefined,
+            required: Object.keys(whereBook).length > 0
+          }
+        ]
+      }
+    ],
+    order,
+    limit,
+    offset
+  });
 };
+
 
 export const getOne = async (id) => {
     return await Reservations.findByPk(id);

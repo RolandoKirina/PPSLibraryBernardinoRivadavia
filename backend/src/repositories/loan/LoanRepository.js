@@ -23,33 +23,39 @@ export const getAll = async (filters) => {
   return await Loan.findAll({
     attributes: ['withdrawalTime', 'retiredDate'],
     where: whereLoan,
+    subQuery: false,
     include: [
       {
         model: LoanType,
+        as: 'LoanType',
         attributes: ['description'],
         where: Object.keys(whereLoanType).length ? whereLoanType : undefined, //solo se intentan aplicar los filtros si existen
         required: Object.keys(whereLoanType).length > 0 //si no hay filtros aplicados se traen los datos igual
       },
       {
         model: Partner,
+        as: 'Partner',
         attributes: ['id', 'homePhone', 'homeAddress', 'name', 'surname'],
         where: Object.keys(wherePartner).length ? wherePartner : undefined,
         required: Object.keys(wherePartner).length > 0
       },
       {
         model: LoanBook,
+        as: 'LoanBooks',
         attributes: ['bookCode', 'expectedDate', 'returnedDate'],
         where: Object.keys(whereLoanBook).length ? whereLoanBook : undefined,
         required: Object.keys(whereLoanBook).length > 0,
         include: [
           {
             model: Book,
+            as: 'Book',
             attributes: ['title'],
             where: Object.keys(whereBook).length ? whereBook : undefined,
             required: Object.keys(whereBook).length > 0,
             include: [
               {
                 model: BookType,
+                as: 'BookType',
                 attributes: ["typeName"],
                 where: Object.keys(whereBookType).length ? whereBookType : undefined,
                 required: Object.keys(whereBookType).length > 0
@@ -60,6 +66,7 @@ export const getAll = async (filters) => {
       },
       {
         model: Employees,
+        as: 'Employee',
         attributes: ['name'],
         where: Object.keys(whereEmployee).length ? whereEmployee : undefined,
         required: Object.keys(whereEmployee).length > 0
@@ -84,16 +91,19 @@ export const getAllReturns = async (filters) => {
     include: [
       {
         model: Partner,
+        as: 'Partner',
         attributes: ['id', 'name', 'surname', 'observations'],
         where: Object.keys(wherePartner).length ? wherePartner : undefined,
         required: Object.keys(wherePartner).length > 0
       },
       {
         model: LoanBook,
+        as: 'LoanBooks',
         attributes: ['LoanBookId', 'bookCode', 'expectedDate', 'reneweAmount'],
         include: [
           {
             model: Book,
+            as: 'Book',
             attributes: ['BookId', 'title'],
           }
         ]
