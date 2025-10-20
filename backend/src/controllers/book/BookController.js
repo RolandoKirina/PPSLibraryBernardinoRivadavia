@@ -1,7 +1,7 @@
 import * as BookService from "../../services/book/BookService.js";
 import { HTTP_STATUS } from "../../https/httpsStatus.js";
 import Book from "../../models/book/Book.js";
-import { buildBookFilters, buildFilterRanking } from "../../utils/buildBookFilters.js";
+import { buildBookFilters, buildFilterRanking, buildFilterLostBook } from "../../utils/buildBookFilters.js";
 
 export const getAllBooks = async (req,res) => {
     try{
@@ -39,6 +39,20 @@ export const getAllBooksWithFields = async (req,res) => {
         const queryOptions = buildFilterRanking(req.query);
         const ranking =  await BookService.getRanking(queryOptions);
         res.status(HTTP_STATUS.OK.code).send(ranking);    
+    }
+    catch(e){
+        console.log(e);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+
+    }
+ }
+
+ 
+ export const getLostBooks = async (req,res) =>{
+    try{
+        const queryOptions = buildFilterLostBook(req.query);
+        const lostBooks =  await BookService.getLostBooks(queryOptions);
+        res.status(HTTP_STATUS.OK.code).send(lostBooks);    
     }
     catch(e){
         console.log(e);

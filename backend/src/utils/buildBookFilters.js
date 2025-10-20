@@ -93,15 +93,83 @@ export const buildFilterRanking = (query) => {
   const order = [
     [sequelize.literal(`"LoanBooks->Loan->Partner"."est_socio" ${direction?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC'}`)]
   ];
-  //const parsedLimit = parseInt(limit);
-  //const parsedOffset = parseInt(offset);*/
+
+  const parsedLimit = parseInt(limit);
+  const parsedOffset = parseInt(offset);
+
   const directionNormalized = direction?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
   return {
     whereBooks,    
     whereRetiredDate,
     order,
-    direction: directionNormalized
-    //limit: isNaN(parsedLimit) ? 5 : parsedLimit,
-    //offset: isNaN(parsedOffset) ? 0 : parsedOffset
+    direction: directionNormalized,
+    limit: isNaN(parsedLimit) ? 5 : parsedLimit,
+    offset: isNaN(parsedOffset) ? 0 : parsedOffset
   };
 };
+
+export const buildFilterLostBook = (query) => {
+  const { lossStartDate, lossEndDate, orderBy, direction, limit, offset } = query;
+  
+ const whereBooks = {};
+
+ whereBooks.lost = true; 
+
+  if (lossStartDate) whereBooks.lossDate = { [Op.gte]: new Date(lossStartDate) };
+  if (lossEndDate) {
+    whereBooks.lossDate = {
+      ...(whereBooks.lossDate || {}),
+      [Op.lte]: new Date(lossEndDate)
+    };
+  }
+
+  const directionNormalized = direction?.toUpperCase() === "ASC" ? "ASC" : "DESC";
+
+
+  let order = [];
+
+  switch (orderBy?.trim()) {
+    case "Apellido Socio":
+      order = [
+      [sequelize.literal(`"LoanBooks->Loan->Partner"."apellido" ${directionNormalized}`)]
+      ];
+      break;
+    case "Número Socio":
+      order = [
+      [sequelize.literal(`"LoanBooks->Loan->Partner"."numero" ${directionNormalized}`)]
+      ];
+      break;
+    case "Código Libro":
+      order = [
+      [sequelize.literal(`"codigo" ${directionNormalized}`)]
+      ];
+      break; 
+    case "Título Libro":
+      order = [
+      [sequelize.literal(`"titulo" ${directionNormalized}`)]
+      ];
+      break; 
+    case "Fecha pérdida":
+      order = [
+       [sequelize.literal(`"FechaPerdida" ${directionNormalized}`)]
+      ];
+      break;
+    default:
+      order = [
+       [sequelize.literal(`"FechaPerdida" ${directionNormalized}`)]
+      ];
+      break;
+  }
+
+  const parsedLimit = parseInt(limit);
+  const parsedOffset = parseInt(offset);
+
+  return {
+    whereBooks,
+    order,
+    direction: directionNormalized,
+    limit: isNaN(parsedLimit) ? 5 : parsedLimit,
+    offset: isNaN(parsedOffset) ? 0 : parsedOffset
+  };
+};
+

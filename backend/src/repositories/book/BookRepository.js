@@ -4,6 +4,7 @@ import BookAuthor from "../../models/author/BookAuthor.js";
 import LoanBook from "../../models/loan/LoanBook.js"
 import Partner from "../../models/partner/Partner.js";
 import Loan from "../../models/loan/Loan.js";
+
 export const getAll = async (filters) => {
   const {
     whereAuthor,
@@ -111,6 +112,44 @@ export const getRanking = async (filters) => {
     attributes: ["BookId", "codeInventory", "title", "codeCDU"],
     limit,
     offset
+  });
+};
+
+export const getLostBooks = async (filters) => {
+  //hay que usar numsocioperdida (de libro) para que sean libros perdidos mostrando solamente el socio al que se le perdio
+  const {
+    whereBooks,
+    order,
+    limit,
+    offset
+  } = filters;
+  console.log(filters);
+
+  return await Book.findAll({
+    where: whereBooks,
+    include: [
+      {
+        model: LoanBook,
+        attributes: ["BookId", "loanId"],
+        required: true,
+        include: [
+          {
+            model: Loan,
+            required: true,
+            attributes: ["id"],
+            include:[
+              {
+                model: Partner,
+                required: true,
+                attributes: ["partnerNumber", "surname", "name", "homeAddress", "homePhone"]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    order,
+     attributes: ["lossDate", "codeInventory", "title"],
   });
 };
 
