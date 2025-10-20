@@ -13,6 +13,7 @@ import { books } from '../../../data/mocks/authors';
 import { useEffect } from 'react';
 import { useAuth } from '../../../auth/AuthContext';
 import roles from '../../../auth/roles.js';
+import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI.js';
 
 export default function AuthorBooks({ authorSelected, deleteAuthorSelected, updateAuthorSelectedBooks, method, createAuthorItem, updateAuthorItem }) {
     const { auth } = useAuth();
@@ -20,22 +21,30 @@ export default function AuthorBooks({ authorSelected, deleteAuthorSelected, upda
     const [confirmPopup, setConfirmPopup] = useState(false);
     const [deletePopup, setDeletePopup] = useState(false);
     const [selected, setSelected] = useState(null);
+    const BASE_URL= "http://localhost:4000/api/v1";
     const [popupView, setPopupView] = useState('default');
     const [authorData, setAuthorData] = useState({
-        authorName: '',
+        name: '',
         nationality: '',
         books: []
     });
+    const [books, setBooks] = useState([]);
 
     useEffect(() => {
-        if (method === 'update' && authorSelected) {
-            setAuthorData({
-                authorName: authorSelected.authorName,
-                nationality: authorSelected.nationality,
-                books: [...authorSelected.books]
-            });
-        }
-    }, [method, authorSelected]);
+        getBooks(); 
+    }, []);
+
+  const getBooks = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/books/withFields`);
+      if (!response.ok) throw new Error("Error al obtener libros");
+      const data = await response.json(); 
+      setBooks(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
 
     function handleAuthorChange(e) {
         const { name, value } = e.target;
@@ -50,7 +59,7 @@ export default function AuthorBooks({ authorSelected, deleteAuthorSelected, upda
 
     function handleAddAuthorBook(book) {
         setAuthorData(prev => {
-            const alreadyExists = prev.books.some(b => b.id === book.id);
+            const alreadyExists = prev.books.some(b => b.BookId === book.BookId);
             if (alreadyExists) return prev;
             return {
                 ...prev,
@@ -62,7 +71,7 @@ export default function AuthorBooks({ authorSelected, deleteAuthorSelected, upda
     function handleDeleteAuthorBook(id) {
         setAuthorData(prev => ({
             ...prev,
-            books: prev.books.filter(b => b.id !== id)
+            books: prev.books.filter(b => b.BookId !== id)
         }));
     }
 
@@ -87,36 +96,35 @@ export default function AuthorBooks({ authorSelected, deleteAuthorSelected, upda
 
     if (auth.role === roles.admin) {
         mainAuthorBooksColumns = [
-            { header: 'Código del libro', accessor: 'bookCode' },
-            { header: 'Título', accessor: 'bookTitle' },
+            { header: 'Título', accessor: 'title' },
             { header: 'Posición', accessor: 'position' },
-            { header: 'Codclass', accessor: 'codClass' },
-            { header: 'Codrcdu', accessor: 'codRcdu' },
-            { header: 'CodLing', accessor: 'codLing' }
+            { header: 'Codclass', accessor: 'codeClasification' },
+            { header: 'Codrcdu', accessor: 'codeCDU' },
+            { header: 'CodLing', accessor: 'codeLing' }
         ];
     }
     else if ((auth.role === roles.user) || (auth.role === roles.reader)) {
         mainAuthorBooksColumns = [
-            { header: 'Código del libro', accessor: 'bookCode' },
-            { header: 'Título', accessor: 'bookTitle' },
+            { header: 'Código del libro', accessor: 'codeInventory' },
+            { header: 'Título', accessor: 'title' },
             { header: 'Posición', accessor: 'position' },
-            { header: 'Codclass', accessor: 'codClass' },
-            { header: 'Codrcdu', accessor: 'codRcdu' },
-            { header: 'CodLing', accessor: 'codLing' }
+            { header: 'Codclass', accessor: 'codeClasification' },
+            { header: 'Codrcdu', accessor: 'codeCDU' },
+            { header: 'CodLing', accessor: 'codeLing' }
         ];
     }
 
-
     const authorBooksColumns = [ //igual que mainAuthorBooksColumns pero solo se muestran 3 columnas
-        { header: 'Código del libro', accessor: 'bookCode' },
-        { header: 'Título', accessor: 'bookTitle' },
+        { header: 'Código del libro', accessor: 'codeInventory' },
+        { header: 'Título', accessor: 'title' },
         { header: 'Posición', accessor: 'position' },
         {
             header: 'Borrar',
             accessor: 'delete',
             render: (_, row) => (
                 <button type='button' className="button-table" onClick={() => {
-                    handleDeleteAuthorBook(row.id);
+                    console.log("Row completo:", row); 
+                    handleDeleteAuthorBook(row.BookId);
                 }}>
                     <img src={DeleteIcon} alt="Borrar" />
                 </button>
@@ -125,13 +133,16 @@ export default function AuthorBooks({ authorSelected, deleteAuthorSelected, upda
     ];
 
     const bookshelfBooksColumns = [
-        { header: 'Codigo', accessor: 'bookCode' },
-        { header: 'Título', accessor: 'bookTitle' },
+        { header: 'Codigo', accessor: 'codeInventory' },
+        { header: 'Título', accessor: 'title' },
         {
             header: 'Agregar',
             accessor: 'add',
             render: (_, row) => (
-                <button type='button' className="button-table" onClick={() => handleAddAuthorBook(row)}>
+                <button type='button' className="button-table" onClick={
+                    () => {
+                        console.log(row);
+                        handleAddAuthorBook(row)}}>
                     <img src={AddBookIcon} alt="Agregar" />
                 </button>
             )
@@ -147,18 +158,19 @@ export default function AuthorBooks({ authorSelected, deleteAuthorSelected, upda
                 setConfirmPopup(false);
                 if (method === 'add') {
                     let newAuthor = {
-                        authorName: authorData.authorName,
+                        name: authorData.name,
                         nationality: authorData.nationality,
                         books: authorData.books
                     }
+                    console.log(authorData.books);
                     createAuthorItem(newAuthor);
                 }
                 else if (method === 'update') {
                     let updatedAuthor = {
-                        authorName: authorData.authorName,
+                        name: authorData.name,
                         nationality: authorData.nationality,
-                        books: authorData.books
                     };
+         
                     updateAuthorItem(authorSelected.id, updatedAuthor);
                 }
 
@@ -195,9 +207,9 @@ export default function AuthorBooks({ authorSelected, deleteAuthorSelected, upda
                                 <div className='add-loan-retire-date input'>
                                     <label>Nombre <span className='required'>*</span></label>
                                     {auth.role === roles.admin ? (
-                                        <input type='text' name='authorName' value={authorData.authorName} onChange={handleAuthorChange} />
+                                        <input type='text' name='name' value={authorData.name} onChange={handleAuthorChange} />
                                     ) : (
-                                        <p className='readonly-field'>{authorSelected.authorName}</p>
+                                        <p className='readonly-field'>{authorSelected.name}</p>
                                     )}
 
                                 </div>

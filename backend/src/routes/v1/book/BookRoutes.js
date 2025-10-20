@@ -8,8 +8,15 @@ const router = express.Router();
 router.get('/lost-book', BookController.getLostBooks);
 
 router.get("/",BookController.getAllBooks);
+router.get("/withFields",BookController.getAllBooksWithFields);
+
 router.get('/ranking', BookController.getRanking);
-/*router.get("/:id", validateIdParam("id"), BookController.getBook);
+
+router.get('/lostBooks', BookController.getLostBooks);
+
+
+router.get("/:id", validateIdParam("id"), BookController.getBook);
+
 
 router.post("/",BookController.createBook);
 router.put("/:id", validateIdParam("id"), BookController.updateBook);

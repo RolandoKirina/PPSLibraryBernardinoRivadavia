@@ -1,7 +1,7 @@
 export const loanMaterialsFields = [
     {
         label: 'Descripción',
-        name: 'description',
+        name: 'typeName',
         type: 'text',
         required: true
     },

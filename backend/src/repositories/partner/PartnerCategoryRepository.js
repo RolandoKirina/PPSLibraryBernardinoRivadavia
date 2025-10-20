@@ -13,7 +13,7 @@ export const create = async (data) => {
 };
 
 export const update = async (id, updates) => {
-    await PartnerCategory.update(updates, { where: { id } });
+    await PartnerCategory.update(updates, { where: { idCategory: id } });
     return await PartnerCategory.findByPk(id);
 };
 

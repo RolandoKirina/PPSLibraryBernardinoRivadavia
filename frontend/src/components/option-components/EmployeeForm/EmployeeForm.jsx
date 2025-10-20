@@ -33,34 +33,13 @@ export default function EmployeeForm({ method, createItem, updateItem, selected 
             <div className='employee-form'>
                 <form onSubmit={handleSubmit}>
                     <div className='employee-div'>
-                        <div className='employee-div-input input'>
-                            <label htmlFor='username'>Nombre de usuario <span className='required'>*</span></label>
-                            <input name='username' type='text' className='input-form' placeholder='Nombre de usuario' />
-                        </div>
+
                         <div className='employee-div-input input'>
                             <label htmlFor='fullname'>Nombre completo <span className='required'>*</span></label>
                             <input name='fullname' type='text' className='input-form' placeholder='Nombre completo' />
                         </div>
                     </div>
-                    <div className='employee-div'>
-                        <div className='employee-div-input input'>
-                            <label htmlFor='email'>Correo electronico <span className='required'>*</span></label>
-                            <input name='email' type='text' className='input-form' placeholder='Correo electronico' />
-                        </div>
-                        <div className='employee-div-input input'>
-                            <label htmlFor='password'>Contraseña <span className='required'>*</span></label>
-                            <input name='password' type='password' className='input-form' placeholder='Contraseña' />
-                        </div>
-                    </div>
-
-                    <div className='employee-div-select input'>
-                        <label htmlFor='rol'>Elige un rol <span className='required'>*</span></label>
-                        <select name='rol'>
-                            <option value=''>Elige un rol</option>
-                            <option value='admin'>Administrador</option>
-                        </select>
-                    </div>
-
+                    
 
                     <div className='form-button'>
                         <Btn variant={'primary'} type={'submit'} text={'Crear empleado'} />

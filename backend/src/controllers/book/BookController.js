@@ -1,7 +1,11 @@
 import * as BookService from "../../services/book/BookService.js";
 import { HTTP_STATUS } from "../../https/httpsStatus.js";
 import Book from "../../models/book/Book.js";
+<<<<<<< HEAD
 import { buildBookFilters, buildFilterLostBook, buildFilterRanking } from "../../utils/buildBookFilters.js";
+=======
+import { buildBookFilters, buildFilterRanking, buildFilterLostBook } from "../../utils/buildBookFilters.js";
+>>>>>>> 57d89bfa66d9f9537b199c7b9e6c542e1e06702b
 
 export const getAllBooks = async (req,res) => {
     try{
@@ -19,6 +23,7 @@ export const getAllBooks = async (req,res) => {
     
 }
 
+<<<<<<< HEAD
  export const getLostBooks = async (req,res) =>{
     try{
         const queryOptions = buildFilterLostBook(req.query);
@@ -31,12 +36,42 @@ export const getAllBooks = async (req,res) => {
     }
  }
 
+=======
+export const getAllBooksWithFields = async (req,res) => {
+    try{
+
+        const books = await BookService.getAllBooksWithFields();
+      
+        res.status(HTTP_STATUS.OK.code).send(books);    
+
+    }
+    catch(e){
+        console.error(e);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+    }
+    
+}
+>>>>>>> 57d89bfa66d9f9537b199c7b9e6c542e1e06702b
 
  export const getRanking = async (req,res) =>{
     try{
         const queryOptions = buildFilterRanking(req.query);
         const ranking =  await BookService.getRanking(queryOptions);
         res.status(HTTP_STATUS.OK.code).send(ranking);    
+    }
+    catch(e){
+        console.log(e);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+
+    }
+ }
+
+ 
+ export const getLostBooks = async (req,res) =>{
+    try{
+        const queryOptions = buildFilterLostBook(req.query);
+        const lostBooks =  await BookService.getLostBooks(queryOptions);
+        res.status(HTTP_STATUS.OK.code).send(lostBooks);    
     }
     catch(e){
         console.log(e);
