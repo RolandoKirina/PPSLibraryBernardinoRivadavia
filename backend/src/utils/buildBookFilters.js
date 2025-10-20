@@ -68,48 +68,6 @@ export const buildBookFilters = (query) => {
 }
 
 
-export const buildFilterLostBook = (query) => {
-  const { LossDate, orderBy, direction, limit, offset } = query;
-
-  const whereBooks = {
-    ...(LossDate?.trim() && { lossDate: { [Op.lte]: LossDate.trim() } }),
-    lost: true
-  };
-
-  const directionNormalized = direction?.toUpperCase() === "ASC" ? "ASC" : "DESC";
-
-  let finalorder = [];
-
-  switch (orderBy?.trim()) {
-    case "partnerStatus":
-      finalorder = [[{ val: `"BookLoans->Loan->Partner"."isActive"` }, directionNormalized]];
-      break;
-    case "Apellido Socio":
-      finalorder = [[{ val: `"BookLoans->Loan->Partner"."surname"` }, directionNormalized]];
-      break;
-    case "Número Socio":
-      finalorder = [[{ val: `"BookLoans->Loan->Partner"."partnerNumber"` }, directionNormalized]];
-      break;
-    case "Código Libro":
-      finalorder = [["codeInventory", directionNormalized]];
-      break;
-    case "Título Libro":
-      finalorder = [["title", directionNormalized]];
-      break;
-    case "Fecha pérdida":
-    default:
-      finalorder = [["lossDate", directionNormalized]];
-      break;
-  }
-
-  return {
-    whereBooks,
-    order: finalorder,
-    limit: parseInt(limit) || 5,
-    offset: parseInt(offset) || 0
-  };
-};
-
 export const buildFilterRanking = (query) => {
   const {
     retiredDate,
