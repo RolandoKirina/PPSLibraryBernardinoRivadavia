@@ -29,6 +29,10 @@ export default function AuthorSection() {
            updateItem
     } = useEntityManagerAPI("authors");
 
+    const {
+        createItem: createBookAuthor
+    } = useEntityManagerAPI("book-authors");
+
     useEffect(() => {
         getItems(); 
     }, [items]);
@@ -39,6 +43,45 @@ export default function AuthorSection() {
     const [selected, setSelected] = useState(false);
     const [booksPopup, setBooksPopup] = useState(false);
     //const { items: authorItems, getItem: getAuthorItem, createItem: createAuthorItem, updateItem: updateAuthorItem, deleteItem: deleteAuthorItem } = useEntityManager(mockAuthors, 'authors');
+
+    function getAllBooksId(books) {
+        let booksId = [];
+
+        books.forEach(book => {
+            booksId.push(book.BookId);
+        });
+
+        return booksId;
+    }
+
+    async function addNewAuthor(data) {
+        try {
+            const author = {
+                name: data.name,
+                nationality: data.nationality
+            }
+
+            const newAuthor = await createItem(author);
+
+            const newAuthorId = newAuthor.id;
+
+            const booksId = getAllBooksId(data.books);
+
+            await Promise.all(
+                booksId.map(id =>
+                    createBookAuthor({
+                        BookId: id,
+                        authorCode: newAuthorId
+                    })
+                )
+            )
+
+        }
+        catch (error) {
+            console.error("Error al crear un autor:", error);
+        }
+
+    }
 
     function deleteAuthorSelected(id) {
         console.log(id);
@@ -57,15 +100,17 @@ export default function AuthorSection() {
     }
 
     function updateAuthorSelected(id, data) {
-        console.log(data);
-        console.log({
-            name: data.name,
-            nationality: data.nationality
-        });
+        // console.log(data);
+        // console.log({
+        //     name: data.name,
+        //     nationality: data.nationality
+        // });
         updateItem(id, {
             name: data.name,
             nationality: data.nationality
         });
+
+
     }
 
     function updateAuthorSelectedBooks(book) { //añadir libro a authorSelected, que son los datos de un autor seleccionado cuando se está en modo update
@@ -106,7 +151,7 @@ export default function AuthorSection() {
             key: 'editPopup',
             title: 'Editar autor',
             className: 'author-books-background',
-            content: <AuthorBooks authorSelected={selected} updateAuthorSelectedBooks={updateAuthorSelectedBooks} deleteAuthorSelected={deleteAuthorSelected} method={'update'} updateAuthorItem={updateAuthorSelected} />,
+            content: <AuthorBooks authorSelected={selected} updateAuthorSelectedBooks={updateAuthorSelectedBooks} deleteAuthorSelected={deleteAuthorSelected} method={'update'} updateAuthorItem={updateAuthorSelected} itemSelected={selected}/>,
             close: () => setEditPopup(false),
             condition: editPopup
         },
@@ -114,7 +159,7 @@ export default function AuthorSection() {
             key: 'addPopup',
             title: 'Agregar autor',
             className: 'author-books-background',
-            content: <AuthorBooks method={'add'} createAuthorItem={createItem} />,
+            content: <AuthorBooks method={'add'} createAuthorItem={addNewAuthor} />,
             close: () => setAddPopup(false),
             condition: addPopup
         }

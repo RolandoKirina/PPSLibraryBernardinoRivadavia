@@ -15,7 +15,7 @@ import { useAuth } from '../../../auth/AuthContext';
 import roles from '../../../auth/roles.js';
 import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI.js';
 
-export default function AuthorBooks({ authorSelected, deleteAuthorSelected, updateAuthorSelectedBooks, method, createAuthorItem, updateAuthorItem }) {
+export default function AuthorBooks({ authorSelected, deleteAuthorSelected, updateAuthorSelectedBooks, method, createAuthorItem, updateAuthorItem, itemSelected }) {
     const { auth } = useAuth();
     const [seeAllButton, setSeeAllButton] = useState('Prestados');
     const [confirmPopup, setConfirmPopup] = useState(false);
@@ -31,12 +31,44 @@ export default function AuthorBooks({ authorSelected, deleteAuthorSelected, upda
     const [books, setBooks] = useState([]);
 
     useEffect(() => {
-        getBooks(); 
+        getBooks();
+        
+        const fetchAllBooksFromAuthor = async () => {
+            if(method === 'update') {
+            console.log(itemSelected);
+
+            //con authorId, traer los libros correspondientes y setearlos en books de authorData
+
+            const authorSelectedId = itemSelected.id;
+
+            const books = await getBooks(authorSelectedId);
+
+            setAuthorData({
+                name: itemSelected.name,
+                nationality: itemSelected.nationality
+            });
+
+            console.log(books);
+        }
+
+        fetchAllBooksFromAuthor();
+
+        }
+        
+        
     }, []);
 
-  const getBooks = async () => {
+  const getBooks = async (authorSelectedId) => {
     try {
-      const response = await fetch(`${BASE_URL}/books/withFields`);
+      let url = "";
+
+      if(method === 'update') {
+        url = `${BASE_URL}/books/withFields/author/${authorSelectedId}`;
+      } 
+      else {
+        url = `${BASE_URL}/books/withFields`;
+      }
+      const response = await fetch(url);
       if (!response.ok) throw new Error("Error al obtener libros");
       const data = await response.json(); 
       setBooks(data);
@@ -162,13 +194,13 @@ export default function AuthorBooks({ authorSelected, deleteAuthorSelected, upda
                         nationality: authorData.nationality,
                         books: authorData.books
                     }
-                    console.log(authorData.books);
                     createAuthorItem(newAuthor);
                 }
                 else if (method === 'update') {
                     let updatedAuthor = {
                         name: authorData.name,
                         nationality: authorData.nationality,
+                        books: authorData.books
                     };
          
                     updateAuthorItem(authorSelected.id, updatedAuthor);
