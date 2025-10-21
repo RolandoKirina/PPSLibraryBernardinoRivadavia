@@ -19,6 +19,7 @@ import { useEffect } from 'react';
 
 export default function AuthorSection() {
     const { auth } = useAuth();
+    const BASE_URL= "http://localhost:4000/api/v1";
 
     const {
            items,
@@ -74,7 +75,9 @@ export default function AuthorSection() {
                         authorCode: newAuthorId
                     })
                 )
-            )
+            );
+
+            setAddPopup(false);
 
         }
         catch (error) {
@@ -83,53 +86,50 @@ export default function AuthorSection() {
 
     }
 
-    function deleteAuthorSelected(id) {
-        console.log(id);
-    /*  let updatedBooks = selected.books.filter(book => book.id !== id);
+    async function updateExistingAuthor(authorCode, data) {
+        try {
 
-        let updatedAuthor = {
-            ...selected,
-            books: updatedBooks
+            await updateItem(authorCode, {
+                name: data.name,
+                nationality: data.nationality
+            });
+
+            await deleteAllAuthorBooks(authorCode);
+
+            const booksId = getAllBooksId(data.books);
+
+            await Promise.all(
+                booksId.map(id =>
+                    createBookAuthor({
+                        BookId: id,
+                        authorCode: authorCode
+                    })
+                )
+            );
+
+            setEditPopup(false);
+        }
+        catch (error) {
+            console.error("Error al crear un autor:", error);
         }
 
-        updateAuthorItem(selected.id, updatedAuthor);
-
-        setSelected(updatedAuthor);*/
-
-        deleteItem(id);
     }
 
-    function updateAuthorSelected(id, data) {
-        // console.log(data);
-        // console.log({
-        //     name: data.name,
-        //     nationality: data.nationality
-        // });
-        updateItem(id, {
-            name: data.name,
-            nationality: data.nationality
+    async function deleteAllAuthorBooks(id) {
+    try {
+        const response = await fetch(`${BASE_URL}/book-authors/deleteAllOfAuthor/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
         });
 
+        if (!response.ok) throw new Error('Error al eliminar los libros del autor');
 
+        const result = await response.json();
+    } catch (error) {
+        console.error(error);
     }
-
-    function updateAuthorSelectedBooks(book) { //añadir libro a authorSelected, que son los datos de un autor seleccionado cuando se está en modo update
-       /* let alreadyExists = selected.books.some(b => b.id === book.id);
-
-        if (!alreadyExists) {
-
-            let updatedBooks = [...selected.books, book];
-
-            let updatedAuthorWithNewBook = {
-                ...selected,
-                books: updatedBooks
-            }
-
-            updateAuthorItem(selected.id, updatedAuthorWithNewBook);
-
-            setSelected(updatedAuthorWithNewBook);
-        }*/
-
     }
 
     const authorsPopups = [
@@ -139,7 +139,7 @@ export default function AuthorSection() {
             className: 'delete-size-popup',
             content: <PopUpDelete title={"Autor"} closePopup={() => setDeletePopup(false)} onConfirm={
                 () => {
-                    deleteAuthorSelected(selected.id)
+                    deleteItem(selected.id)
                     setDeletePopup(false)
                 }
             } />,
@@ -151,7 +151,8 @@ export default function AuthorSection() {
             key: 'editPopup',
             title: 'Editar autor',
             className: 'author-books-background',
-            content: <AuthorBooks authorSelected={selected} updateAuthorSelectedBooks={updateAuthorSelectedBooks} deleteAuthorSelected={deleteAuthorSelected} method={'update'} updateAuthorItem={updateAuthorSelected} itemSelected={selected}/>,
+            // content: <AuthorBooks authorSelected={selected} updateAuthorSelectedBooks={updateAuthorSelectedBooks} deleteAuthorSelected={deleteAuthorSelected} method={'update'} updateAuthorItem={updateAuthorSelected} />,
+            content: <AuthorBooks authorSelected={selected} method={'update'} createAuthorItem={updateExistingAuthor} />,
             close: () => setEditPopup(false),
             condition: editPopup
         },

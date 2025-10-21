@@ -60,6 +60,31 @@ export const getAllWithFields = async () => {
   });
 };
 
+export const getAllBooksOfAuthor = async (id) => {
+console.log(id);
+  return await Book.findAll({
+    attributes: ["BookId", "title", "codeInventory", "codeCDU", "codeLing", "codeClasification"],
+    include: [
+      {
+        model: BookAuthor,
+        as: 'BookAuthors',
+        attributes: ['bookAuthorId'],
+        required: true,
+        include: [
+          {
+            model: Authors,
+            as: 'Author',
+            attributes: ['name'],
+            where: {
+              id: id
+            }
+          }
+        ]
+      }
+    ],
+  });
+};
+
 /*export const getRanking = async (filters) => {
   const {
     whereBooks,

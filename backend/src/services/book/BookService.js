@@ -11,7 +11,7 @@ export const getAllBooksWithFields = async () => {
 }
 
 export const getAllBooksOfAuthor = async (id) => {
-    let books = await BookRepository.getAllBooksOfAuthor();
+    let books = await BookRepository.getAllBooksOfAuthor(id);
     return books;
 }
 

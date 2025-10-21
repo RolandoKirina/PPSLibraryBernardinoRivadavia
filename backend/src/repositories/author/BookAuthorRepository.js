@@ -47,3 +47,26 @@ export const remove = async (id) =>{
     }
 }
 
+export const removeAllOfAuthor = async (authorCode) => {
+  try {
+    const bookAuthors = await BookAuthor.findAll({
+      where: { authorCode }
+    });
+
+    if (!bookAuthors.length) {
+      return { msg: "No se encontraron registros para ese authorCode", data: [] };
+    }
+
+    await Promise.all(bookAuthors.map(bookAuthor => bookAuthor.destroy()));
+
+    return {
+      msg: "Todos los BookAuthor del autor fueron eliminados correctamente",
+      data: bookAuthors
+    };
+  } catch (error) {
+    console.error("Error al eliminar BookAuthors:", error);
+    throw error;
+  }
+};
+
+

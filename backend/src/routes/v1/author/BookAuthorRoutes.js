@@ -5,14 +5,17 @@ import * as BookAuthorController from '../../../controllers/author/BookAuthorCon
 const router = express.Router();
 
 router.get('/', BookAuthorController.getAllBookAuthors);
-router.get('/:id', validateIdParam("bookAuthorId"), BookAuthorController.getBookAuthor);
+router.get('/:id', validateIdParam("id"), BookAuthorController.getBookAuthor);
 router.post('/', BookAuthorController.createBookAuthor);
-router.put('/:id', validateIdParam("bookAuthorId"), BookAuthorController.updateBookAuthor);
+router.put('/:id', validateIdParam("id"), BookAuthorController.updateBookAuthor);
+
+router.delete('/deleteAllOfAuthor/:id', validateIdParam("id"), BookAuthorController.removeBooksOfAuthor);
+
 
 // quizás añadir patch
 // router.patch('/:id', BookAuthorController.patchBookAuthor);
 
-router.delete('/:id', validateIdParam("bookAuthorId"), BookAuthorController.removeBookAuthorById);
+router.delete('/:id', validateIdParam("id"), BookAuthorController.removeBookAuthorById);
 
 router.delete('/book/:bookId/author/:authorCode', 
   validateIdParam("authorCode"), 

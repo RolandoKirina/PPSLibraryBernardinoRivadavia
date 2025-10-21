@@ -15,7 +15,7 @@ import { useAuth } from '../../../auth/AuthContext';
 import roles from '../../../auth/roles.js';
 import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI.js';
 
-export default function AuthorBooks({ authorSelected, deleteAuthorSelected, updateAuthorSelectedBooks, method, createAuthorItem, updateAuthorItem, itemSelected }) {
+export default function AuthorBooks({ authorSelected, deleteAuthorSelected, updateAuthorSelectedBooks, method, createAuthorItem, updateAuthorItem }) {
     const { auth } = useAuth();
     const [seeAllButton, setSeeAllButton] = useState('Prestados');
     const [confirmPopup, setConfirmPopup] = useState(false);
@@ -32,50 +32,51 @@ export default function AuthorBooks({ authorSelected, deleteAuthorSelected, upda
 
     useEffect(() => {
         getBooks();
-        
+
+        if(method === 'update' && authorSelected?.id) {
         const fetchAllBooksFromAuthor = async () => {
-            if(method === 'update') {
-            console.log(itemSelected);
+           
+            const authorSelectedId = authorSelected.id;
 
-            //con authorId, traer los libros correspondientes y setearlos en books de authorData
-
-            const authorSelectedId = itemSelected.id;
-
-            const books = await getBooks(authorSelectedId);
+            const booksFromAuthor = await getBooks(authorSelectedId);
 
             setAuthorData({
-                name: itemSelected.name,
-                nationality: itemSelected.nationality
+                name: authorSelected.name,
+                nationality: authorSelected.nationality,
+                books: booksFromAuthor
             });
 
-            console.log(books);
+       
         }
 
         fetchAllBooksFromAuthor();
 
         }
         
-        
     }, []);
 
-  const getBooks = async (authorSelectedId) => {
+    const getBooks = async (authorSelectedId) => {
     try {
-      let url = "";
+        let url = authorSelectedId
+        ? `${BASE_URL}/books/withFields/author/${authorSelectedId}`
+        : `${BASE_URL}/books/withFields`;
 
-      if(method === 'update') {
-        url = `${BASE_URL}/books/withFields/author/${authorSelectedId}`;
-      } 
-      else {
-        url = `${BASE_URL}/books/withFields`;
-      }
-      const response = await fetch(url);
-      if (!response.ok) throw new Error("Error al obtener libros");
-      const data = await response.json(); 
-      setBooks(data);
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Error al obtener libros");
+        const data = await response.json();
+
+        // Siempre actualizar el estado general
+        if (!authorSelectedId) {
+        setBooks(data); // libros generales
+        }
+
+        return data; // libros del autor si se pasó ID
     } catch (error) {
-      console.error(error);
+        console.error(error);
+        return [];
     }
-  };
+    };
+
 
 
     function handleAuthorChange(e) {
@@ -155,7 +156,6 @@ export default function AuthorBooks({ authorSelected, deleteAuthorSelected, upda
             accessor: 'delete',
             render: (_, row) => (
                 <button type='button' className="button-table" onClick={() => {
-                    console.log("Row completo:", row); 
                     handleDeleteAuthorBook(row.BookId);
                 }}>
                     <img src={DeleteIcon} alt="Borrar" />
@@ -173,7 +173,6 @@ export default function AuthorBooks({ authorSelected, deleteAuthorSelected, upda
             render: (_, row) => (
                 <button type='button' className="button-table" onClick={
                     () => {
-                        console.log(row);
                         handleAddAuthorBook(row)}}>
                     <img src={AddBookIcon} alt="Agregar" />
                 </button>
@@ -203,7 +202,7 @@ export default function AuthorBooks({ authorSelected, deleteAuthorSelected, upda
                         books: authorData.books
                     };
          
-                    updateAuthorItem(authorSelected.id, updatedAuthor);
+                    createAuthorItem(authorSelected.id, updatedAuthor);
                 }
 
             }} />,

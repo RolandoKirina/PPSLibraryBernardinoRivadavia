@@ -31,3 +31,9 @@ export const removeBookAuthorById = async (id) => {
 
     return await BookAuthorRepository.remove(id);
 };
+
+
+
+export const removeBooksOfAuthor= async (id) => {
+    return await BookAuthorRepository.removeAllOfAuthor(id);
+};

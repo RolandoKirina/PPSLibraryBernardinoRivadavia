@@ -35,7 +35,7 @@ export const getAllBooksWithFields = async (req,res) => {
 
 export const getAllBooksOfAuthor = async (req,res) => {
     try{
-        const { id } = req.params.id;
+        const { id } = req.params;
         const books = await BookService.getAllBooksOfAuthor(id);
       
         res.status(HTTP_STATUS.OK.code).send(books);    
