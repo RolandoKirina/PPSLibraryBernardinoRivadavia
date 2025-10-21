@@ -4,6 +4,7 @@ import BookAuthor from "../../models/author/BookAuthor.js";
 import LoanBook from "../../models/loan/LoanBook.js"
 import Partner from "../../models/partner/Partner.js";
 import Loan from "../../models/loan/Loan.js";
+import { fn, col, literal } from "sequelize";
 
 export const getAll = async (filters) => {
   const {
@@ -57,13 +58,16 @@ export const getAllWithFields = async () => {
   return await Book.findAll({
     attributes: ["BookId", "title", "codeInventory", "codeCDU", "codeLing", "codeClasification"],
   });
-};export const getRanking = async (filters) => {
+};
+
+/*export const getRanking = async (filters) => {
   const {
-    whereBooks = {},
-    orderBy,
-    direction = 'DESC',
-    limit = 5,
-    offset = 0
+    whereBooks,
+    whereRetiredDate,
+    whereByStatus,
+    order,
+    limit,
+    offset
   } = filters;
 
   return await Book.findAll({
@@ -75,6 +79,7 @@ export const getAllWithFields = async () => {
       as: 'BookAuthors',
       required: true,
       attributes: ['authorCode', 'BookId'],
+      separate: true,
       include: [
         {
           model: Authors,
@@ -88,6 +93,7 @@ export const getAllWithFields = async () => {
       model: LoanBook,
       as: 'BookLoans',
       required: true,
+      separate: true,
       attributes: ['BookId', 'loanId'],
       include: [
         {
@@ -109,13 +115,19 @@ export const getAllWithFields = async () => {
       ]
     }
   ],
+  group: ["Book.id", "Book.codigo", "Book.titulo", "Book.Cod_rcdu"],
   order,
-  attributes: ['BookId', 'codeInventory', 'title', 'codeCDU'],
+   attributes: [
+    'BookId', 'codeInventory', 'title', 'codeCDU',
+    [sequelize.fn("COUNT", sequelize.col("BookLoans.LoanBookId")), "loansCount"],
+  ],
   limit,
   offset
 });
 
 };
+
+
 
 export const getLostBooks = async (filters) => {
   //hay que usar numsocioperdida (de libro) para que sean libros perdidos mostrando solamente el socio al que se le perdio
@@ -155,12 +167,138 @@ export const getLostBooks = async (filters) => {
       }
     ],
     order,
-    attributes: ["lossDate", "codeInventory", "title"],
+    attributes: ["lossDate", "codeInventory", "title",
+   
+    ],
     limit,
     offset
   });
 };
+*/
+/*export const getRanking = async (filters) => {
+  const {
+    whereBooks,
+    whereRetiredDate,
+    whereByStatus,
+    limit,
+    offset
+  } = filters;
 
+  const books = await Book.findAll({
+    where: whereBooks,
+    include: [
+      {
+        model: LoanBook,
+        as: "BookLoans",
+        required: true,
+        include: [
+          {
+            model: Loan,
+            as: "Loan",
+            required: true,
+            where: whereRetiredDate,
+            include: [
+              {
+                model: Partner,
+                as: "Partner",
+                required: true,
+                where: whereByStatus
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    attributes: ["id", "codigo", "titulo", "Cod_rcdu"],
+    limit,
+    offset
+  });
+
+  const result = books.map(book => ({
+    BookId: book.id,
+    codeInventory: book.codigo,
+    title: book.titulo,
+    codeCDU: book.Cod_rcdu,
+    loansCount: book.BookLoans?.length || 0
+  }));
+
+  return result;
+};
+*/
+
+
+export const getRanking = async (filters) => {
+  const {
+    whereBooks,
+    whereRetiredDate,
+    whereByStatus,
+    limit,
+    offset
+  } = filters;
+
+  const books = await Book.findAll({
+    where: whereBooks,
+    subQuery: false,
+    include: [
+      {
+        model: LoanBook,
+        as: "BookLoans",
+        required: true,
+        attributes: [],
+        include: [
+          {
+            model: Loan,
+            as: "Loan",
+            required: true,
+            attributes: [],
+            where: whereRetiredDate,
+            include: [
+              {
+                model: Partner,
+                as: "Partner",
+                attributes: [],
+                required: true,
+                where: whereByStatus
+              }
+            ]
+          }
+        ]
+      },
+      {
+        model: BookAuthor,
+        as: "BookAuthors",
+        required: true,
+        attributes: [],
+        include: [
+          {
+            model: Authors,
+            as: "Author",
+            required: true,
+            attributes: ["name"]
+          }
+        ]
+      }
+    ],
+    attributes: [
+      ["id", "BookId"],
+      ["codigo", "codeInventory"],
+      ["titulo", "title"],
+      ["Cod_rcdu", "codeCDU"],
+      [fn("COUNT", col("BookLoans.LoanBookId")), "Cantidad"]
+    ],
+    group: [
+      "Book.id",
+      "Book.codigo",
+      "Book.titulo",
+      "Book.Cod_rcdu"
+    ],
+   order: [[literal('"Cantidad"'), "DESC"]],
+    limit, 
+    offset
+  });
+
+  return books;
+};
 
 
 export const getById = async (id) => {
