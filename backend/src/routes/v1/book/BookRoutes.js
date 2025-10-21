@@ -8,6 +8,9 @@ const router = express.Router();
 router.get("/",BookController.getAllBooks);
 router.get("/withFields",BookController.getAllBooksWithFields);
 
+router.get("/withFields/author/:id",BookController.getAllBooksOfAuthor);
+
+
 router.get('/ranking', BookController.getRanking);
 
 router.get('/lostBooks', BookController.getLostBooks);
