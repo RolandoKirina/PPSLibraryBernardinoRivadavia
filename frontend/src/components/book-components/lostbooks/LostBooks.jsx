@@ -36,16 +36,9 @@ export default function LostBooks() {
             <form onSubmit={handleSubmit}>
               <div className='lost-books-filter-option'>
                 <div className='lost-books-filter-title'>
-                  <h3>Fecha de pérdida</h3>
+                  <h3>Fecha de Perdida</h3>
                 </div>
-                <div className='filter-options'>
-                  <div className='input column-input'>
-                    <label className='exclude'>
-                      <input type="radio" name="ignoreLossDate" value="true" />
-                      Excluir fecha de retiro
-                    </label>
-                  </div>
-                </div>
+            
                 <div className='filter-options'>
                   <div className='input column-input'>
                     <label htmlFor='lossDateFrom'>Fecha mayor a:</label>

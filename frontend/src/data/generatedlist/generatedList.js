@@ -88,8 +88,8 @@ export const columnsByType = {
   LostBooks: [
     { header: 'Fecha', accessor: 'date' },
     { header: 'Código', accessor: 'code' },
-    { header: 'Tabla', accessor: 'table' },
-    { header: 'Número pedido', accessor: 'orderNumber' },
+    { header: 'Titulo', accessor: 'title' },
+    { header: 'Número Socio', accessor: 'partnerNumber' },
     { header: 'Nombre', accessor: 'name' },
     { header: 'Dirección', accessor: 'address' },
     { header: 'Teléfono', accessor: 'phone' }
@@ -565,97 +565,97 @@ export const dataByType = {
   ],
 
   LostBooks: [
-    {
-      date: '2025-01-12',
-      code: 'LB-001',
-      table: 'Mesa 3',
-      orderNumber: 'REQ-14396',
-      name: 'Lucrecia AERUANTE',
-      address: 'Avellaneda 120',
-      phone: '2995123456'
-    },
-    {
-      date: '2025-02-08',
-      code: 'LB-002',
-      table: 'Mesa 1',
-      orderNumber: 'REQ-10393',
-      name: 'Griselda ABRAHAM',
-      address: 'Mitre 88',
-      phone: '2994789654'
-    },
-    {
-      date: '2025-03-15',
-      code: 'LB-003',
-      table: 'Mesa 2',
-      orderNumber: 'REQ-14393',
-      name: 'Luciano MATFROLCH',
-      address: 'Belgrano 55',
-      phone: '2995012345'
-    },
-    {
-      date: '2025-04-03',
-      code: 'LB-004',
-      table: 'Mesa 4',
-      orderNumber: 'REQ-10392',
-      name: 'Facundo AGUILA',
-      address: 'San Martín 102',
-      phone: '2994432187'
-    },
-    {
-      date: '2025-05-20',
-      code: 'LB-005',
-      table: 'Mesa 5',
-      orderNumber: 'REQ-10401',
-      name: 'María José BAZÁN',
-      address: 'Chacabuco 77',
-      phone: '2994123987'
-    },
-    {
-      date: '2025-06-11',
-      code: 'LB-006',
-      table: 'Mesa 2',
-      orderNumber: 'REQ-10402',
-      name: 'Esteban CARRERA',
-      address: 'Urquiza 33',
-      phone: '2994567890'
-    },
-    {
-      date: '2025-07-07',
-      code: 'LB-007',
-      table: 'Mesa 1',
-      orderNumber: 'REQ-10403',
-      name: 'Lucía DÍAZ',
-      address: 'Alsina 99',
-      phone: '2994781234'
-    },
-    {
-      date: '2025-08-14',
-      code: 'LB-008',
-      table: 'Mesa 3',
-      orderNumber: 'REQ-10404',
-      name: 'Martín ECHAGÜE',
-      address: 'Roca 88',
-      phone: '2994123456'
-    },
-    {
-      date: '2025-09-01',
-      code: 'LB-009',
-      table: 'Mesa 4',
-      orderNumber: 'REQ-10405',
-      name: 'Sofía FERNÁNDEZ',
-      address: 'Venezuela 44',
-      phone: '2995526739'
-    },
-    {
-      date: '2025-09-02',
-      code: 'LB-010',
-      table: 'Mesa 5',
-      orderNumber: 'REQ-10406',
-      name: 'Julián GÓMEZ',
-      address: 'Lavalle 12',
-      phone: '2994789650'
-    }
-  ],
+  {
+    date: '2025-01-12',
+    code: 'LB-001',
+    title: 'Mesa 3',
+    partnerNumber: 'REQ-14396',
+    name: 'Lucrecia AERUANTE',
+    address: 'Avellaneda 120',
+    phone: '2995123456'
+  },
+  {
+    date: '2025-02-08',
+    code: 'LB-002',
+    title: 'Mesa 1',
+    partnerNumber: 'REQ-10393',
+    name: 'Griselda ABRAHAM',
+    address: 'Mitre 88',
+    phone: '2994789654'
+  },
+  {
+    date: '2025-03-15',
+    code: 'LB-003',
+    title: 'Mesa 2',
+    partnerNumber: 'REQ-14393',
+    name: 'Luciano MATFROLCH',
+    address: 'Belgrano 55',
+    phone: '2995012345'
+  },
+  {
+    date: '2025-04-03',
+    code: 'LB-004',
+    title: 'Mesa 4',
+    partnerNumber: 'REQ-10392',
+    name: 'Facundo AGUILA',
+    address: 'San Martín 102',
+    phone: '2994432187'
+  },
+  {
+    date: '2025-05-20',
+    code: 'LB-005',
+    title: 'Mesa 5',
+    partnerNumber: 'REQ-10401',
+    name: 'María José BAZÁN',
+    address: 'Chacabuco 77',
+    phone: '2994123987'
+  },
+  {
+    date: '2025-06-11',
+    code: 'LB-006',
+    title: 'Mesa 2',
+    partnerNumber: 'REQ-10402',
+    name: 'Esteban CARRERA',
+    address: 'Urquiza 33',
+    phone: '2994567890'
+  },
+  {
+    date: '2025-07-07',
+    code: 'LB-007',
+    title: 'Mesa 1',
+    partnerNumber: 'REQ-10403',
+    name: 'Lucía DÍAZ',
+    address: 'Alsina 99',
+    phone: '2994781234'
+  },
+  {
+    date: '2025-08-14',
+    code: 'LB-008',
+    title: 'Mesa 3',
+    partnerNumber: 'REQ-10404',
+    name: 'Martín ECHAGÜE',
+    address: 'Roca 88',
+    phone: '2994123456'
+  },
+  {
+    date: '2025-09-01',
+    code: 'LB-009',
+    title: 'Mesa 4',
+    partnerNumber: 'REQ-10405',
+    name: 'Sofía FERNÁNDEZ',
+    address: 'Venezuela 44',
+    phone: '2995526739'
+  },
+  {
+    date: '2025-09-02',
+    code: 'LB-010',
+    title: 'Mesa 5',
+    partnerNumber: 'REQ-10406',
+    name: 'Julián GÓMEZ',
+    address: 'Lavalle 12',
+    phone: '2994789650'
+  }
+],
 
   TypeOneFees: [
     {

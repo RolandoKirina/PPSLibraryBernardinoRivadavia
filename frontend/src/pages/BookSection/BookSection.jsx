@@ -12,7 +12,7 @@ import { BookDetail } from '../../data/showdetails/BookDetail.js';
 import GenericSection from '../../components/generic/GenericSection/GenericSection.jsx';
 import ShowDetails from '../../components/generic/ShowDetails/ShowDetails.jsx';
 //import { books } from '../../data/mocks/books.js';
-import { useEntityManager } from '../../hooks/useEntityManager.js';
+import { useEntityManagerAPI } from '../../hooks/useEntityManagerAPI.js';
 import Btn from '../../components/common/btn/Btn.jsx';
 import PlusIcon from '../../assets/img/plus-icon.svg';
 import BookIcon from '../../assets/img/book-icon.svg';
@@ -31,6 +31,7 @@ const BookSection = () => {
 
  const [books, setBooks] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
   const [PopUpEdit, setPopupEdit] = useState(false);
   const [PopUpAdd, setPopupAdd] = useState(false);
   const [PopUpDeleteBook, setPopUpDelete] = useState(false);
@@ -40,7 +41,10 @@ const BookSection = () => {
   const [PopUpBooksPartners, setPopUpBooksPartners] = useState(false);
   const [PopUpLostBooks, setPopUpLostBooks] = useState(false);
   const [error, setError] = useState(null);
-  const BASE_URL = "http://localhost:4000/api/v1";
+
+const { items, getItems, getItem, createItem, updateItem, deleteItem } =
+  useEntityManagerAPI("books");
+
   const [formData, setFormData] = useState({
     author: "",
     codeInventory: "",
@@ -49,42 +53,24 @@ const BookSection = () => {
     yearEdition: "",
     numberEdition: ""
   });
+
    const handleFilterChange = (e) => {
     const { name, value } = e.target;
     const updated = { ...formData, [name]: value };
     setFormData(updated);
   };
 
-  const getBooks = async (filters) => {
-    const query = new URLSearchParams(filters).toString();
-    const response = await fetch(`${BASE_URL}/books?${query}`);
-    if (!response.ok) throw new Error("Error al obtener libros");
-    return await response.json();
-  };
-
- const filters  =  
-
-     useEffect(() => {
-    const delay = setTimeout(() => {
+  useEffect(() => {
       const filters = Object.fromEntries(
         Object.entries(formData).filter(([_, v]) => v !== "")
       );
-      getBooks(filters)
-        .then((res) => {
-          if (Array.isArray(res)) {
-            setBooks(res);
-          } else {
-            console.warn("Respuesta inesperada:", res);
-          }
-        })
-        .catch((err) => console.error("Error al obtener libros:", err));
-    }, 500); // debounce para evitar spam de requests
 
-    return () => clearTimeout(delay);
-  }, [formData]);
+      const delay = setTimeout(() => {
+        getItems(filters);
+      }, 300); // espera 300ms
 
-  //const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(books, "books");
-
+      return () => clearTimeout(delay);
+}, [formData]);
 
 
 let columns =[];
@@ -101,9 +87,10 @@ let columns =[];
             render: (_, row) => (
               <button className="button-table"
                 onClick={() => {
-                  setPopUpDelete(true)
-                  setSelectedItem(row)
-                }}>
+                    console.log("ID seleccionado:", row.BookId);
+                setSelectedId(row.BookId);
+                setPopUpDelete(true);
+              }}>
 
                 <img src={DeleteIcon} alt="Borrar" />
               </button>
@@ -157,16 +144,16 @@ let columns =[];
       key: 'deletePopup',
       title: 'Borrar Libro',
       className: 'delete-size-popup',
-      content: <PopUpDelete
-        title={"Libro"}
-        onConfirm={() => {
-          deleteItem(selectedItem.id);
-          setPopUpDelete(false);
-        }}
-        closePopup={() => setPopUpDelete(false)} />,
+      content: (
+        <PopUpDelete
+          title="Libro"
+          onConfirm={() => deleteItem(selectedId)} 
+          closePopup={() => setPopUpDelete(false)}
+          refresh={() => getItems()} 
+        />
+      ),
       close: () => setPopUpDelete(false),
-      condition: PopUpDeleteBook,
-      variant: 'delete'
+      condition: PopUpDeleteBook
     },
     {
       key: 'editPopup',
@@ -246,7 +233,7 @@ return (
   title="Listado de libros" 
   filters={      <BookFilter formData={formData} onChange={handleFilterChange} />}
   columns={columns} 
-  data={books} 
+  data={items} 
   popups={booksPopUp}
   actions={
     auth.role === roles.admin ? (
