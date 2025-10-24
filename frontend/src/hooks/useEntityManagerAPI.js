@@ -5,6 +5,8 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
+  
+  
   const getItems = async (filters = {}) => {
     setLoading(true);
     setError(null);
@@ -15,7 +17,12 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
     
     try {
       const res = await fetch(`${baseUrl}/${entityName}${query}`);
-      if (!res.ok) throw new Error("Error al obtener datos");
+      if (!res.ok) {
+        console.log(res);
+        throw new Error("Error al obtener datos");
+      }
+            
+
       const data = await res.json();
       setItems(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -25,6 +32,7 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
       setLoading(false);
     }
   };
+  
 
 
   const createItem = async (newItem) => {
