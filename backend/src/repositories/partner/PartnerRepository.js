@@ -8,6 +8,17 @@ export const getOne = async (id) => {
     return await Partner.findByPk(id);
 };
 
+export const getOneByPartnerNumber = async (partnerNumber) => {
+    const partner = await Partner.findAll({
+        where: {
+            partnerNumber: partnerNumber
+        },
+        limit: 1
+    });
+
+    return partner[0].dataValues;
+};
+
 export const create = async (data) => {
     return await Partner.create(data);
 };
