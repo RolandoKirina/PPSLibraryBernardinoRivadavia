@@ -1,206 +1,398 @@
 import "./formeditbook.css";
 import Btn from "../../common/btn/Btn.jsx";
 import SaveIcon from '../../../assets/img/save-icon.svg';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BackviewBtn from "../../common/backviewbtn/BackviewBtn.jsx";
 import BookAuthors from "../BooksAuthor/BookAuthors.jsx";
+import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
 
 export default function FormEditBook({ selectedBook }) {
     const [popupView, setPopupView] = useState('default');
     const [authorsSelected, setAuthorsSelected] = useState(selectedBook.authors);
+    const entityManagerApi = useEntityManagerAPI("books");
+    const {items:booksTypes,getItems:getBookTypes,deleteItem,createItem,updateItem} = useEntityManagerAPI("book-types");
+    const [selectedType, setSelectedType] = useState(
+        selectedBook?.type?.bookTypeId || ""
+    );
+    const [selectedLost, setSelectedLost] = useState();
+
+    let title = "Libros";
+
+    useEffect(() => {
+      getBookTypes();
+
+    }, []);
+
+    
+    const handleChange = (e) => {
+        setSelected(e.target.value);
+        if (onChange) {
+            onChange(e.target.value);
+        }
+    };
 
     function redirect(action) {
         switch (action) {
             case 'renewed': {
                 window.open(`${window.location.origin}/loans/renewes`, '_blank', "renewes");
             }
-        }
-    }
-    return (
-        <>
-            {popupView === 'default' && (
-                <>
-                    <form className="formeditbook">
-                        <div className="contentformedit">
+             case 'booksauthor': {
+                window.open(`${window.location.origin}/books/booksauthor`, '_blank', title)
+            }
+             case 'authors': {
+                window.open(`${window.location.origin}/authors`, '_blank', title)
+            }
+    }}
 
-                            <div className="input">
-                                <label htmlFor="code">
-                                    Codigo <span className="required">*</span>
-                                </label>
-                                <input id="code" type="number" placeholder="Codigo" />
-                            </div>
+    const handleSubmit = async (e) => {
+            e.preventDefault();
+            const form = e.currentTarget;
+            const data = new FormData(form);
 
-                            <div className="input">
-                                <div className="cdu">
-                                    <label htmlFor="codeCDU1">
-                                        Código CDU <span className="required">*</span>
-                                    </label>
-                                    <div className="cdu-options">
-                                        <input name="codeCDU1" type="number" />
-                                        <input name="codeCDU1" type="number" />
-                                    </div>
-                                </div>
-                            </div>
+                        
+            const rawDate = data.get("dateOfBuy");
+            const parsedDate = rawDate ? new Date(rawDate) : null;
+                        
 
-                            <div className="input">
-                                <label htmlFor="title">
-                                    Titulo <span className="required">*</span>
-                                </label>
-                                <input id="title" type="text" placeholder="Titulo" />
-                            </div>
+                const updatedItem = {
+                    codeInventory: data.get("code") || selectedBook.codeInventory,
+                    codeCDU: data.get("codeCDU1") || selectedBook.codeCDU,
+                    title: data.get("title") || selectedBook.title,
+                    editorial: data.get("editorial") || selectedBook.editorial,
+                    numberEdition: data.get("numberEdition") ? Number(data.get("numberEdition")) : selectedBook.numberEdition,
+                    yearEdition: data.get("year") ? Number(data.get("year")) : selectedBook.yearEdition,
+                    translator: data.get("translator") || selectedBook.translator,
+                    codeClasification: data.get("ubication") || selectedBook.ubication,
+                    numberOfCopies: data.get("quantity") ? Number(data.get("quantity")) : selectedBook.numberOfCopies,
+                    notes: data.get("notes") || selectedBook.notes,
+                    type: selectedType ? Number(selectedType) : selectedBook?.type?.bookTypeId,
+                    lost: selectedLost ?? selectedBook.lost,  
+                    codeLing: data.get("codeLing") || selectedBook.codeLing,
+                    idSupplier: data.get("idSupplier") ? Number(data.get("idSupplier")) : selectedBook.idSupplier,
+                    invoiceNumber: data.get("numfactura") || selectedBook.invoiceNumber,
+                    dateOfBuy: data.get("dateOfBuy") || selectedBook.dateOfBuy,
+                    lossDate: data.get("lossDate") || selectedBook.lossDate,
+                    lostPartnerNumber: data.get("lostPartnerNumber") ? Number(data.get("lostPartnerNumber")) : selectedBook.lostPartnerNumber
+                };
 
-                            <div className="input">
-                                <div className="divconteiner content">
-                                    <div>
-                                        <label htmlFor="ubication">
-                                            Ubicación <span className="required">*</span>
-                                        </label>
-                                        <input id="ubication" type="text" placeholder="Ubicacion" />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="quantity">
-                                            Cantidad <span className="required">*</span>
-                                        </label>
-                                        <input id="quantity" type="number" placeholder="Cantidad" />
-                                    </div>
-                                </div>
-                            </div>
+            try {
+                const updated = await entityManagerApi.updateItem(selectedBook.BookId, updatedItem);
+                if (updated) {
+                alert("Libro actualizado con éxito");
+                }
+            } catch (error) {
+                alert("Error al actualizar el libro");
+                console.error("Error al editar libro:", error);
+            }
+            };
 
-                            <div className="input">
-                                <div className="divconteiner content">
-                                    <div>
-                                        <label htmlFor="editorial">
-                                            Editorial <span className="required">*</span>
-                                        </label>
-                                        <input id="editorial" type="text" placeholder="Editorial" />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="type">
-                                            Tipo <span className="required">*</span>
-                                        </label>
-                                        <select name="type" id="type" className="selectform">
-                                            <option value="1">opcion 1</option>
-                                            <option value="2">opcion 2</option>
-                                            <option value="3">opcion 3</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <div className="input">
-                                <label htmlFor="translator">Traductor</label>
-                                <input id="translator" type="text" placeholder="Traductor" />
-                            </div>
-
-                            <div className="input">
-                                <div className="divconteiner content">
-                                    <div>
-                                        <label htmlFor="prov">Numero de prov</label>
-                                        <input id="prov" type="number" placeholder="Numero de prov" />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="numfactura">Num factura</label>
-                                        <input id="numfactura" type="text" placeholder="Numero de factura" />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="dateof">Fecha de</label>
-                                        <input id="dateof" type="date" placeholder="Fecha de" />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="line"></div>
-
-                            <div className="input">
-                                <div className="divconteiner checkbox">
-                                    <input id="Lost" type="checkbox" placeholder="Perdido" />
-                                    <label htmlFor="Lost" className="checkboxin">Perdido</label>
-                                </div>
-                            </div>
-
-                            <div className="input">
-                                <div className="divconteiner content">
-                                    <div>
-                                        <label htmlFor="prov">Numero de socio</label>
-                                        <input id="prov" type="number" placeholder="Numero de prov" />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="dateofbuy">Fecha de compra</label>
-                                        <select name="type" id="dateofbuy" className="selectform">
-                                            <option value="1">opcion 1</option>
-                                            <option value="2">opcion 2</option>
-                                            <option value="3">opcion 3</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div className="contentformedit">
-                            <div className="input">
-                                <label htmlFor="notes">Notas</label>
-                                <input id="notes" type="text" className="notes" />
-                            </div>
-
-                            <div className="input">
-                                <label htmlFor="year">Año de edición</label>
-                                <input id="year" type="date" />
-                            </div>
-
-                            <div className="input">
-                                <label htmlFor="number">Numero de edición</label>
-                                <input id="number" type="text" />
-                            </div>
-                            <div className="input">
-                                <label htmlFor="pages">Páginas</label>
-                                <input id="pages" type="text" />
-                            </div>
-
-                            <div className="btns-form">
-                                <div>
-                                    <Btn text="Autores del libro" className="secondary-btn" onClick={() => setPopupView('chooseAuthor')} variant="primary" />
-                                    <Btn text="Ver reservas" className="secondary-btn" onClick={() => redirect('renewed')} variant="primary" />
-                                </div>
-                                <div>
-                                    <Btn text="Ver autores" className="secondary-btn" onClick={() => redirect('authors')} variant="primary" />
-                                </div>
-                            </div>
-
-                            <div>
-                                <div className="btn-right">
-                                    <Btn
-                                        text="Guardar"
-                                        className="changes btn"
-                                        icon={
-                                            <div className="img-ico">
-                                                <img src={SaveIcon} alt="Guardar" />
-                                            </div>
-                                        }
-                                        variant="primary"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </>
-            )}
-
-            {popupView === 'chooseAuthor' && (
-                <>
-                    <div className='books-author-container'>
-                        <BackviewBtn menu={'default'} changeView={setPopupView} />
-                        <BookAuthors
-                            authorsSelected={authorsSelected}
-                            setAuthorsSelected={setAuthorsSelected}
-                        />
+          return (
+  <>
+        {popupView === "default" && (
+            <>
+                <form className="formeditbook" onSubmit={handleSubmit}>
+                <div className="contentformedit">
+                    <div className="input">
+                    <label htmlFor="code">
+                        Código <span className="required">*</span>
+                    </label>
+                    <input
+                        id="code"
+                        name="code"
+                        type="number"
+                        placeholder="Código"
+                        defaultValue={selectedBook?.codeInventory || ""}
+                    />
                     </div>
 
-                </>
+                    <div className="input">
+                    <div className="cdu">
+                        <label htmlFor="codeCDU1">
+                        Código CDU <span className="required">*</span>
+                        </label>
+                        <div className="cdu-options">
+                        <input
+                            id="codeCDU1"
+                            name="codeCDU1"
+                            type="number"
+                            defaultValue={selectedBook?.codeCDU || ""}
+                        />
+                        </div>
+                    </div>
+                    </div>
+
+                    <div className="input">
+                    <label htmlFor="title">
+                        Título <span className="required">*</span>
+                    </label>
+                    <input
+                        id="title"
+                        name="title"
+                        type="text"
+                        placeholder="Título"
+                        defaultValue={selectedBook?.title || ""}
+                    />
+                    </div>
+
+                    <div className="input">
+                    <div className="divconteiner content">
+                        <div>
+                        <label htmlFor="ubication">
+                            Ubicación <span className="required">*</span>
+                        </label>
+                        <input
+                            id="ubication"
+                            name="ubication"
+                            type="text"
+                            placeholder="Ubicación"
+                            defaultValue={selectedBook?.ubication || ""}
+                        />
+                        </div>
+                        <div>
+                        <label htmlFor="quantity">
+                            Cantidad <span className="required">*</span>
+                        </label>
+                        <input
+                            id="quantity"
+                            name="quantity"
+                            type="number"
+                            placeholder="Cantidad"
+                            defaultValue={selectedBook?.numberOfCopies || ""}
+                        />
+                        </div>
+                    </div>
+                    </div>
+
+                    <div className="input">
+                    <div className="divconteiner content">
+                        <div>
+                        <label htmlFor="editorial">
+                            Editorial <span className="required">*</span>
+                        </label>
+                        <input
+                            id="editorial"
+                            name="editorial"
+                            type="text"
+                            placeholder="Editorial"
+                            defaultValue={selectedBook?.editorial || ""}
+                        />
+                        </div>
+                        <div>
+                        <label htmlFor="type">
+                            Tipo <span className="required">*</span>
+                        </label>
+                      <select
+                        name="type"
+                        id="type"
+                        className="selectform"
+                        value={Number(selectedType) || ""}
+                        onChange={(e) => setSelectedType(Number(e.target.value))}
+                        >
+                      <option value="">Seleccione un tipo</option>
+                        {booksTypes.map((type) => (
+                            <option key={type.bookTypeId} value={type.bookTypeId}>
+                                {type.typeName}
+                            </option>
+                        ))}
+                    </select>
+                                            </div>
+                    </div>
+                    </div>
+
+                    <div className="input">
+                    <label htmlFor="translator">Traductor</label>
+                    <input
+                        id="translator"
+                        name="translator"
+                        type="text"
+                        placeholder="Traductor"
+                        defaultValue={selectedBook?.translator || ""}
+                    />
+                    </div>
+
+                    <div className="input">
+                    <div className="divconteiner content">
+                        <div>
+                        <label htmlFor="idSupplier">Número de prov</label>
+                        <input
+                            id="idSupplier"
+                            name="idSupplier"
+                            type="number"
+                            placeholder="Número de prov"
+                            defaultValue={selectedBook?.idSupplier || ""}
+                        />
+                        </div>
+                        <div>
+                        <label htmlFor="numfactura">Núm. factura</label>
+                        <input
+                            id="numfactura"
+                            name="numfactura"
+                            type="text"
+                            placeholder="Número de factura"
+                            defaultValue={selectedBook?.invoiceNumber || ""}
+                        />
+                        </div>
+                        <div>
+                        <label htmlFor="dateOfBuy">Fecha de compra</label>
+                        <input
+                            id="dateOfBuy"
+                            name="dateOfBuy"
+                            type="date"
+                            defaultValue={selectedBook?.dateOfBuy || ""}
+                        />
+                        </div>
+                    </div>
+                    <div className="input">
+                        <div>
+                             <label htmlFor="lost">Perdido  <span className="required">*</span></label>
+                            <select value={selectedLost} onChange={(e) => setSelectedLost(e.target.value)} className="selectform">
+                            <option value="default">Seleccione</option>
+                            <option value="true">Sí</option>
+                            <option value="false">No</option>
+                            </select>
+                        </div>
+                       
+                        
+                        <div className="input">
+                             <div className="divconteiner content">
+                                <div>
+                                <label htmlFor="lossDate">Fecha de pérdida</label>
+                                <input
+                                    id="lossDate"
+                                    name="lossDate"
+                                    type="date"
+                                    defaultValue={selectedBook?.lossDate || ""}
+                                />
+                            </div>
+                            <div>
+                            <label htmlFor="lostPartnerNumber">Núm. socio pérdida</label>
+                            <input
+                                id="lostPartnerNumber"
+                                name="lostPartnerNumber"
+                                type="number"
+                                placeholder="Número de socio"
+                                defaultValue={selectedBook?.lostPartnerNumber || ""}
+                            />
+                        </div>
+                        </div>
+                             </div>
+                            
+                        
+                    </div>
+                        
+                    </div>
+                    </div>
+                
+
+                <div className="contentformedit">
+                    <div className="input">
+                    <label htmlFor="notes">Notas</label>
+                    <input
+                        id="notes"
+                        name="notes"
+                        type="text"
+                        className="notes"
+                        defaultValue={selectedBook?.notes || ""}
+                    />
+                    </div>
+
+                    <div className="input">
+                    <label htmlFor="year">Año de edición</label>
+                    <input
+                        id="year"
+                        name="year"
+                        type="date"
+                        defaultValue={selectedBook?.year || ""}
+                    />
+                    </div>
+
+                    <div className="input">
+                    <label htmlFor="numberEdition">Número de edición</label>
+                    <input
+                        id="numberEdition"
+                        name="numberEdition"
+                        type="text"
+                        defaultValue={selectedBook?.numberEdition || ""}
+                    />
+                    </div>
+
+                    <div className="input">
+                    <label htmlFor="pages">Páginas</label>
+                    <input
+                        id="pages"
+                        name="pages"
+                        type="text"
+                        defaultValue={selectedBook?.pages || ""}
+                    />
+                    </div>
+
+                    <div className="input">
+                    <label htmlFor="codeLing">Código lingüístico</label>
+                    <input
+                        id="codeLing"
+                        name="codeLing"
+                        type="text"
+                        placeholder="Código lingüístico"
+                        defaultValue={selectedBook?.codeLing || ""}
+                    />              
+
+                    </div>
+                    {/* Botones */}
+                    <div className="btn-right">
+                    <Btn
+                        text="Guardar"
+                        className="changes btn"
+                        icon={
+                        <div className="img-ico">
+                            <img src={SaveIcon} alt="Guardar" />
+                        </div>
+                        }
+                        type="submit"
+                        variant="primary"
+                    />
+                    </div>
+
+                    <div className="btns-form">
+                    <div>
+                        <Btn
+                        text="Autores del libro"
+                        className="secondary-btn"
+                        onClick={() => setPopupView("chooseAuthor")}
+                        variant="primary"
+                        />
+                        <Btn
+                        text="Ver reservas"
+                        className="secondary-btn"
+                        onClick={() => redirect("renewed")}
+                        variant="primary"
+                        />
+                    </div>
+                    <div>
+                        <Btn
+                        text="Ver autores"
+                        className="secondary-btn"
+                        onClick={() => redirect("authors")}
+                        variant="primary"
+                        />
+                    </div>
+                    </div>
+                </div>
+                </form>
+            </>
             )}
 
-
+            {popupView === "chooseAuthor" && (
+            <>
+                <div className="books-author-container">
+                <BackviewBtn menu={"default"} changeView={setPopupView} />
+                <BookAuthors
+                    authorsSelected={authorsSelected}
+                    setAuthorsSelected={setAuthorsSelected}
+                />
+                </div>
+            </>
+            )}
         </>
-    )
-
+        );
 }
