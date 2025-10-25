@@ -17,6 +17,7 @@ import { books } from '../../../data/mocks/authors';
 import { editLoanformFields } from '../../../data/forms/LoanForms';
 import UnpaidFees from '../unpaidfees/UnpaidFees';
 import { pendingbooks } from "../../../data/mocks/pendingbooks.js";
+import { useEffect } from 'react';
 
 
 export default function LoanForm({ createLoanItem }) {
@@ -24,6 +25,59 @@ export default function LoanForm({ createLoanItem }) {
   const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockBooksLoans, 'booksLoans');
   const [confirmSaveChangesPopup, setConfirmSaveChangesPopup] = useState(false);
   const [deletePopup, setDeletePopup] = useState(false);
+  const BASE_URL= "http://localhost:4000/api/v1";
+
+  const [books, setBooks] = useState([]);
+  
+    useEffect(() => {
+        getBooks();
+
+        /*if(method === 'update' && authorSelected?.id) {
+        const fetchAllBooksFromAuthor = async () => {
+           
+            const authorSelectedId = authorSelected.id;
+
+            const booksFromAuthor = await getBooks(authorSelectedId);
+
+            setAuthorData({
+                name: authorSelected.name,
+                nationality: authorSelected.nationality,
+                books: booksFromAuthor
+            });
+
+       
+        }
+
+        fetchAllBooksFromAuthor();
+
+        }*/
+        
+    }, []);
+
+    const getBooks = async (authorSelectedId) => {
+    try {
+       /* let url = authorSelectedId
+        ? `${BASE_URL}/books/withFields/author/${authorSelectedId}`
+        : `${BASE_URL}/books/withFields`;*/
+
+        let url =`${BASE_URL}/books/withFields`;
+
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Error al obtener libros");
+        const data = await response.json();
+
+        // Siempre actualizar el estado general
+        if (!authorSelectedId) {
+        setBooks(data); // libros generales
+        }
+
+        return data; // libros del autor si se pasó ID
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+    };
+
 
   const [loanData, setLoanData] = useState({
     loanType: 'in_room',
@@ -34,23 +88,39 @@ export default function LoanForm({ createLoanItem }) {
   });
 
   function handleAddNewLoan() {
-    loanData.books.forEach(lendBook => {
-      createLoanItem({
-        bookCode: lendBook.bookCode,
-        bookTitle: lendBook.bookTitle,
-        partnerName: loanData.partnerName,
-        partnerNumber: loanData.partnerNumber,
-        retiredDate: loanData.retiredDate,
-        expectedDate: loanData.expectedDate,
-        retiredHour: '11:00',
-        employeeCode: loanData.employeeCode
-      });
-    });
+    const newLoan = {
+      loanType: loanData.loanType,
+      employeeCode: loanData.employeeCode,
+      retiredDate: loanData.retiredDate,
+      expectedDate: loanData.expectedDate,
+      partnerName: loanData.partnerName, 
+      partnerNumber: loanData.partnerNumber,
+      //     retiredHour: '11:00',
+      books: loanData.books
+    }
+
+    createLoanItem(newLoan);
+  }
+
+  function handleEditLoan() {
+    const updatedLoan = {
+      loanType: loanData.loanType,
+      employeeCode: loanData.employeeCode,
+      retiredDate: loanData.retiredDate,
+      expectedDate: loanData.expectedDate,
+      partnerName: loanData.partnerName, 
+      partnerNumber: loanData.partnerNumber,
+      //     retiredHour: '11:00',
+      books: loanData.books
+
+    }
+
+    createLoanItem(updatedLoan);
   }
 
   function handleAddBook(book) {
     setLoanData(prev => {
-      let alreadyExists = loanData.books.some(b => b.id === book.id);
+      let alreadyExists = loanData.books.some(b => b.BookId === book.BookId);
 
       if (alreadyExists) {
         return prev;
@@ -67,13 +137,13 @@ export default function LoanForm({ createLoanItem }) {
 
   function handleDeleteBook(book) {
     setLoanData(prev => {
-      let alreadyExists = loanData.books.some(b => b.id === book.id);
+      let alreadyExists = loanData.books.some(b => b.BookId === book.BookId);
 
       if (!alreadyExists) {
         return prev;
       }
 
-      let booksUpdated = prev.books.filter(b => b.id !== book.id);
+      let booksUpdated = prev.books.filter(b => b.BookId !== book.BookId);
 
       return {
         ...prev,
@@ -85,8 +155,8 @@ export default function LoanForm({ createLoanItem }) {
   }
 
   const bookshelfBooksColumns = [
-    { header: 'Codigo', accessor: 'bookCode' },
-    { header: 'Título', accessor: 'bookTitle' },
+    { header: 'Codigo', accessor: 'codeInventory' },
+    { header: 'Título', accessor: 'title' },
     {
       header: 'Agregar',
       accessor: 'add',
@@ -99,13 +169,13 @@ export default function LoanForm({ createLoanItem }) {
   ]
 
   const columns = [
-    { header: 'Código del libro', accessor: 'bookCode' },
-    { header: 'Título', accessor: 'bookTitle' },
+    { header: 'Código del libro', accessor: 'codeInventory' },
+    { header: 'Título', accessor: 'title' },
   ];
 
   const lendBooksColumns = [ //igual que mainAuthorBooksColumns pero solo se muestran 3 columnas
-    { header: 'Código del libro', accessor: 'bookCode' },
-    { header: 'Título', accessor: 'bookTitle' },
+    { header: 'Código del libro', accessor: 'codeInventory' },
+    { header: 'Título', accessor: 'title' },
     { header: 'Posición', accessor: 'position' },
     {
       header: 'Borrar',
@@ -121,7 +191,7 @@ export default function LoanForm({ createLoanItem }) {
   ];
 
   const columnsPendingBooks = [
-    { header: 'Código de libro', accessor: 'bookCode' },
+    { header: 'Código de libro', accessor: 'codeInventory' },
     { header: 'Título', accessor: 'title' },
     { header: 'Fecha de retiro', accessor: 'retiredDate' },
     { header: 'Fecha prevista', accessor: 'expectedDate' },
@@ -133,43 +203,37 @@ export default function LoanForm({ createLoanItem }) {
     }
   ];
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleLoanTypeChange = (value, prev) => {
+  if (value === 'retired') {
+    const { readerDNI, readerName, ...rest } = prev;
+    return {
+      ...rest,
+      partnerName: prev.partnerName || '',
+      partnerNumber: prev.partnerNumber || '',
+      memoSearch: prev.memoSearch || '',
+      loanType: value
+    };
+  } else {
+    const { partnerName, partnerNumber, memoSearch, ...rest } = prev;
+    return {
+      ...rest,
+      readerDNI: prev.readerDNI || '',
+      readerName: prev.readerName || '',
+      loanType: value
+    };
+  }
+};
 
-    setLoanData(prev => {
-      let updated = { ...prev, [name]: value };
+const handleChange = (e) => {
+  const { name, value } = e.target;
+  setLoanData(prev => {
+    if (name === 'loanType') {
+      return handleLoanTypeChange(value, prev);
+    }
+    return { ...prev, [name]: value };
+  });
+};
 
-      // Al cambiar el tipo de préstamo, limpiar y asignar según corresponda
-      if (name === 'loanType') {
-        if (value === 'retired') {
-          // Eliminar datos del lector
-          delete updated.readerDNI;
-          delete updated.readerName;
-
-          updated = {
-            ...updated,
-            partnerName: prev.partnerName || '',
-            partnerNumber: prev.partnerNumber || '',
-            memoSearch: prev.memoSearch || ''
-          };
-        } else if (value === 'in_room') {
-          // Eliminar datos del socio
-          delete updated.partnerName;
-          delete updated.partnerNumber;
-          delete updated.memoSearch;
-
-          updated = {
-            ...updated,
-            readerDNI: prev.readerDNI || '',
-            readerName: prev.readerName || ''
-          };
-        }
-      }
-
-      console.log("Datos del préstamo:", updated);
-      return updated;
-    });
-  };
 
 
   const handleExtraData = (newData) => {
@@ -221,7 +285,7 @@ export default function LoanForm({ createLoanItem }) {
               <div className='add-loan-code-employee input'>
                 <label>Código Empleado <span className='required'>*</span></label>
                 <input
-                  type='number'
+                  type='text'
                   name='employeeCode'
                   value={loanData.employeeCode}
                   onChange={handleChange}

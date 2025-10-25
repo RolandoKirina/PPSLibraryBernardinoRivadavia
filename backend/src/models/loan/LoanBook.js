@@ -22,7 +22,6 @@ const LoanBook = sequelize.define("LoanBook",
             type: DataTypes.STRING(50),
             field: 'CodLibro',
         },
-
         expectedDate: {
             type: DataTypes.DATEONLY,
             field: 'FechaPrevista'

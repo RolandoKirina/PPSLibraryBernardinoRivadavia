@@ -8,6 +8,18 @@ export const getOne = async (id) => {
     return await LoanType.findByPk(id);
 };
 
+export const getOneByDescription = async (description) => {
+
+    const loanType = await LoanType.findAll({
+        where: {
+            description: description
+        },
+        limit: 1
+    });
+
+    return loanType[0].dataValues;
+};
+
 export const create = async (loantype) => {
     return await LoanType.create(loantype);
 };

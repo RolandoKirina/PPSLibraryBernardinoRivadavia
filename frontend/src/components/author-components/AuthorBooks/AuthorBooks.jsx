@@ -15,7 +15,7 @@ import { useAuth } from '../../../auth/AuthContext';
 import roles from '../../../auth/roles.js';
 import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI.js';
 
-export default function AuthorBooks({ authorSelected, deleteAuthorSelected, updateAuthorSelectedBooks, method, createAuthorItem, updateAuthorItem }) {
+export default function AuthorBooks({ authorSelected, method, createAuthorItem }) {
     const { auth } = useAuth();
     const [seeAllButton, setSeeAllButton] = useState('Prestados');
     const [confirmPopup, setConfirmPopup] = useState(false);

@@ -8,6 +8,17 @@ export const getOne = async (id) => {
     return await Employees.findByPk(id);
 };
 
+export const getOneByCode = async (code) => {
+    console.log(code);
+    const employee = await Employees.findAll({
+        where: {
+            code: code
+        },
+        limit: 1
+    });
+    return employee[0].dataValues;
+};
+
 export const create = async (data) => {
     return await Employees.create(data);
 };
