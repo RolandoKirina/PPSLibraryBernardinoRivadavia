@@ -4,6 +4,7 @@
     width: 100%;
     position: relative;
     color: var(--white);
+    margin-bottom: 1em;
 }
 
 .contentformedit {

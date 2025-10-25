@@ -48,6 +48,7 @@ export default function FormEditBook() {
             numberEdition: Number(data.get("numberEdition")),
             yearEdition: Number(data.get("year")),
             translator: data.get("translator"),
+            pages: data.get("pages") || selectedBook.pages,
             codeClasification: data.get("ubication"),
             numberOfCopies: Number(data.get("quantity")),
             notes: data.get("notes"),

@@ -11,19 +11,26 @@ export default function FormEditBook({ selectedBook }) {
     const [authorsSelected, setAuthorsSelected] = useState(selectedBook.authors);
     const entityManagerApi = useEntityManagerAPI("books");
     const {items:booksTypes,getItems:getBookTypes,deleteItem,createItem,updateItem} = useEntityManagerAPI("book-types");
+   
     const [selectedType, setSelectedType] = useState(
-        selectedBook?.type?.bookTypeId || ""
-    );
-    const [selectedLost, setSelectedLost] = useState();
+    selectedBook?.type?.bookTypeId || "");
+    const [selectedLost, setSelectedLost] = useState("");
 
     let title = "Libros";
+useEffect(() => {
+    getBookTypes();
+}, []);
 
-    useEffect(() => {
-      getBookTypes();
 
-    }, []);
+useEffect(() => {
+    if (selectedBook?.type?.bookTypeId) {
+        setSelectedType(String(selectedBook.type.bookTypeId));
+    }
+    if (selectedBook?.lost !== undefined) {
+        setSelectedLost(selectedBook.lost ? "true" : "false");
+    }
+}, [selectedBook]);
 
-    
     const handleChange = (e) => {
         setSelected(e.target.value);
         if (onChange) {
@@ -44,6 +51,8 @@ export default function FormEditBook({ selectedBook }) {
             }
     }}
 
+
+
     const handleSubmit = async (e) => {
             e.preventDefault();
             const form = e.currentTarget;
@@ -53,20 +62,22 @@ export default function FormEditBook({ selectedBook }) {
             const rawDate = data.get("dateOfBuy");
             const parsedDate = rawDate ? new Date(rawDate) : null;
                         
-
+                console.log(data.get("type"))
                 const updatedItem = {
                     codeInventory: data.get("code") || selectedBook.codeInventory,
                     codeCDU: data.get("codeCDU1") || selectedBook.codeCDU,
                     title: data.get("title") || selectedBook.title,
+                    ubication: data.get("ubication") || selectedBook.ubication,
                     editorial: data.get("editorial") || selectedBook.editorial,
                     numberEdition: data.get("numberEdition") ? Number(data.get("numberEdition")) : selectedBook.numberEdition,
                     yearEdition: data.get("year") ? Number(data.get("year")) : selectedBook.yearEdition,
                     translator: data.get("translator") || selectedBook.translator,
                     codeClasification: data.get("ubication") || selectedBook.ubication,
+                    pages: data.get("pages") || selectedBook.pages,
                     numberOfCopies: data.get("quantity") ? Number(data.get("quantity")) : selectedBook.numberOfCopies,
                     notes: data.get("notes") || selectedBook.notes,
-                    type: selectedType ? Number(selectedType) : selectedBook?.type?.bookTypeId,
-                    lost: selectedLost ?? selectedBook.lost,  
+                    type: Number(selectedType),
+                    lost: selectedLost === "true" ? true : selectedLost === "false" ? false : null,
                     codeLing: data.get("codeLing") || selectedBook.codeLing,
                     idSupplier: data.get("idSupplier") ? Number(data.get("idSupplier")) : selectedBook.idSupplier,
                     invoiceNumber: data.get("numfactura") || selectedBook.invoiceNumber,
@@ -75,6 +86,7 @@ export default function FormEditBook({ selectedBook }) {
                     lostPartnerNumber: data.get("lostPartnerNumber") ? Number(data.get("lostPartnerNumber")) : selectedBook.lostPartnerNumber
                 };
 
+                console.log(updatedItem);
             try {
                 const updated = await entityManagerApi.updateItem(selectedBook.BookId, updatedItem);
                 if (updated) {
@@ -92,10 +104,11 @@ export default function FormEditBook({ selectedBook }) {
         {popupView === "default" && (
             <>
                 <form className="formeditbook" onSubmit={handleSubmit}>
-                <div className="contentformedit">
+                    <div className="columns-container">
+            <div className="contentformedit">
                     <div className="input">
                     <label htmlFor="code">
-                        Código <span className="required">*</span>
+                        Código 
                     </label>
                     <input
                         id="code"
@@ -109,7 +122,7 @@ export default function FormEditBook({ selectedBook }) {
                     <div className="input">
                     <div className="cdu">
                         <label htmlFor="codeCDU1">
-                        Código CDU <span className="required">*</span>
+                        Código CDU 
                         </label>
                         <div className="cdu-options">
                         <input
@@ -124,7 +137,7 @@ export default function FormEditBook({ selectedBook }) {
 
                     <div className="input">
                     <label htmlFor="title">
-                        Título <span className="required">*</span>
+                        Título 
                     </label>
                     <input
                         id="title"
@@ -139,7 +152,7 @@ export default function FormEditBook({ selectedBook }) {
                     <div className="divconteiner content">
                         <div>
                         <label htmlFor="ubication">
-                            Ubicación <span className="required">*</span>
+                            Ubicación 
                         </label>
                         <input
                             id="ubication"
@@ -151,7 +164,7 @@ export default function FormEditBook({ selectedBook }) {
                         </div>
                         <div>
                         <label htmlFor="quantity">
-                            Cantidad <span className="required">*</span>
+                            Cantidad 
                         </label>
                         <input
                             id="quantity"
@@ -168,7 +181,7 @@ export default function FormEditBook({ selectedBook }) {
                     <div className="divconteiner content">
                         <div>
                         <label htmlFor="editorial">
-                            Editorial <span className="required">*</span>
+                            Editorial 
                         </label>
                         <input
                             id="editorial"
@@ -180,23 +193,28 @@ export default function FormEditBook({ selectedBook }) {
                         </div>
                         <div>
                         <label htmlFor="type">
-                            Tipo <span className="required">*</span>
+                            Tipo 
                         </label>
-                      <select
-                        name="type"
-                        id="type"
-                        className="selectform"
-                        value={Number(selectedType) || ""}
-                        onChange={(e) => setSelectedType(Number(e.target.value))}
+                        
+                        <select
+                            name="type"
+                            id="type"
+                            className="selectform"
+                            value={selectedType}
+                            onChange={(e) => setSelectedType(e.target.value)}
+                            required
                         >
-                      <option value="">Seleccione un tipo</option>
-                        {booksTypes.map((type) => (
-                            <option key={type.bookTypeId} value={type.bookTypeId}>
-                                {type.typeName}
-                            </option>
-                        ))}
-                    </select>
-                                            </div>
+                            <option value="">Seleccione un tipo</option>
+                            {booksTypes.map((type) => (
+                                <option key={type.bookTypeId} value={String(type.bookTypeId)}>
+                                    {type.typeName}
+                                </option>
+                            ))}
+                        </select>
+                                            
+
+
+                        </div>
                     </div>
                     </div>
 
@@ -246,11 +264,17 @@ export default function FormEditBook({ selectedBook }) {
                     <div className="input">
                         <div>
                              <label htmlFor="lost">Perdido  <span className="required">*</span></label>
-                            <select value={selectedLost} onChange={(e) => setSelectedLost(e.target.value)} className="selectform">
-                            <option value="default">Seleccione</option>
-                            <option value="true">Sí</option>
+                       <select
+                            name="lost"
+                            value={selectedLost}
+                            onChange={(e) => setSelectedLost(e.target.value)}
+                            className="selectform"
+                            required
+                        >
+                            <option value="">Seleccione</option>
+                            <option value="true">Si</option>
                             <option value="false">No</option>
-                            </select>
+                        </select>
                         </div>
                        
                         
@@ -336,48 +360,20 @@ export default function FormEditBook({ selectedBook }) {
                         placeholder="Código lingüístico"
                         defaultValue={selectedBook?.codeLing || ""}
                     />              
-
+</div>
                     </div>
-                    {/* Botones */}
-                    <div className="btn-right">
-                    <Btn
-                        text="Guardar"
-                        className="changes btn"
-                        icon={
-                        <div className="img-ico">
-                            <img src={SaveIcon} alt="Guardar" />
-                        </div>
-                        }
-                        type="submit"
-                        variant="primary"
-                    />
+             
+        
+                   
                     </div>
-
-                    <div className="btns-form">
-                    <div>
-                        <Btn
-                        text="Autores del libro"
-                        className="secondary-btn"
-                        onClick={() => setPopupView("chooseAuthor")}
-                        variant="primary"
-                        />
-                        <Btn
-                        text="Ver reservas"
-                        className="secondary-btn"
-                        onClick={() => redirect("renewed")}
-                        variant="primary"
-                        />
-                    </div>
-                    <div>
-                        <Btn
-                        text="Ver autores"
-                        className="secondary-btn"
-                        onClick={() => redirect("authors")}
-                        variant="primary"
-                        />
+                 <div className="btns-row-container">
+                    <div className="btns-row">
+                        <Btn text="Guardar" className="changes btn" icon={<div className="img-ico"><img src={SaveIcon} alt="Guardar" /></div>}type="submit" variant="primary"/>
+                        <Btn text="Autores del libro" className="secondary-btn" onClick={() => setPopupView('chooseAuthor')} variant="primary" />
+                        <Btn text="Ver reservas" className="secondary-btn" onClick={() => redirect('renewed')} variant="primary" />
+                        <Btn text="Ver autores" className="secondary-btn" onClick={() => redirect('authors')} variant="primary" />
                     </div>
                     </div>
-                </div>
                 </form>
             </>
             )}
