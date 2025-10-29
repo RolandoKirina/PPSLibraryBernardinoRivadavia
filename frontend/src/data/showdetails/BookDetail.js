@@ -1,3 +1,6 @@
+
+
+
 export const BookDetail = [
   {
     id: 1,
@@ -6,8 +9,8 @@ export const BookDetail = [
     rows: [
       [
         { label: 'Título', value: 'información', attribute: 'title' },
-        { label: 'Código', value: 'información', attribute: 'code_inventory' },
-        { label: 'Año de edicion', value: 'información', attribute: 'nro_edition' }
+        { label: 'Código', value: 'información', attribute: 'codeInventory' },
+        { label: 'Año de edicion', value: 'información', attribute: 'numberEdition' }
       ],
     ]
   },
@@ -38,7 +41,7 @@ export const BookDetail = [
       [
         { label: 'Tipo', value: 'información', attribute: 'type' },
         { label: 'CDU', value: 'información', attribute: 'codeCDU' },
-        { label: 'COD_RCDU', value: 'información', attribute: 'cod_rcdu' }
+        { label: 'COD_RCDU', value: 'información', attribute: 'codCDU' }
       ]
     ]
   }

@@ -5,11 +5,14 @@ import { useState } from "react";
 import BackviewBtn from "../../common/backviewbtn/BackviewBtn.jsx";
 import BookAuthors from "../BooksAuthor/BookAuthors.jsx";
 import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
-
+import { useEffect } from "react";
 export default function FormEditBook() {
     const [popupView, setPopupView] = useState('default');
     const [authorsSelected, setAuthorsSelected] = useState([]);
     const entityManagerApi = useEntityManagerAPI("books");
+    const {items:booksTypes,getItems:getBookTypes,deleteItem,createItem,updateItem} = useEntityManagerAPI("book-types");
+
+    const [selectedType, setSelectedType] = useState();
     let title = "Libros";
 
     function redirect(action) {
@@ -29,11 +32,15 @@ export default function FormEditBook() {
         }
     }
 
-     const handleSubmit = async (e)=>{
-         e.preventDefault();
-         const form = e.currentTarget; 
-         const data = new FormData(form); 
-         const newItem = {
+    useEffect(() => {
+        getBookTypes();
+    }, []);
+
+    const handleSubmit = async (e)=>{
+        e.preventDefault();
+        const form = e.currentTarget; 
+        const data = new FormData(form); 
+        const newItem = {
             codeInventory: data.get("code"), 
             codeCDU: data.get("codeCDU1"),
             title: data.get("title"),
@@ -41,27 +48,27 @@ export default function FormEditBook() {
             numberEdition: Number(data.get("numberEdition")),
             yearEdition: Number(data.get("year")),
             translator: data.get("translator"),
+            pages: data.get("pages") || selectedBook.pages,
             codeClasification: data.get("ubication"),
             numberOfCopies: Number(data.get("quantity")),
             notes: data.get("notes"),
-            type: Number(data.get("type")),
+            type: selectedType ? Number(selectedType) : selectedBook?.type?.bookTypeId,
             codeLing: data.get("codeLing"), 
             idSupplier: Number(data.get("idSupplier")),
             invoiceNumber: data.get("numfactura"),
             dateOfBuy: data.get("dateOfBuy"),
-
-            }
-                
-      
-            try {
-                const created = await entityManagerApi.createItem(newItem);
-                if (created) {
+        }
+            
+        console.log(newItem);
+        try {
+            const created = await entityManagerApi.createItem(newItem);
+            if (created) {
                 alert("Agregado con éxito");
-                }
-            } catch (error) {
-                alert("Sin éxito");
-                console.error("Error al crear libro:", error);
             }
+        } catch (error) {
+            alert("Sin éxito");
+            console.error("Error al crear libro:", error);
+        }
     };
     
     return (
@@ -69,13 +76,14 @@ export default function FormEditBook() {
             {popupView === 'default' && (
                 <>
                     <form className="formeditbook" onSubmit={handleSubmit}>
-                        <div className="contentformedit">
+                         <div className="columns-container">
+                            <div className="contentformedit">
 
                             <div className="input">
                                 <label htmlFor="code">
                                     Codigo <span className="required">*</span>
                                 </label>
-                                <input id="code" name="code" type="number" placeholder="Codigo" />
+                                <input id="code" name="code" type="number" placeholder="Codigo" required />
                             </div>
 
                             <div className="input">
@@ -84,7 +92,7 @@ export default function FormEditBook() {
                                         Código CDU <span className="required">*</span>
                                     </label>
                                     <div className="cdu-options">
-                                        <input name="codeCDU1" type="number" />
+                                        <input name="codeCDU1" type="number" required />
                                     </div>
                                 </div>
                             </div>
@@ -93,7 +101,7 @@ export default function FormEditBook() {
                                 <label htmlFor="title">
                                     Titulo <span className="required">*</span>
                                 </label>
-                                <input id="title" name="title" type="text" placeholder="Titulo" />
+                                <input id="title" name="title" type="text" placeholder="Titulo" required />
                             </div>
 
                             <div className="input">
@@ -102,13 +110,13 @@ export default function FormEditBook() {
                                         <label htmlFor="ubication">
                                             Ubicación <span className="required">*</span>
                                         </label>
-                                        <input id="ubication" name="ubication" type="text" placeholder="Ubicacion" />
+                                        <input id="ubication" name="ubication" type="text" placeholder="Ubicacion" required />
                                     </div>
                                     <div>
                                         <label htmlFor="quantity">
                                             Cantidad <span className="required">*</span>
                                         </label>
-                                        <input id="quantity" name="quantity"type="number" placeholder="Cantidad" />
+                                        <input id="quantity" name="quantity"type="number" placeholder="Cantidad" required />
                                     </div>
                                 </div>
                             </div>
@@ -119,99 +127,93 @@ export default function FormEditBook() {
                                         <label htmlFor="editorial">
                                             Editorial <span className="required">*</span>
                                         </label>
-                                        <input id="editorial" name="editorial" type="text" placeholder="Editorial" />
+                                        <input id="editorial" name="editorial" type="text" placeholder="Editorial" required />
                                     </div>
                                     <div>
                                         <label htmlFor="type">
                                             Tipo <span className="required">*</span>
                                         </label>
-                                        <select name="type" id="type" className="selectform">
-                                            <option value="1">opcion 1</option>
-                                            <option value="2">opcion 2</option>
-                                            <option value="3">opcion 3</option>
+                                        <select
+                                            name="type"
+                                            id="type"
+                                            className="selectform"
+                                            value={Number(selectedType) || ""}
+                                            onChange={(e) => setSelectedType(Number(e.target.value))}
+                                            required
+                                        >
+                                            <option value="">Seleccione un tipo</option>
+                                            {booksTypes.map((type) => (
+                                                <option key={type.bookTypeId} value={type.bookTypeId}>
+                                                    {type.typeName}
+                                                </option>
+                                            ))}
                                         </select>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="input">
-                                <label htmlFor="translator">Traductor</label>
-                                <input id="translator" name="translator" type="text" placeholder="Traductor" />
+                                <label htmlFor="translator">Traductor <span className="required">*</span></label>
+                                <input id="translator" name="translator" type="text" placeholder="Traductor" required />
                             </div>
 
                             <div className="input">
                                 <div className="divconteiner content">
                                     <div>
-                                        <label htmlFor="idSupplier">Numero de prov</label>
-                                        <input id="idSupplier" name="idSupplier"type="number" placeholder="Numero de prov" />
+                                        <label htmlFor="idSupplier">Numero de prov <span className="required">*</span></label>
+                                        <input id="idSupplier" name="idSupplier"type="number" placeholder="Numero de prov" required />
                                     </div>
                                     <div>
-                                        <label htmlFor="numfactura">Num factura</label>
-                                        <input id="numfactura" name="numfactura" type="text" placeholder="Numero de factura" />
+                                        <label htmlFor="numfactura">Num factura <span className="required">*</span></label>
+                                        <input id="numfactura" name="numfactura" type="text" placeholder="Numero de factura" required />
                                     </div>
-                                    <div>
-                                        <label htmlFor="dateOfBuy">Fecha de compra</label>
-                                        <input id="dateOfBuy" name="dateOfBuy" type="date" placeholder="Fecha de" />
-                                    </div>
-                                    
+                                </div>
+                                <div className="input">
+                                    <label htmlFor="dateOfBuy">Fecha de compra <span className="required">*</span></label>
+                                    <input id="dateOfBuy" name="dateOfBuy" type="date" required />
                                 </div>
                             </div>
 
-
                         </div>
 
-                        <div className="contentformedit">
+                              <div className="contentformedit">
                             <div className="input">
                                 <label htmlFor="notes">Notas</label>
                                 <input id="notes" name="notes" type="text" className="notes" />
                             </div>
 
                             <div className="input">
-                                <label htmlFor="year">Año de edición</label>
-                                <input id="year" name="year" type="date" />
+                                <label htmlFor="year">Año de edición <span className="required">*</span></label>
+                                <input id="year" name="year"  type="number" min="1850" max="2035" required />
                             </div>
 
                             <div className="input">
-                                <label htmlFor="number">Numero de edición</label>
-                                <input id="numberEdition" name="numberEdition"type="text" />
+                                <label htmlFor="number">Numero de edición <span className="required">*</span></label>
+                                <input id="numberEdition" name="numberEdition"type="text" required />
                             </div>
                             <div className="input">
-                                <label htmlFor="pages">Páginas</label>
-                                <input id="pages" name="pages" type="text" />
+                                <label htmlFor="pages">Páginas <span className="required">*</span></label>
+                                <input id="pages" name="pages" type="text" required />
                             </div>
                             <div className="input">
                                 <label htmlFor="codeLing">Codigo linguistico</label>
-                                <input id="codeLing"  name="codeLing" type="date" placeholder="Codigo linguistico" />
+                                <input id="codeLing"  name="codeLing" type="text" placeholder="Codigo linguistico" />
                             </div>
 
 
-                              <div>
-                                <div className="btn-right">
-                                        <Btn
-                                            text="Guardar"
-                                            className="changes btn"
-                                            icon={
-                                                <div className="img-ico">
-                                                    <img src={SaveIcon} alt="Guardar" />
-                                                </div>
-                                            }
-                                            type="submit"
-                                            variant="primary"
-                                        />
-                                    </div>
-                               </div>
-                            <div className="btns-form">
-                                <div>
-                                    <Btn text="Autores del libro" className="secondary-btn" onClick={() => setPopupView('chooseAuthor')} variant="primary" />
-                                    <Btn text="Ver reservas" className="secondary-btn" onClick={() => redirect('renewed')} variant="primary" />
-                                </div>
-                                <div>
-                                    <Btn text="Ver autores" className="secondary-btn" onClick={() => redirect('authors')} variant="primary" />
-                                </div>
-                            </div>
-                        </div>
                       
-                          
+            
+                        </div>
+                         </div>
+                        <div className="btns-row-container">
+                        <div className="btns-row">
+                            <Btn text="Guardar" className="changes btn" icon={<div className="img-ico"><img src={SaveIcon} alt="Guardar" /></div>}type="submit" variant="primary"/>
+                            <Btn text="Autores del libro" className="secondary-btn" onClick={() => setPopupView('chooseAuthor')} variant="primary" />
+                            <Btn text="Ver reservas" className="secondary-btn" onClick={() => redirect('renewed')} variant="primary" />
+                            <Btn text="Ver autores" className="secondary-btn" onClick={() => redirect('authors')} variant="primary" />
+                        </div>
+                        </div>
+                     
                     </form>
                 </>
             )}
@@ -225,14 +227,8 @@ export default function FormEditBook() {
                             setAuthorsSelected={setAuthorsSelected}
                         />
                     </div>
-
                 </>
             )}
-
-
-
         </>
-
     )
-
 }

@@ -70,7 +70,7 @@ const { items, getItems, getItem, createItem, updateItem, deleteItem } =
       }, 300); // espera 300ms
 
       return () => clearTimeout(delay);
-}, [formData]);
+}, [formData, items]);
 
 
 let columns =[];
@@ -130,6 +130,7 @@ let columns =[];
         ];
 
    }
+
   else if ((auth.role === roles.user || auth.role === roles.reader)) {
 
     
