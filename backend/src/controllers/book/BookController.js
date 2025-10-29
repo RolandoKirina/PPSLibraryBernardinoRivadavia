@@ -33,6 +33,21 @@ export const getAllBooksWithFields = async (req,res) => {
     } 
 }
 
+
+export const getAllBooksOfLoan = async (req,res) => {
+    try{
+        const { id } = req.params;
+        const books = await BookService.getAllBooksOfLoan(id);
+      
+        res.status(HTTP_STATUS.OK.code).send(books);    
+
+    }
+    catch(e){
+        console.error(e);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+    } 
+}
+
 export const getAllBooksOfAuthor = async (req,res) => {
     try{
         const { id } = req.params;

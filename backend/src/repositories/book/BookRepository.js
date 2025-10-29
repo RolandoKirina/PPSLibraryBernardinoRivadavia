@@ -60,8 +60,34 @@ export const getAllWithFields = async () => {
   });
 };
 
+export const getAllBooksOfLoan = async (id) => {
+
+  return await Book.findAll({
+    attributes: ["BookId", "title", "codeInventory", "codeCDU", "codeLing", "codeClasification"],
+    include: [
+      {
+        model: LoanBook,
+        as: 'BookLoans',
+        attributes: ['BookId', 'loanId'],
+        required: true,
+        include: [
+          {
+            model: Loan,
+            as: 'Loan',
+            attributes: ['id'],
+            where: {
+              id: id
+            }
+          }
+        ]
+
+      }
+    ]
+  });
+};
+
 export const getAllBooksOfAuthor = async (id) => {
-console.log(id);
+
   return await Book.findAll({
     attributes: ["BookId", "title", "codeInventory", "codeCDU", "codeLing", "codeClasification"],
     include: [

@@ -8,30 +8,41 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
   
   
   const getItems = async (filters = {}) => {
-    setLoading(true);
-    setError(null);
+  setLoading(true);
+  setError(null);
 
-    const query = Object.keys(filters).length
-      ? `?${new URLSearchParams(filters).toString()}`
-      : "";
-    
-    try {
-      const res = await fetch(`${baseUrl}/${entityName}${query}`);
-      if (!res.ok) {
-        console.log(res);
-        throw new Error("Error al obtener datos");
-      }
-            
+  const cleanFilters = Object.fromEntries(
+    Object.entries(filters).filter(([key, value]) => {
+      if (["type", "state"].includes(key)) return true;
+      return (
+        value !== "" &&
+        value !== null &&
+        value !== undefined &&
+        value !== "all" &&
+        value !== false
+      );
+    })
+  );
 
-      const data = await res.json();
-      setItems(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error(err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const query = Object.keys(cleanFilters).length
+    ? `?${new URLSearchParams(cleanFilters).toString()}`
+    : "";
+
+  try {
+    const res = await fetch(`${baseUrl}/${entityName}${query}`);
+    if (!res.ok) throw new Error("Error al obtener datos");
+
+    const data = await res.json();
+    setItems(Array.isArray(data) ? data : []);
+    return data;
+  } catch (err) {
+    console.error(err);
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
   
 
 

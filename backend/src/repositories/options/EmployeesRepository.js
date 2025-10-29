@@ -16,6 +16,7 @@ export const getOneByCode = async (code) => {
         },
         limit: 1
     });
+    console.log(employee);
     return employee[0].dataValues;
 };
 

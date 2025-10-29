@@ -8,17 +8,17 @@ export const getOne = async (id) => {
     return await LoanBook.findByPk(id);
 };
 
-export const create = async (loanbook) => {
-    return await LoanBook.create(loanbook);
+export const create = async (loanbook, transaction = null) => {
+  return await LoanBook.create(loanbook, { transaction });
 };
 
-// A diferencia de patch, los updates deben tener todos los campos de la entidad
-export const update = async (id, updates) => {
-    await LoanBook.update(updates, {
-        where: { id: id }
-    });
+export const update = async (id, updates, transaction = null) => {
+  await LoanBook.update(updates, {
+    where: { id },
+    transaction
+  });
 
-    return await LoanBook.findByPk(id);
+  return await LoanBook.findByPk(id, { transaction });
 };
 
 export const remove = async (id) =>{
@@ -34,4 +34,26 @@ export const remove = async (id) =>{
         data: loanBook
     }
 }
+
+export const removeAllLoanBooks = async (loanId) => {
+  try {
+    const loanBooks= await LoanBook.findAll({
+      where: { loanId: loanId }
+    });
+
+    if (!loanBooks.length) {
+      return { msg: "No se encontraron registros para ese loanId", data: [] };
+    }
+
+    await Promise.all(loanBooks.map(loanBook => loanBook.destroy()));
+
+    return {
+      msg: "Todos los LoanBook del prestamo fueron eliminados correctamente",
+      data: loanBooks
+    };
+  } catch (error) {
+    console.error("Error al eliminar LoanBooks:", error);
+    throw error;
+  }
+};
 

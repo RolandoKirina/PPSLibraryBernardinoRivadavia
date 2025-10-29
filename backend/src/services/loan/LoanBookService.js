@@ -27,3 +27,8 @@ export const removeLoanBook = async (id) => {
 
     return await LoanBookRepository.remove(id);
 };
+
+
+export const removeBooksOfLoan= async (id) => {
+    return await LoanBookRepository.removeAllOfLoan(id);
+};

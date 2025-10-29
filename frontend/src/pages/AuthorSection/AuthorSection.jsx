@@ -19,24 +19,37 @@ import { useEffect } from 'react';
 
 export default function AuthorSection() {
     const { auth } = useAuth();
-    const BASE_URL= "http://localhost:4000/api/v1";
+    const BASE_URL = "http://localhost:4000/api/v1";
+    const [filterName, setFilterName] = useState("");
 
     const {
-           items,
-           getItems,
-           // getItem: getGroupItem,
-           deleteItem,
-           createItem,
-           updateItem
+        items,
+        getItems,
+        // getItem: getGroupItem,
+        deleteItem,
+        createItem,
+        updateItem
     } = useEntityManagerAPI("authors");
 
     const {
         createItem: createBookAuthor
     } = useEntityManagerAPI("book-authors");
+    
 
     useEffect(() => {
-        getItems(); 
-    }, [items]);
+        const delay = setTimeout(() => {
+            const filters = filterName.trim() ? { authorName: filterName } : {};
+            getItems(filters);
+            console.log(filters);
+        }, 300);
+        return () => clearTimeout(delay);
+    }, [filterName]);
+
+    
+
+    useEffect(() => {
+        getItems();
+    }, []);
 
     const [deletePopup, setDeletePopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
@@ -116,20 +129,20 @@ export default function AuthorSection() {
     }
 
     async function deleteAllAuthorBooks(id) {
-    try {
-        const response = await fetch(`${BASE_URL}/book-authors/deleteAllOfAuthor/${id}`, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json'
+        try {
+            const response = await fetch(`${BASE_URL}/book-authors/deleteAllOfAuthor/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) throw new Error('Error al eliminar los libros del autor');
+
+            const result = await response.json();
+        } catch (error) {
+            console.error(error);
         }
-        });
-
-        if (!response.ok) throw new Error('Error al eliminar los libros del autor');
-
-        const result = await response.json();
-    } catch (error) {
-        console.error(error);
-    }
     }
 
     const authorsPopups = [
@@ -235,7 +248,13 @@ export default function AuthorSection() {
 
                             <div className='author-filter'>
                                 <label>Filtro por nombre: </label>
-                                <input type='text' name='author-name' />
+                                <input
+                                    type='text'
+                                    name='authorName'
+                                    value={filterName}
+                                    onChange={(e) => setFilterName(e.target.value)}
+                                    placeholder='Escribe un nombre...'
+                                />
                             </div>
                         </div>
 

@@ -1,7 +1,7 @@
 import * as AuthorsRepository from '../../repositories/author/AuthorsRepository.js';
 
-export const getAllAuthors = async () => {
-    return await AuthorsRepository.getAll();
+export const getAllAuthors = async (filters) => {
+    return await AuthorsRepository.getAll(filters);
 };
 
 export const getAllAuthorsByName = async (name) => {

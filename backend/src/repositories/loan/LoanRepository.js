@@ -1,3 +1,5 @@
+import sequelize from '../../configs/database.js';
+
 import Loan from '../../models/loan/Loan.js';
 import LoanBook from '../../models/loan/LoanBook.js';
 import Book from '../../models/book/Book.js';
@@ -114,28 +116,28 @@ export const getAll = async (filters) => {
         as: 'Partner',
         attributes: ['id', 'homePhone', 'homeAddress', 'name', 'surname', 'partnerNumber'],
         where: Object.keys(wherePartner).length ? wherePartner : undefined,
-        required: Object.keys(wherePartner).length > 0
+        required: true,
       },
       {
         model: LoanBook,
         as: 'LoanBooks',
         attributes: ['bookCode', 'expectedDate', 'returnedDate'],
         where: Object.keys(whereLoanBook).length ? whereLoanBook : undefined,
-        required: Object.keys(whereLoanBook).length > 0,
+        required: true,
         include: [
           {
             model: Book,
             as: 'Book',
             attributes: ['title', 'codeInventory'],
             where: Object.keys(whereBook).length ? whereBook : undefined,
-            required: Object.keys(whereBook).length > 0,
+            required: true,
             include: [
               {
                 model: BookType,
                 as: 'BookType',
                 attributes: ["typeName"],
                 where: Object.keys(whereBookType).length ? whereBookType : undefined,
-                required: Object.keys(whereBookType).length > 0
+                required: true
               }
             ]
           }
@@ -144,7 +146,7 @@ export const getAll = async (filters) => {
       {
         model: Employees,
         as: 'Employee',
-        attributes: ['name'],
+        attributes: ['name', 'code'],
         where: Object.keys(whereEmployee).length ? whereEmployee : undefined,
         required: Object.keys(whereEmployee).length > 0
       }
@@ -155,27 +157,29 @@ export const getAll = async (filters) => {
   });
 
   // 🔁 Transformar a array plano
-  const flatLoans = loans.flatMap(loan =>
-    loan.LoanBooks.map(loanBook => ({
-      loanId: loan?.id || '',
-      codeInventory: loanBook.Book?.codeInventory || loanBook.bookCode,
-      title: loanBook.Book?.title || '',
-      name: `${loan.Partner?.name || ''} ${loan.Partner?.surname || ''}`,
-      surname: loan.Partner?.surname || '',
-      partnerNumber: loan.Partner?.partnerNumber || '',
-      homePhone:  loan.Partner?.homePhone || '',
-      homeAddress:  loan.Partner?.homeAddress || '',
-      retiredDate: loan.retiredDate,
-      withdrawalTime: loan?.withdrawalTime || '',
-      expectedDate: loanBook.expectedDate,
-      returnedDate: loanBook.returnedDate,
-      loanType: loan.LoanType?.description || '',
-      employee: loan.Employee?.name || '',
-      partnerId: loan.Partner?.id || null
-    }))
-  );
+const groupedLoans = loans.map(loan => ({
+  loanId: loan?.id || '',
+  retiredDate: loan.retiredDate,
+  expectedDate: loan.LoanBooks?.[0]?.expectedDate || '', 
+  returnedDate: loan.LoanBooks?.[0]?.returnedDate || '',
+  withdrawalTime: loan?.withdrawalTime || '',
+  loanType: loan.LoanType?.description || '',
+  employee: loan.Employee?.name || '',
+  employeeCode: loan.Employee?.code || '',
+  partnerId: loan.Partner?.id || null,
+  partnerNumber: loan.Partner?.partnerNumber || '',
+  name: `${loan.Partner?.name || ''} ${loan.Partner?.surname || ''}`,
+  surname: loan.Partner?.surname || '',
+  homePhone: loan.Partner?.homePhone || '',
+  homeAddress: loan.Partner?.homeAddress || '',
+  books: loan.LoanBooks.map(book => ({
+    codeInventory: book.Book?.codeInventory || book.bookCode,
+    title: book.Book?.title || ''
+  }))
+}));
 
-  return flatLoans;
+
+  return groupedLoans;
 };
 
 
@@ -221,103 +225,124 @@ export const getOne = async (id) => {
 }
 
 export const create = async (loan) => {
-
-
-  /*
-  //ej res que viene del front 
-  {
-  codeInventory: 'LB002', 
-  title: 'Cien Años de Soledad',
-  partnerName: 'sdsadsad',
-  partnerNumber: '34343',
-  retiredDate: '2025-10-23',
-  expectedDate: '2025-10-23',
-  retiredHour: '11:00',
-  code: '3434'
+  if (!loan.books || loan.books.length === 0) {
+    throw new Error("No se puede crear un préstamo sin libros");
   }
 
-  //hay que crear los loan books.
+  const transaction = await sequelize.transaction();
 
-  //mediante el partnerNumber conseguir el partnerId para loan
-  //mediante el codeInventory conseguir el bookId para bookloan,
-  //mediante el id del loan recien creado conseguir el loanId para bookloan,
-  //mediante el code conseguir el employeeId
+  try {
+    const employee = await EmployeesRepository.getOneByCode(loan.employeeCode);
+    if (!employee) {
+      throw new Error("Empleado no existe");
+    }
 
-  pasos:
-  1- crear el loan
-  2- crear todos los bookloans
-  */
-  //return await Loan.create(loan);
+    const partner = await PartnerRepository.getOneByPartnerNumber(loan.partnerNumber);
+    if (!partner) {
+      throw new Error("Socio no existe");
+    }
 
+    const loanType = await LoanTypeRepository.getOneByDescription(loan.loanType);
 
-  const employee = await EmployeesRepository.getOneByCode(loan.employeeCode);
+    const loanData = {
+      partnerId: partner.id,
+      loanType: loanType.id,
+      retiredDate: loan.retiredDate,
+      employeeId: employee.id,
+      name: partner.name,
+    };
 
-  if (!employee) {
-    throw new Error("Empleado no existe");
-  }
+    const newLoan = await Loan.create(loanData, { transaction });
 
-  const partner = await PartnerRepository.getOneByPartnerNumber(loan.partnerNumber);
-
-  if (!partner) {
-    throw new Error("Socio no existe");
-  }
-
-  const loanType = await LoanTypeRepository.getOneByDescription(loan.loanType);
-
-  const loanData = {
-    partnerId: partner.id,
-    loanType: loanType.id,
-    retiredDate: loan.retiredDate,
-    //withdrawalTime por nuevo input de hora en front
-    employeeId: employee.id,
-    name: partner.name,
-    //dni por reader
-  }
-
-  
-  const newLoan = await Loan.create(loanData);
-
-  await Promise.all(loan.books.map(book => {
-    const loanBook = { 
+    const loanBooks = loan.books.map(book => ({
       BookId: book.BookId,
       loanId: newLoan.id,
       bookCode: book.codeInventory,
       expectedDate: loan.expectedDate,
       reneweAmount: 0,
       returned: false,
-      //copy: obtener mediante count 
+    }));
+
+    await Promise.all(
+      loanBooks.map(book => LoanBookRepository.create(book, transaction))
+    );
+
+    await transaction.commit();
+
+    return {
+      msg: "Préstamo creado correctamente",
+      loanId: newLoan.id
+    };
+  } catch (err) {
+    await transaction.rollback();
+    throw err;
+  }
+};
+
+
+
+export const update = async (id, updates) => {
+  if (!updates.books || updates.books.length === 0) {
+    throw new Error("No se puede actualizar el préstamo sin libros");
+  }
+
+  const transaction = await sequelize.transaction();
+
+  try {
+    const employee = await EmployeesRepository.getOneByCode(updates.employeeCode);
+    if (!employee) {
+      throw new Error("Empleado no existe");
+    }
+
+    const loanData = {
+      retiredDate: updates.retiredDate,
+      employeeId: employee.id,
     };
 
-    return LoanBookRepository.create(loanBook);
-  }));
+    const [updatedCount] = await Loan.update(loanData, {
+      where: { id },
+      transaction
+    });
 
-  
-  return {
-    msg: "Loan created",
-  }
-}
-
-//a diferencia de patch, los updates deben tener todos los campos de la entidad
-export const update = async (id, updates) => {
-  await Loan.update(updates, {
-    where: {
-      id: id
+    if (updatedCount === 0) {
+      throw new Error('No se pudo actualizar el préstamo');
     }
-  });
 
-  return await Loan.findByPk(id);
-}
+    await LoanBookRepository.removeAllLoanBooks(id, transaction);
 
-export const remove = async (id) => {
-  const loan = await Loan.findByPk(id);
+    const newLoanBooks = updates.books.map(book => ({
+      BookId: book.BookId,
+      loanId: id,
+      bookCode: book.codeInventory,
+      expectedDate: updates.expectedDate,
+      reneweAmount: 0,
+      returned: false,
+    }));
 
-  if (!loan) {
-    return null;
+    await Promise.all(
+      newLoanBooks.map(book => LoanBookRepository.create(book, transaction))
+    );
+
+    await transaction.commit();
+
+    return {
+      msg: 'Préstamo y libros actualizados correctamente',
+      loanId: id
+    };
+  } catch (err) {
+    await transaction.rollback();
+    throw err;
   }
-  await loan.destroy();
+};
 
-  return {
-    msg: "Loan deleted successfully",
-    data: loan
-  }
+export const remove = async (id) =>{
+    const loan = await Loan.findByPk(id);
+
+      if (!loan) {
+        return null;
+      }
+  
+    return {
+        msg: "Loan deleted successfully",
+    }
 }
