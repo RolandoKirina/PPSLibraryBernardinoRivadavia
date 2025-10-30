@@ -4,6 +4,7 @@ import BookAuthor from "../../models/author/BookAuthor.js";
 import LoanBook from "../../models/loan/LoanBook.js"
 import Partner from "../../models/partner/Partner.js";
 import Loan from "../../models/loan/Loan.js";
+import BookType from "../../models/options/BookType.js";
 import { fn, col, literal } from "sequelize";
 
 export const getAll = async (filters) => {
@@ -62,7 +63,7 @@ export const getAllWithFields = async () => {
 
 export const getAllBooksOfLoan = async (id) => {
 
-  return await Book.findAll({
+  const books = await Book.findAll({
     attributes: ["BookId", "title", "codeInventory", "codeCDU", "codeLing", "codeClasification"],
     include: [
       {
@@ -81,9 +82,29 @@ export const getAllBooksOfLoan = async (id) => {
           }
         ]
 
+      },
+      {
+        model: BookType,
+        as: 'BookType',
+        attributes: ['bookTypeId', 'typeName'],
+        required: true
       }
     ]
   });
+
+  const flatBooks = books.map(book => ({
+    BookId: book.BookId,
+    title: book.title,
+    codeInventory: book.codeInventory,
+    codeCDU: book.codeCDU,
+    codeLing: book.codeLing,
+    codeClasification: book.codeClasification,
+    bookTypeId: book.BookType?.bookTypeId || null,
+    typeName: book.BookType?.typeName || '',
+    loanId: book.BookLoans?.[0]?.Loan?.id || null
+  }));
+
+  return flatBooks;
 };
 
 export const getAllBooksOfAuthor = async (id) => {
@@ -343,8 +364,8 @@ export const getRanking = async (filters) => {
       "Book.titulo",
       "Book.Cod_rcdu"
     ],
-   order: [[literal('"Cantidad"'), "DESC"]],
-    limit, 
+    order: [[literal('"Cantidad"'), "DESC"]],
+    limit,
     offset
   });
 
@@ -353,31 +374,31 @@ export const getRanking = async (filters) => {
 
 
 export const getById = async (id) => {
-    return await Book.findByPk(id);
-}
-
-export const create = async (book) =>{
-    return await Book.create(book);
-}
-
-export const update = async (id,book) =>{
-    const [rowsUpdated] = await Book.update(book, { where: { id } });
-    if (rowsUpdated === 0){
-        return null;
-    }
   return await Book.findByPk(id);
 }
 
-export const remove = async (id) =>{
-    const book = await Book.findByPk(id);
+export const create = async (book) => {
+  return await Book.create(book);
+}
 
-      if (!book) {
-        return null;
-      }
-    await book.destroy();
-  
-    return {
-        msg: "Book deleted successfully",
-        data: book
-    }
+export const update = async (id, book) => {
+  const [rowsUpdated] = await Book.update(book, { where: { id } });
+  if (rowsUpdated === 0) {
+    return null;
+  }
+  return await Book.findByPk(id);
+}
+
+export const remove = async (id) => {
+  const book = await Book.findByPk(id);
+
+  if (!book) {
+    return null;
+  }
+  await book.destroy();
+
+  return {
+    msg: "Book deleted successfully",
+    data: book
+  }
 }

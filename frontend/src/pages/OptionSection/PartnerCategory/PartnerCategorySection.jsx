@@ -20,12 +20,12 @@ export default function PartnerCategorySection() {
     const [selected, setSelected] = useState(null);
 
     const {
-           items,
-           getItems,
-           // getItem: getGroupItem,
-           deleteItem,
-           createItem,
-           updateItem
+        items,
+        getItems,
+        // getItem: getGroupItem,
+        deleteItem,
+        createItem,
+        updateItem
     } = useEntityManagerAPI("partner-categories");
 
     function handleAddItem(data) {
@@ -39,7 +39,7 @@ export default function PartnerCategorySection() {
     }
 
     useEffect(() => {
-        getItems(); 
+        getItems();
     }, [items]);
 
     const authorsPopups = [
@@ -47,12 +47,12 @@ export default function PartnerCategorySection() {
             key: 'deletePopup',
             title: 'Borrar categoria de socio',
             className: 'delete-size-popup',
-            content: <PopUpDelete title={"Categoria de socio"} closePopup={() => setDeletePopup(false)} onConfirm={
-                () => {
-                    deleteItem(selected.idCategory)
-                    setDeletePopup(false)
-                }
-            } />,
+            content: <PopUpDelete
+                title="Categoria de socio"
+                onConfirm={() => deleteItem(selected.idCategory)}
+                closePopup={() => setDeletePopup(false)}
+                refresh={() => getItems()}
+            />,
             close: () => setDeletePopup(false),
             condition: deletePopup,
             variant: 'delete'

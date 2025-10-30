@@ -34,7 +34,7 @@ export default function AuthorSection() {
     const {
         createItem: createBookAuthor
     } = useEntityManagerAPI("book-authors");
-    
+
 
     useEffect(() => {
         const delay = setTimeout(() => {
@@ -45,7 +45,7 @@ export default function AuthorSection() {
         return () => clearTimeout(delay);
     }, [filterName]);
 
-    
+
 
     useEffect(() => {
         getItems();
@@ -150,12 +150,14 @@ export default function AuthorSection() {
             key: 'deletePopup',
             title: 'Borrar autor',
             className: 'delete-size-popup',
-            content: <PopUpDelete title={"Autor"} closePopup={() => setDeletePopup(false)} onConfirm={
-                () => {
-                    deleteItem(selected.id)
-                    setDeletePopup(false)
-                }
-            } />,
+            content:
+                <PopUpDelete
+                    title="Autor"
+                    onConfirm={() => deleteItem(selected.id)}
+                    closePopup={() => setDeletePopup(false)}
+                    refresh={() => getItems()}
+                />,
+
             close: () => setDeletePopup(false),
             condition: deletePopup,
             variant: 'delete'

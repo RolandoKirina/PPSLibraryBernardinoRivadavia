@@ -8,18 +8,18 @@ import { useEffect } from 'react';
 export default function LoanFilter({ onFilterChange }) {
   const { auth } = useAuth();
 
-   const {
-        items: bookTypes,
-        getItems: getBookTypes,
-    } = useEntityManagerAPI("book-types");
+  const {
+    items: bookTypes,
+    getItems: getBookTypes,
+  } = useEntityManagerAPI("book-types");
 
-useEffect(() => {
-  const fetchBookTypes = async () => {
-    const res = await getBookTypes(); 
-    console.log("Tipos de material obtenidos:", res);
-  };
-  fetchBookTypes();
-}, []);
+  useEffect(() => {
+    const fetchBookTypes = async () => {
+      const res = await getBookTypes();
+      console.log("Tipos de material obtenidos:", res);
+    };
+    fetchBookTypes();
+  }, []);
 
 
   const [formData, setFormData] = useState({
@@ -48,11 +48,15 @@ useEffect(() => {
       console.log('Campo modificado:', name, '→', newValue);
       console.log('Nuevo estado del form:', updated);
 
-      if (onFilterChange) onFilterChange(updated);
-
       return updated;
     });
   };
+
+  useEffect(() => {
+    if (onFilterChange) {
+      onFilterChange(formData);
+    }
+  }, [formData, onFilterChange]);
 
   return (
     <aside className="loan-filter-aside">
@@ -94,7 +98,7 @@ useEffect(() => {
             ))}
           </div>
 
-          {auth.role === roles.admin && (
+          {/* {auth.role === roles.admin && (
   <div className="loan-form-checkbox-group">
     <h4>Tipo de material retirado</h4>
     <label>
@@ -138,7 +142,7 @@ useEffect(() => {
       </select>
     )}
   </div>
-)}
+)} */}
 
 
 
@@ -171,13 +175,13 @@ useEffect(() => {
           )}
 
 
-          <div className="loan-form-input-group">
+          {/* <div className="loan-form-input-group">
             <h4>Libro</h4>
             <label>Título</label>
             <input name="bookTitle" value={formData.bookTitle} onChange={handleChange} />
             <label>Código</label>
             <input name="bookCode" value={formData.bookCode} onChange={handleChange} />
-          </div>
+          </div> */}
         </form>
       </div>
     </aside>

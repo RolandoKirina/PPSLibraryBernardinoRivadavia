@@ -157,26 +157,27 @@ export const getAll = async (filters) => {
   });
 
   // 🔁 Transformar a array plano
-const groupedLoans = loans.map(loan => ({
-  loanId: loan?.id || '',
-  retiredDate: loan.retiredDate,
-  expectedDate: loan.LoanBooks?.[0]?.expectedDate || '', 
-  returnedDate: loan.LoanBooks?.[0]?.returnedDate || '',
-  withdrawalTime: loan?.withdrawalTime || '',
-  loanType: loan.LoanType?.description || '',
-  employee: loan.Employee?.name || '',
-  employeeCode: loan.Employee?.code || '',
-  partnerId: loan.Partner?.id || null,
-  partnerNumber: loan.Partner?.partnerNumber || '',
-  name: `${loan.Partner?.name || ''} ${loan.Partner?.surname || ''}`,
-  surname: loan.Partner?.surname || '',
-  homePhone: loan.Partner?.homePhone || '',
-  homeAddress: loan.Partner?.homeAddress || '',
-  books: loan.LoanBooks.map(book => ({
-    codeInventory: book.Book?.codeInventory || book.bookCode,
-    title: book.Book?.title || ''
-  }))
-}));
+  const groupedLoans = loans.map(loan => ({
+    loanId: loan?.id || '',
+    retiredDate: loan.retiredDate,
+    expectedDate: loan.LoanBooks?.[0]?.expectedDate || '',
+    returnedDate: loan.LoanBooks?.[0]?.returnedDate || '',
+    withdrawalTime: loan?.withdrawalTime || '',
+    loanType: loan.LoanType?.description || '',
+    employee: loan.Employee?.name || '',
+    employeeCode: loan.Employee?.code || '',
+    partnerId: loan.Partner?.id || null,
+    partnerNumber: loan.Partner?.partnerNumber || '',
+    name: `${loan.Partner?.name || ''} ${loan.Partner?.surname || ''}`,
+    surname: loan.Partner?.surname || '',
+    homePhone: loan.Partner?.homePhone || '',
+    homeAddress: loan.Partner?.homeAddress || '',
+    books: loan.LoanBooks.map(book => ({
+      codeInventory: book.Book?.codeInventory || book.bookCode,
+      title: book.Book?.title || '',
+      typeName: book.Book.BookType?.typeName || ''
+    }))
+  }));
 
 
   return groupedLoans;
@@ -335,14 +336,16 @@ export const update = async (id, updates) => {
   }
 };
 
-export const remove = async (id) =>{
-    const loan = await Loan.findByPk(id);
+export const remove = async (id) => {
+  const loan = await Loan.findByPk(id);
 
-      if (!loan) {
-        return null;
-      }
-  
-    return {
-        msg: "Loan deleted successfully",
-    }
+  if (!loan) {
+    return null;
+  }
+
+  await loan.destroy();
+
+  return {
+    msg: "Loan deleted successfully",
+  }
 }

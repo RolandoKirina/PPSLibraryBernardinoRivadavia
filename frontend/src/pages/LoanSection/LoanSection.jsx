@@ -3,6 +3,7 @@ import './LoanSection.css';
 import DeleteIcon from '../../assets/img/delete-icon.svg';
 import EditIcon from '../../assets/img/edit-icon.svg';
 import DetailsIcon from '../../assets/img/details-icon.svg';
+import BookIcon from '../../assets/img/add-book-icon.svg';
 import LoanButtons from "../../components/loan-components/loanbuttons/LoanButtons";
 import { useState } from "react";
 import LoanForm from "../../components/loan-components/loanform/LoanForm";
@@ -20,6 +21,7 @@ import { mockLoans } from "../../data/mocks/loans";
 import { useEntityManager } from "../../hooks/useEntityManager";
 import { useAuth } from "../../auth/AuthContext";
 import { useEntityManagerAPI } from "../../hooks/useEntityManagerAPI";
+import LoanBooks from "../../components/loan-components/loanbooks/LoanBooks";
 
 export default function LoanSection({ openRenewes, pendientBooks }) {
     //const { items: loanItems, getItem: getLoanItem, createItem: createLoanItem, updateItem: updateLoanItem, deleteItem: deleteLoanItem } = useEntityManager(mockLoans, 'loans');
@@ -31,6 +33,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
     const [returnsPopup, setReturnsPopup] = useState(false);
     const [listingsPopup, setListingsPopup] = useState(false);
     const [renewePopup, setRenewePopup] = useState(false);
+    const [booksPopup, setBooksPopup] = useState(false);
 
     const [filters, setFilters] = useState({});
 
@@ -155,10 +158,10 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
                 render: (_, row) => (
                     <button className="button-table" onClick={() => {
                         setSelected(row)
-                        setDetailsPopup(true)
+                        setBooksPopup(true)
                         // getLoanDetails(row)
                     }}>
-                        <img src={DetailsIcon} alt="Detalles" />
+                        <img src={BookIcon} alt="Detalles" />
                     </button>
                 )
             }
@@ -177,10 +180,10 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
                 render: (_, row) => (
                     <button className="button-table" onClick={() => {
                         setSelected(row)
-                        setDetailsPopup(true)
+                        setBooksPopup(true)
                         // getLoanDetails(row)
                     }}>
-                        <img src={DetailsIcon} alt="Detalles" />
+                        <img src={BookIcon} alt="Detalles" />
                     </button>
                 )
             }
@@ -193,12 +196,21 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
             key: 'deletePopup',
             title: 'Borrar prestamo',
             className: 'delete-size-popup',
-            content: <PopUpDelete title={"Prestamo"} onConfirm={
-                () => {
-                    deleteItem(selected.loanId);
-                    setDeletePopup(false)
-                }
-            } closePopup={() => setDeletePopup(false)} />,
+            content: 
+            // <PopUpDelete title={"Prestamo"} onConfirm={
+            //     () => {
+            //         deleteItem(selected.loanId);
+            //         setDeletePopup(false)
+            //     }
+            // } closePopup={() => setDeletePopup(false)} 
+            // />,
+
+            <PopUpDelete
+                title="Prestamo"
+                onConfirm={() => deleteItem(selected.loanId)} 
+                closePopup={() => setDeletePopup(false)}
+                refresh={() => getItems()} 
+            />,
             close: () => setDeletePopup(false),
             condition: deletePopup,
             variant: 'delete'
@@ -226,6 +238,14 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
             content: <ShowDetails data={selected} detailsData={loanDetailsInfo} isPopup={true} />,
             close: () => setDetailsPopup(false),
             condition: detailsPopup
+        },
+        {
+            key: 'booksPopup',
+            title: 'Libros del préstamo',
+            className: '',
+            content: <LoanBooks loanSelected={selected} />,
+            close: () => setBooksPopup(false),
+            condition: booksPopup   
         },
         {
             key: 'returnsPopup',

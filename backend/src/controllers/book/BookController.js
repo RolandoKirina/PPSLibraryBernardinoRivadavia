@@ -7,6 +7,7 @@ export const getAllBooks = async (req,res) => {
     try{
 
         const queryOptions = buildBookFilters(req.query);
+
         const books = await BookService.getAllBooks(queryOptions);
       
         res.status(HTTP_STATUS.OK.code).send(books);    

@@ -27,16 +27,16 @@ export default function EmployeeSection() {
     const [selected, setSelected] = useState(false);
 
     const {
-           items,
-           getItems,
-           // getItem: getGroupItem,
-           deleteItem,
-           createItem,
-           updateItem
+        items,
+        getItems,
+        // getItem: getGroupItem,
+        deleteItem,
+        createItem,
+        updateItem
     } = useEntityManagerAPI("employees");
 
     useEffect(() => {
-        getItems(); 
+        getItems();
     }, [items]);
 
     function handleAddItem(data) {
@@ -55,12 +55,12 @@ export default function EmployeeSection() {
             key: 'deletePopup',
             title: 'Borrar empleado',
             className: 'delete-size-popup',
-            content: <PopUpDelete title={"Empleado"} closePopup={() => setDeletePopup(false)} onConfirm={
-                () => {
-                    deleteItem(selected.id)
-                    setDeletePopup(false)
-                }
-            } />,
+            content: <PopUpDelete
+                title="Empleado"
+                onConfirm={() => deleteItem(selected.id)}
+                closePopup={() => setDeletePopup(false)}
+                refresh={() => getItems()}
+            />,
             close: () => setDeletePopup(false),
             condition: deletePopup,
             variant: 'delete'

@@ -1,11 +1,11 @@
 import LoanBook from '../../models/loan/LoanBook.js';
 
 export const getAll = async () => {
-    return await LoanBook.findAll();
+  return await LoanBook.findAll();
 };
 
 export const getOne = async (id) => {
-    return await LoanBook.findByPk(id);
+  return await LoanBook.findByPk(id);
 };
 
 export const create = async (loanbook, transaction = null) => {
@@ -21,23 +21,24 @@ export const update = async (id, updates, transaction = null) => {
   return await LoanBook.findByPk(id, { transaction });
 };
 
-export const remove = async (id) =>{
-    const loanBook = await LoanBook.findByPk(id);
+export const remove = async (id) => {
+  const loanBook = await LoanBook.findByPk(id);
 
-      if (!loanBook) {
-        return null;
-      }
-    await book.destroy();
-  
-    return {
-        msg: "LoanBook deleted successfully",
-        data: loanBook
-    }
+  if (!loanBook) {
+    return null;
+  }
+
+  await loanBook.destroy();
+
+  return {
+    msg: "LoanBook deleted successfully",
+    data: loanBook
+  }
 }
 
 export const removeAllLoanBooks = async (loanId) => {
   try {
-    const loanBooks= await LoanBook.findAll({
+    const loanBooks = await LoanBook.findAll({
       where: { loanId: loanId }
     });
 

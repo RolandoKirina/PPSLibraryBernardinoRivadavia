@@ -25,9 +25,9 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
   const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockBooksLoans, 'booksLoans');
   const [confirmSaveChangesPopup, setConfirmSaveChangesPopup] = useState(false);
   const [deletePopup, setDeletePopup] = useState(false);
-  const BASE_URL= "http://localhost:4000/api/v1";
+  const BASE_URL = "http://localhost:4000/api/v1";
 
-    const [loanData, setLoanData] = useState({
+  const [loanData, setLoanData] = useState({
     loanType: 'in_room',
     employeeCode: '',
     retiredDate: '',
@@ -42,59 +42,59 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
 
 
   const [books, setBooks] = useState([]);
-  
-    useEffect(() => {
-        getBooks();
 
-        if(method === 'update' && loanSelected?.loanId) {
-  
-        const fetchAllBooksFromLoan = async () => {
-           
-            const loanSelectedId = loanSelected.loanId;
+  useEffect(() => {
+    getBooks();
 
-            const booksFromLoan = await getBooks(loanSelectedId);
+    if (method === 'update' && loanSelected?.loanId) {
 
-            setLoanData({
-              loanType: loanSelected.loanType || 'in_room',
-              employeeCode: loanSelected.employeeCode || '',
-              retiredDate: loanSelected.retiredDate || '',
-              expectedDate: loanSelected.expectedDate || '', // corregido,
-              books: booksFromLoan || []
-            });
+      const fetchAllBooksFromLoan = async () => {
+
+        const loanSelectedId = loanSelected.loanId;
+
+        const booksFromLoan = await getBooks(loanSelectedId);
+
+        setLoanData({
+          loanType: loanSelected.loanType || 'in_room',
+          employeeCode: loanSelected.employeeCode || '',
+          retiredDate: loanSelected.retiredDate || '',
+          expectedDate: loanSelected.expectedDate || '', // corregido,
+          books: booksFromLoan || []
+        });
 
 
-       
-        }
 
-        fetchAllBooksFromLoan();
-
-        }
-        
-    }, []);
-
-    const getBooks = async (loanSelectedId) => {
-      try {
-         let url = loanSelectedId
-          ? `${BASE_URL}/books/withFields/loan/${loanSelectedId}`
-          : `${BASE_URL}/books/withFields`;
-
-          // let url =`${BASE_URL}/books/withFields`;
-
-          const response = await fetch(url);
-          if (!response.ok) throw new Error("Error al obtener libros");
-          const data = await response.json();
-
-          // Siempre actualizar el estado general
-          if (!loanSelectedId) {
-          setBooks(data); // libros generales
-          }
-
-          return data;
-      } catch (error) {
-          console.error(error);
-          return [];
       }
-    };
+
+      fetchAllBooksFromLoan();
+
+    }
+
+  }, []);
+
+  const getBooks = async (loanSelectedId) => {
+    try {
+      let url = loanSelectedId
+        ? `${BASE_URL}/books/withFields/loan/${loanSelectedId}`
+        : `${BASE_URL}/books/withFields`;
+
+      // let url =`${BASE_URL}/books/withFields`;
+
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Error al obtener libros");
+      const data = await response.json();
+
+      // Siempre actualizar el estado general
+      if (!loanSelectedId) {
+        setBooks(data); // libros generales
+      }
+
+      return data;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  };
 
 
 
@@ -104,7 +104,7 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
       employeeCode: loanData.employeeCode,
       retiredDate: loanData.retiredDate,
       expectedDate: loanData.expectedDate,
-      partnerName: loanData.partnerName, 
+      partnerName: loanData.partnerName,
       partnerNumber: loanData.partnerNumber,
       //     retiredHour: '11:00',
       books: loanData.books
@@ -212,35 +212,35 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
   ];
 
   const handleLoanTypeChange = (value, prev) => {
-  if (value === 'retired') {
-    const { readerDNI, readerName, ...rest } = prev;
-    return {
-      ...rest,
-      partnerName: prev.partnerName || '',
-      partnerNumber: prev.partnerNumber || '',
-      memoSearch: prev.memoSearch || '',
-      loanType: value
-    };
-  } else {
-    const { partnerName, partnerNumber, memoSearch, ...rest } = prev;
-    return {
-      ...rest,
-      readerDNI: prev.readerDNI || '',
-      readerName: prev.readerName || '',
-      loanType: value
-    };
-  }
-};
-
-const handleChange = (e) => {
-  const { name, value } = e.target;
-  setLoanData(prev => {
-    if (name === 'loanType') {
-      return handleLoanTypeChange(value, prev);
+    if (value === 'retired') {
+      const { readerDNI, readerName, ...rest } = prev;
+      return {
+        ...rest,
+        partnerName: prev.partnerName || '',
+        partnerNumber: prev.partnerNumber || '',
+        memoSearch: prev.memoSearch || '',
+        loanType: value
+      };
+    } else {
+      const { partnerName, partnerNumber, memoSearch, ...rest } = prev;
+      return {
+        ...rest,
+        readerDNI: prev.readerDNI || '',
+        readerName: prev.readerName || '',
+        loanType: value
+      };
     }
-    return { ...prev, [name]: value };
-  });
-};
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setLoanData(prev => {
+      if (name === 'loanType') {
+        return handleLoanTypeChange(value, prev);
+      }
+      return { ...prev, [name]: value };
+    });
+  };
 
 
 
@@ -265,37 +265,37 @@ const handleChange = (e) => {
 
             <div className='add-loan-form-inputs'>
               <div>
-  <h4>Tipo de Préstamo <span className='required'>*</span></h4>
-  <div>
-    {method === 'update' ? (
-  <p><strong>Tipo de préstamo:</strong> {loanData.loanType === 'in_room' ? 'En sala' : 'Retirado'}</p>
-) : (
-  <>
-    <label>
-      <input
-        type='radio'
-        name='loanType'
-        value='in_room'
-        checked={loanData.loanType === 'in_room'}
-        onChange={handleChange}
-      />
-      En sala
-    </label>
-    <label>
-      <input
-        type='radio'
-        name='loanType'
-        value='retired'
-        checked={loanData.loanType === 'retired'}
-        onChange={handleChange}
-      />
-      Retirado
-    </label>
-  </>
-)}
+                <h4>Tipo de Préstamo <span className='required'>*</span></h4>
+                <div>
+                  {method === 'update' ? (
+                    <p><strong>Tipo de préstamo:</strong> {loanData.loanType === 'in_room' ? 'En sala' : 'Retirado'}</p>
+                  ) : (
+                    <>
+                      <label>
+                        <input
+                          type='radio'
+                          name='loanType'
+                          value='in_room'
+                          checked={loanData.loanType === 'in_room'}
+                          onChange={handleChange}
+                        />
+                        En sala
+                      </label>
+                      <label>
+                        <input
+                          type='radio'
+                          name='loanType'
+                          value='retired'
+                          checked={loanData.loanType === 'retired'}
+                          onChange={handleChange}
+                        />
+                        Retirado
+                      </label>
+                    </>
+                  )}
 
-  </div>
-</div>
+                </div>
+              </div>
 
 
               <div className='add-loan-code-employee input'>
@@ -332,29 +332,29 @@ const handleChange = (e) => {
             </div>
 
             {partnerSource.loanType === 'retired' ? (
-  <SearchPartner
-    method={method}
-    menu={setPopupView}
-    onDataChange={handleExtraData}
-    loanType={'retired'}
-    partnerData={{
-      partnerName: partnerSource.name,
-      partnerNumber: partnerSource.partnerNumber,
-      memoSearch: partnerSource.memoSearch
-    }}
-  />
-) : (
-  <Reader
-    method={method}
-    menu={setPopupView}
-    onDataChange={handleExtraData}
-    loanType={'in_room'}
-    readerData={{
-      readerDNI: readerSource.readerDNI,
-      readerName: readerSource.readerName
-    }}
-  />
-)}
+              <SearchPartner
+                method={method}
+                menu={setPopupView}
+                onDataChange={handleExtraData}
+                loanType={'retired'}
+                partnerData={{
+                  partnerName: partnerSource.name,
+                  partnerNumber: partnerSource.partnerNumber,
+                  memoSearch: partnerSource.memoSearch
+                }}
+              />
+            ) : (
+              <Reader
+                method={method}
+                menu={setPopupView}
+                onDataChange={handleExtraData}
+                loanType={'in_room'}
+                readerData={{
+                  readerDNI: readerSource.readerDNI,
+                  readerName: readerSource.readerName
+                }}
+              />
+            )}
 
 
             <div className='lend-books-container'>
@@ -379,7 +379,7 @@ const handleChange = (e) => {
           {confirmSaveChangesPopup && (
             <PopUp title={'Guardar préstamo'} onClick={() => setConfirmSaveChangesPopup(false)}>
               <ConfirmMessage text={'¿Está seguro de guardar el nuevo prestamo?'} closePopup={() => setConfirmSaveChangesPopup(false)} onConfirm={() => {
-                if(method === 'update') {
+                if (method === 'update') {
                   handleEditLoan();
                 }
                 else {

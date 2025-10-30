@@ -1,16 +1,5 @@
 export const loanDetailsInfo = [
   {
-    id: 1,
-    title: 'Datos del Libro',
-    active: false,
-    rows: [
-      [
-        { label: 'Código de Libro', value: 'información', attribute: 'codeInventory' },
-        { label: 'Título', value: 'información', attribute: 'title' }
-      ],
-    ]
-  },
-  {
     id: 2,
     title: 'Lector',
     active: false,
