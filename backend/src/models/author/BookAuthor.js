@@ -22,6 +22,10 @@ const BookAuthor = sequelize.define("BookAuthor",
             type: DataTypes.INTEGER,
             field: "CodAutor",
         },
+        authorName:{
+            type: DataTypes.TEXT,
+            field: 'Nombre'
+        },
         position: {
             type: DataTypes.INTEGER,
             field: "Posicion"

@@ -1,7 +1,28 @@
 import Fee from "../../models/fee/Fee.js";
+import Partner from "../../models/partner/Partner.js";
 
-export const getAll = async () => {
-    return await Fee.findAll();
+export const getAll = async (filters) => {
+    const {
+        name,
+        surname,
+        paymentdate
+    } = filters;
+
+     return await Fee.findAll({
+    include: [
+      {
+        model: Partner,
+        as: "Partner",
+        where: {
+          ...name,
+          ...surname
+        }
+      }
+    ],
+    where: {
+      ...paymentdate
+    }
+  });
 };
 
 export const getById = async (id) => {

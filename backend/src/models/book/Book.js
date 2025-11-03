@@ -87,9 +87,15 @@ const Book = sequelize.define("Book",
       type: DataTypes.BOOLEAN,
       field: "Perdido"
     },
+    ubication:{
+      type: DataTypes.TEXT,
+      field: "Ubicacion"
+    },
+    pages: {
+      type: DataTypes.SMALLINT,
+       field: "Paginas"
+    }
     
-  /*
-    ubication*/
   },
   {
     underscored: true,

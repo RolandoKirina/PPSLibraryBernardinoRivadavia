@@ -1,13 +1,16 @@
 import * as FeeService from "../../services/fee/FeeService.js";
 import { HTTP_STATUS } from "../../https/httpsStatus.js";
+import { buildFeeFilters } from "../../utils/buildFeeFilters.js";
 
 export const getAllFees = async (req, res) => {
     try {
-        const fees = await FeeService.getAllFees();
-        res.json(fees);
+        
+        const queryOptions = buildFeeFilters(req.query);
+        const fees = await FeeService.getAllFees(queryOptions);
+        res.status(HTTP_STATUS.OK.code).send(fees);  
     } catch (e) {
         console.error(e);
-        res.status(500).json({ msg: "error" });
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
 };
 

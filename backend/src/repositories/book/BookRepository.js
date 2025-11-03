@@ -21,7 +21,7 @@ export const getAll = async (filters) => {
   } = filters;
 
   return await Book.findAll({
-    subQuery: false, //usarlo cuando hay includes + order + limit
+    subQuery: false, // usalo cuando hay includes + order + limit
     where: {
       ...whereCodeInventory,
       ...whereCodeCDU,
@@ -34,25 +34,20 @@ export const getAll = async (filters) => {
       {
         model: BookAuthor,
         as: 'BookAuthors',
-        attributes: ['bookAuthorId'],
         include: [
           {
             model: Authors,
             as: 'Author',
-            where: whereAuthor,
-            attributes: ['name']
+            where: whereAuthor
           }
         ]
       }
     ],
     order,
     limit,
-    offset,
-    attributes: ['title', 'codeInventory', 'codeCDU']
+    offset
   });
 };
-
-
 export const getAllWithFields = async () => {
 
   return await Book.findAll({

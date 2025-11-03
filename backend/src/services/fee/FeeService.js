@@ -1,7 +1,7 @@
 import * as FeeRepository from "../../repositories/fee/FeeRepository.js";
 
-export const getAllFees = async () => {
-    const fees = await FeeRepository.getAll();
+export const getAllFees = async (filters) => {
+    const fees = await FeeRepository.getAll(filters);
     return fees;
 };
 
