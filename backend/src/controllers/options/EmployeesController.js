@@ -1,9 +1,13 @@
 import * as EmployeesService from '../../services/options/EmployeesService.js';
 import { HTTP_STATUS } from '../../https/httpsStatus.js';
+import { buildEmployeeFilters } from '../../utils/buildEmployeeFilters.js';
 
 export const getAllEmployees = async (req, res) => {
     try {
-        const result = await EmployeesService.getAllEmployees();
+        const queryOptions = buildEmployeeFilters(req.query); 
+
+        const result = await EmployeesService.getAllEmployees(queryOptions);
+
         res.status(HTTP_STATUS.OK.code).send(result);
     } catch (error) {
         console.error(error);

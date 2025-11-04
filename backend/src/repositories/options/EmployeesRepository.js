@@ -1,7 +1,17 @@
 import Employees from '../../models/options/Employees.js';
 
-export const getAll = async () => {
-    return await Employees.findAll();
+export const getAll = async (filters) => {
+    const {
+        whereEmployee
+    } = filters;
+
+    console.log("work");
+
+    return await Employees.findAll(
+        { 
+            where: whereEmployee
+        }
+    );
 };
 
 export const getOne = async (id) => {

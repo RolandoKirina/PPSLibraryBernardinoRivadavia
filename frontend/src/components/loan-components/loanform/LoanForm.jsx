@@ -18,13 +18,12 @@ import { editLoanformFields } from '../../../data/forms/LoanForms';
 import UnpaidFees from '../unpaidfees/UnpaidFees';
 import { pendingbooks } from "../../../data/mocks/pendingbooks.js";
 import { useEffect } from 'react';
+import { useEntityLookup } from '../../../hooks/useEntityLookup.js';
 
 
 export default function LoanForm({ method, createLoanItem, loanSelected }) {
   const [popupView, setPopupView] = useState("default");
-  const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockBooksLoans, 'booksLoans');
   const [confirmSaveChangesPopup, setConfirmSaveChangesPopup] = useState(false);
-  const [deletePopup, setDeletePopup] = useState(false);
   const BASE_URL = "http://localhost:4000/api/v1";
 
   const [loanData, setLoanData] = useState({
@@ -39,6 +38,8 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
 
   const partnerSource = isUpdate ? loanSelected : loanData;
   const readerSource = isUpdate ? loanSelected : loanData;
+
+  const { data: employeeInfo, error: employeeError, loading: employeeLoading } = useEntityLookup(loanData.employeeCode, `${BASE_URL}/employees?code=`);
 
 
   const [books, setBooks] = useState([]);
@@ -251,6 +252,7 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
       return updated;
     });
   };
+  
 
 
   return (
@@ -305,8 +307,16 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
                   name='employeeCode'
                   value={loanData.employeeCode}
                   onChange={handleChange}
+                  placeholder="Ej: EMP123"
                 />
-                <span className='found'>Fortunato, Jorge</span>
+                {employeeInfo && (
+                  <span className='found'>Empleado: {employeeInfo.name}</span>
+                )}
+                {employeeError && (
+                  <span className='not-found'>{employeeError}</span>
+                )}
+                {employeeLoading && <p className="status-text loading-text">Buscando empleado...</p>}
+
               </div>
 
               <div className='add-loan-retire-date input'>
