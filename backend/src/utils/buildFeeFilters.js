@@ -4,32 +4,37 @@ export const buildFeeFilters = (query) => {
   const {
     name,
     surname,
-    paymentdate
+    paymentdate,
+    unpaidfees,
   } = query;
 
-  const whereName = {};
-  const whereSurname = {};
-  const wherepaymentdate = {};
+  const whereFees = {};
+  const wherePartner ={};
 
-  if (name && name.trim() !== '') {
-    whereName.name = {
-      [Op.iLike]: `%${name.trim()}%`
+  const unpaid = unpaidfees === "true";
+    if (name && name.trim() !== '') {
+    wherePartner.name = {
+        [Op.iLike]: `%${name.trim()}%`
+    };
     }
-  }
 
-  if (surname && surname.trim() !== '') {
-    whereSurname.surname = {
-      [Op.iLike]: `%${surname.trim()}%`
+    if (surname && surname.trim() !== '') {
+    wherePartner.surname = {
+        [Op.iLike]: `%${surname.trim()}%`
+    };
+    
+    if (unpaid === true) {
+            whereFees.paid = false;
+    }   
+    else{
+        whereFees.paid = true;
     }
-  }
-
+    }
    if (paymentdate) {
-    wherepaymentdate.date_of_paid = { [Op.gte]: new Date(paymentdate) };
+     whereFees.date_of_paid = { [Op.eq]: new Date(paymentdate) };
    }
-
   return {
-    whereName,
-    whereSurname,
-    wherepaymentdate
+    wherePartner,
+    whereFees,
   };
 }

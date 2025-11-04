@@ -13,7 +13,7 @@ import BookKey from './book/BookKey.js';
 import Signs from './book/Signs.js';
 
 // Fee
-import Fees from './fee/fee.js';
+import Fees from './fee/Fee.js';
 import LastGeneration from './fee/LastGeneration.js';
 
 // Loan

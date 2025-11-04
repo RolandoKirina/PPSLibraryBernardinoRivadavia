@@ -1,36 +1,33 @@
-import Fee from "../../models/fee/Fee.js";
+import Fees from "../../models/fee/Fee.js";
 import Partner from "../../models/partner/Partner.js";
 
 export const getAll = async (filters) => {
     const {
-        name,
-        surname,
-        paymentdate
+       wherePartner,
+        whereFees,
+
     } = filters;
 
-     return await Fee.findAll({
-    include: [
-      {
-        model: Partner,
-        as: "Partner",
-        where: {
-          ...name,
-          ...surname
+     return await Fees.findAll({
+        include: [
+        {
+            model: Partner,
+            as: "Partner",
+            where: 
+            wherePartner           
         }
-      }
-    ],
-    where: {
-      ...paymentdate
-    }
+        ],
+        where: whereFees
+        
   });
 };
 
 export const getById = async (id) => {
-    return await Fee.findByPk(id);
+    return await Fees.findByPk(id);
 };
 
 export const create = async (fee) => {
-    return await Fee.create(fee);
+    return await Fees.create(fee);
 };
 
 export const update = async (id, fee) => {
@@ -38,11 +35,11 @@ export const update = async (id, fee) => {
     if (rowsUpdated === 0) {
         return null;
     }
-    return await Fee.findByPk(id);
+    return await Fees.findByPk(id);
 };
 
 export const remove = async (id) => {
-    const fee = await Fee.findByPk(id);
+    const fee = await Fees.findByPk(id);
 
     if (!fee) {
         return null;
