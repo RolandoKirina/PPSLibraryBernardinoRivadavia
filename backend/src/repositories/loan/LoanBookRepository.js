@@ -4,6 +4,35 @@ export const getAll = async () => {
   return await LoanBook.findAll();
 };
 
+export const verifyIfBookIsNotRepeated = async (id) => {
+  const res = await LoanBook.findOne({
+    where: {
+      BookId: id,
+      returnedDate: null
+    }
+  });
+
+  if (res !== null) {
+    console.log(res);
+    console.log("s");
+    return {
+      available: false,
+      message: 'El libro ya ha sido prestado y no puede ser añadido al préstamo.',
+      currentLoan: {
+        loanId: res.loanId,
+        partnerName: `${res.Loan?.Partner?.name || ''} ${res.Loan?.Partner?.surname || ''}`,
+        expectedDate: res.expectedDate
+      }
+    };
+  }
+
+  return {
+    available: true,
+    message: 'El libro está disponible para ser prestado.'
+  };
+};
+
+
 export const getOne = async (id) => {
   return await LoanBook.findByPk(id);
 };

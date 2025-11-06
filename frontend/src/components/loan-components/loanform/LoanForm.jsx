@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './LoanForm.css';
 import SearchPartner from '../searchpartner/SearchPartner';
 import Reader from '../reader/Reader';
@@ -17,14 +17,13 @@ import { books } from '../../../data/mocks/authors';
 import { editLoanformFields } from '../../../data/forms/LoanForms';
 import UnpaidFees from '../unpaidfees/UnpaidFees';
 import { pendingbooks } from "../../../data/mocks/pendingbooks.js";
-import { useEffect } from 'react';
 import { useEntityLookup } from '../../../hooks/useEntityLookup.js';
-
 
 export default function LoanForm({ method, createLoanItem, loanSelected }) {
   const [popupView, setPopupView] = useState("default");
   const [confirmSaveChangesPopup, setConfirmSaveChangesPopup] = useState(false);
   const BASE_URL = "http://localhost:4000/api/v1";
+  const [addBookMessage, setAddBookMessage] = useState('');
 
   const [loanData, setLoanData] = useState({
     loanType: 'in_room',
@@ -39,8 +38,10 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
   const partnerSource = isUpdate ? loanSelected : loanData;
   const readerSource = isUpdate ? loanSelected : loanData;
 
-  const { data: employeeInfo, error: employeeError, loading: employeeLoading } = useEntityLookup(loanData.employeeCode, `${BASE_URL}/employees?code=`);
+  // 🔹 Error unificado
+  const [validateError, setValidateError] = useState('');
 
+  const { data: employeeInfo, error: employeeError, loading: employeeLoading } = useEntityLookup(loanData.employeeCode, `${BASE_URL}/employees?code=`);
 
   const [books, setBooks] = useState([]);
 
@@ -48,29 +49,21 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
     getBooks();
 
     if (method === 'update' && loanSelected?.loanId) {
-
       const fetchAllBooksFromLoan = async () => {
-
         const loanSelectedId = loanSelected.loanId;
-
         const booksFromLoan = await getBooks(loanSelectedId);
 
         setLoanData({
           loanType: loanSelected.loanType || 'in_room',
           employeeCode: loanSelected.employeeCode || '',
           retiredDate: loanSelected.retiredDate || '',
-          expectedDate: loanSelected.expectedDate || '', // corregido,
+          expectedDate: loanSelected.expectedDate || '',
           books: booksFromLoan || []
         });
-
-
-
-      }
+      };
 
       fetchAllBooksFromLoan();
-
     }
-
   }, []);
 
   const getBooks = async (loanSelectedId) => {
@@ -79,17 +72,11 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
         ? `${BASE_URL}/books/withFields/loan/${loanSelectedId}`
         : `${BASE_URL}/books/withFields`;
 
-      // let url =`${BASE_URL}/books/withFields`;
-
       const response = await fetch(url);
       if (!response.ok) throw new Error("Error al obtener libros");
       const data = await response.json();
 
-      // Siempre actualizar el estado general
-      if (!loanSelectedId) {
-        setBooks(data); // libros generales
-      }
-
+      if (!loanSelectedId) setBooks(data);
       return data;
     } catch (error) {
       console.error(error);
@@ -97,9 +84,8 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
     }
   };
 
-
-
   function handleAddNewLoan() {
+    if (validateError) return;
     const newLoan = {
       loanType: loanData.loanType,
       employeeCode: loanData.employeeCode,
@@ -107,61 +93,82 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
       expectedDate: loanData.expectedDate,
       partnerName: loanData.partnerName,
       partnerNumber: loanData.partnerNumber,
-      //     retiredHour: '11:00',
       books: loanData.books
-    }
-
+    };
     createLoanItem(newLoan);
   }
 
   function handleEditLoan() {
+    if (validateError) return;
     const updatedLoan = {
       employeeCode: loanData.employeeCode,
       retiredDate: loanData.retiredDate,
       expectedDate: loanData.expectedDate,
-      //     retiredHour: '11:00',
       books: loanData.books
-
-    }
-
+    };
     createLoanItem(updatedLoan);
   }
 
-  function handleAddBook(book) {
+  async function handleAddBook(book) {
+    const res = await verifyIfExists(book.BookId);
+
+    if (!res.available) {
+      setAddBookMessage(`El libro "${book.title}" ya está prestado y no puede ser añadido.`);
+      return;
+    }
+
     setLoanData(prev => {
-      let alreadyExists = loanData.books.some(b => b.BookId === book.BookId);
+      const alreadyExists = prev.books.some(b => b.BookId === book.BookId);
 
       if (alreadyExists) {
+        setAddBookMessage(`El libro "${book.title}" ya fue añadido.`);
         return prev;
       }
 
-      return {
-        ...prev,
-        books: [...prev.books, book]
-      }
+      setAddBookMessage('');
+      setValidateError(''); 
+      return { ...prev, books: [...prev.books, book] };
+    });
+  }
 
+  async function verifyIfExists(bookId) {
+    try {
+      const res = await fetch(`${BASE_URL}/loan-books/repeated-book/${bookId}`);
+      if (!res.ok) throw new Error("Error al obtener datos");
+      const data = await res.json();
+      return data;
+    } catch (error) {
+      console.error(error);
+      return false;
     }
-    )
   }
 
   function handleDeleteBook(book) {
     setLoanData(prev => {
-      let alreadyExists = loanData.books.some(b => b.BookId === book.BookId);
-
-      if (!alreadyExists) {
-        return prev;
-      }
+      let alreadyExists = prev.books.some(b => b.BookId === book.BookId);
+      if (!alreadyExists) return prev;
 
       let booksUpdated = prev.books.filter(b => b.BookId !== book.BookId);
-
-      return {
-        ...prev,
-        books: booksUpdated
-      }
-
-    }
-    )
+      return { ...prev, books: booksUpdated };
+    });
   }
+
+  const validateBeforeSave = () => {
+
+    if (loanData.retiredDate && loanData.expectedDate && new Date(loanData.expectedDate) < new Date(loanData.retiredDate)) {
+      setValidateError('La fecha prevista no puede ser anterior a la fecha de retiro.');
+      return false;
+    }
+
+    if (!loanData.books || loanData.books.length === 0) {
+      setValidateError('Debe agregar al menos un libro antes de guardar el préstamo.');
+      console.log(validateError);
+      return false;
+    }
+
+    setValidateError('');
+    return true;
+  };
 
   const bookshelfBooksColumns = [
     { header: 'Codigo', accessor: 'codeInventory' },
@@ -175,14 +182,14 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
         </button>
       )
     }
-  ]
+  ];
 
   const columns = [
     { header: 'Código del libro', accessor: 'codeInventory' },
     { header: 'Título', accessor: 'title' },
   ];
 
-  const lendBooksColumns = [ //igual que mainAuthorBooksColumns pero solo se muestran 3 columnas
+  const lendBooksColumns = [
     { header: 'Código del libro', accessor: 'codeInventory' },
     { header: 'Título', accessor: 'title' },
     { header: 'Posición', accessor: 'position' },
@@ -190,9 +197,7 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
       header: 'Borrar',
       accessor: 'delete',
       render: (_, row) => (
-        <button type='button' className="button-table" onClick={() => {
-          handleDeleteBook(row);
-        }}>
+        <button type='button' className="button-table" onClick={() => handleDeleteBook(row)}>
           <img src={DeleteIcon} alt="Borrar" />
         </button>
       )
@@ -215,49 +220,39 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
   const handleLoanTypeChange = (value, prev) => {
     if (value === 'retired') {
       const { readerDNI, readerName, ...rest } = prev;
-      return {
-        ...rest,
-        partnerName: prev.partnerName || '',
-        partnerNumber: prev.partnerNumber || '',
-        memoSearch: prev.memoSearch || '',
-        loanType: value
-      };
+      return { ...rest, partnerName: prev.partnerName || '', partnerNumber: prev.partnerNumber || '', memoSearch: prev.memoSearch || '', loanType: value };
     } else {
       const { partnerName, partnerNumber, memoSearch, ...rest } = prev;
-      return {
-        ...rest,
-        readerDNI: prev.readerDNI || '',
-        readerName: prev.readerName || '',
-        loanType: value
-      };
+      return { ...rest, readerDNI: prev.readerDNI || '', readerName: prev.readerName || '', loanType: value };
     }
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     setLoanData(prev => {
-      if (name === 'loanType') {
-        return handleLoanTypeChange(value, prev);
+      const updated = { ...prev, [name]: value };
+      if (name === 'retiredDate' || name === 'expectedDate') {
+        // Validar inmediatamente fechas para mostrar mensaje rápido
+        if (updated.retiredDate && updated.expectedDate && new Date(updated.expectedDate) < new Date(updated.retiredDate)) {
+          setValidateError('La fecha prevista no puede ser anterior a la fecha de retiro.');
+        } else {
+          setValidateError('');
+        }
       }
-      return { ...prev, [name]: value };
+      return updated;
     });
   };
-
-
 
   const handleExtraData = (newData) => {
     setLoanData(prev => {
       const updated = { ...prev, ...newData };
-      console.log("Préstamo actualizado con datos externos:", updated);
       return updated;
     });
   };
-  
-
 
   return (
     <div className='add-loan-form-container'>
-
       {popupView === 'default' && (
         <div className='add-loan-form-content'>
           <form>
@@ -295,10 +290,8 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
                       </label>
                     </>
                   )}
-
                 </div>
               </div>
-
 
               <div className='add-loan-code-employee input'>
                 <label>Código Empleado <span className='required'>*</span></label>
@@ -316,7 +309,6 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
                   <span className='not-found'>{employeeError}</span>
                 )}
                 {employeeLoading && <p className="status-text loading-text">Buscando empleado...</p>}
-
               </div>
 
               <div className='add-loan-retire-date input'>
@@ -338,7 +330,6 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
                   onChange={handleChange}
                 />
               </div>
-
             </div>
 
             {partnerSource.loanType === 'retired' ? (
@@ -366,45 +357,62 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
               />
             )}
 
-
             <div className='lend-books-container'>
               <h2 className='lend-books-title'>Libros a Prestar</h2>
 
               <Table columns={columns} data={loanData.books}>
                 <div className='add-book-to-lend'>
-                  <Btn variant={'primary'} text={'Agregar Libro'} onClick={() => setPopupView('addBook')} icon={<img src={AddBookIcon} alt='addBookIconButton' />} />
+                  <Btn
+                    variant={'primary'}
+                    text={'Agregar Libro'}
+                    onClick={() => setPopupView('addBook')}
+                    icon={<img src={AddBookIcon} alt='addBookIconButton' />}
+                  />
                 </div>
               </Table>
+
+
             </div>
 
             <div className='save-changes-lend-books'>
-              <Btn type={'button'} variant={'primary'} text={'Guardar'} onClick={() => {
-                setConfirmSaveChangesPopup(true);
+              <div className='validate-error'>
+                {validateError && (
+                  <p className="error-text">{validateError}</p>
+                )}
+              </div>
 
-              }} icon={<img src={SaveIcon} alt='saveIconButton' />} />
+              <Btn
+                type={'button'}
+                variant={'primary'}
+                text={'Guardar'}
+                onClick={() => {
+                  if (validateBeforeSave()) setConfirmSaveChangesPopup(true);
+                }}
+                icon={<img src={SaveIcon} alt='saveIconButton' />}
+              />
             </div>
-
           </form>
 
           {confirmSaveChangesPopup && (
             <PopUp title={'Guardar préstamo'} onClick={() => setConfirmSaveChangesPopup(false)}>
-              <ConfirmMessage text={'¿Está seguro de guardar el nuevo prestamo?'} closePopup={() => setConfirmSaveChangesPopup(false)} onConfirm={() => {
-                if (method === 'update') {
-                  handleEditLoan();
-                }
-                else {
-                  handleAddNewLoan();
-                }
-                setConfirmSaveChangesPopup(false);
-              }} />
+              <ConfirmMessage
+                text={'¿Está seguro de guardar el nuevo préstamo?'}
+                closePopup={() => setConfirmSaveChangesPopup(false)}
+                onConfirm={() => {
+                  if (method === 'update') handleEditLoan();
+                  else handleAddNewLoan();
+                  setConfirmSaveChangesPopup(false);
+                }}
+              />
             </PopUp>
           )}
+
+
         </div>
       )}
 
       {popupView === 'addBook' && (
         <>
-
           <BackviewBtn menu={'default'} changeView={setPopupView} />
           <div className='author-books-container'>
             <div className='library-books'>
@@ -420,7 +428,12 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
               <Table columns={lendBooksColumns} data={loanData.books} />
             </div>
           </div>
+          {addBookMessage && (
+            <div className='add-books-error'>
+              <p style={{ color: 'red', marginTop: '0.5rem' }}>{addBookMessage}</p>
+            </div>
 
+          )}
         </>
       )}
 
@@ -434,7 +447,11 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
       {popupView === 'editUnpaidFees' && (
         <>
           <BackviewBtn menu={'unpaidFees'} changeView={setPopupView} />
-          <GenericForm title={'Editar cuota pendiente'} fields={editLoanformFields} onSubmit={(data) => console.log('Formulario enviado:', data)} />
+          <GenericForm
+            title={'Editar cuota pendiente'}
+            fields={editLoanformFields}
+            onSubmit={(data) => console.log('Formulario enviado:', data)}
+          />
         </>
       )}
 
@@ -444,8 +461,6 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
           <BackviewBtn menu={'default'} changeView={setPopupView} />
         </>
       )}
-
-
     </div>
   );
 }

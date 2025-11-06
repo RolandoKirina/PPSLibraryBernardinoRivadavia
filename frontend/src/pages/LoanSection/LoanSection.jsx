@@ -48,7 +48,6 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
     } = useEntityManagerAPI("loans");
 
 
-
     useEffect(() => {
         if (openRenewes) {
             setRenewePopup(true);
@@ -68,24 +67,19 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
 
     useEffect(() => {
         getItems();
-    }, []);
+    }, [items]);
 
-    async function handleAddItem(data) {
-        try {
-            const res = await createItem(data);
-            if (!res.ok) {
-                throw new Error("Error al obtener datos");
-            }
-            else {
-                setAddPopup(false);
-                console.log("s");
-            }
+async function handleAddItem(data) {
+  try {
+    const res = await createItem(data);
+    console.log("Respuesta:", res);
 
-        }
-        catch (err) {
-            console.error(err);
-        }
-    }
+    setAddPopup(false);
+    console.log("Préstamo creado con éxito");
+  } catch (err) {
+    console.error("Error al crear préstamo:", err);
+  }
+}
 
     async function handleUpdateItem(data) {
         try {

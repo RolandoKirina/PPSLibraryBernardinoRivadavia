@@ -4,6 +4,10 @@ export const getAllLoanBooks = async () => {
     return await LoanBookRepository.getAll();
 };
 
+export const verifyIfBookIsNotRepeated = async (id) => {
+    return await LoanBookRepository.verifyIfBookIsNotRepeated(id);
+};
+
 export const getLoanBook = async (id) => {
     return await LoanBookRepository.getOne(id);
 };

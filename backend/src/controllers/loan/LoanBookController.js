@@ -10,6 +10,25 @@ export const getAllLoanBooks = async (req, res) => {
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
 };
+export const verifyIfBookIsNotRepeated = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await LoanBookService.verifyIfBookIsNotRepeated(id);
+
+    return res.status(HTTP_STATUS.OK.code).json({
+      success: result.available,
+      ...result
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({
+      success: false,
+      message: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg
+    });
+  }
+};
+
+
 
 export const getLoanBook = async (req, res) => {
     try {

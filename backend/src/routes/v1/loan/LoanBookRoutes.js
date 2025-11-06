@@ -6,6 +6,9 @@ import * as LoanBookController from '../../../controllers/loan/LoanBookControlle
 const router = express.Router();
 
 router.get('/', LoanBookController.getAllLoanBooks);
+
+router.get('/repeated-book/:id', LoanBookController.verifyIfBookIsNotRepeated);
+
 router.get('/:id', validateIdParam("id"), LoanBookController.getLoanBook);
 router.post('/', LoanBookController.createLoanBook);
 router.put('/:id', validateIdParam("id"), LoanBookController.updateLoanBook);
