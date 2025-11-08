@@ -18,7 +18,6 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
     try {
       const res = await fetch(`${baseUrl}/${entityName}${query}`);
       if (!res.ok) {
-        console.log(res);
         throw new Error("Error al obtener datos");
       }
             
@@ -26,7 +25,6 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
       const data = await res.json();
       setItems(Array.isArray(data) ? data : []);
     } catch (err) {
-      console.error(err);
       setError(err.message);
     } finally {
       setLoading(false);

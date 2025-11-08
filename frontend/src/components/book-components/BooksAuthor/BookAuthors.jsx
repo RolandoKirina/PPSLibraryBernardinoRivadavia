@@ -6,63 +6,111 @@ import AuthorIcon from '../../../assets/img/author-icon.svg';
 import DeleteIcon from '../../../assets/img/delete-icon.svg';
 import Btn from '../../common/btn/Btn';
 import { useState, useEffect } from 'react';
-
-export default function BookAuthors({ authorsSelected, setAuthorsSelected }) {
+import {useEntityManagerAPI} from '../../../hooks/useEntityManagerAPI';
+export default function BookAuthors({ selectedBook }) {
 
     const [signature, setSignature] = useState("");
-    const { items: authorItems, getItem: getAuthorItem, createItem: createAuthorItem, updateItem: updateAuthorItem, deleteItem: deleteAuthorItem } = useEntityManager(mockAuthors, 'authors');
+    const { items: authorItems, getItems: getAuthorItems, createItem: createAuthorItem, updateItem: updateAuthorItem, deleteItem: deleteAuthorItem } = useEntityManagerAPI("authors");
 
-    useEffect(() => {
-        const newSignature = authorsSelected.map(author => author.authorName).join(" - ");
-        setSignature(newSignature);
-    }, [authorsSelected]);
-    function handleAddAuthorBook(author) {
+    const [authorsSelected, setAuthorsSelected] = useState(selectedBook.authors || []);
+     
+    const { items, getItems, getItem, createItem, updateItem, deleteItem } =
+       useEntityManagerAPI("book-authors");
+      
+
+
+        useEffect(() => {
+            if(authorsSelected){
+                const newSignature = authorsSelected.map(author => author.authorName).join(" - ");
+                setSignature(newSignature);
+            }
+        
+        }, [authorsSelected]);
+
+        useEffect(() => {
+        getItems(); 
+        getAuthorItems(); 
+        }, []);
+
+        useEffect(() => {
+  console.log("Autores seleccionados para el libro:", authorsSelected);
+}, [authorsSelected]);
+
+async function addAuthorBook(row){
+    
+                try {
+                
+                
+                const itemcreated = {
+                    bookId: selectedBook.BookId,  
+                    bookCode: selectedBook.codeInventory, 
+                    authorCode: row.id,
+                    authorName: row.name     
+                }
+                
+                return await createItem({
+                    itemcreated
+                });
+                
+                } catch (err) {
+                console.error("Error al crear relación libro-autor:", err);
+                }   
+            }
+
+
+    /*function handleAddAuthorBook(author) {
         const alreadyExists = authorsSelected.some(a => a.id === author.id);
         if (alreadyExists) return;
 
         setAuthorsSelected(prev => [...prev, author]);
 
 
-    }
+    }*/
 
     function handleDeleteAuthorBook(id) {
         setAuthorsSelected(prev => prev.filter(a => a.id !== id));
     }
 
-
-    let columns = [
+        let columns = [
         { header: 'Nombre', accessor: 'authorName' },
         { header: 'Nacionalidad', accessor: 'nationality' },
         {
             header: 'Agregar',
             accessor: 'add',
             render: (_, row) => (
-                <button type='button' className="button-table" onClick={() => {
-                    handleAddAuthorBook(row)
-                }}>
-                    <img src={AuthorIcon} alt="Agregar" />
-                </button>
+            <button
+                type='button'
+                className="button-table"
+                onClick={async () => {
+                await addAuthorBook(row);
+                }}
+            >
+                <img src={AuthorIcon} alt="Agregar" />
+            </button>
             )
         }
-    ];
+        ];
+    
 
     let columnsAddedAuthors = [
-        { header: 'Nombre', accessor: 'authorName' },
+        { header: 'Nombre', accessor: 'name' },
         { header: 'Nacionalidad', accessor: 'nationality' },
         {
             header: 'Borrar',
             accessor: 'delete',
-            render: (_, row) => (
-                <button type='button' className="button-table" onClick={() => {
-
-                    handleDeleteAuthorBook(row.id);
-                }}>
-                    <img src={DeleteIcon} alt="Borrar" />
+           render: (_, row) => (
+                <button
+                    type='button'
+                    className="button-table"
+                    onClick={() => addAuthorBook(row)}
+                >
+                    <img src={AuthorIcon} alt="Agregar" />
                 </button>
-            )
+                )
         }
     ];
 
+    
     return (
         <>
             <div className='book-authors-size'>

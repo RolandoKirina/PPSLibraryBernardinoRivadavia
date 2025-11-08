@@ -1,7 +1,7 @@
 import FeeFilter from '../../components/filter/feefilter/FeeFilter.jsx';
-import { useEntityManager } from '../../hooks/useEntityManager.js';
+import { useEntityManagerAPI } from '../../hooks/useEntityManagerAPI.js';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { fees } from '../../data/mocks/fees.js';
 import GenericSection from '../../components/generic/GenericSection/GenericSection.jsx';
@@ -23,24 +23,60 @@ import './FeeSection.css';
 export const FeeSection = () => {
 
   const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedId, setSelectedId]=useState(null);
   const [PopUpEdit, setPopupEdit] = useState(false);
   const [PopUpAdd, setPopupAdd] = useState(false);
   const [popupdelete, setPopUpDelete] = useState(false);
-
   const [PopUpDetail, setPopUpDetail] = useState(false);
   const [PopUpPaidFees, setPopUpPaidFees] = useState(false);
-
   const [PopUpFeesBetweenDates, setPopUpFeesBetweenDates] = useState(false);
+  const [filteredfees, setFilteredFees] = useState([]);
+
+  const { items, getItems, getItem, createItem, updateItem, deleteItem } = useEntityManagerAPI("fees");
 
 
-  const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(fees, "fees");
+  const [formData, setFormData] = useState({
+      partnerWithUnpaidFees: false,
+      name: "",
+      surname: "",
+      PaymentDate: "",
+    });
 
+     const handleFilterChange = (e) => {
+      const { name, value } = e.target;
+      const updated = { ...formData, [name]: value };
+      setFormData(updated);
+  };
+
+  useEffect(() => {
+    const filters = Object.fromEntries(
+        Object.entries(formData).filter(([_, v]) => v !== "")
+      );
+
+    const delay = setTimeout(() => {
+     if (Object.keys(filters).length > 0) {
+      getItems(filters);
+      setFilteredFees(items); // 👈 solo setea si hay filtros activos
+    }
+     else{
+      getItems(filters);
+      setFilteredFees([]);
+    }
+
+    }, 300);
+
+    return () => clearTimeout(delay);
+  }, [formData]);
+
+  
+
+
+   
   const columns = [
-    { header: 'Numero de cuota', accessor: 'id' },
-    { header: 'Nombre de socio', accessor: 'partnerName' },
+    { header: 'Numero de cuota', accessor: 'feeId' },
+    { header: 'Nombre de socio',  accessor: 'name'},
     { header: 'valor', accessor: 'amount' },
-    /*{ header: 'Cuotas Pagas', accessor: 'paidfees' },
-    {header:'Cuotas Impagas',accessor:'unpaidfees'},* esto ver con javi¨*/
+    {header: 'Numero de socio', accessor: 'partnerNumber'},
     {
       header: 'Borrar',
       accessor: 'delete',
@@ -48,8 +84,9 @@ export const FeeSection = () => {
       render: (_, row) => (
         <button className="button-table"
           onClick={() => {
-            setPopUpDelete(true)
-            setSelectedItem(row)
+               setSelectedId(row.feeId);
+               setPopUpDelete(true)
+               
           }}>
 
           <img src={DeleteIcon} alt="Borrar" />
@@ -63,8 +100,8 @@ export const FeeSection = () => {
       render: (_, row) => (
         <button className="button-table"
           onClick={() => {
+           () => setPopUpDelete(row)
             setPopupEdit(true)
-            setSelectedItem(row)
           }}
 
         >
@@ -98,14 +135,12 @@ export const FeeSection = () => {
       title: 'Borrar Cuota',
       className: 'delete-size-popup',
       content: <PopUpDelete
-        title={"Borrar la cuota"}
-        onConfirm={() => {
-          deleteItem(selectedItem.id);
-          setPopUpDelete(false);
-        }}
-        closePopup={() => setPopUpDelete(false)} />,
-      close: () => setPopUpDelete(false),
-      condition: popupdelete,
+        title={"item"}
+        onConfirm={() => deleteItem(selectedId)} 
+        closePopup={() => setPopUpDelete(false)}
+        refresh={() => getItems()} />,
+        close: () => setPopUpDelete(false),
+        condition: popupdelete,
     },
     {
       key: 'editPopup',
@@ -150,15 +185,15 @@ export const FeeSection = () => {
   return (
     <>
 
-      <GenericSection title="Listado de cuotas" filters={<FeeFilter />}
+      <GenericSection title="Listado de cuotas" filters={<FeeFilter formData={formData || { partnerWithUnpaidFees: false, name: "", surname: "", PaymentDate: "" }} onChange={handleFilterChange} filteredfees={filteredfees} />}
+
+      
         columns={columns} data={items} popups={feesPopUp}
         actions={
           <div className='fees-actions'>
-
             <Btn text="Cuotas pagas" variant="primary" onClick={() => setPopUpPaidFees(true)}></Btn>
             <Btn text="Agregar cuota" variant="primary" onClick={() => setPopupAdd(true)}></Btn>
             <Btn text="Cuotas entre fechas" variant="primary" onClick={() => setPopUpFeesBetweenDates(true)}></Btn>
-
           </div>
         }
 

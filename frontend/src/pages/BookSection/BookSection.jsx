@@ -67,7 +67,7 @@ const { items, getItems, getItem, createItem, updateItem, deleteItem } =
 
       const delay = setTimeout(() => {
         getItems(filters);
-      }, 300); // espera 300ms
+      }, 300); 
 
       return () => clearTimeout(delay);
 }, [formData, items]);
@@ -140,6 +140,7 @@ let columns =[];
           { header: 'Codigo de CDU', accessor: 'codeCDU' }];
 
   }
+  
   const booksPopUp = [
     {
       key: 'deletePopup',

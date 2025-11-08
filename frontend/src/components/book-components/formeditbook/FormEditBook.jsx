@@ -8,7 +8,7 @@ import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
 
 export default function FormEditBook({ selectedBook }) {
     const [popupView, setPopupView] = useState('default');
-    const [authorsSelected, setAuthorsSelected] = useState(selectedBook.authors);
+    //const [authorsSelected, setAuthorsSelected] = useState(selectedBook.authors || []);
     const entityManagerApi = useEntityManagerAPI("books");
     const {items:booksTypes,getItems:getBookTypes,deleteItem,createItem,updateItem} = useEntityManagerAPI("book-types");
    
@@ -17,9 +17,10 @@ export default function FormEditBook({ selectedBook }) {
     const [selectedLost, setSelectedLost] = useState("");
 
     let title = "Libros";
-useEffect(() => {
-    getBookTypes();
-}, []);
+    useEffect(() => {
+        getBookTypes();
+        console.log(selectedBook.authors)
+    }, []);
 
 
 useEffect(() => {
@@ -383,8 +384,9 @@ useEffect(() => {
                 <div className="books-author-container">
                 <BackviewBtn menu={"default"} changeView={setPopupView} />
                 <BookAuthors
-                    authorsSelected={authorsSelected}
-                    setAuthorsSelected={setAuthorsSelected}
+                    selectedBook={selectedBook}
+                    //authorsSelected={authorsSelected}
+                    //setAuthorsSelected={setAuthorsSelected}
                 />
                 </div>
             </>

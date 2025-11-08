@@ -8,6 +8,7 @@ export const buildFeeFilters = (query) => {
     unpaidfees,
   } = query;
 
+  console.log(query)
   const whereFees = {};
   const wherePartner ={};
 
