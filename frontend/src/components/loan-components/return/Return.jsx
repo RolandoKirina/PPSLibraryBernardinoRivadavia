@@ -19,7 +19,8 @@ import Btn from '../../common/btn/Btn';
 import { useAuth } from '../../../auth/AuthContext';
 import roles from '../../../auth/roles';
 import { pendingbooks } from "../../../data/mocks/pendingbooks.js";
-
+import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI.js';
+import { useEffect } from 'react';
 
 export default function Return() {
     //cuando se usan los inputs de partner se filtran las devoluciones y se pueden renovar, devolver o devolver todos
@@ -33,12 +34,32 @@ export default function Return() {
     const [selected, setSelected] = useState(null);
 
     const [popupView, setPopupView] = useState("default");
+
     const [partnerData, setPartnerData] = useState({
         partnerName: '',
         partnerNumber: '',
     });
 
-    const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockBooksLoans, 'booksLoans');
+    const [filters, setFilters] = useState({});
+
+
+    //const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockBooksLoans, 'booksLoans');
+
+    const {
+        items,
+        getItems,
+        deleteItem,
+        createItem,
+        updateItem
+    } = useEntityManagerAPI("loans/returns");
+
+    useEffect(() => {
+        const delay = setTimeout(() => {
+            getItems(filters);
+        }, 500);
+
+        return () => clearTimeout(delay);
+    }, [filters]);
 
     const returnBooksPopups = [
         {
@@ -167,7 +188,7 @@ export default function Return() {
             header: 'Devuelto', accessor: 'returned',
             render: (value) => value ? 'Sí' : 'No'
         }
-    ]; 
+    ];
 
     const handleExtraData = (newData) => {
         setPartnerData(prev => {

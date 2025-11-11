@@ -19,14 +19,14 @@ export const getOne = async (id) => {
 };
 
 export const getOneByCode = async (code) => {
-    console.log(code);
+
     const employee = await Employees.findAll({
         where: {
             code: code
         },
         limit: 1
     });
-    console.log(employee);
+
     return employee[0].dataValues;
 };
 

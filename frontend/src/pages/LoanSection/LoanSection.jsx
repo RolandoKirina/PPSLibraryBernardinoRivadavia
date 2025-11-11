@@ -57,40 +57,32 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
     }, [openRenewes]);
 
     useEffect(() => {
-    const delay = setTimeout(() => {
-        getItems(filters);
-    }, 500);
+        const delay = setTimeout(() => {
+            getItems(filters);
+        }, 500);
 
-    return () => clearTimeout(delay);
+        return () => clearTimeout(delay);
     }, [filters]);
 
+    async function handleAddItem(data) {
+        try {
+            const res = await createItem(data);
 
-    useEffect(() => {
-        getItems();
-    }, [items]);
+            setAddPopup(false);
 
-async function handleAddItem(data) {
-  try {
-    const res = await createItem(data);
-    console.log("Respuesta:", res);
-
-    setAddPopup(false);
-    console.log("Préstamo creado con éxito");
-  } catch (err) {
-    console.error("Error al crear préstamo:", err);
-  }
-}
+             await getItems();
+        } catch (err) {
+            console.error("Error al crear préstamo:", err);
+        }
+    }
 
     async function handleUpdateItem(data) {
         try {
             const res = await updateItem(selected.loanId, data);
 
-            if (!res.ok) {
-                throw new Error("Error al actualizar datos");
-            }
-            else {
-                setEditPopup(false);
-            }
+            setEditPopup(false);
+
+             await getItems();
         }
         catch (err) {
             console.error(err);
@@ -190,21 +182,13 @@ async function handleAddItem(data) {
             key: 'deletePopup',
             title: 'Borrar prestamo',
             className: 'delete-size-popup',
-            content: 
-            // <PopUpDelete title={"Prestamo"} onConfirm={
-            //     () => {
-            //         deleteItem(selected.loanId);
-            //         setDeletePopup(false)
-            //     }
-            // } closePopup={() => setDeletePopup(false)} 
-            // />,
-
-            <PopUpDelete
-                title="Prestamo"
-                onConfirm={() => deleteItem(selected.loanId)} 
-                closePopup={() => setDeletePopup(false)}
-                refresh={() => getItems()} 
-            />,
+            content:
+                <PopUpDelete
+                    title="Prestamo"
+                    onConfirm={() => deleteItem(selected.loanId)}
+                    closePopup={() => setDeletePopup(false)}
+                    refresh={() => getItems()}
+                />,
             close: () => setDeletePopup(false),
             condition: deletePopup,
             variant: 'delete'
@@ -239,11 +223,11 @@ async function handleAddItem(data) {
             className: '',
             content: <LoanBooks loanSelected={selected} />,
             close: () => setBooksPopup(false),
-            condition: booksPopup   
+            condition: booksPopup
         },
         {
             key: 'returnsPopup',
-            title: 'Devoluciones',
+            title: 'Devoluciones de libros',
             className: '',
             content: <Return />,
             close: () => setReturnsPopup(false),

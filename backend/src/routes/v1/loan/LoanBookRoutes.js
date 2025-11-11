@@ -5,6 +5,8 @@ import * as LoanBookController from '../../../controllers/loan/LoanBookControlle
 
 const router = express.Router();
 
+
+
 router.get('/', LoanBookController.getAllLoanBooks);
 
 router.get('/repeated-book/:id', LoanBookController.verifyIfBookIsNotRepeated);

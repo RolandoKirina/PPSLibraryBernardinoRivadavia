@@ -18,12 +18,17 @@ import { editLoanformFields } from '../../../data/forms/LoanForms';
 import UnpaidFees from '../unpaidfees/UnpaidFees';
 import { pendingbooks } from "../../../data/mocks/pendingbooks.js";
 import { useEntityLookup } from '../../../hooks/useEntityLookup.js';
+import ReturnIcon from '../../../assets/img/return-icon.svg';
+import ReneweIcon from '../../../assets/img/renewe-icon.svg';
 
 export default function LoanForm({ method, createLoanItem, loanSelected }) {
   const [popupView, setPopupView] = useState("default");
   const [confirmSaveChangesPopup, setConfirmSaveChangesPopup] = useState(false);
   const BASE_URL = "http://localhost:4000/api/v1";
   const [addBookMessage, setAddBookMessage] = useState('');
+
+  const [confirmReturnPopup, setConfirmReturnPopup] = useState(false);
+  const [confirmRenewePopup, setConfirmRenewePopup] = useState(false);
 
   const [loanData, setLoanData] = useState({
     loanType: 'in_room',
@@ -40,6 +45,7 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
 
   // 🔹 Error unificado
   const [validateError, setValidateError] = useState('');
+  const [selectedBook, setSelectedBook] = useState('');
 
   const { data: employeeInfo, error: employeeError, loading: employeeLoading } = useEntityLookup(loanData.employeeCode, `${BASE_URL}/employees?code=`);
 
@@ -95,6 +101,8 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
       partnerNumber: loanData.partnerNumber,
       books: loanData.books
     };
+
+    console.log(newLoan);
     createLoanItem(newLoan);
   }
 
@@ -126,7 +134,7 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
       }
 
       setAddBookMessage('');
-      setValidateError(''); 
+      setValidateError('');
       return { ...prev, books: [...prev.books, book] };
     });
   }
@@ -170,6 +178,47 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
     return true;
   };
 
+
+  async function returnLoanBook(loanBook) {
+
+    const { BookId } = loanBook;
+
+    setLoanData(prev => ({
+      ...prev,
+      books: prev.books.map(b => {
+        if (b.BookId !== BookId) return b;
+
+        const now = new Date();
+        const formattedDate = now.toLocaleDateString();
+
+        return {
+          ...b,
+          returned: "Sí",             // antes era "No"
+          returnedDate: now,          // guardamos la fecha real (si la usás)
+          returnDateText: formattedDate, // tu campo correcto
+        };
+      }),
+    }));
+  }
+
+  async function reneweLoanBook(loanBook) {
+
+    const { BookId } = loanBook;
+
+    setLoanData(prev => ({
+      ...prev,
+      books: prev.books.map(b =>
+        b.BookId === BookId
+          ? {
+            ...b,
+            renewes: (b.renewes || 0) + 1,
+          }
+          : b
+      ),
+    }));
+  }
+
+
   const bookshelfBooksColumns = [
     { header: 'Codigo', accessor: 'codeInventory' },
     { header: 'Título', accessor: 'title' },
@@ -187,7 +236,61 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
   const columns = [
     { header: 'Código del libro', accessor: 'codeInventory' },
     { header: 'Título', accessor: 'title' },
+    ...(method === 'update'
+      ? [
+        { header: 'Devuelto', accessor: 'returned' },
+        { header: 'Fecha Devolución', accessor: 'returnDateText' },
+        { header: 'Renovado', accessor: 'renewes' },
+        {
+          header: 'Devolver',
+          accessor: 'return',
+          render: (_, row) => (
+            row.returnedDate
+              ? <span className="status-text">Ya devuelto</span>
+              : (
+                <button
+                  type='button'
+                  className="button-table"
+                  onClick={() => {
+                    setConfirmReturnPopup(true);
+                    setSelectedBook(row);
+                    returnLoanBook(row);
+                    console.log(row)
+                  }}
+                >
+                  <img src={ReturnIcon} alt="Devolver" />
+                </button>
+              )
+          )
+        },
+        {
+          header: 'Renovar',
+          accessor: 'renewe',
+          render: (_, row) => (
+            row.returnedDate
+              ? <span className="status-text">No disponible</span>
+              : (
+                <button
+                  type='button'
+                  className="button-table"
+                  onClick={() => {
+                    setConfirmRenewePopup(true);
+                    setSelectedBook(row);
+                    reneweLoanBook(row);
+                    console.log(row)
+
+                  }}
+                >
+                  <img src={ReneweIcon} alt="Renovar" />
+                </button>
+              )
+          )
+        }
+
+      ]
+      : [])
   ];
+
 
   const lendBooksColumns = [
     { header: 'Código del libro', accessor: 'codeInventory' },
@@ -432,7 +535,6 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
             <div className='add-books-error'>
               <p style={{ color: 'red', marginTop: '0.5rem' }}>{addBookMessage}</p>
             </div>
-
           )}
         </>
       )}
