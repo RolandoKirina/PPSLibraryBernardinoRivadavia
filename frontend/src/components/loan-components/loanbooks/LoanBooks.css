@@ -1,0 +1,41 @@
+
+.loan-books-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--primary-dark-2);
+        max-height: 100vh;
+    /* Ajustá según el diseño */
+    overflow-y: auto;
+    width: 50em;
+}
+
+.loan-books-container .lend-books-container {
+    width: 90%;
+}
+
+.lend-books-filters {
+    width: 90%;
+    margin-top: 1em;
+
+    
+}
+
+.lend-books-filters-inputs .loan-form-checkbox-group select {
+    height: 2.5em;
+}
+
+.lend-books-filters-inputs {
+    display: flex;
+    justify-content: space-between;
+}
+
+.loan-form-input-group div div {
+   display: flex;
+   justify-content: space-between;
+}
+
+.loan-form-input-group div div label {
+    margin-right: 0.5em;
+}

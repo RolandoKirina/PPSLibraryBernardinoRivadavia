@@ -18,15 +18,15 @@ export default function LoanMaterialSection() {
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
     const [selected, setSelected] = useState(false);
-   // const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockLoanMaterials, 'loamMaterials');
+    // const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockLoanMaterials, 'loamMaterials');
 
     const {
-           items,
-           getItems,
-           // getItem: getGroupItem,
-           deleteItem,
-           createItem,
-           updateItem
+        items,
+        getItems,
+        // getItem: getGroupItem,
+        deleteItem,
+        createItem,
+        updateItem
     } = useEntityManagerAPI("book-types");
 
     function handleAddItem(data) {
@@ -40,7 +40,7 @@ export default function LoanMaterialSection() {
     }
 
     useEffect(() => {
-        getItems(); 
+        getItems();
     }, [items]);
 
     const loanMaterialsPopups = [
@@ -48,12 +48,11 @@ export default function LoanMaterialSection() {
             key: 'deletePopup',
             title: 'Borrar material de préstamo',
             className: 'delete-size-popup',
-            content: <PopUpDelete title={"Material de préstamo"} closePopup={() => setDeletePopup(false)} onConfirm={
-                () => {
-                    deleteItem(selected.bookTypeId)
-                    setDeletePopup(false)
-                }
-            }
+            content: <PopUpDelete
+                title="Autor"
+                onConfirm={() => deleteItem(selected.bookTypeId)}
+                closePopup={() => setDeletePopup(false)}
+                refresh={() => getItems()}
             />,
             close: () => setDeletePopup(false),
             condition: deletePopup,

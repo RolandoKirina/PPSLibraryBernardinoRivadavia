@@ -3,9 +3,19 @@ import { Op } from 'sequelize';
 import BookAuthor from '../../models/author/BookAuthor.js';
 import Book from '../../models/book/Book.js';
 
-export const getAll = async () => {
+export const getAll = async (filters) => {
+    const {
+        whereAuthor,
+        limit,
+        offset,
+        sortBy,
+        direction,
+    } = filters;
+
     return await Authors.findAll({
         attributes: ['id', 'name', 'nationality'],
+        where: Object.keys(whereAuthor).length ? whereAuthor : undefined,
+        required: Object.keys(whereAuthor).length > 0,
         include: [
            {
             model: BookAuthor,

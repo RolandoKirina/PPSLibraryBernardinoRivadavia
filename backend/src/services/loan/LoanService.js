@@ -7,11 +7,6 @@ export const getAllLoans = async (filters) => {
 export const getAllReturns= async (filters) => {
     return await LoanRepository.getAllReturns(filters);
 }
-
-// export const getAllLoans = async () => {
-//     return await LoanRepository.getAll();
-// }
-
 export const getLoan = async (id) => {
     return await LoanRepository.getOne(id);
 }
@@ -30,6 +25,7 @@ export const updateLoan = async (id, updates) => {
 
 export const removeLoan = async (id) => {
     const existingLoan = await LoanRepository.getOne(id);
+    
     if (!existingLoan) throw new Error("Loan not found");
 
     return await LoanRepository.remove(id);

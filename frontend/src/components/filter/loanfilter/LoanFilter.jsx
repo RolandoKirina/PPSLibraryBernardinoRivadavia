@@ -2,24 +2,42 @@ import { useState } from 'react';
 import './LoanFilter.css';
 import { useAuth } from '../../../auth/AuthContext';
 import roles from '../../../auth/roles';
+import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
+import { useEffect } from 'react';
 
-export default function LoanFilter() {
+export default function LoanFilter({ onFilterChange }) {
   const { auth } = useAuth();
 
+  const {
+    items: bookTypes,
+    getItems: getBookTypes,
+  } = useEntityManagerAPI("book-types");
+
+  useEffect(() => {
+    const fetchBookTypes = async () => {
+      const res = await getBookTypes();
+      console.log("Tipos de material obtenidos:", res);
+    };
+    fetchBookTypes();
+  }, []);
+
+
   const [formData, setFormData] = useState({
-    type: 'room',
-    state: 'current',
-    materialType: 'all',
+    type: '',
+    state: '',
+    materialType: '',
     selectedMaterial: '',
     startDate: '',
     endDate: '',
     returnStartDate: '',
     returnEndDate: '',
-    memberName: '',
+    partnerName: '',
+    partnerSurname: '',
     onlyActiveMembers: false,
     bookTitle: '',
     bookCode: '',
   });
+
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -29,9 +47,16 @@ export default function LoanFilter() {
       const updated = { ...prev, [name]: newValue };
       console.log('Campo modificado:', name, '→', newValue);
       console.log('Nuevo estado del form:', updated);
+
       return updated;
     });
   };
+
+  useEffect(() => {
+    if (onFilterChange) {
+      onFilterChange(formData);
+    }
+  }, [formData, onFilterChange]);
 
   return (
     <aside className="loan-filter-aside">
@@ -43,7 +68,7 @@ export default function LoanFilter() {
 
           <div className="loan-form-checkbox-group">
             <h4>Tipo de préstamos</h4>
-            {['room', 'retired', 'all'].map((val) => (
+            {['in_room', 'retired', 'all'].map((val) => (
               <label key={val}>
                 <input
                   type="radio"
@@ -52,7 +77,7 @@ export default function LoanFilter() {
                   checked={formData.type === val}
                   onChange={handleChange}
                 />
-                {val === 'room' ? 'En sala' : val === 'retired' ? 'Retirado' : 'Todos'}
+                {val === 'in_room' ? 'En sala' : val === 'retired' ? 'Retirado' : 'Todos'}
               </label>
             ))}
           </div>
@@ -73,48 +98,52 @@ export default function LoanFilter() {
             ))}
           </div>
 
-          {auth.role === roles.admin && (
-            <div className="loan-form-checkbox-group">
-              <h4>Tipo de material retirado</h4>
-              <label>
-                <input
-                  type="radio"
-                  name="materialType"
-                  value="all"
-                  checked={formData.materialType === 'all'}
-                  onChange={handleChange}
-                />
-                Todos
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="materialType"
-                  value="specific"
-                  checked={formData.materialType === 'specific'}
-                  onChange={handleChange}
-                />
-                Los del tipo:
-              </label>
+          {/* {auth.role === roles.admin && (
+  <div className="loan-form-checkbox-group">
+    <h4>Tipo de material retirado</h4>
+    <label>
+      <input
+        type="radio"
+        name="materialType"
+        value="all"
+        checked={formData.materialType === 'all'}
+        onChange={handleChange}
+      />
+      Todos
+    </label>
+    <label>
+      <input
+        type="radio"
+        name="materialType"
+        value="specific"
+        checked={formData.materialType === 'specific'}
+        onChange={handleChange}
+      />
+      Los del tipo:
+    </label>
 
-              {formData.materialType === 'specific' && (
-                <select
-                  name="selectedMaterial"
-                  value={formData.selectedMaterial}
-                  onChange={handleChange}
-                  className="loan-filter-select"
-                >
-                  <option value="">Seleccionar tipo...</option>
-                  <option value="CD">CD</option>
-                  <option value="DVD">DVD</option>
-                  <option value="Libro">Libro</option>
-                  <option value="Revista">Revista</option>
-                  <option value="Texto">Texto</option>
-                  <option value="Video">Video</option>
-                </select>
-              )}
-            </div>
-          )}
+    {formData.materialType === 'specific' && (
+      <select
+        name="selectedMaterial"
+        value={formData.selectedMaterial}
+        onChange={handleChange}
+        className="loan-filter-select"
+      >
+        <option value="">Seleccionar tipo...</option>
+        {bookTypes && bookTypes.length > 0 ? (
+          bookTypes.map((type) => (
+            <option key={type.bookTypeId} value={type.typeName}>
+              {type.typeName}
+            </option>
+          ))
+        ) : (
+          <option disabled>Cargando tipos...</option>
+        )}
+      </select>
+    )}
+  </div>
+)} */}
+
 
 
           <div className="loan-form-input-group">
@@ -137,7 +166,7 @@ export default function LoanFilter() {
             <div className="loan-form-checkbox-group">
               <h4>Socio</h4>
               <label>Nombre</label>
-              <input name="memberName" value={formData.memberName} onChange={handleChange} />
+              <input name="partnerName" value={formData.partnerName} onChange={handleChange} />
               <label>
                 <input type="checkbox" name="onlyActiveMembers" checked={formData.onlyActiveMembers} onChange={handleChange} />
                 Solo los activos
@@ -146,13 +175,13 @@ export default function LoanFilter() {
           )}
 
 
-          <div className="loan-form-input-group">
+          {/* <div className="loan-form-input-group">
             <h4>Libro</h4>
             <label>Título</label>
             <input name="bookTitle" value={formData.bookTitle} onChange={handleChange} />
             <label>Código</label>
             <input name="bookCode" value={formData.bookCode} onChange={handleChange} />
-          </div>
+          </div> */}
         </form>
       </div>
     </aside>

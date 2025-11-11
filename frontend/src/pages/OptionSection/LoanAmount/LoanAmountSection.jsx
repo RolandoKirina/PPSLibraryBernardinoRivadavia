@@ -56,8 +56,8 @@ export default function LoanAmountSection() {
             group: group.group,
             maxAmount: group.maxAmount,
             bookTypes: Array.isArray(group.BookTypeGroups)
-            ? group.BookTypeGroups.map(btGroup => btGroup.BookType)
-            : []
+                ? group.BookTypeGroups.map(btGroup => btGroup.BookType)
+                : []
         }));
     }
 
@@ -66,12 +66,12 @@ export default function LoanAmountSection() {
             key: 'deletePopup',
             title: 'Borrar Grupo de tipo de material',
             className: 'delete-size-popup',
-            content: <PopUpDelete title={"Grupo de tipo de material"} closePopup={() => setDeletePopup(false)} onConfirm={
-                () => {
-                    deleteItem(selected.bookTypeGroupListId)
-                    setDeletePopup(false)
-                }
-            } />,
+            content: <PopUpDelete
+                title="Grupo de tipo de material"
+                onConfirm={() => deleteItem(selected.bookTypeGroupListId)}
+                closePopup={() => setDeletePopup(false)}
+                refresh={() => getItems()}
+            />,
             close: () => setDeletePopup(false),
             condition: deletePopup,
             variant: 'delete'
@@ -90,7 +90,7 @@ export default function LoanAmountSection() {
             className: 'add-material-group-background',
             content:
                 <>
-                    <AddMaterialGroup method={'add'} createGroupItem={createItem} updateGroupItem={updateItem} items={bookTypes} closePopup={() => setAddPopup(false)}/>
+                    <AddMaterialGroup method={'add'} createGroupItem={createItem} updateGroupItem={updateItem} items={bookTypes} closePopup={() => setAddPopup(false)} />
                     {/* <AddMaterialGroup method={'add'} createItem={createItem} updateItem={updateItem} getItemGroup={getGroupItem} getMaterialItem={getMaterialItem} items={materialsItems} />  */}
                 </>,
             close: () => setAddPopup(false),

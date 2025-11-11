@@ -12,6 +12,8 @@ router.get("/withFields",BookController.getAllBooksWithFields);
 
 router.get("/withFields/author/:id",BookController.getAllBooksOfAuthor);
 
+router.get("/withFields/loan/:id",BookController.getAllBooksOfLoan);
+
 
 router.get('/ranking', BookController.getRanking);
 

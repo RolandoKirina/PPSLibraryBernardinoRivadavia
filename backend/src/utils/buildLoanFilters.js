@@ -21,7 +21,7 @@ export const buildLoanFilters = (query) => {
     direction,
     employeeName
   } = query;
-
+  
   // Filtros principales
   const whereLoan = {}; //por fecha de retiro
   const whereLoanType = {}; //por tipo de prestamos
@@ -47,21 +47,33 @@ export const buildLoanFilters = (query) => {
     whereBookType.typeName = selectedMaterial;
   }
 
-  if (startDate) whereLoan.retiredDate = { [Op.gte]: new Date(startDate) };
-  if (endDate) {
-    whereLoan.retiredDate = {
-      ...(whereLoan.retiredDate || {}),
-      [Op.lte]: new Date(endDate)
-    };
-  }
+  const normalizeDate = (date) => new Date(date).toISOString().split('T')[0];
 
-  if (returnStartDate) whereLoanBook.returnedDate = { [Op.gte]: new Date(returnStartDate) };
-  if (returnEndDate) {
-    whereLoanBook.returnedDate = {
-      ...(whereLoanBook.returnedDate || {}),
-      [Op.lte]: new Date(returnEndDate)
-    };
-  }
+  if (startDate) {
+  whereLoan.retiredDate = {
+    [Op.gte]: normalizeDate(startDate)
+  };
+}
+
+if (endDate) {
+  whereLoan.retiredDate = {
+    ...(whereLoan.retiredDate || {}),
+    [Op.lte]: normalizeDate(endDate)
+  };
+}
+
+  if (returnStartDate) {
+  whereLoanBook.returnedDate = {
+    [Op.gte]: normalizeDate(returnStartDate)
+  };
+}
+
+if (returnEndDate) {
+  whereLoanBook.returnedDate = {
+    ...(whereLoanBook.returnedDate || {}),
+    [Op.lte]: normalizeDate(returnEndDate)
+  };
+}
 
   if (partnerName && partnerName.trim() !== '') {
     wherePartner.name = { [Op.iLike]: `%${partnerName.trim()}%` };

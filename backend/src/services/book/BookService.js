@@ -15,6 +15,11 @@ export const getAllBooksOfAuthor = async (id) => {
     return books;
 }
 
+export const getAllBooksOfLoan = async (id) => {
+    let books = await BookRepository.getAllBooksOfLoan(id);
+    return books;
+}
+
 
 export const getRanking = async (filters) => {
     let ranking = await BookRepository.getRanking(filters);

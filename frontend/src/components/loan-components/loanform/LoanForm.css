@@ -175,3 +175,19 @@
 .add-loan-form-content .save-changes-lend-books {
     width: 80%;
 }
+
+.add-books-error {
+    width: 100%;
+    text-align: center;
+    margin: 1em;
+}
+
+.add-books-error p {
+    color: red;
+}
+
+.validate-error {
+    width: 100%;
+    text-align: center;
+    margin: 1em;
+}

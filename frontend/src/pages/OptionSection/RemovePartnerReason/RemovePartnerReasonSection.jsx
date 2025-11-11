@@ -54,12 +54,13 @@ export default function RemovePartnerReasonSection({ chooseMode }) {
             key: 'deletePopup',
             title: 'Borrar motivo para dar de baja',
             className: 'delete-size-popup',
-            content: <PopUpDelete title={"Motivo para dar de baja"} closePopup={() => setDeletePopup(false)} onConfirm={
-                () => {
-                    deleteItem(selected.id)
-                    setDeletePopup(false)
-                }
-            } />,
+            content: 
+                 <PopUpDelete
+                     title="Motivo para dar de baja"
+                     onConfirm={() => deleteItem(selected.id)}
+                     closePopup={() => setDeletePopup(false)}
+                     refresh={() => getItems()}
+                 />,           
             close: () => setDeletePopup(false),
             condition: deletePopup,
             variant: 'delete'

@@ -1,7 +1,7 @@
 import * as EmployeesRepository from '../../repositories/options/EmployeesRepository.js';
 
-export const getAllEmployees = async () => {
-    return await EmployeesRepository.getAll();
+export const getAllEmployees = async (filters) => {
+    return await EmployeesRepository.getAll(filters);
 };
 
 export const getEmployee = async (id) => {
