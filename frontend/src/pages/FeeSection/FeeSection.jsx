@@ -36,7 +36,8 @@ export const FeeSection = () => {
 
 
   const [formData, setFormData] = useState({
-      partnerWithUnpaidFees: false,
+      unpaidfees: false,
+      partnerNumber: "",
       name: "",
       surname: "",
       PaymentDate: "",
@@ -46,7 +47,7 @@ export const FeeSection = () => {
       const { name, value } = e.target;
       const updated = { ...formData, [name]: value };
       setFormData(updated);
-  };
+    };
 
   useEffect(() => {
     const filters = Object.fromEntries(
@@ -56,7 +57,8 @@ export const FeeSection = () => {
     const delay = setTimeout(() => {
      if (Object.keys(filters).length > 0) {
       getItems(filters);
-      setFilteredFees(items); // 👈 solo setea si hay filtros activos
+      setFilteredFees(items); 
+     
     }
      else{
       getItems(filters);
@@ -71,12 +73,23 @@ export const FeeSection = () => {
   
 
 
-   
+
+   const formattedFees = fees.map(fee => ({
+  ...fee,
+  paid: fee.paid ? '✅ Pagada' : '❌ Impaga',
+}));
+
+
   const columns = [
     { header: 'Numero de cuota', accessor: 'feeId' },
     { header: 'Nombre de socio',  accessor: 'name'},
     { header: 'valor', accessor: 'amount' },
     {header: 'Numero de socio', accessor: 'partnerNumber'},
+      {
+      header: 'Pagada',
+      accessor: 'paid',
+      render: (value) => value ? '✅ Pagada' : '❌ Impaga',
+    },
     {
       header: 'Borrar',
       accessor: 'delete',

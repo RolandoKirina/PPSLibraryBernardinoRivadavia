@@ -1,6 +1,5 @@
 import "./feefiltercheckbox.css";
-export default function BookFilter({formData, onChange, filteredfees
-}) {
+export default function BookFilter({formData, onChange, filteredfees}) {
 
 
   return (
@@ -16,7 +15,7 @@ export default function BookFilter({formData, onChange, filteredfees
           <div className="book-form-input-group">
 
             <div className="feefiltercheckbox">
-              <input type="checkbox"  name="partnerWithUnpaidFees" 
+              <input type="checkbox"  name="unpaidfees" 
               checked={formData.partnerWithUnpaidFees} onChange={(e) =>
                   onChange({
                     target: {
@@ -30,14 +29,22 @@ export default function BookFilter({formData, onChange, filteredfees
           </div>
 
           <div className="book-form-input-group">
+            <label>Buscar por numero de socio </label>
+            <input type="number"  name="partnerNumber" value={formData.partnerNumber} onChange={onChange}/>
+          </div>
+
+          <div className="book-form-input-group">
+              <label>Buscar por nombre </label>
+              <input type="text"  name="name" value={formData.name} onChange={onChange}/>
+            </div>
+
+            
+          <div className="book-form-input-group">
             <label>Buscar por apellido </label>
             <input type="text"  name="surname"value={formData.surname} onChange={onChange}/>
           </div>
 
-          <div className="book-form-input-group">
-            <label>Buscar por nombre </label>
-            <input type="text"  name="name" value={formData.name} onChange={onChange}/>
-          </div>
+          
 
 
           <div className="book-form-input-group">
