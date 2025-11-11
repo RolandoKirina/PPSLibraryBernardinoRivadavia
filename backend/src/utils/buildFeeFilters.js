@@ -2,17 +2,28 @@ import { Op } from "sequelize";
 
 export const buildFeeFilters = (query) => {
   const {
+    partnerNumber,
     name,
     surname,
     paymentdate,
     unpaidfees,
   } = query;
 
-  console.log(query)
   const whereFees = {};
   const wherePartner ={};
 
-  const unpaid = unpaidfees === "true";
+  console.log(unpaidfees)
+  const unpaid = String(unpaidfees) === "true";
+  if (unpaidfees !== undefined) {
+    whereFees.paid = unpaid ? false : true;
+  }
+
+  const parsedPartnerNumber = Number(partnerNumber);
+      if (!isNaN(parsedPartnerNumber)) {
+      wherePartner.partnerNumber = parsedPartnerNumber;
+    }
+
+ 
     if (name && name.trim() !== '') {
     wherePartner.name = {
         [Op.iLike]: `%${name.trim()}%`
@@ -24,13 +35,9 @@ export const buildFeeFilters = (query) => {
         [Op.iLike]: `%${surname.trim()}%`
     };
     
-    if (unpaid === true) {
-            whereFees.paid = false;
-    }   
-    else{
-        whereFees.paid = true;
+   
     }
-    }
+    
    if (paymentdate) {
      whereFees.date_of_paid = { [Op.eq]: new Date(paymentdate) };
    }
