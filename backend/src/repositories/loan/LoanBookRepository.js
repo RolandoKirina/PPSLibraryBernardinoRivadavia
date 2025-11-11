@@ -4,6 +4,14 @@ export const getAll = async () => {
   return await LoanBook.findAll();
 };
 
+export const getOneByBookAndLoan = async (BookId, loanId) => {
+  return await LoanBook.findOne({
+    where: { 
+      BookId, 
+      loanId }
+  });
+};
+
 export const verifyIfBookIsNotRepeated = async (id) => {
   const res = await LoanBook.findOne({
     where: {

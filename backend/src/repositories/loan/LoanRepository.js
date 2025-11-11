@@ -13,6 +13,8 @@ import * as PartnerRepository from '../../repositories/partner/PartnerRepository
 import * as LoanBookRepository from '../../repositories/loan/LoanBookRepository.js';
 import * as LoanTypeRepository from '../../repositories/loan/LoanTypeRepository.js';
 
+import { Op } from 'sequelize';
+
 // export const getAll = async (filters) => {
 //   const {
 //     whereLoan,
@@ -156,7 +158,6 @@ export const getAll = async (filters) => {
     offset
   });
 
-  // 🔁 Transformar a array plano
   const groupedLoans = loans.map(loan => ({
     loanId: loan?.id || '',
     retiredDate: loan.retiredDate,
@@ -183,7 +184,6 @@ export const getAll = async (filters) => {
   return groupedLoans;
 };
 
-
 export const getAllReturns = async (filters) => {
   const {
     wherePartner,
@@ -192,25 +192,31 @@ export const getAllReturns = async (filters) => {
     offset
   } = filters;
 
-  return await Loan.findAll({
+  const returns = await Loan.findAll({
     attributes: ['retiredDate'],
+    subQuery: false,
     include: [
       {
         model: Partner,
         as: 'Partner',
         attributes: ['id', 'name', 'surname', 'observations'],
         where: Object.keys(wherePartner).length ? wherePartner : undefined,
-        required: Object.keys(wherePartner).length > 0
+        required: true
       },
       {
         model: LoanBook,
         as: 'LoanBooks',
         attributes: ['LoanBookId', 'expectedDate', 'reneweAmount'],
+        where: {
+          returnedDate: null
+        },
         include: [
           {
             model: Book,
             as: 'Book',
             attributes: ['BookId', 'title', 'codeInventory'],
+            required: true
+
           }
         ]
       }
@@ -219,6 +225,16 @@ export const getAllReturns = async (filters) => {
     limit,
     offset
   });
+
+  const floatReturns = returns.flatMap(loan =>
+    loan.LoanBooks.map(lb => ({
+      bookCode: lb.Book.codeInventory,
+      bookTitle: lb.Book.title,
+      renewes: lb.reneweAmount,
+    }))
+  );
+
+  return floatReturns;
 };
 
 export const getOne = async (id) => {
@@ -229,6 +245,8 @@ export const create = async (loan) => {
   if (!loan.books || loan.books.length === 0) {
     throw new Error("No se puede crear un préstamo sin libros");
   }
+
+  console.log(loan);
 
   const transaction = await sequelize.transaction();
 
@@ -272,14 +290,14 @@ export const create = async (loan) => {
 
     return {
       msg: "Préstamo creado correctamente",
-      loanId: newLoan.id
+      loanId: newLoan.id,
+      partnerNumber: loan.partnerNumber
     };
   } catch (err) {
     await transaction.rollback();
     throw err;
   }
 };
-
 
 
 export const update = async (id, updates) => {
@@ -295,6 +313,7 @@ export const update = async (id, updates) => {
       throw new Error("Empleado no existe");
     }
 
+    // Actualiza los datos del préstamo
     const loanData = {
       retiredDate: updates.retiredDate,
       employeeId: employee.id,
@@ -302,33 +321,35 @@ export const update = async (id, updates) => {
 
     const [updatedCount] = await Loan.update(loanData, {
       where: { id },
-      transaction
+      transaction,
     });
 
     if (updatedCount === 0) {
-      throw new Error('No se pudo actualizar el préstamo');
+      throw new Error("No se pudo actualizar el préstamo");
     }
 
+    // Elimina los registros previos
     await LoanBookRepository.removeAllLoanBooks(id, transaction);
 
-    const newLoanBooks = updates.books.map(book => ({
+    const newLoanBooks = updates.books.map((book) => ({
       BookId: book.BookId,
       loanId: id,
       bookCode: book.codeInventory,
       expectedDate: updates.expectedDate,
-      reneweAmount: 0,
-      returned: false,
+      reneweAmount: book.renewes || 0,
+      returned: book.returned === "Sí" || book.returned === true,
+      returnedDate: book.returnedDate ? new Date(book.returnedDate) : null, // <- nombre correcto
     }));
 
     await Promise.all(
-      newLoanBooks.map(book => LoanBookRepository.create(book, transaction))
+      newLoanBooks.map((book) => LoanBookRepository.create(book, transaction))
     );
 
     await transaction.commit();
 
     return {
-      msg: 'Préstamo y libros actualizados correctamente',
-      loanId: id
+      msg: "Préstamo y libros actualizados correctamente",
+      loanId: id,
     };
   } catch (err) {
     await transaction.rollback();

@@ -124,7 +124,7 @@ export const lendBooksReturnDetails = [
         { label: 'Fecha retiro', value: 'información', attribute: 'retiredDate' }
       ],
       [
-        { label: 'Fecha prevista', value: 'información', attribute: 'plannedDate' }
+        { label: 'Fecha prevista', value: 'información', attribute: 'expectedDate' }
       ]
     ]
   },

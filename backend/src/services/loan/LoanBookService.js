@@ -33,6 +33,6 @@ export const removeLoanBook = async (id) => {
 };
 
 
-export const removeBooksOfLoan= async (id) => {
+export const removeBooksOfLoan = async (id) => {
     return await LoanBookRepository.removeAllOfLoan(id);
 };

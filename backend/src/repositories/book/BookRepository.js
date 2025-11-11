@@ -64,7 +64,7 @@ export const getAllBooksOfLoan = async (id) => {
       {
         model: LoanBook,
         as: 'BookLoans',
-        attributes: ['BookId', 'loanId'],
+        attributes: ['BookId', 'loanId', 'reneweAmount', 'returnedDate'],
         required: true,
         include: [
           {
@@ -96,7 +96,11 @@ export const getAllBooksOfLoan = async (id) => {
     codeClasification: book.codeClasification,
     bookTypeId: book.BookType?.bookTypeId || null,
     typeName: book.BookType?.typeName || '',
-    loanId: book.BookLoans?.[0]?.Loan?.id || null
+    loanId: book.BookLoans?.[0]?.Loan?.id || null,
+    renewes: book.BookLoans?.[0]?.reneweAmount || 0,
+    returnedDate: book.BookLoans?.[0]?.returnedDate , // null o fecha real
+    returned: book.BookLoans?.[0]?.returnedDate ? 'Si' : 'No',
+    returnDateText: book.BookLoans?.[0]?.returnedDate || 'Sin fecha' // para mostrar en tabla
   }));
 
   return flatBooks;
