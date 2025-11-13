@@ -148,7 +148,7 @@ export const reneweDetails = [
     active: false,
     rows: [
       [
-        { label: 'Título', value: 'El principito', attribute: 'bookTitle' }
+        { label: 'Título', value: 'El principito', attribute: 'title' }
       ]
     ]
   },
@@ -162,7 +162,7 @@ export const reneweDetails = [
       ],
       [
         { label: 'Nombre', value: 'Lucas', attribute: 'name' },
-        { label: 'Apellido', value: 'Fernández', attribute: 'lastname' }
+        { label: 'Apellido', value: 'Fernández', attribute: 'surname' }
       ]
     ]
   },
@@ -172,7 +172,7 @@ export const reneweDetails = [
     active: false,
     rows: [
       [
-        { label: 'Fecha de reserva', value: '2025-08-08', attribute: 'reneweDate' },
+        { label: 'Fecha de reserva', value: '2025-08-08', attribute: 'reservationDate' },
         { label: 'Fecha de promesa', value: '2025-08-18', attribute: 'expectedDate' }
       ]
     ]

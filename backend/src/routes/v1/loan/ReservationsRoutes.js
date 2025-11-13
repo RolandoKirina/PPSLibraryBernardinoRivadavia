@@ -6,13 +6,13 @@ import * as ReservationsController from '../../../controllers/loan/ReservationsC
 const router = express.Router();
 
 router.get('/', ReservationsController.getAllReservations);
-router.get('/:id', validateIdParam("reservationId"), ReservationsController.getReservation);
+router.get('/:id', validateIdParam("id"), ReservationsController.getReservation);
 router.post('/', ReservationsController.createReservation);
-router.put('/:id', validateIdParam("reservationId"), ReservationsController.updateReservation);
+router.put('/:id', validateIdParam("id"), ReservationsController.updateReservation);
 
 // quizás añadir patch
 // router.patch('/:id', ReservationsController.patchReservation);
 
-router.delete('/:id', validateIdParam("reservationId"), ReservationsController.removeReservation);
+router.delete('/:id', validateIdParam("id"), ReservationsController.removeReservation);
 
 export default router;

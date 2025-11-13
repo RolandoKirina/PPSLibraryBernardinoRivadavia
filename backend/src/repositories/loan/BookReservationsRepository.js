@@ -8,26 +8,27 @@ export const getOne = async (id) => {
     return await BookReservations.findByPk(id);
 };
 
-export const create = async (reservation) => {
-    return await BookReservations.create(reservation);
+export const create = async (reservation, transaction = null) => {
+    return await BookReservations.create(reservation, { transaction });
 };
 
-export const update = async (id, updates) => {
+export const update = async (id, updates, transaction = null) => {
     await BookReservations.update(updates, {
-        where: { id: id }
+        where: { id },
+        transaction
     });
 
-    return await BookReservations.findByPk(id);
+    return await BookReservations.findByPk(id, { transaction });
 };
 
-export const remove = async (id) =>{
+export const remove = async (id) => {
     const bookReservations = await BookReservations.findByPk(id);
 
-      if (!bookReservations) {
+    if (!bookReservations) {
         return null;
-      }
+    }
     await bookReservations.destroy();
-  
+
     return {
         msg: "BookReservation deleted successfully",
         data: bookReservations

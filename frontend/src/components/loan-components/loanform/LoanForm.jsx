@@ -20,6 +20,7 @@ import { pendingbooks } from "../../../data/mocks/pendingbooks.js";
 import { useEntityLookup } from '../../../hooks/useEntityLookup.js';
 import ReturnIcon from '../../../assets/img/return-icon.svg';
 import ReneweIcon from '../../../assets/img/renewe-icon.svg';
+import { useAuth } from '../../../auth/AuthContext.jsx';
 
 export default function LoanForm({ method, createLoanItem, loanSelected }) {
   const [popupView, setPopupView] = useState("default");
@@ -27,8 +28,10 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
   const BASE_URL = "http://localhost:4000/api/v1";
   const [addBookMessage, setAddBookMessage] = useState('');
 
-  const [confirmReturnPopup, setConfirmReturnPopup] = useState(false);
+  const [confirmReturnPopup, setConfirmReturnAllPopup] = useState(false);
   const [confirmRenewePopup, setConfirmRenewePopup] = useState(false);
+  
+  const { auth } = useAuth();
 
   const [loanData, setLoanData] = useState({
     loanType: 'in_room',
@@ -320,16 +323,6 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
     }
   ];
 
-  const handleLoanTypeChange = (value, prev) => {
-    if (value === 'retired') {
-      const { readerDNI, readerName, ...rest } = prev;
-      return { ...rest, partnerName: prev.partnerName || '', partnerNumber: prev.partnerNumber || '', memoSearch: prev.memoSearch || '', loanType: value };
-    } else {
-      const { partnerName, partnerNumber, memoSearch, ...rest } = prev;
-      return { ...rest, readerDNI: prev.readerDNI || '', readerName: prev.readerName || '', loanType: value };
-    }
-  };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -473,6 +466,13 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
                   />
                 </div>
               </Table>
+
+
+              {auth.role === 'admin' && (
+                <div className='add-book-to-lend'>
+                  <Btn text={'Devolver todos'} onClick={() => setConfirmReturnAllPopup(true)} />
+                </div>
+              )}
 
 
             </div>

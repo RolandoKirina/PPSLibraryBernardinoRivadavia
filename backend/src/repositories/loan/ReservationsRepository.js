@@ -1,5 +1,9 @@
 import { Book, BookReservations, Partner } from '../../models/index.js';
+import sequelize from '../../configs/database.js';
 import Reservations from '../../models/loan/Reservations.js';
+import * as EmployeesRepository from '../../repositories/options/EmployeesRepository.js';
+import * as PartnerRepository from '../../repositories/partner/PartnerRepository.js';
+import * as BookReservationsRepository from '../../repositories/loan/BookReservationsRepository.js';
 
 export const getAll = async (filters) => {
   const {
@@ -11,9 +15,9 @@ export const getAll = async (filters) => {
     offset
   } = filters;
 
-  return await Reservations.findAll({
+  const reservations = await Reservations.findAll({
     subQuery: false,
-    attributes: ['reservationDate', 'expectedDate'],
+    attributes: ['id', 'reservationDate', 'expectedDate'],
     where: Object.keys(whereReservation).length ? whereReservation : undefined,
     required: Object.keys(whereReservation).length > 0,
     include: [
@@ -32,7 +36,7 @@ export const getAll = async (filters) => {
           {
             model: Book,
             as: 'Book',
-            attributes: ['title'],
+            attributes: ['title', 'codeInventory'],
             where: Object.keys(whereBook).length ? whereBook : undefined,
             required: Object.keys(whereBook).length > 0
           }
@@ -43,37 +47,99 @@ export const getAll = async (filters) => {
     limit,
     offset
   });
+
+  const floatReservations = reservations.flatMap(res =>
+    res.BookReservations.map(br => ({
+      id: res.id,
+      partnerNumber: res.Partner?.partnerNumber || '—',
+      name: res.Partner ? `${res.Partner.name} ${res.Partner.surname}` : '—',
+      surname: res.Partner ? `${res.Partner.surname}` : '—',
+      title: br.Book?.title || '—',
+      reservationDate: res.reservationDate,
+      expectedDate: res.expectedDate,
+      bookCode: br.Book?.codeInventory || '—',
+    }))
+  );
+
+  return floatReservations;
 };
 
 
 export const getOne = async (id) => {
-    return await Reservations.findByPk(id);
+  return await Reservations.findByPk(id);
 };
 
-export const create = async (reservation) => {
-    return await Reservations.create(reservation);
+export const create = async (reservation) => {;
+
+  if (!reservation.books || reservation.books.length === 0) {
+    throw new Error("No se puede crear un préstamo sin libros");
+  }
+
+  const transaction = await sequelize.transaction();
+
+  try {
+    const partner = await PartnerRepository.getOneByPartnerNumber(reservation.partnerNumber);
+    if (!partner) {
+      throw new Error("Socio no existe");
+    }
+
+    const reservationData = {
+      partnerId: partner.id,
+      partnerNumber: reservation.partnerNumber,
+      reservationDate: reservation.reservationDate,
+      expectedDate: reservation.expectedDate,
+      name: partner.name,
+    };
+
+    const newReservation = await Reservations.create(reservationData, { transaction });
+    console.log(newReservation.id);
+    console.log(reservation.books);
+  
+    const reservationBooks = reservation.books.map(book => ({
+      BookId: book.BookId,
+      reservationId: newReservation.id,
+      bookCode: book.codeInventory,
+      bookTitle: book.title,
+    }));
+
+    await Promise.all(
+      reservationBooks.map(book => BookReservationsRepository.create(book, transaction))
+    );
+
+    await transaction.commit();
+
+    return {
+      msg: "Reserva creada correctamente",
+      reservationId: newReservation.reservationId,
+    };
+  } catch (err) {
+    await transaction.rollback();
+    throw err;
+  }
 };
 
 // A diferencia de patch, los updates deben tener todos los campos de la entidad
 export const update = async (id, updates) => {
-    await Reservations.update(updates, {
-        where: { id: id }
-    });
+  console.log(id);
+  console.log(updates);
+  await Reservations.update(updates, {
+    where: { id: id }
+  });
 
-    return await Reservations.findByPk(id);
+  return await Reservations.findByPk(id);
 };
 
 export const remove = async (id) => {
-    const reservations = await Reservations.findByPk(id);
+  const reservations = await Reservations.findByPk(id);
 
-    if (!reservations) {
-        return null;
-    }
-    await reservations.destroy();
+  if (!reservations) {
+    return null;
+  }
+  await reservations.destroy();
 
-    return {
-        msg: "Reservations deleted successfully",
-        data: reservations
-    }
+  return {
+    msg: "Reservations deleted successfully",
+    data: reservations
+  }
 }
 

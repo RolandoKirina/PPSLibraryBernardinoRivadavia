@@ -3,6 +3,7 @@ import { Op } from "sequelize";
 export const buildReservationFilters = (query) => {
     const {
         bookTitle,
+        bookCode,
         expectedDate,
         reservationDate,
         partnerNumber,
@@ -21,6 +22,8 @@ export const buildReservationFilters = (query) => {
     const wherePartner = {};
 
     if (bookTitle) whereBook.title = { [Op.iLike]: `%${bookTitle}%` };
+
+    if (bookCode) whereBook.codeInventory = `${bookCode}`;
 
     if (expectedDate) {
       whereReservation.expectedDate = { [Op.eq]: expectedDate };

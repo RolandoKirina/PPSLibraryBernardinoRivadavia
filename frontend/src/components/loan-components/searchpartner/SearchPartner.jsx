@@ -6,7 +6,7 @@ import PartnerMemo from '../partnermemo/PartnerMemo';
 import { useEffect } from 'react';
 import { useEntityLookup } from '../../../hooks/useEntityLookup';
 
-export default function SearchPartner({ method, menu, onDataChange, partnerData }) {
+export default function SearchPartner({ onFilterChange, method, menu, onDataChange, partnerData }) {
   const [memoPopup, setMemoPopup] = useState(false);
 
   const { data: foundPartner, error: partnerError, loading: partnerLoading } = useEntityLookup(
@@ -22,6 +22,13 @@ export default function SearchPartner({ method, menu, onDataChange, partnerData 
     if (onDataChange) {
       onDataChange(updated);
     }
+
+    if (name === "partnerNumber" && onFilterChange) {
+    onFilterChange(prev => ({
+      ...prev,
+      partnerNumber: value
+    }));
+  }
   };
 
   return (

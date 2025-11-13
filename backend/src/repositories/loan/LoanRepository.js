@@ -208,7 +208,9 @@ export const getAllReturns = async (filters) => {
         as: 'LoanBooks',
         attributes: ['LoanBookId', 'expectedDate', 'reneweAmount'],
         where: {
-          returnedDate: null
+          returnedDate: {
+            [Op.ne]: null   
+          }
         },
         include: [
           {
