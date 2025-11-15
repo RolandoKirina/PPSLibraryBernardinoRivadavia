@@ -2,12 +2,9 @@ import Fees from "../../models/fee/Fee.js";
 import Partner from "../../models/partner/Partner.js";
 import { Op } from "sequelize";
 
-
-
-
 export const getAll = async (filters) => {
   const { wherePartner, whereFees } = filters;
-
+  
   const fees = await Fees.findAll({
     include: [
       {
@@ -20,32 +17,30 @@ export const getAll = async (filters) => {
     where: whereFees,
   });
 
-  const quantitypaidfees = await getQuantityPaidFees(wherePartner.partnerNumber);
-
-  const groupedFees = fees.map(fee => ({
-    feeId: fee.id,
+ const mappedFees = fees.map(fee => ({
+    feeid: fee.id,
     month: fee.month,
     year: fee.year,
     amount: fee.amount,
-    paid: fee.paid,
-    observation: fee.observation || '',
-    dateOfPaid: fee.date_of_paid || '',
-    partnerId: fee.Partner?.id ?? null,
-    partnerNumber: fee.Partner?.partnerNumber ?? '',
-    name: `${fee.Partner?.name ?? ''} ${fee.Partner?.surname ?? ''}`.trim(),
-    surname: fee.Partner?.surname ?? '',
-    homePhone: fee.Partner?.homePhone ?? '',
-    homeAddress: fee.Partner?.homeAddress ?? '',
-    quantitypaidfees: quantitypaidfees ?? '',
-  }));
+    observation: fee.observation,
+    paid: fee.paid ? "Pagada" : "Impaga",
+     date_of_paid: fee.date_of_paid 
+      ? new Date(fee.date_of_paid).toLocaleDateString("es-AR") 
+      : "",
 
-  return groupedFees;
+
+    // Datos del socio
+    partnerNumber: fee.Partner?.partnerNumber,
+    name: fee.Partner ? `${fee.Partner.name} ${fee.Partner.surname}` : "",
+    surname: fee.Partner?.surname,
+  }));
+  return mappedFees;
 };
 
 
 export const getQuantityPaidFees = async (partnerNumber) => {
 
-    const parsedPartnerNumber = Number(partnerNumber);
+  const parsedPartnerNumber = Number(partnerNumber);
   if (!partnerNumber || isNaN(parsedPartnerNumber)) return 0;
   const count = await Fees.count({
     include: [
@@ -58,13 +53,17 @@ export const getQuantityPaidFees = async (partnerNumber) => {
     ],
     where: {
       paid: true,
-      date_of_paid: { [Op.ne]: null },
+      date_of_paid: { [Op.ne]: null }
     },
   });
-
   return count;
 };
 
+export const findOne = async ({  month, year }) => {
+    return await Fees.findOne({
+        where: { month, year }
+    });
+};
 export const getById = async (id) => {
     return await Fees.findByPk(id);
 };

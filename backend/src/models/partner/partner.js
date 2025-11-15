@@ -11,7 +11,8 @@ const Partner = sequelize.define("Partner",
     },
     partnerNumber: {
         type: DataTypes.INTEGER,
-        field: "numero"
+        field: "numero",
+        unique: true
     },
     idCategory: {
         type: DataTypes.SMALLINT,

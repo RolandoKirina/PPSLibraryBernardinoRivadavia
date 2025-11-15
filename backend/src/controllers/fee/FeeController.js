@@ -7,12 +7,42 @@ export const getAllFees = async (req, res) => {
         
         const queryOptions = buildFeeFilters(req.query);
         const fees = await FeeService.getAllFees(queryOptions);
-        res.status(HTTP_STATUS.OK.code).send(fees);  
+        res.status(HTTP_STATUS.OK.code).json(fees);  
     } catch (e) {
         console.error(e);
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
 };
+
+export const generateUnpaidFees = async (req, res) => {
+    try {
+        console.log(req.body)
+        const fees = await FeeService.generateUnpaidFees(req.body);
+        res.status(HTTP_STATUS.OK.code).json(fees);  
+    } catch (e) {
+        console.error(e);
+        res.status(BAD_REQUEST).json({ msg: e.message });
+    }
+};
+
+
+export const getPaidFeeCountByPartner = async (req, res) => {
+
+    const { partnerNumber } = req.query;
+    if (!partnerNumber) {
+        return res.status(BAD_REQUEST).json({ error: "Falta el número de socio" });
+    }
+
+    try {
+        const count = await FeeService.getQuantityPaidFees(partnerNumber);
+        return res.json({ count });
+    } 
+    catch (error) {
+        return res.status(INTERNAL_SERVER_ERROR).json({ error: "Error al contar cuotas pagas" });
+    }
+    
+};
+
 
 export const getFee = async (req, res) => {
     try {

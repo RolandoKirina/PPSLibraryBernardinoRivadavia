@@ -9,7 +9,6 @@ export const getOne = async (id) => {
 };
 
 export const getOneByPartnerNumber = async (partnerNumber) => {
-    console.log(partnerNumber);
     const partner = await Partner.findAll({
         where: {
             partnerNumber: partnerNumber
