@@ -19,7 +19,8 @@ import Btn from '../../common/btn/Btn';
 import { useAuth } from '../../../auth/AuthContext';
 import roles from '../../../auth/roles';
 import { pendingbooks } from "../../../data/mocks/pendingbooks.js";
-
+import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI.js';
+import { useEffect } from 'react';
 
 export default function Return() {
     //cuando se usan los inputs de partner se filtran las devoluciones y se pueden renovar, devolver o devolver todos
@@ -33,12 +34,31 @@ export default function Return() {
     const [selected, setSelected] = useState(null);
 
     const [popupView, setPopupView] = useState("default");
+
     const [partnerData, setPartnerData] = useState({
         partnerName: '',
         partnerNumber: '',
     });
 
-    const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockBooksLoans, 'booksLoans');
+    const [filters, setFilters] = useState({});
+
+
+    //const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockBooksLoans, 'booksLoans');
+
+    const {
+        items,
+        getItems,
+        deleteItem,
+        updateItem
+    } = useEntityManagerAPI("loans/returns");
+
+    useEffect(() => {
+        const delay = setTimeout(() => {
+            getItems(filters);
+        }, 500);
+
+        return () => clearTimeout(delay);
+    }, [filters]);
 
     const returnBooksPopups = [
         {
@@ -96,44 +116,7 @@ export default function Return() {
     if (auth.role === roles.admin) {
         columnsReturnForm = [
             { header: 'Código del libro', accessor: 'bookCode' },
-            { header: 'Título', accessor: 'bookTitle' },
-            { header: 'Renovado', accessor: 'renewes' },
-            {
-                header: 'Detalles',
-                accessor: 'details',
-                render: (_, row) => (
-                    <button type='button' className="button-table" onClick={() => {
-                        setPopupView('details')
-                        setSelected(row)
-                    }}>
-                        <img src={DetailsIcon} alt="Detalles" />
-                    </button>
-                )
-            },
-            {
-                header: 'Devolver',
-                accessor: 'return',
-                render: (_, row) => (
-                    <button type='button' className="button-table" onClick={() => {
-                        setConfirmReturnPopup(true)
-                        setSelected(row)
-                    }}>
-                        <img src={ReturnIcon} alt="Devolver" />
-                    </button>
-                )
-            },
-            {
-                header: 'Renovar',
-                accessor: 'renewe',
-                render: (_, row) => (
-                    <button type='button' className="button-table" onClick={() => {
-                        setConfirmRenewePopup(true)
-                        setSelected(row)
-                    }}>
-                        <img src={ReneweIcon} alt="Renovar" />
-                    </button>
-                )
-            }
+            { header: 'Título', accessor: 'bookTitle' }
         ];
     }
     else if (auth.role === roles.user) {
@@ -167,7 +150,7 @@ export default function Return() {
             header: 'Devuelto', accessor: 'returned',
             render: (value) => value ? 'Sí' : 'No'
         }
-    ]; 
+    ];
 
     const handleExtraData = (newData) => {
         setPartnerData(prev => {
@@ -190,7 +173,7 @@ export default function Return() {
                                         partnerNumber: partnerData.partnerNumber,
                                         memoSearch: partnerData.memoSearch
                                     }
-                                } onDataChange={handleExtraData} />
+                                } onDataChange={handleExtraData} onFilterChange={setFilters} />
                             )}
 
 
@@ -198,13 +181,6 @@ export default function Return() {
                                 <h2 className='lend-books-title'>Libros Prestados</h2>
 
                                 <Table columns={columnsReturnForm} data={items} />
-
-                                {auth.role === 'admin' && (
-                                    <div className='add-book-to-lend'>
-                                        <Btn text={'Devolver todos'} onClick={() => setConfirmReturnAllPopup(true)} />
-                                    </div>
-                                )}
-
 
                                 {returnBooksPopups.map(({ condition, title, className, content, close, variant }, idx) => (
                                     condition && (

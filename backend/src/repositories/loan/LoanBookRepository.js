@@ -4,6 +4,15 @@ export const getAll = async () => {
   return await LoanBook.findAll();
 };
 
+export const getOneByBookAndLoan = async (BookId, loanId) => {
+  return await LoanBook.findOne({
+    where: {
+      BookId,
+      loanId
+    }
+  });
+};
+
 export const verifyIfBookIsNotRepeated = async (id) => {
   const res = await LoanBook.findOne({
     where: {
@@ -13,8 +22,6 @@ export const verifyIfBookIsNotRepeated = async (id) => {
   });
 
   if (res !== null) {
-    console.log(res);
-    console.log("s");
     return {
       available: false,
       message: 'El libro ya ha sido prestado y no puede ser añadido al préstamo.',

@@ -13,13 +13,12 @@ export default function LoanFilter({ onFilterChange }) {
     getItems: getBookTypes,
   } = useEntityManagerAPI("book-types");
 
-  useEffect(() => {
-    const fetchBookTypes = async () => {
-      const res = await getBookTypes();
-      console.log("Tipos de material obtenidos:", res);
-    };
-    fetchBookTypes();
-  }, []);
+  // useEffect(() => {
+  //   const fetchBookTypes = async () => {
+  //     const res = await getBookTypes();
+  //   };
+  //   fetchBookTypes();
+  // }, []);
 
 
   const [formData, setFormData] = useState({

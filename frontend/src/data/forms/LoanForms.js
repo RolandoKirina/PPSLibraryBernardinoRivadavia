@@ -102,7 +102,7 @@ export const editLoanformFields = [
 export const reneweLoanFields = [
   {
     label: 'Fecha de Reserva',
-    name: 'reneweDate',
+    name: 'reservationDate',
     type: 'date'
   },
   {

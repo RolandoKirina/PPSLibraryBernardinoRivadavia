@@ -48,6 +48,10 @@ export const createReservation = async (req, res) => {
 
 export const updateReservation = async (req, res) => {
     try {
+        console.log("ss");
+        console.log("ss");
+        console.log("ss");
+
         const { id } = req.params;
         const updates = req.body;
 
@@ -55,6 +59,7 @@ export const updateReservation = async (req, res) => {
             return res.status(HTTP_STATUS.BAD_REQUEST.code).json({ msg: "Invalid reservation body" });
         }
 
+        console.log("ss");
         const updatedReservation = await ReservationsService.updateReservation(id, updates);
         res.status(HTTP_STATUS.OK.code).send(updatedReservation);
     } catch (error) {

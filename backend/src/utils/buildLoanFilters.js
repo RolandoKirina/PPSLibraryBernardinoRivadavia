@@ -147,6 +147,8 @@ export const buildReturnFilters = (query) => {
         wherePartner.memo = { [Op.iLike]: `%${memo.trim()}%` };
     }
 
+    console.log(wherePartner);
+
     const parsedLimit = parseInt(limit);
     const parsedOffset = parseInt(offset);
 

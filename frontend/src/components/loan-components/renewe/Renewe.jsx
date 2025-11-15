@@ -20,18 +20,47 @@ import { mockRenewes } from '../../../data/mocks/loans.js';
 import { useAuth } from '../../../auth/AuthContext.jsx';
 import roles from '../../../auth/roles.js';
 
-export default function Renewe({ title, isPopup }) {
+import { useEffect } from 'react';
+
+import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI.js';
+
+export default function Renewe() {
     const { auth } = useAuth();
     const [deletePopup, setDeletePopup] = useState(false);
     const [popupView, setPopupView] = useState("default");
     const [selected, setSelected] = useState(null);
+    const [filters, setFilters] = useState({});
+
+    const [books, setBooks] = useState([]);
+
     const {
-        items: reneweItems,
-        getItem: getReneweItem,
+        items,
+        getItems,
         createItem: createReneweItem,
         updateItem: updateReneweItem,
-        deleteItem: deleteReneweItem
-    } = useEntityManager(mockRenewes, 'renewes');
+        deleteItem
+    } = useEntityManagerAPI('reservations');
+
+    useEffect(() => {
+        const delay = setTimeout(() => {
+            getItems(filters);
+        }, 500);
+
+        return () => clearTimeout(delay);
+    }, [filters]);
+
+    async function refreshItems() {
+        console.log("Iniciando refresh...");
+
+        try {
+            setPopupView('default'); // Solo se ejecuta tras obtener la respuesta
+
+            const data = await getItems(); // Espera a que se complete la llamada
+            console.log("Datos recibidos:", data);
+        } catch (error) {
+            console.error("Error al refrescar items:", error);
+        }
+    }
 
 
     const renewespopup = [
@@ -39,12 +68,19 @@ export default function Renewe({ title, isPopup }) {
             key: 'deletePopup',
             title: 'Borrar reserva',
             className: 'delete-size-popup',
-            content: <PopUpDelete title={"Reserva"} closePopup={() => setDeletePopup(false)} onConfirm={
-                () => {
-                    deleteReneweItem(selected.id)
-                    setDeletePopup(false)
-                }
-            } />,
+            content:
+                // <PopUpDelete title={"Reserva"} closePopup={() => setDeletePopup(false)} onConfirm={
+                //     () => {
+                //         deleteReneweItem(selected.id)
+                //         setDeletePopup(false)
+                //     }
+                // } />,
+                <PopUpDelete
+                    title="Reserva"
+                    onConfirm={() => deleteItem(selected.id)}
+                    closePopup={() => setDeletePopup(false)}
+                    refresh={() => getItems()}
+                />,
             close: () => setDeletePopup(false),
             condition: deletePopup,
             variant: 'delete'
@@ -56,8 +92,8 @@ export default function Renewe({ title, isPopup }) {
     if (auth.role === roles.admin) {
         columns = [
             { header: 'Número socio', accessor: 'partnerNumber' },
-            { header: 'Socio', accessor: 'partnerFullName' },
-            { header: 'Titulo libro', accessor: 'bookTitle' },
+            { header: 'Socio', accessor: 'name' },
+            { header: 'Titulo libro', accessor: 'title' },
             {
                 header: 'Borrar',
                 accessor: 'delete',
@@ -99,7 +135,7 @@ export default function Renewe({ title, isPopup }) {
     }
     else if (auth.role === roles.user) {
         columns = [
-            { header: 'Titulo libro', accessor: 'bookTitle' },
+            { header: 'Titulo libro', accessor: 'title' },
             { header: 'Fecha reserva', accessor: 'reneweDate' },
             { header: 'Fecha limite', accessor: 'expectedDate' }
         ];
@@ -116,35 +152,61 @@ export default function Renewe({ title, isPopup }) {
                             <div className='renewe-title'>
                                 <h2>Filtros</h2>
                             </div>
+
                             <div className='renewe-input'>
                                 <div className='input'>
-                                    <label>Codigo libro</label>
-                                    <input type='number' />
+                                    <label>Código libro</label>
+                                    <input
+                                        type='text'
+                                        value={filters.bookCode || ''}
+                                        onChange={(e) =>
+                                            setFilters((prev) => ({ ...prev, bookCode: e.target.value }))
+                                        }
+                                    />
                                 </div>
+
                                 <div className='input'>
                                     <label>Título libro</label>
-                                    <input type='text' />
+                                    <input
+                                        type='text'
+                                        value={filters.bookTitle || ''}
+                                        onChange={(e) =>
+                                            setFilters((prev) => ({ ...prev, bookTitle: e.target.value }))
+                                        }
+                                    />
                                 </div>
                             </div>
+
                             <div className='renewe-input'>
                                 <div className='input'>
-                                    <label>Fecha de devolución</label>
-                                    <input type='date' />
+                                    <label>Fecha prevista de devolución</label>
+                                    <input
+                                        type='date'
+                                        value={filters.expectedDate || ''}
+                                        onChange={(e) =>
+                                            setFilters((prev) => ({ ...prev, expectedDate: e.target.value }))
+                                        }
+                                    />
                                 </div>
                                 <div className='input'>
                                     <label>Fecha reserva</label>
-                                    <input type='date' />
+                                    <input
+                                        type='date'
+                                        value={filters.reservationDate || ''}
+                                        onChange={(e) =>
+                                            setFilters((prev) => ({ ...prev, reservationDate: e.target.value }))
+                                        }
+                                    />
                                 </div>
                             </div>
                         </div>
-
 
                         <div className='renewe-table-size'>
                             <div className='type-loan-title'>
                                 <h2>Reservas
                                 </h2>
                             </div>
-                            <Table columns={columns} data={reneweItems}>
+                            <Table columns={columns} data={items}>
                                 {auth.role === roles.admin && (
                                     <div className='add-renew-btn'>
                                         <Btn variant={'primary'} text={'Nueva reserva'} onClick={() => setPopupView('addRenewe')} icon={<img src={PlusIcon} alt={PlusIcon} />} />
@@ -168,22 +230,36 @@ export default function Renewe({ title, isPopup }) {
                 {popupView === 'addRenewe' && (
                     <>
                         <BackviewBtn menu={'default'} changeView={setPopupView} />
-                        <AddRenewe method={'add'} createReneweItem={createReneweItem} />
+                        <AddRenewe refreshItems={() => refreshItems()} method={'add'} createReneweItem={createReneweItem} />
                     </>
                 )}
                 {popupView === 'editForm' && (
                     <>
                         <BackviewBtn menu={'default'} changeView={setPopupView} />
-                        <GenericForm fields={reneweLoanFields} onSubmit={(data) => {
-                            updateReneweItem(selected.id, {
-                                bookTitle: selected.bookTitle,
-                                partnerNumber: selected.partnerNumber,
-                                reneweDate: data.reneweDate,
-                                expectedDate: data.expectedDate,
-                                books: selected.books
-                            })
-                            setPopupView('default');
-                        }} title={'Editar reserva'} className={'renewe-edit-form-size'} />
+                        <GenericForm
+                            fields={reneweLoanFields}
+                            onSubmit={async (data) => {
+                                try {
+                                    console.log("Datos a actualizar:", data);
+                                    console.log("Elemento seleccionado:", selected);
+
+                                    // Esperar a que termine la actualización
+                                    await updateReneweItem(selected.id, data);
+
+                                    // Refrescar la lista de items una vez actualizado
+                                    await refreshItems();
+
+                                    // Volver a la vista por defecto
+                                    setPopupView('default');
+                                } catch (error) {
+                                    console.error("Error al actualizar la reserva:", error);
+                                    alert("No se pudo actualizar la reserva.");
+                                }
+                            }}
+                            title={'Editar reserva'}
+                            className={'renewe-edit-form-size'}
+                        />
+
                     </>
                 )}
                 {popupView === 'details' && (
