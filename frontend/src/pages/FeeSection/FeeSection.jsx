@@ -3,7 +3,6 @@ import { useEntityManagerAPI } from '../../hooks/useEntityManagerAPI.js';
 
 import { useState, useEffect } from 'react';
 
-import { fees } from '../../data/mocks/fees.js';
 import GenericSection from '../../components/generic/GenericSection/GenericSection.jsx';
 
 import DeleteIcon from '../../assets/img/delete-icon.svg';
@@ -30,17 +29,15 @@ export const FeeSection = () => {
   const [PopUpDetail, setPopUpDetail] = useState(false);
   const [PopUpPaidFees, setPopUpPaidFees] = useState(false);
   const [PopUpFeesBetweenDates, setPopUpFeesBetweenDates] = useState(false);
-  const [filteredfees, setFilteredFees] = useState([]);
 
   const { items, getItems, getItem, createItem, updateItem, deleteItem } = useEntityManagerAPI("fees");
-
 
   const [formData, setFormData] = useState({
       unpaidfees: false,
       partnerNumber: "",
       name: "",
       surname: "",
-      PaymentDate: "",
+      paymentdate: null,
     });
 
      const handleFilterChange = (e) => {
@@ -49,35 +46,26 @@ export const FeeSection = () => {
       setFormData(updated);
     };
 
-  useEffect(() => {
-    const filters = Object.fromEntries(
-        Object.entries(formData).filter(([_, v]) => v !== "")
-      );
+      useEffect(() => {
+  const filters = Object.fromEntries(
+    Object.entries(formData).filter(([_, v]) => v !== "")
+  );
 
-    const delay = setTimeout(() => {
-     if (Object.keys(filters).length > 0) {
+  const delay = setTimeout(() => {
+    if (Object.keys(filters).length > 0) {
       getItems(filters);
-      setFilteredFees(items); 
-     
     }
-     else{
-      getItems(filters);
-      setFilteredFees([]);
-    }
+  }, 300);
 
-    }, 300);
-
-    return () => clearTimeout(delay);
-  }, [formData]);
-
-  
+  return () => clearTimeout(delay);
+}, [formData]);
 
 
 
-   const formattedFees = fees.map(fee => ({
-  ...fee,
-  paid: fee.paid ? '✅ Pagada' : '❌ Impaga',
-}));
+   const formattedFees = items.map(fee => ({
+      ...fee,
+      paid: fee.paid ? '✅ Pagada' : '❌ Impaga',
+   }));
 
 
   const columns = [
@@ -134,13 +122,11 @@ export const FeeSection = () => {
     }
   ];
 
-
   const paidfeescolumns = [
     { header: 'Cuotas pagadas', accessor: 'numberofFee' },
     { header: 'Cuotas impagas', accessor: 'partnerName' },
     { header: 'Cuotas nuevas', accessor: 'paidfees' },
   ];
-
 
   const feesPopUp = [
     {
@@ -197,10 +183,11 @@ export const FeeSection = () => {
 
   return (
     <>
+      <GenericSection title="Listado de cuotas" filters={
+        <FeeFilter formData={formData || 
+          { partnerWithUnpaidFees: false, name: "", surname: "", PaymentDate: "" }} 
+          onChange={handleFilterChange} />}
 
-      <GenericSection title="Listado de cuotas" filters={<FeeFilter formData={formData || { partnerWithUnpaidFees: false, name: "", surname: "", PaymentDate: "" }} onChange={handleFilterChange} filteredfees={filteredfees} />}
-
-      
         columns={columns} data={items} popups={feesPopUp}
         actions={
           <div className='fees-actions'>
@@ -211,10 +198,6 @@ export const FeeSection = () => {
         }
 
       ></GenericSection>
-
-
-
-
 
     </>
   );

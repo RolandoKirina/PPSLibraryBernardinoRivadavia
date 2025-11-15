@@ -1,7 +1,32 @@
 import "./feefiltercheckbox.css";
-export default function BookFilter({formData, onChange, filteredfees}) {
+import { useState, useEffect} from "react";
+export default function BookFilter({formData, onChange}) {
 
+  const [paidFeeCount, setPaidFeeCount] = useState(null);
+  
+ const fetchPaidFees = async () => {
+  try {
+    const response = await fetch(`http://localhost:4000/api/v1/fees/paid-count?partnerNumber=${formData.partnerNumber}`);
+    const data = await response.json();
+    if (response.ok) {
+      setPaidFeeCount(data.count);
+    } else {
+      setPaidFeeCount(null);
+    }
+  } catch {
+    setPaidFeeCount(null);
+  }
+};
 
+useEffect(() => {
+  if (formData.partnerNumber) {
+    fetchPaidFees();
+  } else {
+    setPaidFeeCount(0);
+  }
+}, [formData.partnerNumber]);
+
+console.log(paidFeeCount)
   return (
     <aside className="book-filter-aside">
 
@@ -16,7 +41,7 @@ export default function BookFilter({formData, onChange, filteredfees}) {
 
             <div className="feefiltercheckbox">
               <input type="checkbox"  name="unpaidfees" 
-              checked={formData.partnerWithUnpaidFees} onChange={(e) =>
+              checked={formData.unpaidfees} onChange={(e) =>
                   onChange({
                     target: {
                       name: e.target.name,
@@ -30,7 +55,7 @@ export default function BookFilter({formData, onChange, filteredfees}) {
 
           <div className="book-form-input-group">
             <label>Buscar por numero de socio </label>
-            <input type="number"  name="partnerNumber" value={formData.partnerNumber} onChange={onChange}/>
+            <input type="number"  name="partnerNumber" min="0" value={formData.partnerNumber} onChange={onChange}/>
           </div>
 
           <div className="book-form-input-group">
@@ -44,16 +69,14 @@ export default function BookFilter({formData, onChange, filteredfees}) {
             <input type="text"  name="surname"value={formData.surname} onChange={onChange}/>
           </div>
 
-          
-
-
           <div className="book-form-input-group">
-            <label className="color-secondary"> Cantidad de cuotas pagas:{filteredfees?.[0]?.quantitypaidfees ?? 0}</label>
+            <label className="color-secondary"> Cantidad de cuotas pagas: {paidFeeCount ?? 0}</label>
           </div>
 
           <div className="book-form-input-group">
             <label >Fecha de pago</label>
-            <input type="date" name="PaymentDate" value={formData.PaymentDate}  onChange={onChange}/>
+            <input type="date" name="paymentdate" value={formData.paymentdate} onChange={onChange}/>          
+    
           </div>
 
         </form>

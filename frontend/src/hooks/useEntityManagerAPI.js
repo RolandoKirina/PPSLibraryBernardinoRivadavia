@@ -36,7 +36,6 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
     setItems(Array.isArray(data) ? data : []);
     return data;
   } catch (err) {
-    console.error(err);
     setError(err.message);
   } finally {
     setLoading(false);

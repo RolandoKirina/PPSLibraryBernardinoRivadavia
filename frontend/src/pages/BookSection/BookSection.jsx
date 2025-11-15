@@ -42,6 +42,7 @@ const BookSection = () => {
   const [PopUpLostBooks, setPopUpLostBooks] = useState(false);
   const [error, setError] = useState(null);
 
+
 const { items, getItems, getItem, createItem, updateItem, deleteItem } =
   useEntityManagerAPI("books");
 
@@ -59,6 +60,21 @@ const { items, getItems, getItem, createItem, updateItem, deleteItem } =
     const updated = { ...formData, [name]: value };
     setFormData(updated);
   };
+
+
+    useEffect(() => {
+    if (!partnerNumber) return;
+
+    const countPaidFees = async () => {
+      const response = await fetch(`/api/fees?partnerNumber=${partnerNumber}&unpaidfees=false`);
+      const data = await response.json();
+
+      const count = data?.length || 0;
+      setPaidFeeCount(count);
+    };
+
+    countPaidFees();
+  }, [partnerNumber]);
 
   useEffect(() => {
       const filters = Object.fromEntries(
