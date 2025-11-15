@@ -69,7 +69,7 @@ export const FeeSection = () => {
 
 
   const columns = [
-    { header: 'Numero de cuota', accessor: 'feeId' },
+    { header: 'Numero de cuota', accessor: 'feeid' },
     { header: 'Nombre de socio',  accessor: 'name'},
     { header: 'valor', accessor: 'amount' },
     {header: 'Numero de socio', accessor: 'partnerNumber'},
@@ -116,7 +116,12 @@ export const FeeSection = () => {
       className: "action-buttons",
       render: (_, row) => (
         <button className="button-table">
-          <img src={DetailsIcon} alt="Detalles" onClick={() => setPopUpDetail(true)} />
+          <img src={DetailsIcon} alt="Detalles" 
+                   onClick={() => {
+                    setSelectedItem(row)
+                    setPopUpDetail(true)
+             }}
+ />
         </button>
       )
     }
@@ -135,7 +140,7 @@ export const FeeSection = () => {
       className: 'delete-size-popup',
       content: <PopUpDelete
         title={"item"}
-        onConfirm={() => deleteItem(selectedId)} 
+        onConfirm={() => deleteItem(selectedItem.feeid)} 
         closePopup={() => setPopUpDelete(false)}
         refresh={() => getItems()} />,
         close: () => setPopUpDelete(false),
@@ -160,7 +165,7 @@ export const FeeSection = () => {
     {
       key: 'SeeDetail',
       title: 'Ver detalle',
-      content: <ShowDetails isPopup={true} detailsData={FeesDetail} />,
+      content: <ShowDetails data={selectedItem} detailsData={FeesDetail} isPopup={true} />,
       close: () => setPopUpDetail(false),
       condition: PopUpDetail
     },

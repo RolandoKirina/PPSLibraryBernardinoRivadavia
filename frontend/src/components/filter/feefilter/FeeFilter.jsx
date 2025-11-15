@@ -26,7 +26,6 @@ useEffect(() => {
   }
 }, [formData.partnerNumber]);
 
-console.log(paidFeeCount)
   return (
     <aside className="book-filter-aside">
 
