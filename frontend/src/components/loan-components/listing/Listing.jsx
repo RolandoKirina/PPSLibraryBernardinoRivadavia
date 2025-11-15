@@ -5,7 +5,7 @@ import GenerateListPopup from '../../common/generatelistpopup/GenerateListPopup'
 import { titlesByType, columnsByType, dataByType } from '../../../data/generatedlist/generatedList';
 
 export default function Listing({ type }) {
-
+  
   return (
     <>
       <div className='preview-list-container'>

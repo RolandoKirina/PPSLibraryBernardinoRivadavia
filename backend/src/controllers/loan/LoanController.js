@@ -15,6 +15,19 @@ export const getAllLoans = async (req, res) => {
     }
 };
 
+export const getLoanPrintList = async (req, res) => {
+    try {
+        const { option } = req.params;
+
+        const loans = await LoanService.getLoanPrintList(option);
+
+        res.status(HTTP_STATUS.OK.code).send(loans);
+    } catch (error) {
+        console.error(error);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+    }
+};
+
 export const getAllReturns = async (req, res) => {
     try {
         const queryOptions = buildReturnFilters(req.query);

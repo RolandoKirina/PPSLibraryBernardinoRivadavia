@@ -4,6 +4,31 @@ export const getAllLoans = async (filters) => {
     return await LoanRepository.getAll(filters);
 }
 
+export const getLoanPrintList = async (option) => {
+    let loans = [];
+
+    switch(option) {
+        case 'return': {
+            loans = await LoanRepository.getReturnPrintList();
+            break;
+        }
+        case 'phone': {
+            loans = await LoanRepository.getPhonePrintList();
+            break;
+        }
+        case 'partner': {
+            loans = await LoanRepository.getPartnerPrintList();
+            break;
+        }
+        default: {
+            
+        }
+    }
+
+    return loans;
+}
+
+
 export const getAllReturns= async (filters) => {
     return await LoanRepository.getAllReturns(filters);
 }
