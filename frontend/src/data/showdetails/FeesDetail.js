@@ -6,8 +6,8 @@ export const FeesDetail = [
         active: false,
         rows: [
             [
-                { label: 'Id del socio', value: '' },
-                { label: 'Nombre del socio', value: '' }
+                { label: 'Numero de socio', value: 'informacion', attribute:'partnerNumber' },
+                { label: 'Nombre del socio', value: 'informacion',  attribute: 'name' }
             ]
         ]
     },
@@ -18,16 +18,15 @@ export const FeesDetail = [
         active: false,
         rows: [
             [
-                { label: 'Id de la cuota', value: '' },
-
+                { label: 'Id de la cuota', value: 'informacion', attribute: 'feeid' }
             ],
             [
-                { label: 'Mes', value: '' },
-                { label: 'Año', value: '' }
+                { label: 'Año', value: 'informacion', attribute: 'year' },
+                { label: 'Mes', value: 'informacion', attribute: 'month' }
             ],
             [
-                { label: 'Monto', value: '' },
-                { label: 'Observaciones', value: '' }
+                { label: 'Monto', value: 'informacion', attribute: 'amount' },
+                { label: 'Observaciones', value: 'informacion', attribute: 'observation' }
             ]
         ]
     },
@@ -38,8 +37,8 @@ export const FeesDetail = [
         active: false,
         rows: [
             [
-                { label: 'Estado', value: 'información' },
-                { label: 'Fecha de pago', value: 'información' }
+                { label: 'Estado de pago', value: 'información', attribute: 'paid' },
+                { label: 'Fecha de pago', value: 'información', attribute: 'date_of_paid' }
             ]
         ]
     }

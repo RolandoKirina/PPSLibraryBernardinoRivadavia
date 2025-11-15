@@ -1,8 +1,26 @@
 import './BookFilter.css';
 import { useState } from 'react';
 export default function BookFilter({ formData, onChange })  {
+  
+  const [partnerNumber, setPartnerNumber] = useState('');
+  const [paidFeeCount, setPaidFeeCount] = useState(0);
 
- 
+
+
+  useEffect(() => {
+    if (!partnerNumber) return;
+
+    const countPaidFees = async () => {
+      const response = await fetch(`/api/fees?partnerNumber=${partnerNumber}&unpaidfees=false`);
+      const data = await response.json();
+
+      const count = data?.length || 0;
+      setPaidFeeCount(count);
+    };
+
+    countPaidFees();
+  }, [partnerNumber]);
+
    return (
     <aside className="book-filter-aside">
       <div className="book-filter-form">
