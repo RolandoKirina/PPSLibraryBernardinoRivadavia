@@ -38,9 +38,9 @@ export const titlesByType = {
   LostBooks: 'Listado de libros perdidos',
   TypeOneFees: 'Listado de cuotas entre fechas',
   TypeTwoFees: 'Listado de cuotas por letra y categoria',
-  LoanListingPhone: 'Préstamos con teléfono',
-  LoanListingReturnDate: 'Préstamos con fecha de devolución',
-  LoanListingPerPartner: 'Cantidad de préstamos por socio'
+  phone: 'Préstamos con teléfono',
+  return: 'Préstamos con fecha de devolución',
+  partner: 'Cantidad de préstamos por socio'
 };
 
 
@@ -109,7 +109,7 @@ export const columnsByType = {
     { header: 'Protector', accessor: 'protector' },
     { header: 'Débito', accessor: 'debit' }
   ],
-  LoanListingPhone: [
+  phone: [
     { header: 'Titulo', accessor: 'bookTitle' },
     { header: 'Codigo', accessor: 'bookCode' },
     { header: 'Numero Socio', accessor: 'partnerNumber' },
@@ -118,23 +118,21 @@ export const columnsByType = {
     { header: 'Fecha retiro', accessor: 'retiredDate' },
     { header: 'Fecha prevista', accessor: 'expectedDate' },
   ],
-  LoanListingReturnDate: [
+  return: [
     { header: 'Titulo', accessor: 'bookTitle' },
     { header: 'Codigo', accessor: 'bookCode' },
     { header: 'Numero Socio', accessor: 'partnerNumber' },
     { header: 'Nombre Socio', accessor: 'partnerName' },
-    { header: 'Direccion', accessor: 'partnerAdress' },
+    { header: 'Direccion', accessor: 'partnerAddress' },
     { header: 'Fecha retiro', accessor: 'retiredDate' },
     { header: 'Fecha prevista', accessor: 'expectedDate' },
     { header: 'Fecha devolución', accessor: 'returnedDate' },
   ],
-  LoanListingPerPartner: [
-    { header: 'Titulo', accessor: 'bookTitle' },
-    { header: 'Codigo', accessor: 'bookCode' },
+  partner: [
     { header: 'Numero Socio', accessor: 'partnerNumber' },
     { header: 'Nombre Socio', accessor: 'partnerName' },
-    { header: 'Direccion particular', accessor: 'partnerPhone' },
-    { header: 'Telefono particular', accessor: 'retiredDate' },
+    { header: 'Direccion particular', accessor: 'partnerAddress' },
+    { header: 'Telefono particular', accessor: 'partnerPhone' },
     { header: 'Cantidad libros', accessor: 'bookAmount' },
   ]
 
@@ -565,97 +563,97 @@ export const dataByType = {
   ],
 
   LostBooks: [
-  {
-    date: '2025-01-12',
-    code: 'LB-001',
-    title: 'Mesa 3',
-    partnerNumber: 'REQ-14396',
-    name: 'Lucrecia AERUANTE',
-    address: 'Avellaneda 120',
-    phone: '2995123456'
-  },
-  {
-    date: '2025-02-08',
-    code: 'LB-002',
-    title: 'Mesa 1',
-    partnerNumber: 'REQ-10393',
-    name: 'Griselda ABRAHAM',
-    address: 'Mitre 88',
-    phone: '2994789654'
-  },
-  {
-    date: '2025-03-15',
-    code: 'LB-003',
-    title: 'Mesa 2',
-    partnerNumber: 'REQ-14393',
-    name: 'Luciano MATFROLCH',
-    address: 'Belgrano 55',
-    phone: '2995012345'
-  },
-  {
-    date: '2025-04-03',
-    code: 'LB-004',
-    title: 'Mesa 4',
-    partnerNumber: 'REQ-10392',
-    name: 'Facundo AGUILA',
-    address: 'San Martín 102',
-    phone: '2994432187'
-  },
-  {
-    date: '2025-05-20',
-    code: 'LB-005',
-    title: 'Mesa 5',
-    partnerNumber: 'REQ-10401',
-    name: 'María José BAZÁN',
-    address: 'Chacabuco 77',
-    phone: '2994123987'
-  },
-  {
-    date: '2025-06-11',
-    code: 'LB-006',
-    title: 'Mesa 2',
-    partnerNumber: 'REQ-10402',
-    name: 'Esteban CARRERA',
-    address: 'Urquiza 33',
-    phone: '2994567890'
-  },
-  {
-    date: '2025-07-07',
-    code: 'LB-007',
-    title: 'Mesa 1',
-    partnerNumber: 'REQ-10403',
-    name: 'Lucía DÍAZ',
-    address: 'Alsina 99',
-    phone: '2994781234'
-  },
-  {
-    date: '2025-08-14',
-    code: 'LB-008',
-    title: 'Mesa 3',
-    partnerNumber: 'REQ-10404',
-    name: 'Martín ECHAGÜE',
-    address: 'Roca 88',
-    phone: '2994123456'
-  },
-  {
-    date: '2025-09-01',
-    code: 'LB-009',
-    title: 'Mesa 4',
-    partnerNumber: 'REQ-10405',
-    name: 'Sofía FERNÁNDEZ',
-    address: 'Venezuela 44',
-    phone: '2995526739'
-  },
-  {
-    date: '2025-09-02',
-    code: 'LB-010',
-    title: 'Mesa 5',
-    partnerNumber: 'REQ-10406',
-    name: 'Julián GÓMEZ',
-    address: 'Lavalle 12',
-    phone: '2994789650'
-  }
-],
+    {
+      date: '2025-01-12',
+      code: 'LB-001',
+      title: 'Mesa 3',
+      partnerNumber: 'REQ-14396',
+      name: 'Lucrecia AERUANTE',
+      address: 'Avellaneda 120',
+      phone: '2995123456'
+    },
+    {
+      date: '2025-02-08',
+      code: 'LB-002',
+      title: 'Mesa 1',
+      partnerNumber: 'REQ-10393',
+      name: 'Griselda ABRAHAM',
+      address: 'Mitre 88',
+      phone: '2994789654'
+    },
+    {
+      date: '2025-03-15',
+      code: 'LB-003',
+      title: 'Mesa 2',
+      partnerNumber: 'REQ-14393',
+      name: 'Luciano MATFROLCH',
+      address: 'Belgrano 55',
+      phone: '2995012345'
+    },
+    {
+      date: '2025-04-03',
+      code: 'LB-004',
+      title: 'Mesa 4',
+      partnerNumber: 'REQ-10392',
+      name: 'Facundo AGUILA',
+      address: 'San Martín 102',
+      phone: '2994432187'
+    },
+    {
+      date: '2025-05-20',
+      code: 'LB-005',
+      title: 'Mesa 5',
+      partnerNumber: 'REQ-10401',
+      name: 'María José BAZÁN',
+      address: 'Chacabuco 77',
+      phone: '2994123987'
+    },
+    {
+      date: '2025-06-11',
+      code: 'LB-006',
+      title: 'Mesa 2',
+      partnerNumber: 'REQ-10402',
+      name: 'Esteban CARRERA',
+      address: 'Urquiza 33',
+      phone: '2994567890'
+    },
+    {
+      date: '2025-07-07',
+      code: 'LB-007',
+      title: 'Mesa 1',
+      partnerNumber: 'REQ-10403',
+      name: 'Lucía DÍAZ',
+      address: 'Alsina 99',
+      phone: '2994781234'
+    },
+    {
+      date: '2025-08-14',
+      code: 'LB-008',
+      title: 'Mesa 3',
+      partnerNumber: 'REQ-10404',
+      name: 'Martín ECHAGÜE',
+      address: 'Roca 88',
+      phone: '2994123456'
+    },
+    {
+      date: '2025-09-01',
+      code: 'LB-009',
+      title: 'Mesa 4',
+      partnerNumber: 'REQ-10405',
+      name: 'Sofía FERNÁNDEZ',
+      address: 'Venezuela 44',
+      phone: '2995526739'
+    },
+    {
+      date: '2025-09-02',
+      code: 'LB-010',
+      title: 'Mesa 5',
+      partnerNumber: 'REQ-10406',
+      name: 'Julián GÓMEZ',
+      address: 'Lavalle 12',
+      phone: '2994789650'
+    }
+  ],
 
   TypeOneFees: [
     {
@@ -802,7 +800,7 @@ export const dataByType = {
     }
   ],
 
-  LoanListingPhone: [
+  phone: [
     {
       bookTitle: 'El principito',
       bookCode: 'BK-00012',
@@ -823,7 +821,7 @@ export const dataByType = {
     }
   ],
 
-  LoanListingReturnDate: [
+  return: [
     {
       bookTitle: 'El principito',
       bookCode: 'BK-00012',
@@ -846,7 +844,7 @@ export const dataByType = {
     }
   ],
 
-  LoanListingPerPartner: [
+  partner: [
     {
       bookTitle: 'El principito',
       bookCode: 'BK-00012',

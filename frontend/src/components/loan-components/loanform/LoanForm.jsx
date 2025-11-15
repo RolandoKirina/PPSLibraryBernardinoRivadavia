@@ -28,7 +28,8 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
   const BASE_URL = "http://localhost:4000/api/v1";
   const [addBookMessage, setAddBookMessage] = useState('');
 
-  const [confirmReturnPopup, setConfirmReturnAllPopup] = useState(false);
+  const [confirmReturnAllPopup, setConfirmReturnAllPopup] = useState(false);
+  const [confirmReturnPopup, setConfirmReturnPopup] = useState(false);
   const [confirmRenewePopup, setConfirmRenewePopup] = useState(false);
 
   const { auth } = useAuth();

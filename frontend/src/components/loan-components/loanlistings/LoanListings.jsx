@@ -9,25 +9,21 @@ export default function LoanListings() {
     const [popupView, setPopupView] = useState('default');
     const [type, setType] = useState();
 
-    function redirectToListingOpened(routeName) {
-        window.open(`${window.location.origin}/${routeName}`, '_blank', "listado")
-    }
-
     return (
         <>
             {popupView === 'default' && (
                 <div className='listings-content'>
                     <div className='listings-btns'>
                         <Btn variant={'primary'} text={'Con fecha de devolución'} className={'listings-btn'} onClick={() => {
-                            setType('LoanListingReturnDate')
+                            setType('return');
                             setPopupView('listing');
                             }} />
                         <Btn variant={'primary'} text={'Con teléfono'} className={'listings-btn'} onClick={() => {
-                            setType('LoanListingPhone')
+                            setType('phone');
                             setPopupView('listing');
                             }} />
                         <Btn variant={'primary'} text={'Préstamos por socio'} className={'listings-btn'} onClick={() => {
-                            setType('LoanListingPerPartner')
+                            setType('partner');
                             setPopupView('listing');
                             }} />
                     </div>

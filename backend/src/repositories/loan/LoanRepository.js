@@ -181,7 +181,7 @@ export const getReturnPrintList = async () => {
         model: LoanType,
         as: 'LoanType',
         attributes: ['description'],
-        required: Object.keys(whereLoanType).length > 0
+        required: true
       },
       {
         model: Partner,
@@ -215,12 +215,12 @@ export const getReturnPrintList = async () => {
         model: Employees,
         as: 'Employee',
         attributes: ['name', 'code'],
-        required: Object.keys(whereEmployee).length > 0
+        required: true
       }
     ],
-    order,
-    limit,
-    offset
+    // order,
+    // limit,
+    // offset
   });
 
   const flatLoans = loans.flatMap(loan =>
@@ -229,10 +229,10 @@ export const getReturnPrintList = async () => {
       bookCode: loanBook.Book?.codeInventory || loanBook.bookCode || '',
       partnerNumber: loan.Partner?.partnerNumber || '',
       partnerName: `${loan.Partner?.surname || ''} ${loan.Partner?.name || ''}`,
-      partnerAdress: loan.Partner?.homeAddress || '',
-      retiredDate: loan.withdrawalTime?.toISOString().slice(0, 10) || '',
-      expectedDate: loanBook.expectedDate?.toISOString().slice(0, 10) || '',
-      returnedDate: loanBook.returnedDate?.toISOString().slice(0, 10) || ''
+      partnerAddress: loan.Partner?.homeAddress || '',
+      retiredDate: loan.withdrawalTime || 'No hay fecha',
+      expectedDate: loanBook.expectedDate || 'No hay fecha',
+      returnedDate: loanBook.returnedDate || 'No hay fecha'
     }))
   );
 
@@ -240,7 +240,6 @@ export const getReturnPrintList = async () => {
 };
 
 export const getPhonePrintList = async () => {
-
   const loans = await Loan.findAll({
     attributes: ['id', 'withdrawalTime', 'retiredDate'],
     subQuery: false,
@@ -249,7 +248,7 @@ export const getPhonePrintList = async () => {
         model: LoanType,
         as: 'LoanType',
         attributes: ['description'],
-        required: Object.keys(whereLoanType).length > 0
+        required: true
       },
       {
         model: Partner,
@@ -283,43 +282,30 @@ export const getPhonePrintList = async () => {
         model: Employees,
         as: 'Employee',
         attributes: ['name', 'code'],
-        required: Object.keys(whereEmployee).length > 0
+        required: true
       }
     ],
-    order,
-    limit,
-    offset
+    // order,
+    // limit,
+    // offset
   });
 
-  const groupedLoans = loans.map(loan => ({
-    loanId: loan?.id || '',
-    retiredDate: loan.retiredDate,
-    expectedDate: loan.LoanBooks?.[0]?.expectedDate || '',
-    returnedDate: loan.LoanBooks?.[0]?.returnedDate || '',
-    withdrawalTime: loan?.withdrawalTime || '',
-    loanType: loan.LoanType?.description || '',
-    employee: loan.Employee?.name || '',
-    employeeCode: loan.Employee?.code || '',
-    partnerId: loan.Partner?.id || null,
-    partnerNumber: loan.Partner?.partnerNumber || '',
-    name: `${loan.Partner?.name || ''} ${loan.Partner?.surname || ''}`,
-    surname: loan.Partner?.surname || '',
-    homePhone: loan.Partner?.homePhone || '',
-    homeAddress: loan.Partner?.homeAddress || '',
-    books: loan.LoanBooks.map(book => ({
-      codeInventory: book.Book?.codeInventory || book.bookCode,
-      title: book.Book?.title || '',
-      typeName: book.Book.BookType?.typeName || ''
+  const flatLoans = loans.flatMap(loan =>
+    loan.LoanBooks.map(loanBook => ({
+      bookTitle: loanBook.Book?.title || '',
+      bookCode: loanBook.Book?.codeInventory || loanBook.bookCode || '',
+      partnerNumber: loan.Partner?.partnerNumber || '',
+      partnerName: `${loan.Partner?.surname || ''} ${loan.Partner?.name || ''}`,
+      partnerPhone: loan.Partner?.homePhone || '',
+      retiredDate: loan.withdrawalTime || 'No hay fecha',
+      expectedDate: loanBook.expectedDate || 'No hay fecha',
     }))
-  }));
+  );
 
-
-  return groupedLoans;
+  return flatLoans;
 };
-
 
 export const getPartnerPrintList = async () => {
-
   const loans = await Loan.findAll({
     attributes: ['id', 'withdrawalTime', 'retiredDate'],
     subQuery: false,
@@ -328,13 +314,20 @@ export const getPartnerPrintList = async () => {
         model: LoanType,
         as: 'LoanType',
         attributes: ['description'],
-        required: Object.keys(whereLoanType).length > 0
+        required: true
       },
       {
         model: Partner,
         as: 'Partner',
-        attributes: ['id', 'homePhone', 'homeAddress', 'name', 'surname', 'partnerNumber'],
-        required: true,
+        attributes: [
+          'id',
+          'homePhone',
+          'homeAddress',
+          'name',
+          'surname',
+          'partnerNumber'
+        ],
+        required: true
       },
       {
         model: LoanBook,
@@ -351,7 +344,7 @@ export const getPartnerPrintList = async () => {
               {
                 model: BookType,
                 as: 'BookType',
-                attributes: ["typeName"],
+                attributes: ['typeName'],
                 required: true
               }
             ]
@@ -362,39 +355,36 @@ export const getPartnerPrintList = async () => {
         model: Employees,
         as: 'Employee',
         attributes: ['name', 'code'],
-        required: Object.keys(whereEmployee).length > 0
+        required: true
       }
-    ],
-    order,
-    limit,
-    offset
+    ]
   });
 
-  const groupedLoans = loans.map(loan => ({
-    loanId: loan?.id || '',
-    retiredDate: loan.retiredDate,
-    expectedDate: loan.LoanBooks?.[0]?.expectedDate || '',
-    returnedDate: loan.LoanBooks?.[0]?.returnedDate || '',
-    withdrawalTime: loan?.withdrawalTime || '',
-    loanType: loan.LoanType?.description || '',
-    employee: loan.Employee?.name || '',
-    employeeCode: loan.Employee?.code || '',
-    partnerId: loan.Partner?.id || null,
-    partnerNumber: loan.Partner?.partnerNumber || '',
-    name: `${loan.Partner?.name || ''} ${loan.Partner?.surname || ''}`,
-    surname: loan.Partner?.surname || '',
-    homePhone: loan.Partner?.homePhone || '',
-    homeAddress: loan.Partner?.homeAddress || '',
-    books: loan.LoanBooks.map(book => ({
-      codeInventory: book.Book?.codeInventory || book.bookCode,
-      title: book.Book?.title || '',
-      typeName: book.Book.BookType?.typeName || ''
-    }))
-  }));
+  const partnerMap = {};
 
+  for (const loan of loans) {
+    const partner = loan.Partner;
+    if (!partner) continue;
 
-  return groupedLoans;
+    const partnerId = partner.id;
+
+    if (!partnerMap[partnerId]) {
+      partnerMap[partnerId] = {
+        partnerNumber: partner.partnerNumber || '',
+        partnerName: `${partner.surname || ''} ${partner.name || ''}`,
+        partnerAddress: partner.homeAddress || '',
+        partnerPhone: partner.homePhone || '',
+        bookAmount: 0
+      };
+    }
+
+    partnerMap[partnerId].bookAmount += loan.LoanBooks.length;
+  }
+
+  return Object.values(partnerMap);
 };
+
+
 
 
 export const create = async (loan) => {

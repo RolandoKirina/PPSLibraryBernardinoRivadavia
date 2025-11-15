@@ -4,8 +4,10 @@ export const buildReservationFilters = (query) => {
     const {
         bookTitle,
         bookCode,
-        expectedDate,
-        reservationDate,
+        expectedStartDate,
+        expectedEndDate,
+        reservationStartDate,
+        reservationEndDate,
         partnerNumber,
         partnerName,
         partnerSurname,
@@ -25,12 +27,34 @@ export const buildReservationFilters = (query) => {
 
     if (bookCode) whereBook.codeInventory = `${bookCode}`;
 
-    if (expectedDate) {
-      whereReservation.expectedDate = { [Op.eq]: expectedDate };
+    const normalizeDate = (date) => new Date(date).toISOString().split('T')[0];
+
+    // 🔹 FILTRO DE EXPECTED DATE (rango)
+    if (expectedStartDate) {
+        whereReservation.expectedDate = {
+            [Op.gte]: normalizeDate(expectedStartDate),
+        };
     }
 
-    if (reservationDate) {
-      whereReservation.reservationDate = { [Op.eq]: reservationDate };
+    if (expectedEndDate) {
+        whereReservation.expectedDate = {
+            ...(whereReservation.expectedDate || {}),
+            [Op.lte]: normalizeDate(expectedEndDate),
+        };
+    }
+
+    // 🔹 FILTRO DE RESERVATION DATE (rango)
+    if (reservationStartDate) {
+        whereReservation.reservationDate = {
+            [Op.gte]: normalizeDate(reservationStartDate),
+        };
+    }
+
+    if (reservationEndDate) {
+        whereReservation.reservationDate = {
+            ...(whereReservation.reservationDate || {}),
+            [Op.lte]: normalizeDate(reservationEndDate),
+        };
     }
 
     if (partnerName?.trim()) {
