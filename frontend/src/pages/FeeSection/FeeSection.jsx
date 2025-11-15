@@ -29,7 +29,7 @@ export const FeeSection = () => {
   const [PopUpDetail, setPopUpDetail] = useState(false);
   const [PopUpPaidFees, setPopUpPaidFees] = useState(false);
   const [PopUpFeesBetweenDates, setPopUpFeesBetweenDates] = useState(false);
-
+  const [error, setError] = useState(false);
   const { items, getItems, getItem, createItem, updateItem, deleteItem } = useEntityManagerAPI("fees");
 
   const [formData, setFormData] = useState({
@@ -47,9 +47,9 @@ export const FeeSection = () => {
     };
 
       useEffect(() => {
-  const filters = Object.fromEntries(
-    Object.entries(formData).filter(([_, v]) => v !== "")
-  );
+      const filters = Object.fromEntries(
+        Object.entries(formData).filter(([_, v]) => v !== "")
+      );
 
   const delay = setTimeout(() => {
     if (Object.keys(filters).length > 0) {
@@ -62,10 +62,35 @@ export const FeeSection = () => {
 
 
 
-   const formattedFees = items.map(fee => ({
+    const formattedFees = items.map(fee => ({
       ...fee,
       paid: fee.paid ? '✅ Pagada' : '❌ Impaga',
    }));
+
+
+    async function handleAddItem(data) {
+        try {
+            const res = await fetch("http://localhost:4000/api/v1/fees/generate-unpaid-fees", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+            });
+           
+          if (!res.ok) {
+           const errorData = await res.json().catch(() => ({ msg: "Error inesperado del servidor" }));
+          console.log(errorData)
+          setError(errorData.msg); 
+          return;
+          }
+            setPopupAdd(false);
+            await getItems();
+
+        } catch (err) {
+            console.error("Error al crear cuota", err);
+        }
+    }
 
 
   const columns = [
@@ -156,9 +181,11 @@ export const FeeSection = () => {
     },
     {
       key: 'AddPopup',
-      title: 'Agregar Cuotas',
+      title: 'Generar Cuotas',
       className: 'popup-container',
-      content: <GenericForm title={'Añadir cuota nueva'} fields={editnewFeesForm} className="addfees" />,
+      content: <GenericForm title={'Generar cuotas nuevas'} error={error}
+      onSubmit={handleAddItem}
+      fields={editnewFeesForm} className="addfees" />,
       close: () => setPopupAdd(false),
       condition: PopUpAdd
     },

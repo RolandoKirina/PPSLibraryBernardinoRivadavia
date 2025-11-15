@@ -149,7 +149,6 @@ let columns =[];
 
   else if ((auth.role === roles.user || auth.role === roles.reader)) {
 
-    
          columns = [
           { header: 'Título', accessor: 'title' },
           { header: 'Código de inventario', accessor: 'codeInventory' },
@@ -249,7 +248,9 @@ return (
     <>
       <GenericSection 
   title="Listado de libros" 
-  filters={      <BookFilter formData={formData} onChange={handleFilterChange} />}
+  filters={     
+     <BookFilter formData={formData} onChange={handleFilterChange} 
+     />}
   columns={columns} 
   data={items} 
   popups={booksPopUp}

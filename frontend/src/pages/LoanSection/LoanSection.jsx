@@ -47,7 +47,6 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
         updateItem
     } = useEntityManagerAPI("loans");
 
-
     useEffect(() => {
         if (openRenewes) {
             setRenewePopup(true);
@@ -63,6 +62,8 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
 
         return () => clearTimeout(delay);
     }, [filters]);
+
+
 
     async function handleAddItem(data) {
         try {
@@ -131,7 +132,6 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
                     <button className="button-table" onClick={() => {
                         setSelected(row)
                         setDetailsPopup(true)
-                        // getLoanDetails(row)
                     }}>
                         <img src={DetailsIcon} alt="Detalles" />
                     </button>

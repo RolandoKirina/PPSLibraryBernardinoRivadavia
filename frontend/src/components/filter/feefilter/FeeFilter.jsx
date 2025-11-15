@@ -5,18 +5,18 @@ export default function BookFilter({formData, onChange}) {
   const [paidFeeCount, setPaidFeeCount] = useState(null);
   
  const fetchPaidFees = async () => {
-  try {
-    const response = await fetch(`http://localhost:4000/api/v1/fees/paid-count?partnerNumber=${formData.partnerNumber}`);
-    const data = await response.json();
-    if (response.ok) {
-      setPaidFeeCount(data.count);
-    } else {
+    try {
+      const response = await fetch(`http://localhost:4000/api/v1/fees/paid-count?partnerNumber=${formData.partnerNumber}`);
+      const data = await response.json();
+      if (response.ok) {
+        setPaidFeeCount(data.count);
+      } else {
+        setPaidFeeCount(null);
+      }
+    } catch {
       setPaidFeeCount(null);
     }
-  } catch {
-    setPaidFeeCount(null);
-  }
-};
+ };
 
 useEffect(() => {
   if (formData.partnerNumber) {

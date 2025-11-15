@@ -3,7 +3,7 @@ import SaveIcon from '../../../assets/img/save-icon.svg';
 import { useState } from 'react';
 import Btn from '../../common/btn/Btn';
 
-export default function GenericForm({ fields, onSubmit, title, children, className }) {
+export default function GenericForm({ fields, onSubmit, title, children, className,error }) {
   const [formState, setFormState] = useState({});
 
   const handleChange = (e) => {
@@ -127,6 +127,7 @@ export default function GenericForm({ fields, onSubmit, title, children, classNa
             )
           }
         </div>
+      <div>{error && <p>{error}</p>}</div>
 
         <div className="generic-btn-save">
           <Btn

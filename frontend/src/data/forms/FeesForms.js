@@ -23,15 +23,7 @@ export const editnewFeesForm = [
       name: 'observation',
       type: 'text'
     }
-  ],
-  [
-
-    {
-      label: 'Pagada',
-      name: 'paid',
-      type: 'checkbox'
-    }
-  ],
+  ]
 ];
 
 export default editnewFeesForm;
