@@ -28,9 +28,10 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
   const BASE_URL = "http://localhost:4000/api/v1";
   const [addBookMessage, setAddBookMessage] = useState('');
 
-  const [confirmReturnPopup, setConfirmReturnAllPopup] = useState(false);
+  const [confirmReturnAllPopup, setConfirmReturnAllPopup] = useState(false);
+  const [confirmReturnPopup, setConfirmReturnPopup] = useState(false);
   const [confirmRenewePopup, setConfirmRenewePopup] = useState(false);
-  
+
   const { auth } = useAuth();
 
   const [loanData, setLoanData] = useState({
@@ -221,6 +222,27 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
     }));
   }
 
+  function returnAllLoanBooks() {
+    setLoanData(prev => ({
+      ...prev,
+      books: prev.books.map(b => {
+
+        if (b.returnedDate) return b;
+
+        const now = new Date();
+        const formattedDate = now.toLocaleDateString();
+
+        return {
+          ...b,
+          returned: "Sí",
+          returnedDate: now,
+          returnDateText: formattedDate
+        };
+      })
+    }));
+  }
+
+
 
   const bookshelfBooksColumns = [
     { header: 'Codigo', accessor: 'codeInventory' },
@@ -338,6 +360,7 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
       }
       return updated;
     });
+
   };
 
   const handleExtraData = (newData) => {
@@ -468,9 +491,15 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
               </Table>
 
 
-              {auth.role === 'admin' && (
+              {auth.role === 'admin' && method === 'update' && (
                 <div className='add-book-to-lend'>
-                  <Btn text={'Devolver todos'} onClick={() => setConfirmReturnAllPopup(true)} />
+                  <Btn
+                    text={'Devolver todos'}
+                    onClick={() => {
+                      setConfirmReturnAllPopup(true);
+                      returnAllLoanBooks();
+                    }}
+                  />
                 </div>
               )}
 

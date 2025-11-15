@@ -173,7 +173,7 @@ export const reneweDetails = [
     rows: [
       [
         { label: 'Fecha de reserva', value: '2025-08-08', attribute: 'reservationDate' },
-        { label: 'Fecha de promesa', value: '2025-08-18', attribute: 'expectedDate' }
+        { label: 'Fecha prevista/promesa', value: '2025-08-18', attribute: 'expectedDate' }
       ]
     ]
   }

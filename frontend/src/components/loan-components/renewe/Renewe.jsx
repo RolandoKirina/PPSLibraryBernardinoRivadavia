@@ -179,26 +179,50 @@ export default function Renewe() {
 
                             <div className='renewe-input'>
                                 <div className='input'>
-                                    <label>Fecha prevista de devolución</label>
+                                    <label>Fecha prevista – Mayor a</label>
                                     <input
                                         type='date'
-                                        value={filters.expectedDate || ''}
+                                        value={filters.expectedStartDate || ''}
                                         onChange={(e) =>
-                                            setFilters((prev) => ({ ...prev, expectedDate: e.target.value }))
+                                            setFilters((prev) => ({ ...prev, expectedStartDate: e.target.value }))
                                         }
                                     />
                                 </div>
+
                                 <div className='input'>
-                                    <label>Fecha reserva</label>
+                                    <label>Fecha prevista – Menor a</label>
                                     <input
                                         type='date'
-                                        value={filters.reservationDate || ''}
+                                        value={filters.expectedEndDate || ''}
                                         onChange={(e) =>
-                                            setFilters((prev) => ({ ...prev, reservationDate: e.target.value }))
+                                            setFilters((prev) => ({ ...prev, expectedEndDate: e.target.value }))
+                                        }
+                                    />
+                                </div>
+
+                                <div className='input'>
+                                    <label>Fecha reserva – Mayor a</label>
+                                    <input
+                                        type='date'
+                                        value={filters.reservationStartDate || ''}
+                                        onChange={(e) =>
+                                            setFilters((prev) => ({ ...prev, reservationStartDate: e.target.value }))
+                                        }
+                                    />
+                                </div>
+
+                                <div className='input'>
+                                    <label>Fecha reserva – Menor a</label>
+                                    <input
+                                        type='date'
+                                        value={filters.reservationEndDate || ''}
+                                        onChange={(e) =>
+                                            setFilters((prev) => ({ ...prev, reservationEndDate: e.target.value }))
                                         }
                                     />
                                 </div>
                             </div>
+
                         </div>
 
                         <div className='renewe-table-size'>

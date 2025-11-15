@@ -5,6 +5,7 @@ import printIcon from '../../../assets/img/print-icon.svg';
 import { titlesByType } from '../../../data/generatedlist/generatedList';
 
 export default function GenerateListPopup({ dataByType, columnsByType, typeList, title, feeDates }) {
+
     return (
         <>
             <div className='generate-list-container'>
@@ -26,24 +27,30 @@ export default function GenerateListPopup({ dataByType, columnsByType, typeList,
                 </div>
                 {/* añadir fecha y hora y num pagina */}
 
-                <Table columns={columnsByType[typeList]} data={dataByType[typeList]} isPrintList={true} rowsPerPage={30}>
-                    <div className='print-icon-btn'>
-                        <Btn variant={'primary'} text={'Imprimir'} icon={<img src={printIcon} alt='printIcon' />} />
-                    </div>
-                    {typeList === 'TypeOneFees' && (
-                        <div className='fees-info'>
-                            <span>Cantidad de cuotas: </span>
-                            <span>Monto total: </span>
+                {dataByType.length > 0 && (
+                    // <div className="printable-area">
+                    <Table columns={columnsByType} data={dataByType} isPrintList={true} rowsPerPage={30}>
+                        <div className='print-icon-btn'>
+                            <Btn onClick={() => window.print()} variant={'primary'} text={'Imprimir'} icon={<img src={printIcon} alt='printIcon' />} />
                         </div>
-                    )}
-                    {typeList === 'TypeTwoFees' && (
-                        <div className='fees-info'>
-                            <span>| Cantidad total | Regular: 7979 | Honorario: 0 | Protector: 313 | Débito: 0 | </span>
-                            <span>| Importe total | Regular: $21.913.181,00 | Honorario: $204.000,00 | Protector: $1.867.450,00 | Débito: $0,00 |</span>
-                        </div>
+                        {typeList === 'TypeOneFees' && (
+                            <div className='fees-info'>
+                                <span>Cantidad de cuotas: </span>
+                                <span>Monto total: </span>
+                            </div>
+                        )}
+                        {typeList === 'TypeTwoFees' && (
+                            <div className='fees-info'>
+                                <span>| Cantidad total | Regular: 7979 | Honorario: 0 | Protector: 313 | Débito: 0 | </span>
+                                <span>| Importe total | Regular: $21.913.181,00 | Honorario: $204.000,00 | Protector: $1.867.450,00 | Débito: $0,00 |</span>
+                            </div>
 
-                    )}
-                </Table>
+                        )}
+                    </Table>
+                    // </div>
+
+                )}
+
 
                 {/* añadir info extra seguntipo de listado*/}
                 {/*
