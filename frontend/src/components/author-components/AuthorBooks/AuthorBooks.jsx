@@ -21,7 +21,7 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem }
     const [confirmPopup, setConfirmPopup] = useState(false);
     const [deletePopup, setDeletePopup] = useState(false);
     const [selected, setSelected] = useState(null);
-    const BASE_URL= "http://localhost:4000/api/v1";
+    const BASE_URL = "http://localhost:4000/api/v1";
     const [popupView, setPopupView] = useState('default');
     const [authorData, setAuthorData] = useState({
         name: '',
@@ -29,53 +29,62 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem }
         books: []
     });
     const [books, setBooks] = useState([]);
+    const [allAuthorBooks, setAllAuthorBooks] = useState([]);
 
     useEffect(() => {
         getBooks();
 
-        if(method === 'update' && authorSelected?.id) {
-        const fetchAllBooksFromAuthor = async () => {
-           
-            const authorSelectedId = authorSelected.id;
+        if (method === 'update' && authorSelected?.id) {
+            const fetchAllBooksFromAuthor = async () => {
 
-            const booksFromAuthor = await getBooks(authorSelectedId);
+                const authorSelectedId = authorSelected.id;
 
-            setAuthorData({
-                name: authorSelected.name,
-                nationality: authorSelected.nationality,
-                books: booksFromAuthor
-            });
+                const booksFromAuthor = await getBooks(authorSelectedId);
 
-       
+                setAuthorData({
+                    name: authorSelected.name,
+                    nationality: authorSelected.nationality,
+                    books: booksFromAuthor
+                });
+
+
+            }
+
+            fetchAllBooksFromAuthor();
+
         }
 
-        fetchAllBooksFromAuthor();
-
-        }
-        
     }, []);
 
-    const getBooks = async (authorSelectedId) => {
-    try {
-        let url = authorSelectedId
-        ? `${BASE_URL}/books/withFields/author/${authorSelectedId}`
-        : `${BASE_URL}/books/withFields`;
+    const getBooks = async (authorSelectedId, filter = null) => {
+        try {
+            let url = authorSelectedId
+                ? `${BASE_URL}/books/withFields/author/${authorSelectedId}`
+                : `${BASE_URL}/books/withFields`;
 
-        const response = await fetch(url);
-        if (!response.ok) throw new Error("Error al obtener libros");
-        const data = await response.json();
+            // Agregar query param para filtro si existe
+            if (filter) {
+                url += `?filter=${filter === 'Prestados' ? 'borrowed' : 'all'}`;
+            }
 
-        // Siempre actualizar el estado general
-        if (!authorSelectedId) {
-        setBooks(data); // libros generales
+
+            const response = await fetch(url);
+            if (!response.ok) throw new Error("Error al obtener libros");
+            const data = await response.json();
+
+            if (!authorSelectedId) {
+                setBooks(data); // libros generales
+            } else {
+                setAuthorData(prev => ({ ...prev, books: data })); // actualizar libros del autor
+            }
+
+            return data;
+        } catch (error) {
+            console.error(error);
+            return [];
         }
-
-        return data; // libros del autor si se pasó ID
-    } catch (error) {
-        console.error(error);
-        return [];
-    }
     };
+
 
 
 
@@ -92,38 +101,70 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem }
 
     function handleAddAuthorBook(book) {
         setAuthorData(prev => {
-            const alreadyExists = prev.books.some(b => b.BookId === book.BookId);
-            if (alreadyExists) return prev;
+            const exists = prev.books.some(b => b.BookId === book.BookId);
+            if (exists) return prev;
+
+            const newBooks = [...prev.books, book];
+
+            // actualizar copia original SOLO cuando se modifica realmente
+            if (method === 'add') {
+                setAllAuthorBooks(newBooks);
+            }
+
             return {
                 ...prev,
-                books: [...prev.books, book]
+                books: newBooks
             };
         });
     }
 
+
     function handleDeleteAuthorBook(id) {
-        setAuthorData(prev => ({
-            ...prev,
-            books: prev.books.filter(b => b.BookId !== id)
-        }));
+        setAuthorData(prev => {
+            const filtered = prev.books.filter(b => b.BookId !== id);
+
+            if (method === 'add') {
+                setAllAuthorBooks(filtered);
+            }
+
+            return {
+                ...prev,
+                books: filtered
+            };
+        });
     }
-
-
-
 
 
     function handleSetAllbutton() {
-        let seeAllValue = 'Prestados';
-        if (seeAllButton === seeAllValue) {
-            setSeeAllButton('Todos');
-        }
-        else {
-            setSeeAllButton(seeAllValue);
+        const nextValue = seeAllButton === 'Prestados' ? 'Todos' : 'Prestados';
+        setSeeAllButton(nextValue);
+
+
+        if (method === 'add') {
+
+            if (nextValue === 'Prestados') {
+                const filtered = allAuthorBooks.filter(b => b.isBorrowed === true);
+                setAuthorData(prev => ({
+                    ...prev,
+                    books: filtered
+                }));
+            } else {
+
+                setAuthorData(prev => ({
+                    ...prev,
+                    books: allAuthorBooks
+                }));
+            }
+
+            return;
         }
 
-        //segun el valor, actualizar tabla con filtro
 
+        if (authorSelected?.id) {
+            getBooks(authorSelected.id, nextValue);
+        }
     }
+
 
     let mainAuthorBooksColumns = [];
 
@@ -173,7 +214,8 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem }
             render: (_, row) => (
                 <button type='button' className="button-table" onClick={
                     () => {
-                        handleAddAuthorBook(row)}}>
+                        handleAddAuthorBook(row)
+                    }}>
                     <img src={AddBookIcon} alt="Agregar" />
                 </button>
             )
@@ -201,7 +243,7 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem }
                         nationality: authorData.nationality,
                         books: authorData.books
                     };
-         
+
                     createAuthorItem(authorSelected.id, updatedAuthor);
                 }
 

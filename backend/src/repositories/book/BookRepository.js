@@ -6,6 +6,7 @@ import Partner from "../../models/partner/Partner.js";
 import Loan from "../../models/loan/Loan.js";
 import BookType from "../../models/options/BookType.js";
 import { fn, col, literal } from "sequelize";
+import Op from "sequelize";
 
 export const getAll = async (filters) => {
   const {
@@ -51,9 +52,28 @@ export const getAll = async (filters) => {
 };
 export const getAllWithFields = async () => {
 
-  return await Book.findAll({
+  const books = await Book.findAll({
     attributes: ["BookId", "title", "codeInventory", "codeCDU", "codeLing", "codeClasification"],
+    include: [
+      {
+        model: LoanBook,
+        as: 'BookLoans',
+        attributes: ['BookId', 'loanId'],
+        required: false,
+        where: {
+          returnedDate: null
+        },
+        include: [{ model: Loan, as: 'Loan', attributes: ['id'] }]
+      }
+    ]
   });
+
+  const mappedBooks = books.map(book => ({
+    ...book.toJSON(),
+    isBorrowed: book.BookLoans?.length > 0
+  }));
+
+  return mappedBooks;
 };
 
 export const getAllBooksOfLoan = async (id) => {
@@ -98,7 +118,7 @@ export const getAllBooksOfLoan = async (id) => {
     typeName: book.BookType?.typeName || '',
     loanId: book.BookLoans?.[0]?.Loan?.id || null,
     renewes: book.BookLoans?.[0]?.reneweAmount || 0,
-    returnedDate: book.BookLoans?.[0]?.returnedDate , // null o fecha real
+    returnedDate: book.BookLoans?.[0]?.returnedDate, // null o fecha real
     returned: book.BookLoans?.[0]?.returnedDate ? 'Si' : 'No',
     returnDateText: book.BookLoans?.[0]?.returnedDate || 'Sin fecha' // para mostrar en tabla
   }));
@@ -106,9 +126,8 @@ export const getAllBooksOfLoan = async (id) => {
   return flatBooks;
 };
 
-export const getAllBooksOfAuthor = async (id) => {
-
-  return await Book.findAll({
+export const getAllBooksOfAuthor = async (id, filter) => {
+  const books = await Book.findAll({
     attributes: ["BookId", "title", "codeInventory", "codeCDU", "codeLing", "codeClasification"],
     include: [
       {
@@ -121,181 +140,35 @@ export const getAllBooksOfAuthor = async (id) => {
             model: Authors,
             as: 'Author',
             attributes: ['name'],
-            where: {
-              id: id
-            }
+            where: { id }
           }
         ]
-      }
-    ],
-  });
-};
-
-/*export const getRanking = async (filters) => {
-  const {
-    whereBooks,
-    whereRetiredDate,
-    whereByStatus,
-    order,
-    limit,
-    offset
-  } = filters;
-
-  return await Book.findAll({
-  where: whereBooks,
-  subQuery: false,
-  include: [
-    {
-      model: BookAuthor,
-      as: 'BookAuthors',
-      required: true,
-      attributes: ['authorCode', 'BookId'],
-      separate: true,
-      include: [
-        {
-          model: Authors,
-          as: 'Author',
-          required: true,
-          attributes: ['name']
-        }
-      ]
-    },
-    {
-      model: LoanBook,
-      as: 'BookLoans',
-      required: true,
-      separate: true,
-      attributes: ['BookId', 'loanId'],
-      include: [
-        {
-          model: Loan,
-          as: 'Loan',
-          required: true,
-          attributes: ['retiredDate'],
-          where: whereRetiredDate,
-          include: [
-            {
-              model: Partner,
-              as: 'Partner',
-              required: true,
-              attributes: ['id', 'name', 'isActive'],
-              where: whereByStatus
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  group: ["Book.id", "Book.codigo", "Book.titulo", "Book.Cod_rcdu"],
-  order,
-   attributes: [
-    'BookId', 'codeInventory', 'title', 'codeCDU',
-    [sequelize.fn("COUNT", sequelize.col("BookLoans.LoanBookId")), "loansCount"],
-  ],
-  limit,
-  offset
-});
-
-};
-
-
-
-export const getLostBooks = async (filters) => {
-  //hay que usar numsocioperdida (de libro) para que sean libros perdidos mostrando solamente el socio al que se le perdio
-  const {
-    whereBooks,
-    order,
-    limit,
-    offset
-  } = filters;
-  console.log(filters);
-
-  return await Book.findAll({
-    where: whereBooks,
-    subQuery: false, //evita que se haga una subconsulta para aplicar limit
-    include: [
+      },
       {
         model: LoanBook,
         as: 'BookLoans',
-        attributes: ["BookId", "loanId"],
-        required: true,
-        include: [
-          {
-            model: Loan,
-            as: 'Loan',
-            required: true,
-            attributes: ["id"],
-            include:[
-              {
-                model: Partner,
-                as: 'Partner',
-                required: true,
-                attributes: ["partnerNumber", "surname", "name", "homeAddress", "homePhone"]
-              }
-            ]
-          }
-        ]
+        attributes: ['BookId', 'loanId'],
+        required: false,
+        where: {
+          returnedDate: null
+        },
+        include: [{ model: Loan, as: 'Loan', attributes: ['id'] }]
       }
-    ],
-    order,
-    attributes: ["lossDate", "codeInventory", "title",
-   
-    ],
-    limit,
-    offset
-  });
-};
-*/
-/*export const getRanking = async (filters) => {
-  const {
-    whereBooks,
-    whereRetiredDate,
-    whereByStatus,
-    limit,
-    offset
-  } = filters;
-
-  const books = await Book.findAll({
-    where: whereBooks,
-    include: [
-      {
-        model: LoanBook,
-        as: "BookLoans",
-        required: true,
-        include: [
-          {
-            model: Loan,
-            as: "Loan",
-            required: true,
-            where: whereRetiredDate,
-            include: [
-              {
-                model: Partner,
-                as: "Partner",
-                required: true,
-                where: whereByStatus
-              }
-            ]
-          }
-        ]
-      }
-    ],
-    attributes: ["id", "codigo", "titulo", "Cod_rcdu"],
-    limit,
-    offset
+    ]
   });
 
-  const result = books.map(book => ({
-    BookId: book.id,
-    codeInventory: book.codigo,
-    title: book.titulo,
-    codeCDU: book.Cod_rcdu,
-    loansCount: book.BookLoans?.length || 0
+  // Mapear y filtrar según el filter
+  const mappedBooks = books.map(book => ({
+    ...book.toJSON(),
+    isBorrowed: book.BookLoans?.length > 0
   }));
 
-  return result;
+  if (filter === 'borrowed') {
+    return mappedBooks.filter(book => book.isBorrowed);
+  }
+
+  return mappedBooks;
 };
-*/
 
 
 export const getRanking = async (filters) => {
