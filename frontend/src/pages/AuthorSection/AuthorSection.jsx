@@ -76,13 +76,14 @@ export default function AuthorSection() {
 
             const newAuthorId = newAuthor.id;
 
-            const booksId = getAllBooksId(data.books);
-
             await Promise.all(
-                booksId.map(id =>
+                data.books.map(book =>
                     createBookAuthor({
-                        BookId: id,
-                        authorCode: newAuthorId
+                        BookId: book.BookId,
+                        authorCode: newAuthorId,
+                        authorName: newAuthor.name,
+                        bookCode: book.codeInventory,
+                        position: book.position
                     })
                 )
             );

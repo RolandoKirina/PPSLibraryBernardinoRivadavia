@@ -14,12 +14,15 @@ import { useEffect } from 'react';
 import { useAuth } from '../../../auth/AuthContext';
 import roles from '../../../auth/roles.js';
 import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI.js';
+import { addBookPositionFields } from '../../../data/forms/AuthorForms.js';
+import GenericForm from '../../generic/GenericForm/GenericForm.jsx';
 
 export default function AuthorBooks({ authorSelected, method, createAuthorItem }) {
     const { auth } = useAuth();
-    const [seeAllButton, setSeeAllButton] = useState('Prestados');
+    const [seeAllButton, setSeeAllButton] = useState('Todos');
     const [confirmPopup, setConfirmPopup] = useState(false);
     const [deletePopup, setDeletePopup] = useState(false);
+    const [positionPopup, setPositionPopup] = useState(false);
     const [selected, setSelected] = useState(null);
     const BASE_URL = "http://localhost:4000/api/v1";
     const [popupView, setPopupView] = useState('default');
@@ -29,6 +32,7 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem }
         books: []
     });
     const [books, setBooks] = useState([]);
+    const [book, setBook] = useState({});
     const [allAuthorBooks, setAllAuthorBooks] = useState([]);
 
     useEffect(() => {
@@ -96,27 +100,43 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem }
             [name]: value
         }))
 
-        console.log("Datos del autor:", { ...authorData, [name]: value });
+        //console.log("Datos del autor:", { ...authorData, [name]: value });
     }
 
-    function handleAddAuthorBook(book) {
-        setAuthorData(prev => {
-            const exists = prev.books.some(b => b.BookId === book.BookId);
-            if (exists) return prev;
+    function handleAddAuthorBook(positionData) {
+                // Validar que se ingresó algo
+                if (!positionData.position) return;
+        
+                const position = parseInt(positionData.position, 10);
+        
+                // Validar que sea un número válido
+                if (isNaN(position) || position < 1) {
+                    alert('La posición debe ser un número válido mayor a 0');
+                    return;
+                }
 
-            const newBooks = [...prev.books, book];
-
-            // actualizar copia original SOLO cuando se modifica realmente
-            if (method === 'add') {
-                setAllAuthorBooks(newBooks);
-            }
-
-            return {
-                ...prev,
-                books: newBooks
-            };
-        });
+                setPositionPopup(false);
+        
+                setAuthorData(prev => {
+                    const exists = prev.books.some(b => b.BookId === book.BookId);
+                    if (exists) return prev;
+        
+                    const bookWithPosition = { ...book, position };
+        
+                    const newBooks = [...prev.books, bookWithPosition];
+                
+                    // actualizar copia original SOLO cuando se modifica realmente
+                    if (method === 'add') {
+                        setAllAuthorBooks(newBooks);
+                    }
+        
+                    return {
+                        ...prev,
+                        books: newBooks
+                    };
+                });
     }
+
 
 
     function handleDeleteAuthorBook(id) {
@@ -214,7 +234,8 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem }
             render: (_, row) => (
                 <button type='button' className="button-table" onClick={
                     () => {
-                        handleAddAuthorBook(row)
+                        setPositionPopup(true);
+                        setBook(row);
                     }}>
                     <img src={AddBookIcon} alt="Agregar" />
                 </button>
@@ -265,11 +286,34 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem }
             condition: deletePopup,
             variant: 'delete'
         },
+        {
+            key: 'positionPopup',
+            title: 'Elegir posición del libro',
+            className: '',
+            content: <GenericForm fields={addBookPositionFields} onSubmit={(positionData) => handleAddAuthorBook(positionData)} title={'Añadir posición de libro'} />,
+            close: () => setPositionPopup(false),
+            condition: positionPopup
+        }
     ]
 
     return (
         <>
             <div className='author-books-container'>
+
+                {authorBooksPopups.map(({ condition, title, className, content, close, variant }, idx) => (
+                    condition && (
+                        <PopUp
+                            key={idx}
+                            title={title}
+                            className={className || ''}
+                            onClick={close}
+                            {...(variant === 'delete' && { variant: 'delete' })}
+                        >
+                            {content}
+                        </PopUp>
+                    )
+                ))}
+
                 {popupView === 'default' && (
                     <>
                         <div className='main-author-books'>
@@ -320,19 +364,6 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem }
                             </div>
 
 
-                            {authorBooksPopups.map(({ condition, title, className, content, close, variant }, idx) => (
-                                condition && (
-                                    <PopUp
-                                        key={idx}
-                                        title={title}
-                                        className={className || ''}
-                                        onClick={close}
-                                        {...(variant === 'delete' && { variant: 'delete' })}
-                                    >
-                                        {content}
-                                    </PopUp>
-                                )
-                            ))}
                         </div>
                     </>
                 )}
@@ -355,6 +386,7 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem }
                                 <Table columns={authorBooksColumns} data={authorData.books} />
                             )}
                         </div>
+
                     </>
                 )}
 

@@ -133,7 +133,7 @@ export const getAllBooksOfAuthor = async (id, filter) => {
       {
         model: BookAuthor,
         as: 'BookAuthors',
-        attributes: ['bookAuthorId'],
+        attributes: ['bookAuthorId', 'position'],
         required: true,
         include: [
           {
@@ -157,11 +157,20 @@ export const getAllBooksOfAuthor = async (id, filter) => {
     ]
   });
 
-  // Mapear y filtrar según el filter
-  const mappedBooks = books.map(book => ({
-    ...book.toJSON(),
-    isBorrowed: book.BookLoans?.length > 0
-  }));
+  const mappedBooks = books.map(book => {
+    const json = book.toJSON();
+
+    return {
+      BookId: json.BookId || '',
+      codeInventory: json.codeInventory || '',
+      title: json.title || '',
+      position: json.BookAuthors?.[0]?.position ?? '', // puede ser null
+      codeClasification: json.codeClasification || '',
+      codeCDU: json.codeCDU || '',
+      codeLing: json.codeLing || '',
+      isBorrowed: json.BookLoans?.length > 0
+    };
+  });
 
   if (filter === 'borrowed') {
     return mappedBooks.filter(book => book.isBorrowed);

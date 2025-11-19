@@ -23,3 +23,11 @@ export const addAuthorFormFields = [
     type: 'text'
   }
 ];
+
+export const addBookPositionFields = [
+  {
+    label: 'Posición',
+    name: 'position',
+    type: 'number'
+  }
+]
