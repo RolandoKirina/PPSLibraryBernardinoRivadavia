@@ -14,14 +14,17 @@ import { useEffect } from 'react';
 import { useAuth } from '../../../auth/AuthContext';
 import roles from '../../../auth/roles.js';
 import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI.js';
+import { addBookPositionFields } from '../../../data/forms/AuthorForms.js';
+import GenericForm from '../../generic/GenericForm/GenericForm.jsx';
 
 export default function AuthorBooks({ authorSelected, method, createAuthorItem }) {
     const { auth } = useAuth();
-    const [seeAllButton, setSeeAllButton] = useState('Prestados');
+    const [seeAllButton, setSeeAllButton] = useState('Todos');
     const [confirmPopup, setConfirmPopup] = useState(false);
     const [deletePopup, setDeletePopup] = useState(false);
+    const [positionPopup, setPositionPopup] = useState(false);
     const [selected, setSelected] = useState(null);
-    const BASE_URL= "http://localhost:4000/api/v1";
+    const BASE_URL = "http://localhost:4000/api/v1";
     const [popupView, setPopupView] = useState('default');
     const [authorData, setAuthorData] = useState({
         name: '',
@@ -29,53 +32,63 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem }
         books: []
     });
     const [books, setBooks] = useState([]);
+    const [book, setBook] = useState({});
+    const [allAuthorBooks, setAllAuthorBooks] = useState([]);
 
     useEffect(() => {
         getBooks();
 
-        if(method === 'update' && authorSelected?.id) {
-        const fetchAllBooksFromAuthor = async () => {
-           
-            const authorSelectedId = authorSelected.id;
+        if (method === 'update' && authorSelected?.id) {
+            const fetchAllBooksFromAuthor = async () => {
 
-            const booksFromAuthor = await getBooks(authorSelectedId);
+                const authorSelectedId = authorSelected.id;
 
-            setAuthorData({
-                name: authorSelected.name,
-                nationality: authorSelected.nationality,
-                books: booksFromAuthor
-            });
+                const booksFromAuthor = await getBooks(authorSelectedId);
 
-       
+                setAuthorData({
+                    name: authorSelected.name,
+                    nationality: authorSelected.nationality,
+                    books: booksFromAuthor
+                });
+
+
+            }
+
+            fetchAllBooksFromAuthor();
+
         }
 
-        fetchAllBooksFromAuthor();
-
-        }
-        
     }, []);
 
-    const getBooks = async (authorSelectedId) => {
-    try {
-        let url = authorSelectedId
-        ? `${BASE_URL}/books/withFields/author/${authorSelectedId}`
-        : `${BASE_URL}/books/withFields`;
+    const getBooks = async (authorSelectedId, filter = null) => {
+        try {
+            let url = authorSelectedId
+                ? `${BASE_URL}/books/withFields/author/${authorSelectedId}`
+                : `${BASE_URL}/books/withFields`;
 
-        const response = await fetch(url);
-        if (!response.ok) throw new Error("Error al obtener libros");
-        const data = await response.json();
+            // Agregar query param para filtro si existe
+            if (filter) {
+                url += `?filter=${filter === 'Prestados' ? 'borrowed' : 'all'}`;
+            }
 
-        // Siempre actualizar el estado general
-        if (!authorSelectedId) {
-        setBooks(data); // libros generales
+
+            const response = await fetch(url);
+            if (!response.ok) throw new Error("Error al obtener libros");
+            const data = await response.json();
+
+            if (!authorSelectedId) {
+                setBooks(data); // libros generales
+            } else {
+                setAuthorData(prev => ({ ...prev, books: data })); // actualizar libros del autor
+            }
+
+            return data;
+        } catch (error) {
+            console.error(error);
+            return [];
         }
-
-        return data; // libros del autor si se pasó ID
-    } catch (error) {
-        console.error(error);
-        return [];
-    }
     };
+
 
 
 
@@ -87,43 +100,91 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem }
             [name]: value
         }))
 
-        console.log("Datos del autor:", { ...authorData, [name]: value });
+        //console.log("Datos del autor:", { ...authorData, [name]: value });
     }
 
-    function handleAddAuthorBook(book) {
+    function handleAddAuthorBook(positionData) {
+                // Validar que se ingresó algo
+                if (!positionData.position) return;
+        
+                const position = parseInt(positionData.position, 10);
+        
+                // Validar que sea un número válido
+                if (isNaN(position) || position < 1) {
+                    alert('La posición debe ser un número válido mayor a 0');
+                    return;
+                }
+
+                setPositionPopup(false);
+        
+                setAuthorData(prev => {
+                    const exists = prev.books.some(b => b.BookId === book.BookId);
+                    if (exists) return prev;
+        
+                    const bookWithPosition = { ...book, position };
+        
+                    const newBooks = [...prev.books, bookWithPosition];
+                
+                    // actualizar copia original SOLO cuando se modifica realmente
+                    if (method === 'add') {
+                        setAllAuthorBooks(newBooks);
+                    }
+        
+                    return {
+                        ...prev,
+                        books: newBooks
+                    };
+                });
+    }
+
+
+
+    function handleDeleteAuthorBook(id) {
         setAuthorData(prev => {
-            const alreadyExists = prev.books.some(b => b.BookId === book.BookId);
-            if (alreadyExists) return prev;
+            const filtered = prev.books.filter(b => b.BookId !== id);
+
+            if (method === 'add') {
+                setAllAuthorBooks(filtered);
+            }
+
             return {
                 ...prev,
-                books: [...prev.books, book]
+                books: filtered
             };
         });
     }
 
-    function handleDeleteAuthorBook(id) {
-        setAuthorData(prev => ({
-            ...prev,
-            books: prev.books.filter(b => b.BookId !== id)
-        }));
-    }
-
-
-
-
 
     function handleSetAllbutton() {
-        let seeAllValue = 'Prestados';
-        if (seeAllButton === seeAllValue) {
-            setSeeAllButton('Todos');
-        }
-        else {
-            setSeeAllButton(seeAllValue);
+        const nextValue = seeAllButton === 'Prestados' ? 'Todos' : 'Prestados';
+        setSeeAllButton(nextValue);
+
+
+        if (method === 'add') {
+
+            if (nextValue === 'Prestados') {
+                const filtered = allAuthorBooks.filter(b => b.isBorrowed === true);
+                setAuthorData(prev => ({
+                    ...prev,
+                    books: filtered
+                }));
+            } else {
+
+                setAuthorData(prev => ({
+                    ...prev,
+                    books: allAuthorBooks
+                }));
+            }
+
+            return;
         }
 
-        //segun el valor, actualizar tabla con filtro
 
+        if (authorSelected?.id) {
+            getBooks(authorSelected.id, nextValue);
+        }
     }
+
 
     let mainAuthorBooksColumns = [];
 
@@ -173,7 +234,9 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem }
             render: (_, row) => (
                 <button type='button' className="button-table" onClick={
                     () => {
-                        handleAddAuthorBook(row)}}>
+                        setPositionPopup(true);
+                        setBook(row);
+                    }}>
                     <img src={AddBookIcon} alt="Agregar" />
                 </button>
             )
@@ -201,7 +264,7 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem }
                         nationality: authorData.nationality,
                         books: authorData.books
                     };
-         
+
                     createAuthorItem(authorSelected.id, updatedAuthor);
                 }
 
@@ -223,11 +286,34 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem }
             condition: deletePopup,
             variant: 'delete'
         },
+        {
+            key: 'positionPopup',
+            title: 'Elegir posición del libro',
+            className: '',
+            content: <GenericForm fields={addBookPositionFields} onSubmit={(positionData) => handleAddAuthorBook(positionData)} title={'Añadir posición de libro'} />,
+            close: () => setPositionPopup(false),
+            condition: positionPopup
+        }
     ]
 
     return (
         <>
             <div className='author-books-container'>
+
+                {authorBooksPopups.map(({ condition, title, className, content, close, variant }, idx) => (
+                    condition && (
+                        <PopUp
+                            key={idx}
+                            title={title}
+                            className={className || ''}
+                            onClick={close}
+                            {...(variant === 'delete' && { variant: 'delete' })}
+                        >
+                            {content}
+                        </PopUp>
+                    )
+                ))}
+
                 {popupView === 'default' && (
                     <>
                         <div className='main-author-books'>
@@ -278,19 +364,6 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem }
                             </div>
 
 
-                            {authorBooksPopups.map(({ condition, title, className, content, close, variant }, idx) => (
-                                condition && (
-                                    <PopUp
-                                        key={idx}
-                                        title={title}
-                                        className={className || ''}
-                                        onClick={close}
-                                        {...(variant === 'delete' && { variant: 'delete' })}
-                                    >
-                                        {content}
-                                    </PopUp>
-                                )
-                            ))}
                         </div>
                     </>
                 )}
@@ -313,6 +386,7 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem }
                                 <Table columns={authorBooksColumns} data={authorData.books} />
                             )}
                         </div>
+
                     </>
                 )}
 

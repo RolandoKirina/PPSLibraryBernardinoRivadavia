@@ -52,7 +52,9 @@ export const getAllBooksOfLoan = async (req,res) => {
 export const getAllBooksOfAuthor = async (req,res) => {
     try{
         const { id } = req.params;
-        const books = await BookService.getAllBooksOfAuthor(id);
+        const { filter } = req.query;
+
+        const books = await BookService.getAllBooksOfAuthor(id, filter);
       
         res.status(HTTP_STATUS.OK.code).send(books);    
 

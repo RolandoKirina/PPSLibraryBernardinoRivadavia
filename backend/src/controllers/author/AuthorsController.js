@@ -5,7 +5,6 @@ import { buildAuthorFilters } from '../../utils/buildAuthorFilters.js';
 export const getAllAuthors = async (req, res) => {
     try {
         const queryOptions = buildAuthorFilters(req.query);
-        console.log(queryOptions);
 
         const authors = await AuthorsService.getAllAuthors(queryOptions);
         res.status(HTTP_STATUS.OK.code).send(authors);
