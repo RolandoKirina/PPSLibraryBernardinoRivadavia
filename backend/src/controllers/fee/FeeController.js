@@ -9,7 +9,7 @@ export const getAllFees = async (req, res) => {
         const fees = await FeeService.getAllFees(queryOptions);
         res.status(HTTP_STATUS.OK.code).json(fees);  
     } catch (e) {
-        console.error(e);
+        console.error("🔥 ERROR EN CONTROLLER:", e); 
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
 };
@@ -21,7 +21,7 @@ export const generateUnpaidFees = async (req, res) => {
         res.status(HTTP_STATUS.OK.code).json(fees);  
     } catch (e) {
         console.error(e);
-        res.status(BAD_REQUEST).json({ msg: e.message });
+        res.status(HTTP_STATUS.BAD_REQUEST.code).json({ message: e.message });
     }
 };
 

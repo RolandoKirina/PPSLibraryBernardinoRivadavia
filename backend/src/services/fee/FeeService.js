@@ -16,7 +16,8 @@ export const generateUnpaidFees = async (body) => {
   const [year, month, day] = month_and_year.split("-").map(Number);
 
   const generatedFees = [];
-   const partners = await getAll();
+  const partners = await getAll();
+
   for (const partner of partners) {
     const existingFee = await FeeRepository.findOne({
       idPartner: partner.id,
@@ -39,18 +40,17 @@ export const generateUnpaidFees = async (body) => {
     generatedFees.push(newFee);
   }
 
-  if (generatedFees.length === 0) {
-    return {
-      message: `Ya existen cuotas generadas para el mes ${month} y año ${year}`,
-      detail: generatedFees
-    };
-  }
-
+    if (generatedFees.length === 0) {
+      throw new Error(`Ya existen cuotas generadas para el mes ${month} y año ${year}`);
+    }
+    
   return {
     message: "Cuotas generadas correctamente",
     detail: generatedFees
   };
+
 };
+
 
 export const getFee = async (id) => {
     return await FeeRepository.getById(id);

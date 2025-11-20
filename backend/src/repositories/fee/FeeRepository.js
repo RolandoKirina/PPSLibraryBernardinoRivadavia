@@ -23,7 +23,8 @@ export const getAll = async (filters) => {
     year: fee.year,
     amount: fee.amount,
     observation: fee.observation,
-    paid: fee.paid ? "Pagada" : "Impaga",
+    paid: fee.paid,                      
+    paidLabel: fee.paid ? "Pagada" : "Impaga", 
      date_of_paid: fee.date_of_paid 
       ? new Date(fee.date_of_paid).toLocaleDateString("es-AR") 
       : "",
