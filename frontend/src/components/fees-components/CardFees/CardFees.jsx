@@ -1,6 +1,6 @@
-import { paidFees } from '../../../data/mocks/fees.js';
-import { unpaidFees } from '../../../data/mocks/fees.js';
-import { newFees } from '../../../data/mocks/fees.js';
+//import { paidFees } from '../../../data/mocks/fees.js';
+//import { unpaidFees } from '../../../data/mocks/fees.js';
+//import { newFees } from '../../../data/mocks/fees.js';
 import Btn from '../../common/btn/Btn.jsx';
 import './CardFees.css';
 import { useState } from 'react';

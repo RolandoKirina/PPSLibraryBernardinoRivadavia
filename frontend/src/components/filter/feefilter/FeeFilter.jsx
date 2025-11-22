@@ -50,6 +50,11 @@ useEffect(() => {
               <label> Solo socios con cuotas impagas </label>
             </div>
 
+          <div className="book-form-input-group">
+            <label >Fecha de pago</label>
+            <input type="date" name="paymentdate" value={formData.paymentdate} onChange={onChange} disabled={formData.unpaidfees === true}/>          
+    
+          </div>
           </div>
 
           <div className="book-form-input-group">
@@ -70,12 +75,6 @@ useEffect(() => {
 
           <div className="book-form-input-group">
             <label className="color-secondary"> Cantidad de cuotas pagas: {paidFeeCount ?? 0}</label>
-          </div>
-
-          <div className="book-form-input-group">
-            <label >Fecha de pago</label>
-            <input type="date" name="paymentdate" value={formData.paymentdate} onChange={onChange}/>          
-    
           </div>
 
         </form>

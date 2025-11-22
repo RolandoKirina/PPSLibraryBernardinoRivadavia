@@ -9,7 +9,6 @@ import PlusIcon from '../../assets/img/plus-icon.svg';
 import BookIcon from '../../assets/img/add-book-icon.svg';
 import AuthorBooks from '../../components/author-components/AuthorBooks/AuthorBooks';
 import { useEntityManager } from '../../hooks/useEntityManager';
-import { mockAuthors } from '../../data/mocks/authors';
 import { useEntityManagerAPI } from '../../hooks/useEntityManagerAPI';
 
 import { useAuth } from '../../auth/AuthContext';

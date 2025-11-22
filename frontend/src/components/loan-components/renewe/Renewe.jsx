@@ -15,7 +15,6 @@ import ShowDetails from '../../generic/ShowDetails/ShowDetails.jsx';
 import { reneweDetails } from '../../../data/showdetails/LoanDetails.js';
 import AddRenewe from '../addrenewe/AddRenewe.jsx';
 import { useEntityManager } from '../../../hooks/useEntityManager.js';
-import { mockRenewes } from '../../../data/mocks/loans.js';
 
 import { useAuth } from '../../../auth/AuthContext.jsx';
 import roles from '../../../auth/roles.js';

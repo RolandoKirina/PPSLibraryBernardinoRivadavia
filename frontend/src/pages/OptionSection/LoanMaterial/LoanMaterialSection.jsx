@@ -1,4 +1,3 @@
-import './LoanMaterialSection.css';
 import GenericSection from '../../../components/generic/GenericSection/GenericSection';
 import PopUpDelete from '../../../components/common/deletebtnComponent/PopUpDelete';
 import GenericForm from '../../../components/generic/GenericForm/GenericForm';
@@ -8,8 +7,6 @@ import { useState } from 'react';
 import Btn from '../../../components/common/btn/Btn';
 import DeleteIcon from '../../../assets/img/delete-icon.svg';
 import EditIcon from '../../../assets/img/edit-icon.svg';
-import { useEntityManager } from '../../../hooks/useEntityManager';
-import { mockLoanMaterials } from '../../../data/mocks/loanMaterials';
 import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
 import { useEffect } from 'react';
 

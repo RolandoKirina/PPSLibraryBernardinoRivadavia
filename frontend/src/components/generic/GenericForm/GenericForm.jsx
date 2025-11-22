@@ -113,7 +113,7 @@ export default function GenericForm({ fields, onSubmit, title, children, classNa
         {children}
 
         <div className={`generic-inputs-width ${Array.isArray(fields[0]) ? 'row-layout' : 'column-layout'}`}>
-          {/* Si es un array de arrays */}
+
           {Array.isArray(fields[0])
             ? fields.map((row, rowIdx) => (
                 <div key={rowIdx} className="input-row">
@@ -127,7 +127,7 @@ export default function GenericForm({ fields, onSubmit, title, children, classNa
             )
           }
         </div>
-      <div>{error && <p>{error}</p>}</div>
+      <div>{error && <p className="error-message">{error}</p>}</div>
 
         <div className="generic-btn-save">
           <Btn

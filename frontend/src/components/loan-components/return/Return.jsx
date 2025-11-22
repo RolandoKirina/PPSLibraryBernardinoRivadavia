@@ -8,7 +8,6 @@ import { useState } from 'react';
 import GenericForm from '../../generic/GenericForm/GenericForm';
 import { editPendingQuoteFields } from '../../../data/forms/LoanForms';
 import { useEntityManager } from '../../../hooks/useEntityManager';
-import { mockBooksLoans } from '../../../data/mocks/loans';
 import { Table } from '../../common/table/Table';
 import DetailsIcon from '../../../assets/img/details-icon.svg';
 import ReturnIcon from '../../../assets/img/return-icon.svg';
@@ -18,7 +17,7 @@ import ConfirmMessage from '../../common/confirmMessage/ConfirmMessage';
 import Btn from '../../common/btn/Btn';
 import { useAuth } from '../../../auth/AuthContext';
 import roles from '../../../auth/roles';
-import { pendingbooks } from "../../../data/mocks/pendingbooks.js";
+//import { pendingbooks } from "../../../data/mocks/pendingbooks.js";
 import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI.js';
 import { useEffect } from 'react';
 

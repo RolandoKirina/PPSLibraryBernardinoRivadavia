@@ -1,10 +1,8 @@
+import './FeeSection.css';
 import FeeFilter from '../../components/filter/feefilter/FeeFilter.jsx';
 import { useEntityManagerAPI } from '../../hooks/useEntityManagerAPI.js';
-
 import { useState, useEffect } from 'react';
-
 import GenericSection from '../../components/generic/GenericSection/GenericSection.jsx';
-
 import DeleteIcon from '../../assets/img/delete-icon.svg';
 import EditIcon from '../../assets/img/edit-icon.svg';
 import DetailsIcon from '../../assets/img/details-icon.svg';
@@ -13,11 +11,11 @@ import Btn from '../../components/common/btn/Btn.jsx';
 import CardFees from '../../components/fees-components/CardFees/CardFees.jsx';
 import { FeesDetail } from '../../data/showdetails/FeesDetail.js';
 import GenericForm from '../../components/generic/GenericForm/GenericForm.jsx';
-import editnewFeesForm from '../../data/forms/FeesForms.js';
-
+import {editnewFeesForm , addnewFeesForm} from '../../data/forms/FeesForms.js';
 import FeesBetweenDates from '../../components/fees-components/feesbetweendates/FeesBetweenDates.jsx';
 import PopUpDelete from '../../components/common/deletebtnComponent/PopUpDelete.jsx';
-import './FeeSection.css';
+import EditFees from '../../components/fees-components/formEditFee/EditFees.jsx';
+
 
 export const FeeSection = () => {
 
@@ -37,8 +35,21 @@ export const FeeSection = () => {
       partnerNumber: "",
       name: "",
       surname: "",
-      paymentdate: null,
+      paymentdate: "",
     });
+    
+    async function handleUpdateItem(data) {
+        try {
+            const res = await updateItem(selectedItem.feeid, data);
+            console.log(res)
+            setPopupEdit(false);
+
+             await getItems();
+        }
+        catch (err) {
+            console.error(err);
+        }
+    }
 
      const handleFilterChange = (e) => {
       const { name, value } = e.target;
@@ -51,22 +62,36 @@ export const FeeSection = () => {
         Object.entries(formData).filter(([_, v]) => v !== "")
       );
 
-  const delay = setTimeout(() => {
-    if (Object.keys(filters).length > 0) {
-      getItems(filters);
-    }
-  }, 300);
+      const delay = setTimeout(() => {
+        if (Object.keys(filters).length > 0) {
+          getItems(filters);
+        }
+      }, 300);
 
-  return () => clearTimeout(delay);
-}, [formData]);
+      return () => clearTimeout(delay);
+    }, [formData]);
 
+    const formatDate = (value) => {
 
+      if (!value || value === "No pagada" || value === "null" || value === "") {
+        return "—";
+      }
+
+      const fecha = new Date(`${value}T00:00:00`);
+
+      if (isNaN(fecha)) return "—";
+
+      return fecha.toLocaleDateString("es-AR", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      });
+    };
 
     const formattedFees = items.map(fee => ({
       ...fee,
       paid: fee.paid ? '✅ Pagada' : '❌ Impaga',
    }));
-
 
     async function handleAddItem(data) {
         try {
@@ -79,10 +104,12 @@ export const FeeSection = () => {
             });
            
           if (!res.ok) {
-           const errorData = await res.json().catch(() => ({ msg: "Error inesperado del servidor" }));
-          console.log(errorData)
-          setError(errorData.msg); 
-          return;
+            const errorData = await res.json().catch(() => ({ msg: "Error inesperado del servidor" }));
+            setError(errorData.message); 
+            return;
+          }
+          else{
+            setError(null)
           }
             setPopupAdd(false);
             await getItems();
@@ -98,10 +125,14 @@ export const FeeSection = () => {
     { header: 'Nombre de socio',  accessor: 'name'},
     { header: 'valor', accessor: 'amount' },
     {header: 'Numero de socio', accessor: 'partnerNumber'},
+    {header: "Fecha de pago", 
+      accessor: 'date_of_paid',   
+       render: (value) => formatDate(value)
+    },
       {
       header: 'Pagada',
       accessor: 'paid',
-      render: (value) => value ? '✅ Pagada' : '❌ Impaga',
+      render: (value) => value ? '✅ Paga' : '❌ Impaga',
     },
     {
       header: 'Borrar',
@@ -110,7 +141,7 @@ export const FeeSection = () => {
       render: (_, row) => (
         <button className="button-table"
           onClick={() => {
-               setSelectedId(row.feeId);
+               setSelectedId(row.feeid);
                setPopUpDelete(true)
                
           }}>
@@ -125,9 +156,10 @@ export const FeeSection = () => {
       className: "action-buttons",
       render: (_, row) => (
         <button className="button-table"
-          onClick={() => {
-           () => setPopUpDelete(row)
+          onClick={() => { () =>
+            console.log(row)
             setPopupEdit(true)
+            setSelectedItem(row)
           }}
 
         >
@@ -146,16 +178,10 @@ export const FeeSection = () => {
                     setSelectedItem(row)
                     setPopUpDetail(true)
              }}
- />
+        />
         </button>
       )
     }
-  ];
-
-  const paidfeescolumns = [
-    { header: 'Cuotas pagadas', accessor: 'numberofFee' },
-    { header: 'Cuotas impagas', accessor: 'partnerName' },
-    { header: 'Cuotas nuevas', accessor: 'paidfees' },
   ];
 
   const feesPopUp = [
@@ -165,7 +191,7 @@ export const FeeSection = () => {
       className: 'delete-size-popup',
       content: <PopUpDelete
         title={"item"}
-        onConfirm={() => deleteItem(selectedItem.feeid)} 
+        onConfirm={() => deleteItem(selectedId)} 
         closePopup={() => setPopUpDelete(false)}
         refresh={() => getItems()} />,
         close: () => setPopUpDelete(false),
@@ -175,7 +201,10 @@ export const FeeSection = () => {
       key: 'editPopup',
       title: 'Editar Cuota',
       className: 'feespopup',
-      content: <GenericForm title={'Editar cuota nueva'} fields={editnewFeesForm} className="editfees" />,
+      content: <EditFees title={'Editar cuota'} selectedFee={selectedItem}
+      itemSelected={selectedItem}
+      fields={editnewFeesForm} 
+      className="editfees" />,
       close: () => setPopupEdit(false),
       condition: PopUpEdit
     },
@@ -185,7 +214,7 @@ export const FeeSection = () => {
       className: 'popup-container',
       content: <GenericForm title={'Generar cuotas nuevas'} error={error}
       onSubmit={handleAddItem}
-      fields={editnewFeesForm} className="addfees" />,
+      fields={addnewFeesForm} className="addfees" />,
       close: () => setPopupAdd(false),
       condition: PopUpAdd
     },
@@ -220,14 +249,14 @@ export const FeeSection = () => {
           { partnerWithUnpaidFees: false, name: "", surname: "", PaymentDate: "" }} 
           onChange={handleFilterChange} />}
 
-        columns={columns} data={items} popups={feesPopUp}
-        actions={
-          <div className='fees-actions'>
-            <Btn text="Cuotas pagas" variant="primary" onClick={() => setPopUpPaidFees(true)}></Btn>
-            <Btn text="Agregar cuota" variant="primary" onClick={() => setPopupAdd(true)}></Btn>
-            <Btn text="Cuotas entre fechas" variant="primary" onClick={() => setPopUpFeesBetweenDates(true)}></Btn>
-          </div>
-        }
+          columns={columns} data={items} popups={feesPopUp}
+          actions={
+            <div className='fees-actions'>
+              <Btn text="Cuotas pagas" variant="primary" onClick={() => setPopUpPaidFees(true)}></Btn>
+              <Btn text="Agregar cuota" variant="primary" onClick={() => setPopupAdd(true)}></Btn>
+              <Btn text="Cuotas entre fechas" variant="primary" onClick={() => setPopUpFeesBetweenDates(true)}></Btn>
+            </div>
+          }
 
       ></GenericSection>
 

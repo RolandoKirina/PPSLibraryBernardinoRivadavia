@@ -17,7 +17,6 @@ import { editLoanformFields } from "../../data/forms/LoanForms";
 import { loanDetailsInfo } from '../../data/showdetails/LoanDetails';
 import PopUpDelete from '../../components/common/deletebtnComponent/PopUpDelete';
 import { useEffect } from "react";
-import { mockLoans } from "../../data/mocks/loans";
 import { useEntityManager } from "../../hooks/useEntityManager";
 import { useAuth } from "../../auth/AuthContext";
 import { useEntityManagerAPI } from "../../hooks/useEntityManagerAPI";

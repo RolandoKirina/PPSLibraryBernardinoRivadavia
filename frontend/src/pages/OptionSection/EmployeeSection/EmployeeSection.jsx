@@ -10,7 +10,6 @@ import { employeeDetails } from '../../../data/showdetails/EmployeeDetails';
 import DetailsIcon from '../../../assets/img/details-icon.svg';
 import ShowDetails from '../../../components/generic/ShowDetails/ShowDetails';
 import { useEntityManager } from '../../../hooks/useEntityManager';
-import { mockEmployees } from '../../../data/mocks/employee';
 import EmployeeForm from '../../../components/option-components/EmployeeForm/EmployeeForm';
 import EmployeeLoansGraphic from '../../../components/option-components/EmployeeLoansGraphic/EmployeeLoansGraphic';
 import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';

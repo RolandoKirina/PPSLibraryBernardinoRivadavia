@@ -64,13 +64,27 @@ export const getQuantityPaidFees = async (partnerNumber) =>{
     return await FeeRepository.getQuantityPaidFees(partnerNumber);
 }
 export const updateFee = async (id, data) => {
+
+    const fee = await FeeRepository.getById(id);
+    if (!fee) {
+        throw new Error("Fee not found");
+    }
+
+    if (fee.paid === true) {
+        if (data.paid === false || data.paid === "false") {
+            throw new Error("No se puede marcar como impaga una cuota ya pagada.");
+        }
+    }
+
+    // Si está todo OK → actualizar
     const updatedFee = await FeeRepository.update(id, data);
+
     if (!updatedFee) {
         throw new Error("Fee not found or not updated");
     }
+
     return updatedFee;
 };
-
 export const deleteFee = async (id) => {
     const deletedFee = await FeeRepository.remove(id);
     if (!deletedFee) {

@@ -164,3 +164,6 @@
 .required {
   color: red; /* o tu color de alerta */
 }
+.error-message {
+  color: var(--error);
+}

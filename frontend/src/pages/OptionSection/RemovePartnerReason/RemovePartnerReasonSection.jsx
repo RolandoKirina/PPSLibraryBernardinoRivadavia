@@ -12,8 +12,6 @@ import ChooseIcon from '../../../assets/img/choose-icon.svg';
 import PopUp from '../../../components/common/popup-table/PopUp';
 import { Table } from '../../../components/common/table/Table';
 import ConfirmMessage from '../../../components/common/confirmMessage/ConfirmMessage';
-import { mockRemovePartnerReason } from '../../../data/mocks/removePartnerReason';
-import { useEntityManager } from '../../../hooks/useEntityManager';
 import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
 import { useEffect } from 'react';
 

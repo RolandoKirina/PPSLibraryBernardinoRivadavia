@@ -6,7 +6,7 @@ import "./FormEditPartner.css";
 import BackviewBtn from "../../common/backviewbtn/BackviewBtn.jsx";
 import UnpaidFees from "../../loan-components/unpaidfees/UnpaidFees.jsx";
 import { Table } from "../../common/table/Table.jsx";
-import { pendingbooks } from "../../../data/mocks/pendingbooks.js";
+//import { pendingbooks } from "../../../data/mocks/pendingbooks.js";
 
 export default function FormEditPartner() {
   const options = ["default", "unpaidfees", "pendingbooks"];

@@ -1,0 +1,84 @@
+.edit-fees-form {
+  background-color: var(--primary-dark-2);
+  border: 0.15em solid var(--primary-light-2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 0.2em;
+  padding: 1em;
+  width: 100%;
+  max-width: 800px; /* más ancho para filas */
+  margin: 0 auto;
+  color: var(--white);
+}
+
+.edit-fees-form h2 {
+  color: var(--secondary-light-2);
+  margin-bottom: 1em;
+  text-align: center;
+  font-size: 1.4rem;
+}
+
+/* Cada fila contenedora */
+.edit-fees-form > div {
+  display: flex;
+  gap: 1.5em;
+  width: 100%;
+  margin-bottom: 1.2em;
+  justify-content: space-between;
+}
+
+/* Cada input dentro de la fila */
+.edit-fees-form .form-group {
+  flex: 1; /* que se repartan el espacio */
+  display: flex;
+  flex-direction: column;
+}
+
+.edit-fees-form .form-group label {
+  font-weight: 600;
+  margin-bottom: 0.5em;
+  color: var(--white);
+}
+
+.edit-fees-form .form-group input,
+.edit-fees-form .form-group select {
+  width: 100%;        /* 🔑 fuerza mismo ancho */
+  height: 2.4em;
+  padding: 0 0.7em;
+  border-radius: 0.3em;
+  margin-bottom: 1em;
+  border: 1px solid var(--primary-light-2);
+  background-color: var(--primary-dark-1);
+  color: var(--white);
+  font-size: 1em;
+  box-sizing: border-box;
+}
+
+.edit-fees-form .form-group input:focus,
+.edit-fees-form .form-group select:focus {
+  border-color: var(--secondary-light-2);
+  outline: none;
+}
+
+.edit-fees-form .error-message {
+  color: var(--error);
+  font-size: 0.9rem;
+  margin-top: 0.5em;
+  text-align: center;
+}
+
+.edit-fees-form .form-actions {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5em;
+}
+
+.edit-fees-form .form-actions .btn {
+  min-width: 120px;
+}
+
+.edit-fees-form .form-group input.date {
+  height: 3em; /* ahora sí se aplica */
+}

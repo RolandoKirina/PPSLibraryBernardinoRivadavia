@@ -7,9 +7,7 @@ import Btn from '../../../components/common/btn/Btn';
 import DeleteIcon from '../../../assets/img/delete-icon.svg';
 import EditIcon from '../../../assets/img/edit-icon.svg';
 import AddMaterialGroup from '../../../components/option-components/addmaterialgroup/AddMaterialGroup';
-import { mockLoanAmountGroup } from '../../../data/mocks/loanAmount';
 import { useEntityManager } from '../../../hooks/useEntityManager';
-import { mockLoanMaterials } from '../../../data/mocks/loanMaterials';
 import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
 import { useEffect } from 'react';
 

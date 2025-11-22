@@ -4,7 +4,6 @@ import './Header.css';
 import { useState } from 'react';
 import Sidebar from '../sidebar/Sidebar.jsx';
 import Btn from '../btn/Btn.jsx';
-import { authMock } from '../../../data/mocks/authMock.js';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../../auth/AuthContext.jsx';
 

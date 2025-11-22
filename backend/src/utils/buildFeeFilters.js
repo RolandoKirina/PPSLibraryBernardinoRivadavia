@@ -10,27 +10,30 @@ export const buildFeeFilters = (query) => {
     unpaidfees,
   } = query;
 
-    const whereFees = {};
-    const wherePartner ={};
+        const whereFees = {};
+        const wherePartner ={};
+
+        console.log(unpaidfees)
 
         if (unpaidfees === "true") {
           whereFees.paid = false;
         }
-        else if (unpaidfees === "false") {
+        else if (unpaidfees === "false" || unpaidfees===undefined) {
           whereFees.paid = true;
+          
+            if (paymentdate) {
+              const start = new Date(`${paymentdate}T00:00:00Z`);
+              const end   = new Date(`${paymentdate}T23:59:59Z`);
+              whereFees.date_of_paid = {
+                [Op.gte]: start,
+                [Op.lte]: end
+              };
+            }
+          
         } 
 
-    if (unpaidfees !== "true") {
-      if (paymentdate) {
-        const start = new Date(`${paymentdate}T00:00:00Z`);
-        const end   = new Date(`${paymentdate}T23:59:59Z`);
+      
 
-        whereFees.date_of_paid = {
-          [Op.gte]: start,
-          [Op.lte]: end
-        };
-      }
-    }
       const parsedPartnerNumber = Number(partnerNumber);
       if (!isNaN(parsedPartnerNumber)) {
         wherePartner.partnerNumber = parsedPartnerNumber;

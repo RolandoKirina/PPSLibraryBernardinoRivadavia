@@ -25,7 +25,6 @@ export const generateUnpaidFees = async (req, res) => {
     }
 };
 
-
 export const getPaidFeeCountByPartner = async (req, res) => {
 
     const { partnerNumber } = req.query;

@@ -1,6 +1,5 @@
 import './BookAuthors.css';
 import { Table } from '../../common/table/Table';
-import { mockAuthors } from '../../../data/mocks/authors';
 import { useEntityManager } from '../../../hooks/useEntityManager';
 import AuthorIcon from '../../../assets/img/author-icon.svg';
 import DeleteIcon from '../../../assets/img/delete-icon.svg';

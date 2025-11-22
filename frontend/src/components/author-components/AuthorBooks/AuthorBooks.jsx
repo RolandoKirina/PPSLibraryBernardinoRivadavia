@@ -9,7 +9,6 @@ import PopUp from '../../common/popup-table/PopUp';
 import ConfirmMessage from '../../../components/common/confirmMessage/ConfirmMessage';
 import BackviewBtn from '../../common/backviewbtn/BackviewBtn';
 import SaveIcon from '../../../assets/img/save-icon.svg';
-import { books } from '../../../data/mocks/authors';
 import { useEffect } from 'react';
 import { useAuth } from '../../../auth/AuthContext';
 import roles from '../../../auth/roles.js';

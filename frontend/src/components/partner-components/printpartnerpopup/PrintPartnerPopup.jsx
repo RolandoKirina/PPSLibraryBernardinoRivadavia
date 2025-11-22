@@ -1,15 +1,15 @@
 import './PrintPartnerPopup.css';
 import Btn from '../../common/btn/Btn';
-import { mockPartnersCategory } from '../../../data/mocks/partnersCategory';
+//import { mockPartnersCategory } from '../../../data/mocks/partnersCategory';
 import { useEntityManager } from '../../../hooks/useEntityManager';
-import { mockRemovePartnerReason } from '../../../data/mocks/removePartnerReason';
+//import { mockRemovePartnerReason } from '../../../data/mocks/removePartnerReason';
 import { useState } from 'react';
 import { listOptions, sortOptions, dataByType, columnsByType } from '../../../data/generatedlist/generatedList';
 import GenerateListPopup from '../../common/generatelistpopup/GenerateListPopup';
 
 export default function PrintPartnerPopup() {
-    const { items: partnerCategories } = useEntityManager(mockPartnersCategory, 'partnerCategories');
-    const { items: removePartnerReasons } = useEntityManager(mockRemovePartnerReason, 'removePartnerReason');
+    //const { items: partnerCategories } = useEntityManager(mockPartnersCategory, 'partnerCategories');
+    //const { items: removePartnerReasons } = useEntityManager(mockRemovePartnerReason, 'removePartnerReason');
     const [formValues, setFormValues] = useState({});
 
     const handleSubmit = (e) => {

@@ -2,7 +2,7 @@ import Btn from '../../common/btn/Btn';
 import { useState, useEffect } from 'react';
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { mockLoans } from '../../../data/mocks/loans';
+//import { mockLoans } from '../../../data/mocks/loans';
 import "./EmployeeLoansGraphic.css";
 ChartJS.register(ArcElement, Tooltip, Legend);
 

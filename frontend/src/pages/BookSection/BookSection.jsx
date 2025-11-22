@@ -11,7 +11,6 @@ import GenericForm from '../../components/generic/GenericForm/GenericForm.jsx';
 import { BookDetail } from '../../data/showdetails/BookDetail.js';
 import GenericSection from '../../components/generic/GenericSection/GenericSection.jsx';
 import ShowDetails from '../../components/generic/ShowDetails/ShowDetails.jsx';
-//import { books } from '../../data/mocks/books.js';
 import { useEntityManagerAPI } from '../../hooks/useEntityManagerAPI.js';
 import Btn from '../../components/common/btn/Btn.jsx';
 import PlusIcon from '../../assets/img/plus-icon.svg';
@@ -28,8 +27,6 @@ import { useEffect } from 'react';
 const BookSection = () => {
  
   const { auth } = useAuth();
-
- const [books, setBooks] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
   const [PopUpEdit, setPopupEdit] = useState(false);
@@ -104,8 +101,8 @@ let columns =[];
               <button className="button-table"
                 onClick={() => {
                     console.log("ID seleccionado:", row.BookId);
-                setSelectedId(row.BookId);
-                setPopUpDelete(true);
+                    setSelectedId(row.BookId);
+                    setPopUpDelete(true);
               }}>
 
                 <img src={DeleteIcon} alt="Borrar" />
@@ -153,7 +150,6 @@ let columns =[];
           { header: 'Título', accessor: 'title' },
           { header: 'Código de inventario', accessor: 'codeInventory' },
           { header: 'Codigo de CDU', accessor: 'codeCDU' }];
-
   }
   
   const booksPopUp = [

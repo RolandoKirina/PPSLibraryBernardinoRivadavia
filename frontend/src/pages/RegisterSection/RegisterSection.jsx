@@ -1,7 +1,6 @@
 import './RegisterSection.css';
 import GenericSection from '../../components/generic/GenericSection/GenericSection';
 import Btn from '../../components/common/btn/Btn';
-import { authMock } from '../../data/mocks/authMock';
 import { Link } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import { AuthContext } from '../../auth/AuthContext';
