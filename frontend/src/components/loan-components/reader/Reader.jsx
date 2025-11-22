@@ -1,13 +1,13 @@
 import './Reader.css';
 
 export default function Reader({ loanType, onDataChange, readerData }) {
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const updated = { ...readerData, [name]: value };
-    console.log("Datos del lector:", updated);
 
+    // Envia SOLO el campo cambiado
     if (onDataChange && loanType === 'in_room') {
-      onDataChange(updated);
+      onDataChange({ [name]: value });
     }
   };
 
@@ -24,6 +24,7 @@ export default function Reader({ loanType, onDataChange, readerData }) {
             onChange={handleChange}
           />
         </div>
+
         <div className='input'>
           <label>Apellido, Nombre <span className='required'>*</span></label>
           <input

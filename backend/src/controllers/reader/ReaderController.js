@@ -1,4 +1,4 @@
-import * as ReaderService from '../../services/partner/ReaderService.js';
+import * as ReaderService from '../../services/reader/ReaderService.js';
 import { HTTP_STATUS } from '../../https/httpsStatus.js';
 
 export const getAllReaders = async (req, res) => {
@@ -30,6 +30,9 @@ export const getReader = async (req, res) => {
 export const createReader = async (req, res) => {
     try {
         const data = req.body;
+
+        //console.log(data);
+
         if (!data) {
             return res.status(HTTP_STATUS.BAD_REQUEST.code).json({ msg: "Invalid Reader body" });
         }

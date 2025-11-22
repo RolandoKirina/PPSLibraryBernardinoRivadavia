@@ -40,7 +40,7 @@ import PartnerCategory from './partner/partnerCategory.js';
 // import TypeDocument from './partner/typeDocument.js';
 
 import statePartner from './partner/statePartner.js';
-import Reader from './partner/reader.js';
+import Reader from './reader/reader.js';
 import reasonForWithDrawal from './partner/reasonForWithdrawal.js';
 import typeDocument from './partner/TypeDocument.js';
 
