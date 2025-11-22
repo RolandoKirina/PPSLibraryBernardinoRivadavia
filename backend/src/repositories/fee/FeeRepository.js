@@ -25,12 +25,9 @@ export const getAll = async (filters) => {
     observation: fee.observation,
     paid: fee.paid,                      
     paidLabel: fee.paid ? "Pagada" : "Impaga", 
-     date_of_paid: fee.date_of_paid 
-      ? new Date(fee.date_of_paid).toLocaleDateString("es-AR") 
-      : "",
-
-
-    // Datos del socio
+    date_of_paid: fee.date_of_paid
+    ? fee.date_of_paid.toISOString().substring(0, 10)
+    : "",
     partnerNumber: fee.Partner?.partnerNumber,
     name: fee.Partner ? `${fee.Partner.name} ${fee.Partner.surname}` : "",
     surname: fee.Partner?.surname,

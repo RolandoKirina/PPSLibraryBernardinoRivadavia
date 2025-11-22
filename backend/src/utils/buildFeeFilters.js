@@ -1,6 +1,5 @@
 import { Op } from "sequelize";
-import Date from 'date';
-
+import Sequelize from "sequelize";
 
 export const buildFeeFilters = (query) => {
   const {
@@ -11,37 +10,27 @@ export const buildFeeFilters = (query) => {
     unpaidfees,
   } = query;
 
-  console.log("Filtros enviados:", query);
+    const whereFees = {};
+    const wherePartner ={};
 
-  const whereFees = {};
-  const wherePartner ={};
+        if (unpaidfees === "true") {
+          whereFees.paid = false;
+        }
+        else if (unpaidfees === "false") {
+          whereFees.paid = true;
+        } 
 
-      if (unpaidfees === "true") {
-        whereFees.paid = false;
+    if (unpaidfees !== "true") {
+      if (paymentdate) {
+        const start = new Date(`${paymentdate}T00:00:00Z`);
+        const end   = new Date(`${paymentdate}T23:59:59Z`);
+
+        whereFees.date_of_paid = {
+          [Op.gte]: start,
+          [Op.lte]: end
+        };
       }
-       else if (unpaidfees === "false") {
-        whereFees.paid = true;
-      } else {
-
-  whereFees.paid = true;
-}
-
-
-
-      if (unpaidfees === "true") {
-        delete whereFees.date_of_paid;  // Ignorar si llega
-      }
-
-     if (paymentdate && unpaidfees==="false") {
-       
-       const start = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-      const end = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate() + 1));
-        end.setDate(end.getDate() + 1);
-
-        whereFees.date_of_paid = { [Op.between]: [start, end] };
-
     }
-
       const parsedPartnerNumber = Number(partnerNumber);
       if (!isNaN(parsedPartnerNumber)) {
         wherePartner.partnerNumber = parsedPartnerNumber;
@@ -57,10 +46,7 @@ export const buildFeeFilters = (query) => {
       wherePartner.surname = {
           [Op.iLike]: `%${surname.trim()}%`
       };
-      
       }
-
-
 
   return {
     wherePartner,
