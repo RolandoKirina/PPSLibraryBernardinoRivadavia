@@ -39,12 +39,9 @@ export default function AuthorSection() {
         const delay = setTimeout(() => {
             const filters = filterName.trim() ? { authorName: filterName } : {};
             getItems(filters);
-            console.log(filters);
         }, 300);
         return () => clearTimeout(delay);
     }, [filterName]);
-
-
 
     useEffect(() => {
         getItems();
@@ -78,13 +75,14 @@ export default function AuthorSection() {
 
             const newAuthorId = newAuthor.id;
 
-            const booksId = getAllBooksId(data.books);
-
             await Promise.all(
-                booksId.map(id =>
+                data.books.map(book =>
                     createBookAuthor({
-                        BookId: id,
-                        authorCode: newAuthorId
+                        BookId: book.BookId,
+                        authorCode: newAuthorId,
+                        authorName: newAuthor.name,
+                        bookCode: book.codeInventory,
+                        position: book.position
                     })
                 )
             );
@@ -165,7 +163,6 @@ export default function AuthorSection() {
             key: 'editPopup',
             title: 'Editar autor',
             className: 'author-books-background',
-            // content: <AuthorBooks authorSelected={selected} updateAuthorSelectedBooks={updateAuthorSelectedBooks} deleteAuthorSelected={deleteAuthorSelected} method={'update'} updateAuthorItem={updateAuthorSelected} />,
             content: <AuthorBooks authorSelected={selected} method={'update'} createAuthorItem={updateExistingAuthor} />,
             close: () => setEditPopup(false),
             condition: editPopup

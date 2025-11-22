@@ -318,7 +318,6 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
   const lendBooksColumns = [
     { header: 'Código del libro', accessor: 'codeInventory' },
     { header: 'Título', accessor: 'title' },
-    { header: 'Posición', accessor: 'position' },
     {
       header: 'Borrar',
       accessor: 'delete',

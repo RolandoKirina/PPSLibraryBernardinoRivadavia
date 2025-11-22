@@ -2,6 +2,8 @@ import Authors from '../../models/author/Authors.js';
 import { Op } from 'sequelize';
 import BookAuthor from '../../models/author/BookAuthor.js';
 import Book from '../../models/book/Book.js';
+import Loan from '../../models/loan/Loan.js';
+import LoanBook from '../../models/loan/LoanBook.js';
 
 export const getAll = async (filters) => {
     const {
@@ -12,43 +14,74 @@ export const getAll = async (filters) => {
         direction,
     } = filters;
 
-    return await Authors.findAll({
+    const authors = await Authors.findAll({
         attributes: ['id', 'name', 'nationality'],
         where: Object.keys(whereAuthor).length ? whereAuthor : undefined,
         required: Object.keys(whereAuthor).length > 0,
         include: [
-           {
-            model: BookAuthor,
-            as: 'BookAuthors',
-            attributes: ['position'],
-            include: [
-                {
-                    model: Book,
-                    as: 'Book',
-                    attributes: ['codeInventory', 'title', 'codeClasification', 'codeCDU', 'codeLing']
-                }
-            ]
-           }
+            {
+                model: BookAuthor,
+                as: 'BookAuthors',
+                attributes: ['position'],
+                include: [
+                    {
+                        model: Book,
+                        as: 'Book',
+                        attributes: ['codeInventory', 'title', 'codeClasification', 'codeCDU', 'codeLing'],
+                        include: [
+                            {
+                                model: LoanBook,
+                                as: 'BookLoans',
+                                attributes: [],
+                                required: false,
+                                include: [
+                                    {
+                                        model: Loan,
+                                        as: 'Loan',
+                                        attributes: [],
+                                        required: false,
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         ]
+
     });
+
+    const authorsPlain = authors.map(a => a.get({ plain: true }));
+
+    for (const author of authorsPlain) {
+        for (const bookAuthor of author.BookAuthors) {
+            const book = bookAuthor.Book;
+
+            const isBorrowed = book.LoanBooks?.some(lb => lb.returnedDate === null) || false;
+
+            book.isBorrowed = isBorrowed;
+        }
+    }
+
+    return authorsPlain;
 };
 
 export const getAllByName = async (name) => {
     return await Authors.findAll({
         attributes: ['id', 'name', 'nationality'],
         include: [
-           {
-            model: BookAuthor,
-            as: 'BookAuthors',
-            attributes: ['position'],
-            include: [
-                {
-                    model: Book,
-                    as: 'Book',
-                    attributes: ['codeInventory', 'title', 'codeClasification', 'codeCDU', 'codeLing']
-                }
-            ]
-           }
+            {
+                model: BookAuthor,
+                as: 'BookAuthors',
+                attributes: ['position'],
+                include: [
+                    {
+                        model: Book,
+                        as: 'Book',
+                        attributes: ['codeInventory', 'title', 'codeClasification', 'codeCDU', 'codeLing']
+                    }
+                ]
+            }
         ],
         where: {
             name: {
@@ -76,14 +109,14 @@ export const update = async (id, updates) => {
     return await Authors.findByPk(id);
 };
 
-export const remove = async (id) =>{
+export const remove = async (id) => {
     const author = await Authors.findByPk(id);
 
-      if (!author) {
+    if (!author) {
         return null;
-      }
+    }
     await author.destroy();
-  
+
     return {
         msg: "Author deleted successfully",
         data: author
