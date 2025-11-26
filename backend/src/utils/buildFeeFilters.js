@@ -7,38 +7,40 @@ export const buildFeeFilters = (query) => {
     name,
     surname,
     paymentdate,
-    unpaidfees,
+    status,
   } = query;
 
-        const whereFees = {};
-        const wherePartner ={};
+    const whereFees = {};
+    const wherePartner ={};
 
-        console.log(unpaidfees)
+    console.log(status)
+     if (status === "unpaid") {
+        whereFees.paid = false;
+      } else if (status === "paid") {
+        whereFees.paid = true;
+      }
 
-        if (unpaidfees === "true") {
-          whereFees.paid = false;
+        if (paymentdate) {
+          const start = new Date(`${paymentdate}T00:00:00Z`);
+          const end   = new Date(`${paymentdate}T23:59:59Z`);
+          whereFees.date_of_paid = {
+            [Op.gte]: start,
+            [Op.lte]: end
+          };
         }
-        else if (unpaidfees === "false" || unpaidfees===undefined) {
-          whereFees.paid = true;
-          
-            if (paymentdate) {
-              const start = new Date(`${paymentdate}T00:00:00Z`);
-              const end   = new Date(`${paymentdate}T23:59:59Z`);
-              whereFees.date_of_paid = {
-                [Op.gte]: start,
-                [Op.lte]: end
-              };
-            }
-          
-        } 
+              
 
-      
-
+    if (partnerNumber !== undefined && partnerNumber !== null && partnerNumber !== "") {
       const parsedPartnerNumber = Number(partnerNumber);
+      console.log(parsedPartnerNumber)
       if (!isNaN(parsedPartnerNumber)) {
         wherePartner.partnerNumber = parsedPartnerNumber;
       }
-    
+    }
+
+    console.log("wherePartner:", wherePartner);
+  console.log("whereFees:", whereFees);
+
       if (name && name.trim() !== '') {
       wherePartner.name = {
           [Op.iLike]: `%${name.trim()}%`

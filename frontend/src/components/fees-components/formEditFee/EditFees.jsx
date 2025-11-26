@@ -11,7 +11,9 @@ import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
     date_of_paid: selectedFee?.date_of_paid ?? "",
     observation: selectedFee?.observation ?? "",
   });
+  const [error,setError] = useState(null);
     const entityManagerApi = useEntityManagerAPI("fees");
+  const [success, setSuccess] = useState(null);
 
   const handleChange = (e) => {
     const { name, type, value, checked } = e.target;
@@ -24,23 +26,45 @@ import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
   const handleSubmit = async (e) => {
       e.preventDefault();
 
-      const updatedFee = {
-        feeid: selectedFee.feeid,
-        amount: Number(formState.amount),
-        paid: formState.paid === "true" || formState.paid === true,
-        date_of_paid: formState.date_of_paid,
-        observation: formState.observation,
-      };
-      try {
-            const updated = await entityManagerApi.updateItem(selectedFee.feeid, updatedFee);
-            if (updated) {
-              alert("Libro actualizado con éxito");
-            }
-      } 
-      catch (error) {
-          alert("Error al actualizar el libro");
-          console.error("Error al editar libro:", error);
+      const isPaid = formState.paid === "true" || formState.paid === true;
+      const hasDate = formState.date_of_paid && formState.date_of_paid.trim() !== "";
+
+      if (!isPaid && hasDate) {
+        setSuccess(null)
+        setError("No podés marcar la cuota como 'Impaga' si tiene una fecha de pago.");
+        return;
       }
+
+      if (isPaid && !hasDate) {
+        setSuccess(null)
+        setError("Si la cuota está marcada como 'Pagada', debe tener una fecha de pago.");
+        return;
+      }
+
+      setError(null);  
+      setSuccess(null); 
+
+      if(!error){
+        const updatedFee = {
+          feeid: selectedFee.feeid,
+          amount: Number(formState.amount),
+          paid: formState.paid === "true" || formState.paid === true,
+          date_of_paid: formState.date_of_paid,
+          observation: formState.observation,
+        };
+        try {
+              const updated = await entityManagerApi.updateItem(selectedFee.feeid, updatedFee);
+              if (updated) {
+                 setError(null);
+                 setSuccess("Cuota actualizada con éxito.");
+              }
+        } 
+        catch (error) {
+           setSuccess(null); 
+           setError("Error al editar la cuota.");
+        }
+      }
+      
     };
 
    
@@ -51,8 +75,12 @@ import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
     <form className="edit-fees-form" onSubmit={handleSubmit}>
 
       <h2>Editar cuota</h2>
+       <div className="titlefee">
+            <h3>Cuota n° {selectedFee.feeid} </h3>
+        </div>
       <div>
-    
+       
+       
         <div className="form-group">
           <label htmlFor="amount">Monto</label>
           <input
@@ -60,6 +88,7 @@ import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
             id="amount"
             name="amount"
             value={formState.amount}
+             disabled={selectedFee?.paid === true}
             onChange={handleChange}
           />
         </div>
@@ -105,8 +134,16 @@ import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
         </div>
       </div>
 
-      {/*{error && <p className="error-message">{error}</p>}*/}
-
+    {error && (
+        <p className={`error-message ${error ? "visible" : ""}`}>
+          {error}
+        </p>
+      )}
+      {success && (
+        <p className={`success-message ${success ? "visible" : ""}`}>
+          {success}
+        </p>
+      )}
       <div className="form-actions">
         <Btn
           variant="primary"

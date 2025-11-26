@@ -16,3 +16,22 @@ input:disabled {
   cursor: not-allowed;
   opacity: 1; 
 }
+
+.feefiltercheckbox {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.feefiltercheckbox-label {
+  width: 100%;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.feefiltercheckbox-select {
+  height: 3em;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+}

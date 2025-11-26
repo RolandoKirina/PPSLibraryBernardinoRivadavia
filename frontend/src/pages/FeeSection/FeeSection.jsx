@@ -255,6 +255,8 @@ export const FeeSection = () => {
               <Btn text="Cuotas pagas" variant="primary" onClick={() => setPopUpPaidFees(true)}></Btn>
               <Btn text="Agregar cuota" variant="primary" onClick={() => setPopupAdd(true)}></Btn>
               <Btn text="Cuotas entre fechas" variant="primary" onClick={() => setPopUpFeesBetweenDates(true)}></Btn>
+              <Btn text="Modificaciones en cuotas" variant="primary" onClick={() => alert("realizar")}></Btn>
+
             </div>
           }
 

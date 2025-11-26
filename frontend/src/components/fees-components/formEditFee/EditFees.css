@@ -14,7 +14,7 @@
 
 .edit-fees-form h2 {
   color: var(--secondary-light-2);
-  margin-bottom: 1em;
+  margin-bottom: 0.5em;
   text-align: center;
   font-size: 1.4rem;
 }
@@ -64,9 +64,21 @@
 .edit-fees-form .error-message {
   color: var(--error);
   font-size: 0.9rem;
-  margin-top: 0.5em;
+  
   text-align: center;
+
+ 
 }
+
+.edit-fees-form .success-message {
+  color: var(--sucess);
+  font-size: 0.9rem;
+ 
+  text-align: center;
+
+  
+}
+
 
 .edit-fees-form .form-actions {
   width: 100%;
@@ -81,4 +93,14 @@
 
 .edit-fees-form .form-group input.date {
   height: 3em; /* ahora sí se aplica */
+}
+
+.titlefee{
+  display: flex;
+  justify-content: center;
+}
+
+
+.edit-fees-form > div.titlefee {
+    justify-content: center;
 }

@@ -76,6 +76,29 @@ export const updateFee = async (id, data) => {
         }
     }
 
+     if (fee.paid === true && data.amount && Number(data.amount) !== fee.amount) {
+        throw new Error("No se puede modificar el monto de una cuota ya pagada.");
+    }
+
+     if (fee.paid === true) {
+        if ((data.month && data.month !== fee.month) ||
+            (data.year && data.year !== fee.year)) {
+            throw new Error("No se puede cambiar el período (mes/año) de una cuota pagada.");
+        }
+    }
+
+
+     if ((data.paid === true || data.paid === "true")) {
+        if (!data.date_of_paid) {
+            throw new Error("Debe ingresar una fecha de pago para marcar como pagada.");
+        }
+    }
+
+    if (data.date_of_paid && isNaN(new Date(data.date_of_paid).getTime())) {
+        throw new Error("La fecha de pago no es válida.");
+    }
+
+
     // Si está todo OK → actualizar
     const updatedFee = await FeeRepository.update(id, data);
 

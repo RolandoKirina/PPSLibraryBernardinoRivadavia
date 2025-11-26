@@ -27,7 +27,7 @@ export const getAll = async (filters) => {
     paidLabel: fee.paid ? "Pagada" : "Impaga", 
     date_of_paid: fee.date_of_paid
     ? fee.date_of_paid.toISOString().substring(0, 10)
-    :"No pagada",
+    :"",
     partnerNumber: fee.Partner?.partnerNumber,
     name: fee.Partner ? `${fee.Partner.name} ${fee.Partner.surname}` : "",
     surname: fee.Partner?.surname,
