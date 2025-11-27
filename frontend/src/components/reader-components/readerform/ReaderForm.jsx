@@ -34,10 +34,9 @@ export default function ReaderForm({ method, createReaderItem, loanSelected }) {
   const { auth } = useAuth();
 
   const [loanData, setLoanData] = useState({
-    loanType: 'in_room',
     employeeCode: '',
+    returnedDate: '',
     retiredDate: '',
-    expectedDate: '',
     books: [],
     readerDNI: '',
     readerName: ''
@@ -60,17 +59,20 @@ export default function ReaderForm({ method, createReaderItem, loanSelected }) {
   useEffect(() => {
     getBooks();
 
-    if (method === 'update' && loanSelected?.loanId) {
+    if (method === 'update' && loanSelected?.dni) {
+      console.log("ssss");
+      console.log(loanSelected);
       const fetchAllBooksFromLoan = async () => {
         const loanSelectedId = loanSelected.loanId;
         const booksFromLoan = await getBooks(loanSelectedId);
 
         setLoanData({
-          loanType: loanSelected.loanType || 'in_room',
+          books: booksFromLoan || [],
           employeeCode: loanSelected.employeeCode || '',
           retiredDate: loanSelected.retiredDate || '',
-          expectedDate: loanSelected.expectedDate || '',
-          books: booksFromLoan || []
+          readerDNI: loanSelected.dni,
+          readerName: loanSelected.name,
+
         });
       };
 
@@ -99,10 +101,8 @@ export default function ReaderForm({ method, createReaderItem, loanSelected }) {
   function handleAddNewLoan() {
     if (validateError) return;
     const newLoan = {
-      loanType: loanData.loanType,
       employeeCode: loanData.employeeCode,
       retiredDate: loanData.retiredDate,
-      expectedDate: loanData.expectedDate,
       readerDNI: loanData.readerDNI,
       readerName: loanData.readerName,
       books: loanData.books
@@ -117,7 +117,9 @@ export default function ReaderForm({ method, createReaderItem, loanSelected }) {
     const updatedLoan = {
       employeeCode: loanData.employeeCode,
       retiredDate: loanData.retiredDate,
-      expectedDate: loanData.expectedDate,
+      returnedDate: loanData.returnedDate,
+      readerDNI: loanData.readerDNI,
+      readerName: loanData.readerName,
       books: loanData.books
     };
     createReaderItem(updatedLoan);
@@ -147,7 +149,7 @@ export default function ReaderForm({ method, createReaderItem, loanSelected }) {
 
   async function verifyIfExists(bookId) {
     try {
-      const res = await fetch(`${BASE_URL}/loan-books/repeated-book/${bookId}`);
+      const res = await fetch(`${BASE_URL}/reader-books/repeated-book/${bookId}`);
       if (!res.ok) throw new Error("Error al obtener datos");
       const data = await res.json();
       return data;
@@ -168,11 +170,6 @@ export default function ReaderForm({ method, createReaderItem, loanSelected }) {
   }
 
   const validateBeforeSave = () => {
-
-    if (loanData.retiredDate && loanData.expectedDate && new Date(loanData.expectedDate) < new Date(loanData.retiredDate)) {
-      setValidateError('La fecha prevista no puede ser anterior a la fecha de retiro.');
-      return false;
-    }
 
     if (!loanData.books || loanData.books.length === 0) {
       setValidateError('Debe agregar al menos un libro antes de guardar el préstamo.');
@@ -351,14 +348,6 @@ export default function ReaderForm({ method, createReaderItem, loanSelected }) {
 
     setLoanData(prev => {
       const updated = { ...prev, [name]: value };
-      if (name === 'retiredDate' || name === 'expectedDate') {
-        // Validar inmediatamente fechas para mostrar mensaje rápido
-        if (updated.retiredDate && updated.expectedDate && new Date(updated.expectedDate) < new Date(updated.retiredDate)) {
-          setValidateError('La fecha prevista no puede ser anterior a la fecha de retiro.');
-        } else {
-          setValidateError('');
-        }
-      }
       return updated;
     });
 
@@ -403,22 +392,26 @@ export default function ReaderForm({ method, createReaderItem, loanSelected }) {
               <div className='add-loan-retire-date input'>
                 <label>Fecha de retiro <span className='required'>*</span></label>
                 <input
-                  type='date'
+                  type='datetime-local'
                   name='retiredDate'
                   value={loanData.retiredDate}
                   onChange={handleChange}
                 />
               </div>
 
-              <div className='add-loan-retire-date input'>
-                <label>Fecha prevista <span className='required'>*</span></label>
-                <input
-                  type='date'
-                  name='expectedDate'
-                  value={loanData.expectedDate}
-                  onChange={handleChange}
-                />
-              </div>
+              {method === 'update' && (
+                <div className='add-loan-retire-date input'>
+                  <label>Fecha de devolución <span className='required'>*</span></label>
+                  <input
+                    type='datetime-local'
+                    name='returnedDate'
+                    
+                    onChange={handleChange}
+                  />
+                </div>
+              )}
+
+    
             </div>
 
 

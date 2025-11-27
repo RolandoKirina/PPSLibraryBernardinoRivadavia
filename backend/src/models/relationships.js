@@ -3,7 +3,7 @@ export default function applyRelationships(models) {
     Author, BookAuthor, Book, Key, BookKey, BookType, Signs,
     Loan, LoanBook, LoanType, Reservations, BookReservations,
     BookTypeGroup, BookTypeGroupList, Employees,
-    Partner, PartnerCategory, Reader, reasonForWithDrawal,
+    Partner, PartnerCategory, Reader, ReaderBook, reasonForWithDrawal,
     statePartner, Locality, MaritalStatus,
     Fees, typeDocument
   } = models;
@@ -22,6 +22,16 @@ export default function applyRelationships(models) {
 
   Loan.hasMany(LoanBook, { as: "LoanBooks", foreignKey: "loanId", sourceKey: "id" });
   LoanBook.belongsTo(Loan, { as: "Loan", foreignKey: "loanId", targetKey: "id" });
+
+  Reader.hasMany(ReaderBook, { as: "ReaderBooks", foreignKey: "readerDNI", sourceKey: "dni" });
+  ReaderBook.belongsTo(Reader, { as: "Reader", foreignKey: "readerDNI", targetKey: "dni" });
+
+  Employees.hasMany(ReaderBook, { as: "ReaderBooks", foreignKey: "employeeId", sourceKey: "id" });
+  ReaderBook.belongsTo(Employees, { as: "Employee", foreignKey: "employeeId", targetKey: "id" });
+  
+
+  Book.hasMany(ReaderBook, { as: "BookReaders", foreignKey: "BookId", sourceKey: "BookId" });
+  ReaderBook.belongsTo(Book, { as: "Book", foreignKey: "BookId", targetKey: "BookId" });
 
   Book.hasMany(LoanBook, { as: "BookLoans", foreignKey: "BookId", sourceKey: "BookId" });
   LoanBook.belongsTo(Book, { as: "Book", foreignKey: "BookId", targetKey: "BookId" });

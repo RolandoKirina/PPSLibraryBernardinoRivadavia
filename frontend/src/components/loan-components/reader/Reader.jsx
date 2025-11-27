@@ -1,6 +1,7 @@
 import './Reader.css';
 
 export default function Reader({ loanType, onDataChange, readerData }) {
+  console.log(readerData);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

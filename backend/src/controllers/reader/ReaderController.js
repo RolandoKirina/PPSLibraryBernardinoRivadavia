@@ -31,8 +31,6 @@ export const createReader = async (req, res) => {
     try {
         const data = req.body;
 
-        //console.log(data);
-
         if (!data) {
             return res.status(HTTP_STATUS.BAD_REQUEST.code).json({ msg: "Invalid Reader body" });
         }

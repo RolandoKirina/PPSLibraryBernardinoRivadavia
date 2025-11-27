@@ -41,6 +41,8 @@ import RemoveReasonRoutes from "./routes/v1/options/RemoveReasonRoutes.js";
 
 // readers
 import ReaderRoutes from './routes/v1/reader/ReaderRouter.js';
+import ReaderBookRoutes from './routes/v1/reader/ReaderBookRoutes.js';
+
 
 import cors from "cors";
 
@@ -67,12 +69,12 @@ app.use("/api/v1/localities", LocalityRouter);
 app.use("/api/v1/marital-statuses", MaritalStatusRouter);
 app.use("/api/v1/partner-categories", PartnerCategoryRouter);
 app.use("/api/v1/partners", PartnerRouter);
-app.use("/api/v1/readers", ReaderRouter);
 app.use("/api/v1/reason-for-withdrawal", ReasonForWithDrawalRouter);
 app.use("/api/v1/state-partners", statePartner);
 
 app.use("/api/v1/loans", LoanRoutes);
 app.use("/api/v1/readers", ReaderRoutes);
+app.use("/api/v1/reader-books", ReaderBookRoutes);
 app.use("/api/v1/book-reservations", BookReservationsRoutes);
 app.use("/api/v1/reservations", ReservationsRoutes);
 app.use("/api/v1/loan-books", LoanBookRoutes);
