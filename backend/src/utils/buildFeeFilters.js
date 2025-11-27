@@ -8,12 +8,18 @@ export const buildFeeFilters = (query) => {
     surname,
     paymentdate,
     status,
+    beforeDate,
+    afterDate
   } = query;
 
     const whereFees = {};
     const wherePartner ={};
 
     console.log(status)
+
+
+    
+
      if (status === "unpaid") {
         whereFees.paid = false;
       } else if (status === "paid") {
@@ -59,3 +65,21 @@ export const buildFeeFilters = (query) => {
   };
 }
 
+const buildFeeListFilters = (query) => {
+
+
+  const {
+    beforeDate,
+    afterDate,
+    typeList,
+  } = query;
+  
+  if (beforeDate && afterDate) {
+      const start = new Date(`${beforeDate}T00:00:00Z`);
+      const end = new Date(`${afterDate}T23:59:59Z`);
+      whereFees.month_and_year = {
+        [Op.gte]: start,
+        [Op.lte]: end
+      };
+  }
+}

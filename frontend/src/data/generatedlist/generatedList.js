@@ -102,6 +102,7 @@ export const columnsByType = {
     { header: 'Monto', accessor: 'amount' },
     { header: 'Cantidad de Cuotas', accessor: 'installments' }
   ],
+  //*este*/
   TypeTwoFees: [
     { header: 'Letra', accessor: 'letter' },
     { header: 'Regular', accessor: 'regular' },

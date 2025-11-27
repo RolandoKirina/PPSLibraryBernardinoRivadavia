@@ -3,30 +3,36 @@ import Btn from '../../common/btn/Btn';
 import GenerateListPopup from '../../common/generatelistpopup/GenerateListPopup';
 import { feesBetweenDatesListOptions, dataByType, columnsByType } from '../../../data/generatedlist/generatedList';
 import { useState } from 'react';
+import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
 
 export default function FeesBetweenDates() {
     const [formValues, setFormValues] = useState({});
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        const data = {};
+    const { items, getItems, getItem, createItem, updateItem, deleteItem } = useEntityManagerAPI("fees");
 
-        formData.forEach((value, key) => {
-            if (data[key]) {
-                if (Array.isArray(data[key])) {
-                    data[key].push(value);
-                } else {
-                    data[key] = [data[key], value];
-                }
-            } else {
+    const handleSubmit = async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = {};
+            formData.forEach((value, key) => {
                 data[key] = value;
-            }
-        });
+            });
+            setFormValues(data);
+            console.log("Formulario:", data);
 
-        setFormValues(data);
-        console.log("Formulario:", data);
+            try {
+                const filteredItems = await getItems({
+                    beforeDate: data.beforeDate,
+                    afterDate: data.afterDate,
+                    listType: data.listType
+                });
+                
+                console.log("Items filtrados:", filteredItems);
+            } catch (err) {
+                console.error("Error al traer cuotas filtradas:", err);
+            }
     };
+    
 
     return (
         <>
@@ -50,7 +56,6 @@ export default function FeesBetweenDates() {
                                 </div>
                             </div>
 
-                            {/* Opciones de listado */}
                             <div className='fees-between-dates-filter-option'>
                                 <div className='fees-between-dates-filter-title'>
                                     <h3>Opciones de listado</h3>
@@ -76,9 +81,8 @@ export default function FeesBetweenDates() {
                 </div>
 
                 <div className='preview-list-container'>
-                    {/* añadir entre y - fechas por encima de la tabla */}
                     <GenerateListPopup
-                        dataByType={dataByType}
+                        dataByType={items}
                         columnsByType={columnsByType}
                         typeList={formValues.listType ? formValues.listType : 'TypeOneFees'}
                         title={formValues.listTitle}

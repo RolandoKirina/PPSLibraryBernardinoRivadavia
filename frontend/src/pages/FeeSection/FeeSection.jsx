@@ -8,7 +8,6 @@ import EditIcon from '../../assets/img/edit-icon.svg';
 import DetailsIcon from '../../assets/img/details-icon.svg';
 import ShowDetails from '../../components/generic/ShowDetails/ShowDetails.jsx';
 import Btn from '../../components/common/btn/Btn.jsx';
-import CardFees from '../../components/fees-components/CardFees/CardFees.jsx';
 import { FeesDetail } from '../../data/showdetails/FeesDetail.js';
 import GenericForm from '../../components/generic/GenericForm/GenericForm.jsx';
 import {editnewFeesForm , addnewFeesForm} from '../../data/forms/FeesForms.js';
@@ -25,7 +24,6 @@ export const FeeSection = () => {
   const [PopUpAdd, setPopupAdd] = useState(false);
   const [popupdelete, setPopUpDelete] = useState(false);
   const [PopUpDetail, setPopUpDetail] = useState(false);
-  const [PopUpPaidFees, setPopUpPaidFees] = useState(false);
   const [PopUpFeesBetweenDates, setPopUpFeesBetweenDates] = useState(false);
   const [error, setError] = useState(false);
   const { items, getItems, getItem, createItem, updateItem, deleteItem } = useEntityManagerAPI("fees");
@@ -226,13 +224,6 @@ export const FeeSection = () => {
       condition: PopUpDetail
     },
     {
-      key: 'PaidFees',
-      title: 'Cuotas pagas',
-      content: <CardFees></CardFees>,
-      close: () => setPopUpPaidFees(false),
-      condition: PopUpPaidFees
-    },
-    {
       key: 'FeesBetweenDates',
       title: 'Cuotas entre fechas',
       content: <FeesBetweenDates />,
@@ -252,7 +243,6 @@ export const FeeSection = () => {
           columns={columns} data={items} popups={feesPopUp}
           actions={
             <div className='fees-actions'>
-              <Btn text="Cuotas pagas" variant="primary" onClick={() => setPopUpPaidFees(true)}></Btn>
               <Btn text="Agregar cuota" variant="primary" onClick={() => setPopupAdd(true)}></Btn>
               <Btn text="Cuotas entre fechas" variant="primary" onClick={() => setPopUpFeesBetweenDates(true)}></Btn>
               <Btn text="Modificaciones en cuotas" variant="primary" onClick={() => alert("realizar")}></Btn>
