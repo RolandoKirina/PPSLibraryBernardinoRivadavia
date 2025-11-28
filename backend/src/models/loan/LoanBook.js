@@ -17,10 +17,12 @@ const LoanBook = sequelize.define("LoanBook",
         loanId: {
             type: DataTypes.INTEGER,
             field: "IdPrestamo",
+            allowNull: false
         },
         bookCode: {
             type: DataTypes.STRING(50),
             field: 'CodLibro',
+            allowNull: false
         },
         expectedDate: {
             type: DataTypes.DATEONLY,
