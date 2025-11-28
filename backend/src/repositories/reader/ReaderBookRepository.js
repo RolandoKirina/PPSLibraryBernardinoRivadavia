@@ -46,9 +46,21 @@ export const verifyIfBookIsNotRepeated = async (id) => {
 export const create = async (readerBook, transaction = null) => {
   return await ReaderBook.create(readerBook, { transaction });
 };
-
 export const update = async (id, updates, transaction = null) => {
-  console.log("work");
+
+  if (updates.retiredDate) {
+    const [datePart, timePart] = updates.retiredDate.split('T');
+    updates.retiredDate = datePart;                  // "2025-11-14"
+    updates.retiredHour = timePart ? timePart + ':00' : null; // "19:23:00"
+  }
+
+  if (updates.returnedDate) {
+    const [datePart, timePart] = updates.returnedDate.split('T');
+    updates.returnedDate = datePart;                  // "2025-11-15"
+    updates.returnedHour = timePart ? timePart + ':00' : null; // "23:00:00"
+    updates.returned = true; // marcar como devuelto
+  }
+
   await ReaderBook.update(updates, {
     where: { ReaderBookId: id },
     transaction
@@ -56,6 +68,7 @@ export const update = async (id, updates, transaction = null) => {
 
   return await ReaderBook.findByPk(id, { transaction });
 };
+
 
 export const remove = async (id) => {
   const readerBook = await ReaderBook.findByPk(id);

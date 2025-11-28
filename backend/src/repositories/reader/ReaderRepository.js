@@ -13,7 +13,7 @@ export const getAll = async () => {
       {
         model: ReaderBook,
         as: 'ReaderBooks',
-        attributes: ['employeeId', 'returnedDate', 'retiredDate', 'BookId', 'readerDNI', 'ReaderBookId'],
+        attributes: ['employeeId', 'returnedDate', 'retiredDate', 'returnedHour', 'retiredHour','BookId', 'readerDNI', 'ReaderBookId'],
         include: [
           {
             model: Book,
@@ -30,24 +30,22 @@ export const getAll = async () => {
     ]
   });
 
- const flatReaders = readers.flatMap(reader =>
+  const flatReaders = readers.flatMap(reader =>
     reader.ReaderBooks.map(rb => {
       const book = rb.Book;
       const employee = rb.Employee;
-      const retiredDate = rb.retiredDate ? new Date(rb.retiredDate) : null;
-      const returnedDate = rb.returnedDate ? new Date(rb.returnedDate) : null;
 
       return {
         dni: reader.dni,
         name: reader.name,
         bookCode: book?.codeInventory ?? '',
         bookTitle: book?.title ?? '',
-        retiredDate: retiredDate?.toISOString().split('T')[0] ?? '',
-        retiredHour: retiredDate?.toISOString().split('T')[1]?.slice(0, 5) ?? '',
-        returnedDate: returnedDate?.toISOString().split('T')[0] ?? '',
-        returnedHour: returnedDate?.toISOString().split('T')[1]?.slice(0, 5) ?? '',
+        retiredDate: rb.retiredDate ?? '',                // YYYY-MM-DD
+        retiredHour: rb.retiredHour ?? '',   // HH:mm
+        returnedDate: rb.returnedDate ?? '',              // YYYY-MM-DD
+        returnedHour: rb.returnedHour ?? '', // HH:mm
         employee: employee?.name ?? '',
-        id: rb.ReaderBookId
+        id: rb.ReaderBookId 
       };
     })
   );
@@ -81,12 +79,16 @@ export const create = async (data) => {
 
     const newReader = await Reader.create(readerData, { transaction });
 
+    const [datePart, timePart] = data.retiredDate.split('T');
+    const retiredDate = datePart;               
+    const retiredHour = timePart + ':00';       
+
     const readerBooks = data.books.map(book => ({
       BookId: book.BookId,
       readerDNI: newReader.dni,
       employeeId: employee.id,
-      retiredDate: data.retiredDate,
-      //returnedDate: '',
+      retiredDate,
+      retiredHour,
       returned: false
     }));
 
@@ -105,7 +107,6 @@ export const create = async (data) => {
     throw err;
   }
 
-  //return await Reader.create(data);
 };
 
 export const update = async (id, updates) => {

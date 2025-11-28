@@ -20,13 +20,22 @@ const ReaderBook = sequelize.define("ReaderBook",
             allowNull: false
         },
         retiredDate: {
-            type: DataTypes.DATE,
+            type: DataTypes.DATEONLY,
             field: 'FechaRetiro',
             allowNull: false
         },
+        retiredHour: {
+            type: DataTypes.TIME,
+            field: 'HoraRetiro',
+            allowNull: false
+        },
         returnedDate: {
-            type: DataTypes.DATE,
+            type: DataTypes.DATEONLY,
             field: 'FechaDevolucion'
+        },
+        returnedHour: {
+            type: DataTypes.TIME,
+            field: 'HoraDevolucion'
         },
         employeeId: {
             type: DataTypes.INTEGER,
