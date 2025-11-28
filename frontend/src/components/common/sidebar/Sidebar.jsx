@@ -12,7 +12,7 @@ import roles from '../../../auth/roles.js';
 export default function Sidebar({ isOpen, onClose }) {
   const location = useLocation();
 
-    const { auth, logout } = useAuth();
+  const { auth, logout } = useAuth();
 
   // Bloquea el scroll cuando el sidebar está abierto
   useEffect(() => {
@@ -42,28 +42,40 @@ export default function Sidebar({ isOpen, onClose }) {
           <h3>
             <strong>Javier Ondicol</strong>
           </h3>
-              {auth.role === roles.admin
-                  ? <h3>Administrador</h3>
-                  : auth.role === roles.user
-                    ? <h3>Usuario</h3>
-                : <h3>Lector</h3>}
-    
-            </div>
+          {auth.role === roles.admin
+            ? <h3>Administrador</h3>
+            : auth.role === roles.user
+              ? <h3>Usuario</h3>
+              : <h3>Lector</h3>}
 
- 
+        </div>
+
+
         <ul className="listsidebar">
-           {(auth.role === roles.admin || auth.role === roles.user) &&  (
-          <li>
-            <div className="iconssidebar">
-              <img src={loan} alt="Prestamos" />
-            </div>
-            <NavLink
-              to="/loans"
-              className={({ isActive }) => (isActive ? 'active-link' : '')}
-            >
-              Prestamos
-            </NavLink>
-          </li>)}
+          {(auth.role === roles.admin || auth.role === roles.user) && (
+            <li>
+              <div className="iconssidebar">
+                <img src={loan} alt="Prestamos" />
+              </div>
+              <NavLink
+                to="/loans"
+                className={({ isActive }) => (isActive ? 'active-link' : '')}
+              >
+                Prestamos
+              </NavLink>
+            </li>)}
+          {(auth.role === roles.admin) && (
+            <li>
+              <div className="iconssidebar">
+                <img src={loan} alt="Lectores" />
+              </div>
+              <NavLink
+                to="/readers"
+                className={({ isActive }) => (isActive ? 'active-link' : '')}
+              >
+                Lectores
+              </NavLink>
+            </li>)}
           <li>
             <div className="iconssidebar">
               <img src={book} alt="Libros" />
@@ -101,32 +113,32 @@ export default function Sidebar({ isOpen, onClose }) {
             </li>
           )}
 
-      {(auth.role === roles.admin || auth.role === roles.user) &&  (
-          <li>
-            <div className="iconssidebar">
-              <img src={fee} alt="Cuotas" />
-            </div>
-            <NavLink
-              to="/fees"
-              className={({ isActive }) => (isActive ? 'active-link' : '')}
-            >
-              Cuotas
-            </NavLink>
-          </li>)}
+          {(auth.role === roles.admin || auth.role === roles.user) && (
+            <li>
+              <div className="iconssidebar">
+                <img src={fee} alt="Cuotas" />
+              </div>
+              <NavLink
+                to="/fees"
+                className={({ isActive }) => (isActive ? 'active-link' : '')}
+              >
+                Cuotas
+              </NavLink>
+            </li>)}
 
 
-  {(auth.role === roles.admin || auth.role === roles.user) &&  (
-          <li>
-            <div className="iconssidebar">
-              <img src={options} alt="Opciones" />
-            </div>
-            <NavLink
-              to="/options"
-              className={({ isActive }) => (isActive ? 'active-link' : '')}
-            >
-              Opciones
-            </NavLink>
-          </li>)}
+          {(auth.role === roles.admin || auth.role === roles.user) && (
+            <li>
+              <div className="iconssidebar">
+                <img src={options} alt="Opciones" />
+              </div>
+              <NavLink
+                to="/options"
+                className={({ isActive }) => (isActive ? 'active-link' : '')}
+              >
+                Opciones
+              </NavLink>
+            </li>)}
         </ul>
       </nav>
     </>

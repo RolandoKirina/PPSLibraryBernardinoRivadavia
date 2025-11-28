@@ -19,6 +19,7 @@ import BookSection from './pages/BookSection/BookSection.jsx';
 import PartnerSection from './pages/PartnerSection/PartnerSection.jsx';
 import AuthorSection from './pages/AuthorSection/AuthorSection.jsx';
 import FeeSection from './pages/FeeSection/FeeSection.jsx';
+import ReaderSection from "./pages/ReaderSection/ReaderSection.jsx";
 import { routePermissions } from "./auth/permissions.js";
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
 
             <Route path='partners' element={<PartnerSection />} />
             <Route path='fees' element={<FeeSection />} />
+            <Route path='readers' element={<ReaderSection />} />
 
           </Route>
 
