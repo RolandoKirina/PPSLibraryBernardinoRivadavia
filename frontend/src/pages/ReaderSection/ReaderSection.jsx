@@ -15,6 +15,7 @@ import { readerDetailsInfo } from '../../data/showdetails/LoanDetails';
 import { loanDetailsInfo } from '../../data/showdetails/LoanDetails';
 import GenericForm from '../../components/generic/GenericForm/GenericForm';
 import { readerFields } from '../../data/forms/LoanForms';
+import ReaderFilter from '../../components/filter/readerfilter/ReaderFilter';
 
 export default function ReaderSection() {
     const [filters, setFilters] = useState({});
@@ -202,7 +203,7 @@ export default function ReaderSection() {
 
     return (
         <>
-            <GenericSection title={'Listado de Lectores en sala'} columns={columns} data={items} popups={readerPopups} actions={
+            <GenericSection title={'Listado de Lectores en sala'} columns={columns} data={items} popups={readerPopups} filters={<ReaderFilter onFilterChange={setFilters} />} actions={
                 <Btn text={'Agregar'} onClick={() => setAddPopup(true)} variant={'primary'} />
             } />
         </>

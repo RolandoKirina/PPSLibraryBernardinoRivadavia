@@ -58,8 +58,7 @@ export default function ReaderForm({ method, createReaderItem, loanSelected }) {
     getBooks();
 
     if (method === 'update' && loanSelected?.dni) {
-      console.log("ssss");
-      console.log(loanSelected);
+
       const fetchAllBooksFromLoan = async () => {
         const loanSelectedId = loanSelected.loanId;
         const booksFromLoan = await getBooks(loanSelectedId);
@@ -106,7 +105,6 @@ export default function ReaderForm({ method, createReaderItem, loanSelected }) {
       books: loanData.books
     };
 
-    console.log(newLoan);
     createReaderItem(newLoan);
   }
 
@@ -171,7 +169,6 @@ export default function ReaderForm({ method, createReaderItem, loanSelected }) {
 
     if (!loanData.books || loanData.books.length === 0) {
       setValidateError('Debe agregar al menos un libro antes de guardar el préstamo.');
-      console.log(validateError);
       return false;
     }
 
@@ -277,7 +274,6 @@ export default function ReaderForm({ method, createReaderItem, loanSelected }) {
                     setConfirmReturnPopup(true);
                     setSelectedBook(row);
                     returnLoanBook(row);
-                    console.log(row)
                   }}
                 >
                   <img src={ReturnIcon} alt="Devolver" />
@@ -299,8 +295,6 @@ export default function ReaderForm({ method, createReaderItem, loanSelected }) {
                     setConfirmRenewePopup(true);
                     setSelectedBook(row);
                     reneweLoanBook(row);
-                    console.log(row)
-
                   }}
                 >
                   <img src={ReneweIcon} alt="Renovar" />

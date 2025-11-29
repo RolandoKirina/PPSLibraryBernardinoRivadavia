@@ -1,9 +1,11 @@
 import * as ReaderService from '../../services/reader/ReaderService.js';
 import { HTTP_STATUS } from '../../https/httpsStatus.js';
+import { buildReaderFilters } from '../../utils/buildReaderFilters.js';
 
 export const getAllReaders = async (req, res) => {
     try {
-        const result = await ReaderService.getAllReaders();
+        const queryOptions = buildReaderFilters(req.query);
+        const result = await ReaderService.getAllReaders(queryOptions);
         res.status(HTTP_STATUS.OK.code).send(result);
     } catch (error) {
         console.error(error);
