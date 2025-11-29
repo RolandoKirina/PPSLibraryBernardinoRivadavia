@@ -1,7 +1,7 @@
 import DeleteIcon from '../../assets/img/delete-icon.svg';
 import EditIcon from '../../assets/img/edit-icon.svg';
 import DetailsIcon from '../../assets/img/details-icon.svg';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import BookFilter from '../../components/filter/bookfilter/BookFilter.jsx';
 import './BookSection.css';
 import PopUpDelete from '../../components/common/deletebtnComponent/PopUpDelete.jsx';
@@ -23,7 +23,6 @@ import LostBooks from '../../components/book-components/lostbooks/LostBooks.jsx'
 import BookRanking from '../../components/book-components/bookranking/BookRanking.jsx';
 import { useAuth } from '../../auth/AuthContext';
 import roles from '../../auth/roles';
-import { useEffect } from 'react';
 const BookSection = () => {
  
   const { auth } = useAuth();
@@ -59,19 +58,7 @@ const { items, getItems, getItem, createItem, updateItem, deleteItem } =
   };
 
 
-    useEffect(() => {
-    if (!partnerNumber) return;
 
-    const countPaidFees = async () => {
-      const response = await fetch(`/api/fees?partnerNumber=${partnerNumber}&unpaidfees=false`);
-      const data = await response.json();
-
-      const count = data?.length || 0;
-      setPaidFeeCount(count);
-    };
-
-    countPaidFees();
-  }, [partnerNumber]);
 
   useEffect(() => {
       const filters = Object.fromEntries(

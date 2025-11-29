@@ -27,10 +27,9 @@ export const getRanking = async (filters) => {
 }
 
 export const getLostBooks = async (filters) => {
-    let ranking = await BookRepository.getLostBooks(filters);
-    return ranking;
-}
-
+    const lostBooks = await BookRepository.getLostBooks(filters);
+    return lostBooks;
+};
 
 export const getBook = async (id) => {
     return await BookRepository.getById(id);

@@ -119,7 +119,6 @@ const Partner = sequelize.define("Partner",
         type: DataTypes.STRING(255),
         field: "Observaciones"
     },
-  
     workLocationId: {
         type: DataTypes.INTEGER,
         field: "IdLocal_trab"

@@ -283,3 +283,40 @@ export const remove = async (id) => {
     data: book
   }
 }
+
+
+export const getLostBooks = async ({ whereBooks, order, limit, offset }) => {
+  try {
+    const lostBooks = await Book.findAll({
+      where: whereBooks,
+      include: [
+        {
+          model: LoanBook,
+          as: "BookLoans",
+          include: [
+            {
+              model: Loan,
+              as: "Loan",
+              
+              include: [
+                {
+                  model: Partner,
+                  as: "Partner",
+                  attributes: ["name", "surname"],                }
+              ]
+            }
+          ]
+        }
+      ],
+      order,
+      limit,
+      offset
+    });
+
+    return lostBooks;
+
+  } catch (error) {
+    console.error("🔥 Error en getLostBooks Repository:", error);
+    throw error;
+  }
+};
