@@ -146,3 +146,17 @@ export const editPendingQuoteFields = [
   }
 ];
 
+
+
+export const readerFields = [
+  {
+    label: 'Fecha de Devolución',
+    name: 'returnedDate',
+    type: 'datetime-local'
+  },
+  {
+    label: 'Fecha de Retiro',
+    name: 'retiredDate',
+    type: 'datetime-local'
+  }
+];

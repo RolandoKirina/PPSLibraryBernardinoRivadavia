@@ -1,4 +1,4 @@
-import * as ReaderRepository from '../../repositories/partner/ReaderRepository.js';
+import * as ReaderRepository from '../../repositories/reader/ReaderRepository.js';
 
 export const getAllReaders = async () => {
     return await ReaderRepository.getAll();

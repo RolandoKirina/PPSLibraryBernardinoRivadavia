@@ -1,23 +1,5 @@
 export const loanDetailsInfo = [
   {
-    id: 2,
-    title: 'Lector',
-    active: false,
-    rows: [
-      [
-        { label: 'Nombre', value: 'información', attribute: 'partnerName' },
-        { label: 'DNI', value: 'información', attribute: 'partnerDni' } // Este campo no está en mockLoans actualmente
-      ],
-      [
-        { label: 'Número de Socio', value: 'información', attribute: 'partnerNumber' },
-        { label: 'Teléfono', value: 'información', attribute: 'homePhone' }
-      ],
-      [
-        { label: 'Dirección', value: 'información', attribute: 'homeAddress' }
-      ]
-    ]
-  },
-  {
     id: 3,
     title: 'Datos del socio',
     active: false,
@@ -179,6 +161,42 @@ export const reneweDetails = [
   }
 ];
 
-
-
+export const readerDetailsInfo = [
+  {
+    id: 2,
+    title: 'Lector',
+    active: false,
+    rows: [
+      [
+        { label: 'Nombre', value: 'información', attribute: 'name' },
+        { label: 'DNI', value: 'información', attribute: 'dni' } // Este campo no está en mockLoans actualmente
+      ]
+    ]
+  },
+  {
+    id: 4,
+    title: 'Fechas del préstamo',
+    active: false,
+    rows: [
+      [
+        { label: 'Fecha de retiro', value: 'información', attribute: 'retiredDate' },
+        { label: 'Hora de Retiro', value: 'información', attribute: 'retiredHour' },
+      ],
+      [
+        { label: 'Fecha de devolucion', value: 'información', attribute: 'returnedDate' },
+        { label: 'Hora de devolución', value: 'información', attribute: 'returnedHour' },
+      ]
+    ]
+  },
+  {
+    id: 5,
+    title: 'Empleado responsable',
+    active: false,
+    rows: [
+      [
+        { label: 'Empleado', value: 'información', attribute: 'employee' }
+      ]
+    ]
+  }
+];
 

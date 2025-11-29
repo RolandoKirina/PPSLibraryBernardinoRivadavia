@@ -384,9 +384,6 @@ export const getPartnerPrintList = async () => {
   return Object.values(partnerMap);
 };
 
-
-
-
 export const create = async (loan) => {
   if (!loan.books || loan.books.length === 0) {
     throw new Error("No se puede crear un préstamo sin libros");

@@ -40,7 +40,8 @@ import PartnerCategory from './partner/partnerCategory.js';
 // import TypeDocument from './partner/typeDocument.js';
 
 import statePartner from './partner/statePartner.js';
-import Reader from './partner/reader.js';
+import Reader from './reader/reader.js';
+import ReaderBook from './reader/ReaderBook.js';
 import reasonForWithDrawal from './partner/reasonForWithdrawal.js';
 import typeDocument from './partner/TypeDocument.js';
 
@@ -71,6 +72,7 @@ const models = {
   Partner,
   statePartner,
   Reader,
+  ReaderBook,
   reasonForWithDrawal,
   typeDocument
 };

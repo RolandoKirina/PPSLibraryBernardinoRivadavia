@@ -10,7 +10,8 @@ const Reader = sequelize.define("Reader",
     },
     name: {
         type: DataTypes.STRING(100),
-        field: "Nombre"
+        field: "Nombre",
+        allowNull: false
     }
 },
 {
