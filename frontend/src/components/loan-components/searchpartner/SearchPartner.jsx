@@ -46,10 +46,6 @@ export default function SearchPartner({ onFilterChange, method, menu, onDataChan
               <label>Nombre completo <span className='required'>*</span></label>
               <p>{partnerData.partnerName ?? '—'}</p>
             </div>
-            <div className='input'>
-              <label>Búsqueda por Memo</label>
-              <p>{partnerData.memoSearch ?? '—'}</p>
-            </div>
           </>
         ) : (
           <>
@@ -80,15 +76,6 @@ export default function SearchPartner({ onFilterChange, method, menu, onDataChan
                   ? `${foundPartner.name} ${foundPartner.surname}`
                   : partnerData.partnerName ?? '—'}
               </p>
-            </div>
-            <div className='input'>
-              <label>Búsqueda por Memo</label>
-              <input
-                type='text'
-                name='memoSearch'
-                value={partnerData.memoSearch ?? ''}
-                onChange={handleChange}
-              />
             </div>
           </>
         )}
