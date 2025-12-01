@@ -404,7 +404,7 @@ export const create = async (loan) => {
       throw new Error("Socio no existe");
     }
 
-    const loanType = await LoanTypeRepository.getOneByDescription(loan.loanType);
+    const loanType = await LoanTypeRepository.getOneByDescription("retired");
 
     const loanData = {
       partnerId: partner.id,

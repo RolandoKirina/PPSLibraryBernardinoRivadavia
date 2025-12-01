@@ -197,6 +197,17 @@ export const readerDetailsInfo = [
         { label: 'Empleado', value: 'información', attribute: 'employee' }
       ]
     ]
+  },
+    {
+    id: 6,
+    title: 'Libro',
+    active: false,
+    rows: [
+      [
+        { label: 'Titulo de libro', value: 'información', attribute: 'bookTitle' },
+        { label: 'Codigo de libro', value: 'información', attribute: 'bookCode' }
+      ]
+    ]
   }
 ];
 
