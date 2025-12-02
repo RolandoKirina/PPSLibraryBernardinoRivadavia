@@ -37,7 +37,7 @@ export const buildLoanFilters = (query) => {
     if (state === 'returned') {
       // préstamos devueltos
       whereLoanBook.returnedDate = { [Op.ne]: null };
-    } else if (state === 'active') {
+    } else if (state === 'current') {
       // préstamos activos (sin devolver)
       whereLoanBook.returnedDate = { [Op.is]: null };
     }

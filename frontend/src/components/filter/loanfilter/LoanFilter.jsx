@@ -14,7 +14,6 @@ export default function LoanFilter({ onFilterChange }) {
   } = useEntityManagerAPI("book-types");
 
   const [formData, setFormData] = useState({
-    type: '',
     state: '',
     materialType: '',
     selectedMaterial: '',
@@ -55,22 +54,6 @@ export default function LoanFilter({ onFilterChange }) {
         <form>
           <div className="loan-filter-title">
             <h3>Filtro de préstamos</h3>
-          </div>
-
-          <div className="loan-form-checkbox-group">
-            <h4>Tipo de préstamos</h4>
-            {['in_room', 'retired', 'all'].map((val) => (
-              <label key={val}>
-                <input
-                  type="radio"
-                  name="type"
-                  value={val}
-                  checked={formData.type === val}
-                  onChange={handleChange}
-                />
-                {val === 'in_room' ? 'En sala' : val === 'retired' ? 'Retirado' : 'Todos'}
-              </label>
-            ))}
           </div>
 
           <div className="loan-form-checkbox-group">
