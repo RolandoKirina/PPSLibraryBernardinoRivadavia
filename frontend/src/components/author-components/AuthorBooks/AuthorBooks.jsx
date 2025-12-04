@@ -16,7 +16,7 @@ import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI.js';
 import { addBookPositionFields } from '../../../data/forms/AuthorForms.js';
 import GenericForm from '../../generic/GenericForm/GenericForm.jsx';
 
-export default function AuthorBooks({ authorSelected, method, createAuthorItem }) {
+export default function AuthorBooks({ authorSelected, method, createAuthorItem, errorMessage }) {
     const { auth } = useAuth();
     const [seeAllButton, setSeeAllButton] = useState('Todos');
     const [confirmPopup, setConfirmPopup] = useState(false);
@@ -33,6 +33,8 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem }
     const [books, setBooks] = useState([]);
     const [book, setBook] = useState({});
     const [allAuthorBooks, setAllAuthorBooks] = useState([]);
+
+    //const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
         getBooks();
@@ -337,7 +339,12 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem }
                                         <p className='readonly-field'>{authorSelected.nationality}</p>
                                     )}
                                 </div>
+
                             </div>
+                            
+                                 {errorMessage && (
+                                    <p className="error-message">{errorMessage}</p>
+                                )}
                             <div className='author-books-title'>
                                 <h3>Libros de este autor</h3>
                             </div>

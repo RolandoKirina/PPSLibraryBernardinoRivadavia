@@ -16,6 +16,7 @@ export default function PartnerCategorySection() {
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
     const [selected, setSelected] = useState(null);
+    const [errorMessage, setErrorMessage] = useState(false);
 
     const {
         items,
@@ -26,19 +27,41 @@ export default function PartnerCategorySection() {
         updateItem
     } = useEntityManagerAPI("partner-categories");
 
-    function handleAddItem(data) {
-        createItem(data);
-        setAddPopup(false);
+    async function handleAddItem(data) {
+        try {
+            await createItem(data);
+
+            await getItems();
+
+            setAddPopup(false);
+
+            setErrorMessage(null);
+        }
+        catch(error) {
+            setErrorMessage(error.message);
+            console.error("Error al crear una categoria de socio:", error);
+        }
     }
 
-    function handleEditItem(data) {
-        updateItem(selected.idCategory, data);
-        setEditPopup(false);
+    async function handleEditItem(data) {
+        try {
+            await updateItem(selected.idCategory, data);
+
+            await getItems();
+
+            setEditPopup(false);
+
+            setErrorMessage(null);
+        }
+        catch(error) {
+            setErrorMessage(error.message);
+            console.error("Error al actualizar una categoria de socio:", error);
+        }
     }
 
     useEffect(() => {
         getItems();
-    }, [items]);
+    }, []);
 
     const authorsPopups = [
         {
@@ -59,16 +82,22 @@ export default function PartnerCategorySection() {
             key: 'editPopup',
             title: 'Editar categoria de socio',
             className: '',
-            content: <GenericForm fields={partnerCategoryFields} onSubmit={(data) => handleEditItem(data)} />,
-            close: () => setEditPopup(false),
+            content: <GenericForm fields={partnerCategoryFields} onSubmit={(data) => handleEditItem(data)} error={errorMessage} />,
+            close: () => {
+                setEditPopup(false)
+                setErrorMessage(null)
+            },
             condition: editPopup
         },
         {
             key: 'addPopup',
             title: 'Agregar categoria de socio',
             className: '',
-            content: <GenericForm fields={partnerCategoryFields} onSubmit={(data) => handleAddItem(data)} />,
-            close: () => setAddPopup(false),
+            content: <GenericForm fields={partnerCategoryFields} onSubmit={(data) => handleAddItem(data)} error={errorMessage} />,
+            close: () => {
+                setAddPopup(false)
+                setErrorMessage(null)
+            },
             condition: addPopup
         }
     ];

@@ -37,8 +37,16 @@ export const createRemoveReason = async (req, res) => {
         const result = await RemoveReasonService.createRemoveReason(data);
         res.status(HTTP_STATUS.CREATED.code).send(result);
     } catch (error) {
-        console.error(error);
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+
+        if (error.message && error.message.includes("campo")) {
+            return res
+                .status(HTTP_STATUS.BAD_REQUEST.code)
+                .json({ msg: error.message });
+        }
+
+        return res
+            .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
+            .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
 };
 
@@ -54,8 +62,16 @@ export const updateRemoveReason = async (req, res) => {
         const result = await RemoveReasonService.updateRemoveReason(id, updates);
         res.status(HTTP_STATUS.OK.code).send(result);
     } catch (error) {
-        console.error(error);
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+
+        if (error.message && error.message.includes("campo")) {
+            return res
+                .status(HTTP_STATUS.BAD_REQUEST.code)
+                .json({ msg: error.message });
+        }
+        
+        return res
+            .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
+            .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
 };
 

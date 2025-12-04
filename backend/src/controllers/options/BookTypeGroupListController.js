@@ -38,7 +38,17 @@ export const createBookTypeGroupList = async (req, res) => {
         res.status(HTTP_STATUS.CREATED.code).send(result);
     } catch (error) {
         console.error(error);
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+
+        if (error.message && error.message.includes("campos")) {
+            return res
+                .status(HTTP_STATUS.BAD_REQUEST.code)
+                .json({ msg: error.message });
+        }
+
+        // Si es otro error desconocido → 500
+        return res
+            .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
+            .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
 };
 
@@ -55,7 +65,16 @@ export const updateBookTypeGroupList = async (req, res) => {
         res.status(HTTP_STATUS.OK.code).send(result);
     } catch (error) {
         console.error(error);
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+
+        if (error.message && error.message.includes("campo")) {
+            return res
+                .status(HTTP_STATUS.BAD_REQUEST.code)
+                .json({ msg: error.message });
+        }
+
+        return res
+            .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
+            .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
 };
 

@@ -20,9 +20,10 @@ export const alreadyExists = async (BookTypeGroupListId, bookTypeId) => {
     return existingBookTypeGroup[0];
 };
 
-export const create = async (data) => {
-    return await BookTypeGroup.create(data);
+export const create = async (data, transaction) => {
+    return await BookTypeGroup.create(data, { transaction });
 };
+
 
 export const update = async (id, updates) => {
     await BookTypeGroup.update(updates, { where: { id } });

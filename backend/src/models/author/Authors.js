@@ -11,11 +11,13 @@ const Authors = sequelize.define("Authors",
         },
         name: {
             type: DataTypes.STRING(100),
-            field: 'Nombre'
+            field: 'Nombre',
+            allowNull: false
         },
         nationality: {
             type: DataTypes.STRING(50),
-            field: 'Nacionalidad'
+            field: 'Nacionalidad',
+            allowNull: false
         }
     },
     {

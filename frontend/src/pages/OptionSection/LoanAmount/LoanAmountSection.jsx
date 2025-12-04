@@ -25,6 +25,7 @@ export default function LoanAmountSection() {
         updateItem
     } = useEntityManagerAPI("book-type-groups-list");
 
+
     const {
         items: bookTypes,
         getItems: getBookTypes,
@@ -39,7 +40,7 @@ export default function LoanAmountSection() {
     useEffect(() => {
         getGroupItem(); // solo dispara la carga
         getBookTypes();
-    }, [groupItems]);
+    }, []);
 
     // useEffect(() => {
     //     if (groupItems.length > 0) {
@@ -48,16 +49,6 @@ export default function LoanAmountSection() {
     //     }
     // }, [groupItems]);
 
-
-    function getAllBookTypes() {
-        return groupItems.map(group => ({
-            group: group.group,
-            maxAmount: group.maxAmount,
-            bookTypes: Array.isArray(group.BookTypeGroups)
-                ? group.BookTypeGroups.map(btGroup => btGroup.BookType)
-                : []
-        }));
-    }
 
     const loanMaterialsPopups = [
         {
@@ -68,7 +59,7 @@ export default function LoanAmountSection() {
                 title="Grupo de tipo de material"
                 onConfirm={() => deleteItem(selected.bookTypeGroupListId)}
                 closePopup={() => setDeletePopup(false)}
-                refresh={() => getItems()}
+                refresh={() => getGroupItem()}
             />,
             close: () => setDeletePopup(false),
             condition: deletePopup,
@@ -78,7 +69,7 @@ export default function LoanAmountSection() {
             key: 'editPopup',
             title: 'Editar Grupo de tipo de material',
             className: 'add-material-group-background',
-            content: <AddMaterialGroup method={'update'} createItem={createItem} updateGroupItem={updateItem} items={bookTypes} itemSelected={selected} closePopup={() => setEditPopup(false)} />,
+            content: <AddMaterialGroup method={'update'} createItem={createItem} updateGroupItem={updateItem} getItems={getGroupItem} items={bookTypes} itemSelected={selected} closePopup={() => setEditPopup(false)} />,
             close: () => setEditPopup(false),
             condition: editPopup
         },
@@ -88,7 +79,7 @@ export default function LoanAmountSection() {
             className: 'add-material-group-background',
             content:
                 <>
-                    <AddMaterialGroup method={'add'} createGroupItem={createItem} updateGroupItem={updateItem} items={bookTypes} closePopup={() => setAddPopup(false)} />
+                    <AddMaterialGroup method={'add'} createGroupItem={createItem} updateGroupItem={updateItem} getItems={getGroupItem} items={bookTypes} closePopup={() => setAddPopup(false)} />
                     {/* <AddMaterialGroup method={'add'} createItem={createItem} updateItem={updateItem} getItemGroup={getGroupItem} getMaterialItem={getMaterialItem} items={materialsItems} />  */}
                 </>,
             close: () => setAddPopup(false),

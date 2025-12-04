@@ -60,6 +60,11 @@ export const updateBookTypeGroup = async (req, res) => {
         res.status(HTTP_STATUS.OK.code).send(result);
     } catch (error) {
         console.error(error);
+
+        if (error.original && error.original.message) {
+            return res.status(HTTP_STATUS.BAD_REQUEST.code).json({ msg: error.original.message });
+        }
+
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
 };

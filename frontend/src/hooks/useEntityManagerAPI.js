@@ -45,30 +45,60 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
   
 
 
-  const createItem = async (newItem) => {
-
+const createItem = async (newItem) => {
     const res = await fetch(`${baseUrl}/${entityName}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newItem)
     });
-    if (!res.ok) throw new Error("Error al crear");
-    const created = await res.json();
-    setItems((prev) => [...prev, created]);
-    return created;
-  };
 
-  const updateItem = async (id, updatedData) => {
-    const res = await fetch(`${baseUrl}/${entityName}/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedData)
-    });
-    if (!res.ok) throw new Error("Error al actualizar");
-    const updated = await res.json();
-    setItems((prev) => prev.map((item) => (item.id === id ? updated : item)));
-    return updated;
-  };
+    const data = await res.json(); 
+
+    if (!res.ok) {
+        throw new Error(data.msg || "Error al crear");
+    }
+
+    setItems(prev => [...prev, data]);
+    return data;
+};
+
+
+const updateItem = async (id, updatedData) => {
+  const res = await fetch(`${baseUrl}/${entityName}/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updatedData)
+  });
+
+  let data;
+  try {
+    data = await res.json();
+  } catch {
+    data = null;
+  }
+
+  if (!res.ok) {
+    console.log(data.msg);
+    console.log(data.msg);
+    console.log(data.msg);
+    console.log(data.msg);
+    console.log(data.msg);
+    console.log(data.msg);
+    const errorMsg =
+      data?.msg ||
+      data?.message ||
+      "Error al actualizar";
+
+    throw new Error(errorMsg);
+  }
+
+  setItems(prev =>
+    prev.map(item => (item.id === id ? data : item))
+  );
+
+  return data;
+};
+
 
   const deleteItem = async (id) => {
     const res = await fetch(`${baseUrl}/${entityName}/${id}`, {

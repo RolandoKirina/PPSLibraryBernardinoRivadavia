@@ -22,6 +22,7 @@ export default function RemovePartnerReasonSection({ chooseMode }) {
     const [choosePopup, setChoosePopup] = useState(false);
     const [confirmPopup, setConfirmPopup] = useState(false);
     const [selected, setSelected] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(false);
 
     const {
         items,
@@ -33,17 +34,38 @@ export default function RemovePartnerReasonSection({ chooseMode }) {
 
     useEffect(() => {
         getItems(); 
-    }, [items]);
+    }, []);
 
-    function handleAddItem(data) {
-        console.log(data);
-        createItem(data);
-        setAddPopup(false);
+    async function handleAddItem(data) {
+        try {
+            await createItem(data);
+
+            await getItems();
+
+            setAddPopup(false);
+
+            setErrorMessage(null);
+        }
+        catch(error) {
+            setErrorMessage(error.message);
+            console.error("Error al crear un motivo de baja:", error);
+        }
     }
 
-    function handleEditItem(data) {
-        updateItem(selected.id, data);
-        setEditPopup(false);
+    async function handleEditItem(data) {
+        try {
+            await updateItem(selected.id, data);
+
+            await getItems();
+
+            setEditPopup(false);
+
+            setErrorMessage(null);
+        }
+        catch(error) {
+            setErrorMessage(error.message);
+            console.error("Error al editar un motivo de baja:", error);
+        }
     }
 
 
@@ -68,16 +90,25 @@ export default function RemovePartnerReasonSection({ chooseMode }) {
             key: 'editPopup',
             title: 'Editar motivo para dar de baja',
             className: '',
-            content: <GenericForm fields={removePartnerReasonForms} onSubmit={(data) => handleEditItem(data)} />,
-            close: () => setEditPopup(false),
+            content: <GenericForm fields={removePartnerReasonForms} onSubmit={(data) => handleEditItem(data)} error={errorMessage} />,
+            close: () => {
+                setEditPopup(false)
+                setErrorMessage(null)
+            },
             condition: editPopup
         },
         {
             key: 'addPopup',
             title: 'Agregar motivo para dar de baja',
             className: 'remove-parner-form-size',
-            content: <GenericForm fields={removePartnerReasonForms} onSubmit={(data) => handleAddItem(data)} />,
-            close: () => setAddPopup(false),
+            content: <GenericForm fields={removePartnerReasonForms} onSubmit={(data) => {
+                handleAddItem(data)
+
+            }}  error={errorMessage} />,
+            close: () => {
+                setAddPopup(false)
+                setErrorMessage(null)
+            },
             condition: addPopup
         }
     ];

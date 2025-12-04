@@ -5,8 +5,6 @@ export const getAll = async (filters) => {
         whereEmployee
     } = filters;
 
-    console.log("work");
-
     return await Employees.findAll(
         { 
             where: whereEmployee
@@ -31,10 +29,20 @@ export const getOneByCode = async (code) => {
 };
 
 export const create = async (data) => {
+
+    if (!data || !data.name || data.name.trim() === "") {
+        throw new Error("El campo Nombre completo no puede estar vacío");
+    }
+
+
     return await Employees.create(data);
 };
 
 export const update = async (id, updates) => {
+    if (!updates || !updates.name || updates.name.trim() === "") {
+        throw new Error("El campo Nombre completo no puede estar vacío");
+    }
+
     await Employees.update(updates, { where: { id } });
     return await Employees.findByPk(id);
 };

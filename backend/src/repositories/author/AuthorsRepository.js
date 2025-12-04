@@ -4,6 +4,8 @@ import BookAuthor from '../../models/author/BookAuthor.js';
 import Book from '../../models/book/Book.js';
 import Loan from '../../models/loan/Loan.js';
 import LoanBook from '../../models/loan/LoanBook.js';
+import sequelize from '../../configs/database.js';
+import * as BookAuthorRepository from '../author/BookAuthorRepository.js';
 
 export const getAll = async (filters) => {
     const {
@@ -95,18 +97,103 @@ export const getOne = async (id) => {
     return await Authors.findByPk(id);
 };
 
+// export const create = async (author) => {
+//     if (!author.name.trim() || !author.nationality.trim()) {
+//     throw new Error("Los campos Nombre y Nacionalidad no pueden estar vacíos");
+//     }
+//     return await Authors.create(author);
+// };
+
 export const create = async (author) => {
-    return await Authors.create(author);
+    if (!author.name.trim() || !author.nationality.trim()) {
+    throw new Error("Los campos Nombre y Nacionalidad no pueden estar vacíos");
+    }
+
+    const transaction = await sequelize.transaction();
+
+    try {
+        const authorData = {
+            name: author.name,
+            nationality: author.nationality
+        }
+
+        const newAuthor = await Authors.create(authorData, { transaction });
+
+        const newAuthorId = newAuthor.dataValues.id;
+
+        const authorBooks = author.books.map(book => ({
+            BookId: book.BookId,
+            bookCode: book.codeInventory,
+            authorCode: newAuthorId,
+            authorName: author.name,
+            position: book.position
+        }));
+
+        await Promise.all(
+            authorBooks.map(authorBook => BookAuthorRepository.create(authorBook, transaction))
+        );
+
+        await transaction.commit();
+
+        return {
+        msg: "Author creado correctamente",
+        authorId: newAuthorId,
+        };
+
+    }
+    catch(err) {
+        await transaction.rollback();
+        throw err;
+    }
+
+
 };
 
 // A diferencia de patch, los updates deben tener todos los campos de la entidad
 export const update = async (id, updates) => {
+    if (!updates.name.trim() || !updates.nationality.trim()) {
+    throw new Error("Los campos Nombre y Nacionalidad no pueden estar vacíos");
+    }
 
-    await Authors.update(updates, {
-        where: { id: id }
-    });
+    const transaction = await sequelize.transaction();
 
-    return await Authors.findByPk(id);
+    try {
+        await Authors.update(updates, {
+            where: { id: id }, transaction
+        });
+
+        await BookAuthor.destroy({
+            where: { authorCode: id },
+            transaction
+        });
+
+        const newAssociations = updates.books.map(book => ({
+            BookId: book.BookId,
+            bookCode: book.codeInventory,
+            authorCode: id,
+            authorName: updates.name,
+            position: book.position
+        }));
+
+        await Promise.all(
+            newAssociations.map(assoc =>
+                BookAuthorRepository.create(assoc, transaction)
+            )
+        );
+
+        await transaction.commit();
+
+        return {
+            msg: "Autor actualizado correctamente",
+            updatedId: id
+        };
+
+    } catch (err) {
+        await transaction.rollback();
+        throw err;
+    }
+
+
 };
 
 export const remove = async (id) => {

@@ -1,6 +1,8 @@
 import BookTypeGroupList from '../../models/options/BookTypeGroupList.js';
 import BookTypeGroup from '../../models/options/BookTypeGroup.js';
 import BookType from '../../models/options/BookType.js';
+import sequelize from '../../configs/database.js';
+import * as BookTypeGroupRepository from '../../repositories/options/BookTypeGroupRepository.js';
 
 export const getAll = async () => {
     return await BookTypeGroupList.findAll({
@@ -27,13 +29,106 @@ export const getOne = async (id) => {
 };
 
 export const create = async (data) => {
-    return await BookTypeGroupList.create(data);
+    if (!data.group.trim() || !data.maxAmount.trim()) {
+        console.log("sss");
+        throw new Error("Los campos grupo y cantidad no pueden estar vacíos");
+    }
+    //console.log(data);
+    const transaction = await sequelize.transaction();
+
+    try {
+        const groupData = {
+            group: data.group,
+            maxAmount: data.maxAmount
+        };
+
+        const newBookTypeGroupList = await BookTypeGroupList.create(groupData, { transaction });
+        
+        const newBookTypeGroupListId = newBookTypeGroupList.dataValues.bookTypeGroupListId;
+
+        const bookTypeGroups = data.bookTypes.map(bookTypeId => ({
+            BookTypeGroupListId: newBookTypeGroupListId,
+            bookTypeId: bookTypeId
+        }))
+        //console.log(bookTypeGroups);
+        console.log(newBookTypeGroupList);
+
+        await Promise.all(
+            bookTypeGroups.map(bookTypeGroup => BookTypeGroupRepository.create(bookTypeGroup, transaction))
+        );
+    
+        await transaction.commit();
+
+        return {
+        msg: "Grupo de material creado correctamente",
+        newBookTypeGroupListId: newBookTypeGroupListId,
+        };
+    }
+    catch(err) {
+        await transaction.rollback();
+        throw err;
+    }
+
+
 };
 
 export const update = async (id, updates) => {
-    await BookTypeGroupList.update(updates, { where: { bookTypeGroupListId: id } });
-    return await BookTypeGroupList.findByPk(id);
+    if (!updates.group?.trim()) {
+        throw new Error("El campo grupo no puede estar vacío");
+    }
+
+    if (isNaN(updates.maxAmount) || updates.maxAmount <= 0) {
+        throw new Error("El campo cantidad debe ser un número válido");
+    }
+
+    const transaction = await sequelize.transaction();
+
+    try {
+        // 1) Actualizar el grupo principal
+        await BookTypeGroupList.update(
+            {
+                group: updates.group,
+                maxAmount: updates.maxAmount
+            },
+            {
+                where: { bookTypeGroupListId: id },
+                transaction
+            }
+        );
+
+        // 2) Eliminar los registros anteriores en TipoLibroGrupo
+        await BookTypeGroup.destroy({
+            where: { BookTypeGroupListId: id },
+            transaction
+        });
+
+        // 3) Insertar los nuevos BookTypes asociados
+        const newAssociations = updates.bookTypes.map(bookTypeId => ({
+            BookTypeGroupListId: id,
+            bookTypeId: bookTypeId
+        }));
+
+        await Promise.all(
+            newAssociations.map(assoc =>
+                BookTypeGroupRepository.create(assoc, transaction)
+            )
+        );
+
+        // 4) Confirmar cambios
+        await transaction.commit();
+
+        // 5) Retornar un mensaje coherente
+        return {
+            msg: "Grupo de material actualizado correctamente",
+            updatedId: id
+        };
+
+    } catch (err) {
+        await transaction.rollback();
+        throw err;
+    }
 };
+
 
 export const remove = async (id) =>{
     const bookTypeGroupList = await BookTypeGroupList.findByPk(id);

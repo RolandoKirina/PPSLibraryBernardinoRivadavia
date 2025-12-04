@@ -9,7 +9,7 @@ export const partnerCategoryFields = [
     {
         label: 'Importe',
         name: 'amount',
-        type: 'text',
+        type: 'number',
         required: true
     }
 ];
