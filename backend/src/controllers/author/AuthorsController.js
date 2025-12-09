@@ -1,6 +1,7 @@
 import * as AuthorsService from '../../services/author/AuthorsService.js';
 import { HTTP_STATUS } from '../../https/httpsStatus.js';
 import { buildAuthorFilters } from '../../utils/buildAuthorFilters.js';
+import { ValidationError } from '../../utils/errors/ValidationError.js';
 
 export const getAllAuthors = async (req, res) => {
     try {
@@ -66,16 +67,15 @@ export const createAuthor = async (req, res) => {
             .json(newAuthor);
 
     } catch (error) {
-        console.error(error);
 
-        // Si hay mensaje del servicio → error de validación
-        if (error.message && error.message.includes("campos")) {
+        if (error instanceof ValidationError) {
             return res
                 .status(HTTP_STATUS.BAD_REQUEST.code)
                 .json({ msg: error.message });
         }
 
-        // Si es otro error desconocido → 500
+        console.error("Server error:", error);
+
         return res
             .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
             .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });

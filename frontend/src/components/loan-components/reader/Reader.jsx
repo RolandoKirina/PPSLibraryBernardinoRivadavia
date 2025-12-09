@@ -43,11 +43,12 @@ export default function Reader({ loanType, onDataChange, readerData }) {
         <div className='input'>
           <label>Nombre completo<span className='required'>*</span></label>
 
-          <p>
-            {foundReader
-              ? `${foundReader.name}`
-              : readerData.readerName ?? '—'}
-          </p>
+          <input
+            type='text'
+            name='readerName'
+            value={readerData.readerName ?? ''}
+            onChange={handleChange}
+          />
         </div>
 
       </div>

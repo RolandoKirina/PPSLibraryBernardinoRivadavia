@@ -1,6 +1,7 @@
 import * as EmployeesService from '../../services/options/EmployeesService.js';
 import { HTTP_STATUS } from '../../https/httpsStatus.js';
 import { buildEmployeeFilters } from '../../utils/buildEmployeeFilters.js';
+import { ValidationError } from '../../utils/errors/ValidationError.js';
 
 export const getAllEmployees = async (req, res) => {
     try {
@@ -42,11 +43,13 @@ export const createEmployee = async (req, res) => {
         res.status(HTTP_STATUS.CREATED.code).send(result);
     } catch (error) {
 
-        if (error.message && error.message.includes("campo")) {
+        if (error instanceof ValidationError) {
             return res
                 .status(HTTP_STATUS.BAD_REQUEST.code)
                 .json({ msg: error.message });
         }
+
+        console.error("Server error:", error);
 
         return res
             .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
@@ -66,13 +69,14 @@ export const updateEmployee = async (req, res) => {
         const result = await EmployeesService.updateEmployee(id, updates);
         res.status(HTTP_STATUS.OK.code).send(result);
     } catch (error) {
-
-        if (error.message && error.message.includes("campo")) {
+        if (error instanceof ValidationError) {
             return res
                 .status(HTTP_STATUS.BAD_REQUEST.code)
                 .json({ msg: error.message });
         }
-        
+
+        console.error("Server error:", error);
+
         return res
             .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
             .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });

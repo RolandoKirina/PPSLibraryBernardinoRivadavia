@@ -1,4 +1,5 @@
 import PartnerCategory from '../../models/partner/PartnerCategory.js';
+import { ValidationError } from '../../utils/errors/ValidationError.js';
 
 export const getAll = async () => {
     return await PartnerCategory.findAll();
@@ -10,7 +11,7 @@ export const getOne = async (id) => {
 
 export const create = async (data) => {
     if (!data.name || data.name.trim() === "") {
-        throw new Error("El campo Categoria no puede estar vacío");
+        throw new ValidationError("El campo Categoria no puede estar vacío");
     }
 
     data.amount = Number(data.amount);
@@ -20,7 +21,7 @@ export const create = async (data) => {
         isNaN(data.amount) ||
         data.amount <= 0
     ) {
-        throw new Error("El campo Cantidad debe ser un número mayor que 0");
+        throw new ValidationError("El campo Cantidad debe ser un número mayor que 0");
     }
 
     return await PartnerCategory.create(data);
@@ -28,10 +29,8 @@ export const create = async (data) => {
 
 
 export const update = async (id, updates) => {
-    if (updates.name !== undefined) {
-        if (!updates.name || updates.name.trim() === "") {
-            throw new Error("El campo Categoria no puede estar vacío");
-        }
+    if (!updates.name || updates.name.trim() === "") {
+        throw new ValidationError("El campo Categoria no puede estar vacío");
     }
 
     updates.amount = Number(updates.amount);
@@ -41,7 +40,7 @@ export const update = async (id, updates) => {
         isNaN(updates.amount) ||
         updates.amount <= 0
     ) {
-        throw new Error("El campo Cantidad debe ser un número mayor que 0");
+        throw new ValidationError("El campo Cantidad debe ser un número mayor que 0");
     }
 
     await PartnerCategory.update(updates, { where: { idCategory: id } });

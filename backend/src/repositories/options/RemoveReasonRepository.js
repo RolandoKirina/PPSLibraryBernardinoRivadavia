@@ -1,4 +1,5 @@
 import RemoveReason from '../../models/options/RemoveReason.js';
+import { ValidationError } from '../../utils/errors/ValidationError.js';
 
 export const getAll = async () => {
     return await RemoveReason.findAll();
@@ -10,14 +11,14 @@ export const getOne = async (id) => {
 
 export const create = async (data) => {
     if (!data.reason || !data.reason.trim()) {
-    throw new Error("El campo motivo de baja no puede estar vacío");
+    throw new ValidationError("El campo motivo de baja no puede estar vacío");
     }
     return await RemoveReason.create(data);
 };
 
 export const update = async (id, updates) => {
     if (!updates.reason || !updates.reason.trim()) {
-    throw new Error("El campo motivo de baja no puede estar vacío");
+    throw new ValidationError("El campo motivo de baja no puede estar vacío");
     }
     await RemoveReason.update(updates, { where: { id } });
     return await RemoveReason.findByPk(id);

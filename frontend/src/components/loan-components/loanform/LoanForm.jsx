@@ -20,7 +20,7 @@ import ReturnIcon from '../../../assets/img/return-icon.svg';
 import ReneweIcon from '../../../assets/img/renewe-icon.svg';
 import { useAuth } from '../../../auth/AuthContext.jsx';
 
-export default function LoanForm({ method, createLoanItem, loanSelected }) {
+export default function LoanForm({ method, createLoanItem, loanSelected, errorMessage }) {
   const [popupView, setPopupView] = useState("default");
   const [confirmSaveChangesPopup, setConfirmSaveChangesPopup] = useState(false);
   const BASE_URL = "http://localhost:4000/api/v1";
@@ -428,6 +428,8 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
                 memoSearch: partnerSource.memoSearch
               }}
             />
+
+            <div className='reader-error'>{errorMessage && <p className="">{errorMessage}</p>}</div>
 
             <div className='lend-books-container'>
               <h2 className='lend-books-title'>Libros a Prestar</h2>

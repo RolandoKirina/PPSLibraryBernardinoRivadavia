@@ -38,6 +38,8 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
 
     const { auth, logout } = useAuth();
 
+    const [errorMessage, setErrorMessage] = useState('');
+
     const {
         items,
         getItems,
@@ -66,26 +68,34 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
 
     async function handleAddItem(data) {
         try {
-            const res = await createItem(data);
+            await createItem(data);
+
+            await getItems();
 
             setAddPopup(false);
 
-             await getItems();
-        } catch (err) {
-            console.error("Error al crear préstamo:", err);
+            setErrorMessage(null);
+        }
+        catch(error) {
+            console.log("sss");
+            setErrorMessage(error.message);
+            console.error("Error al crear un Prestamo:", error);
         }
     }
 
     async function handleUpdateItem(data) {
         try {
-            const res = await updateItem(selected.loanId, data);
+            await updateItem(selected.loanId, data);
+
+            await getItems();
 
             setEditPopup(false);
 
-             await getItems();
+            setErrorMessage(null);
         }
-        catch (err) {
-            console.error(err);
+        catch(error) {
+            setErrorMessage(error.message);
+            console.error("Error al actualizar un Prestamo:", error);
         }
     }
 
@@ -196,16 +206,22 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
             key: 'editPopup',
             title: 'Editar préstamo',
             className: '',
-            content: <LoanForm method="update" createLoanItem={handleUpdateItem} loanSelected={selected} />,
-            close: () => setEditPopup(false),
+            content: <LoanForm method="update" createLoanItem={handleUpdateItem} loanSelected={selected} errorMessage={errorMessage} />,
+            close: () => {
+                setEditPopup(false)
+                setErrorMessage(null);
+            },
             condition: editPopup
         },
         {
             key: 'addPopup',
             title: 'Agregar préstamo',
             className: 'loans-background',
-            content: <LoanForm createLoanItem={handleAddItem} />,
-            close: () => setAddPopup(false),
+            content: <LoanForm createLoanItem={handleAddItem} errorMessage={errorMessage} />,
+            close: () => {
+                setAddPopup(false)
+                setErrorMessage(null);
+            },
             condition: addPopup
         },
         {

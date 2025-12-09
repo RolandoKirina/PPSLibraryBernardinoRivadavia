@@ -6,6 +6,7 @@ import Loan from '../../models/loan/Loan.js';
 import LoanBook from '../../models/loan/LoanBook.js';
 import sequelize from '../../configs/database.js';
 import * as BookAuthorRepository from '../author/BookAuthorRepository.js';
+import { ValidationError } from '../../utils/errors/ValidationError.js';
 
 export const getAll = async (filters) => {
     const {
@@ -106,7 +107,7 @@ export const getOne = async (id) => {
 
 export const create = async (author) => {
     if (!author.name.trim() || !author.nationality.trim()) {
-    throw new Error("Los campos Nombre y Nacionalidad no pueden estar vacíos");
+    throw new ValidationError("Los campos Nombre y Nacionalidad no pueden estar vacíos");
     }
 
     const transaction = await sequelize.transaction();
@@ -152,7 +153,7 @@ export const create = async (author) => {
 // A diferencia de patch, los updates deben tener todos los campos de la entidad
 export const update = async (id, updates) => {
     if (!updates.name.trim() || !updates.nationality.trim()) {
-    throw new Error("Los campos Nombre y Nacionalidad no pueden estar vacíos");
+    throw new ValidationError("Los campos Nombre y Nacionalidad no pueden estar vacíos");
     }
 
     const transaction = await sequelize.transaction();

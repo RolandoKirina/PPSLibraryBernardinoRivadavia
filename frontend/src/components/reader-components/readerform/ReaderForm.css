@@ -1,0 +1,8 @@
+.reader-error {
+    width: 80%;
+    margin-top: 1em;
+}
+
+.reader-error p {
+    color: var(--error);
+}

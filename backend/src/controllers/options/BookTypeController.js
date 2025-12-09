@@ -1,5 +1,6 @@
 import * as BookTypeService from "../../services/options/BookTypeService.js";
 import { HTTP_STATUS } from "../../https/httpsStatus.js";
+import { ValidationError } from "../../utils/errors/ValidationError.js";
 
 export const getAllBookTypes = async (req, res) => {
     try {
@@ -41,11 +42,13 @@ export const createBookType = async (req, res) => {
         
     } catch (error) {
 
-        if (error.message && error.message.includes("campo")) {
+        if (error instanceof ValidationError) {
             return res
                 .status(HTTP_STATUS.BAD_REQUEST.code)
                 .json({ msg: error.message });
         }
+
+        console.error("Server error:", error);
 
         return res
             .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
@@ -66,12 +69,14 @@ export const updateBookType = async (req, res) => {
         res.status(HTTP_STATUS.OK.code).json(updatedBookType);
     } catch (error) {
 
-        if (error.message && error.message.includes("campo")) {
+        if (error instanceof ValidationError) {
             return res
                 .status(HTTP_STATUS.BAD_REQUEST.code)
                 .json({ msg: error.message });
         }
-        
+
+        console.error("Server error:", error);
+
         return res
             .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
             .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });

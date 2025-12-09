@@ -3,6 +3,7 @@ import BookTypeGroup from '../../models/options/BookTypeGroup.js';
 import BookType from '../../models/options/BookType.js';
 import sequelize from '../../configs/database.js';
 import * as BookTypeGroupRepository from '../../repositories/options/BookTypeGroupRepository.js';
+import { ValidationError } from '../../utils/errors/ValidationError.js';
 
 export const getAll = async () => {
     return await BookTypeGroupList.findAll({
@@ -30,10 +31,9 @@ export const getOne = async (id) => {
 
 export const create = async (data) => {
     if (!data.group.trim() || !data.maxAmount.trim()) {
-        console.log("sss");
-        throw new Error("Los campos grupo y cantidad no pueden estar vacíos");
+        throw new ValidationError("Los campos grupo y cantidad no pueden estar vacíos");
     }
-    //console.log(data);
+
     const transaction = await sequelize.transaction();
 
     try {
@@ -50,8 +50,6 @@ export const create = async (data) => {
             BookTypeGroupListId: newBookTypeGroupListId,
             bookTypeId: bookTypeId
         }))
-        //console.log(bookTypeGroups);
-        console.log(newBookTypeGroupList);
 
         await Promise.all(
             bookTypeGroups.map(bookTypeGroup => BookTypeGroupRepository.create(bookTypeGroup, transaction))
@@ -74,11 +72,11 @@ export const create = async (data) => {
 
 export const update = async (id, updates) => {
     if (!updates.group?.trim()) {
-        throw new Error("El campo grupo no puede estar vacío");
+        throw new ValidationError("El campo grupo no puede estar vacío");
     }
 
     if (isNaN(updates.maxAmount) || updates.maxAmount <= 0) {
-        throw new Error("El campo cantidad debe ser un número válido");
+        throw new ValidationError("El campo cantidad debe ser un número válido");
     }
 
     const transaction = await sequelize.transaction();

@@ -5,6 +5,7 @@ import Employees from '../../models/options/Employees.js';
 import sequelize from '../../configs/database.js';
 import * as EmployeesRepository from '../../repositories/options/EmployeesRepository.js';
 import * as ReaderBookRepository from '../../repositories/reader/ReaderBookRepository.js';
+import { ValidationError } from '../../utils/errors/ValidationError.js';
 
 export const getAll = async (filters) => {
    const {
@@ -87,7 +88,23 @@ export const getOne = async (id) => {
 };
 export const create = async (data) => {
   if (!data.books || data.books.length === 0) {
-    throw new Error("No se puede crear un lector sin libros");
+    throw new ValidationError("No se puede crear un lector sin libros");
+  }
+
+  if (!data.readerDNI || data.readerDNI.trim() === "") {
+    throw new ValidationError("El campo DNI del lector no puede estar vacío");
+  }
+
+  if (!data.readerName || data.readerName.trim() === "") {
+    throw new ValidationError("El campo Nombre del lector no puede estar vacío");
+  }
+
+  if (!data.employeeCode || data.employeeCode.trim() === "") {
+    throw new ValidationError("El campo Código de empleado no puede estar vacío");
+  }
+
+  if (!data.retiredDate || data.retiredDate.trim() === "") {
+    throw new ValidationError("El campo Fecha de retiro no puede estar vacío");
   }
 
   const transaction = await sequelize.transaction();
@@ -95,7 +112,7 @@ export const create = async (data) => {
   try {
     const employee = await EmployeesRepository.getOneByCode(data.employeeCode);
     if (!employee) {
-      throw new Error("Empleado no existe");
+      throw new ValidationError("Empleado no existe");
     }
     
     let existingReader = await getOne(data.readerDNI);
@@ -112,7 +129,6 @@ export const create = async (data) => {
     const retiredDate = datePart;
     const retiredHour = timePart + ':00';
 
-    // 📚 Crear ReaderBooks
     const readerBooks = data.books.map(book => ({
       BookId: book.BookId,
       readerDNI: reader.dni,
@@ -128,7 +144,6 @@ export const create = async (data) => {
       )
     );
 
-    // ✔ Finalizar transacción
     await transaction.commit();
 
     return {
@@ -138,7 +153,6 @@ export const create = async (data) => {
     };
 
   } catch (err) {
-    // Evitar rollback doble
     if (!transaction.finished) {
       await transaction.rollback();
     }

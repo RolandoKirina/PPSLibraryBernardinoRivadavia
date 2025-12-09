@@ -19,7 +19,7 @@ import ReturnIcon from '../../../assets/img/return-icon.svg';
 import ReneweIcon from '../../../assets/img/renewe-icon.svg';
 import { useAuth } from '../../../auth/AuthContext.jsx';
 
-export default function ReaderForm({ method, createReaderItem, loanSelected }) {
+export default function ReaderForm({ method, createReaderItem, loanSelected, errorMessage }) {
   const [popupView, setPopupView] = useState("default");
   const [confirmSaveChangesPopup, setConfirmSaveChangesPopup] = useState(false);
   const BASE_URL = "http://localhost:4000/api/v1";
@@ -419,6 +419,7 @@ export default function ReaderForm({ method, createReaderItem, loanSelected }) {
               }}
             />
 
+          <div className='reader-error'>{errorMessage && <p className="">{errorMessage}</p>}</div>
 
             <div className='lend-books-container'>
               <h2 className='lend-books-title'>Libros a Prestar</h2>
@@ -511,31 +512,7 @@ export default function ReaderForm({ method, createReaderItem, loanSelected }) {
           )}
         </>
       )}
-      {/* 
-      {popupView === 'unpaidFees' && (
-        <>
-          <BackviewBtn menu={'default'} changeView={setPopupView} />
-          <UnpaidFees changeView={setPopupView} />
-        </>
-      )}
-
-      {popupView === 'editUnpaidFees' && (
-        <>
-          <BackviewBtn menu={'unpaidFees'} changeView={setPopupView} />
-          <GenericForm
-            title={'Editar cuota pendiente'}
-            fields={editLoanformFields}
-            onSubmit={(data) => console.log('Formulario enviado:', data)}
-          />
-        </>
-      )}
-
-      {popupView === 'pendingBooks' && (
-        <>
-          <Table columns={columnsPendingBooks} data={pendingbooks}></Table>
-          <BackviewBtn menu={'default'} changeView={setPopupView} />
-        </>
-      )} */}
+      
     </div>
   );
 
