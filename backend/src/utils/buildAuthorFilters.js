@@ -11,7 +11,10 @@ export const buildAuthorFilters = (query) => {
 
     const whereAuthor = {};
 
+
     if (authorName) whereAuthor.name = { [Op.iLike]: `%${authorName}%` };
+
+
 
     const parsedLimit = parseInt(limit);
     const parsedOffset = parseInt(offset);

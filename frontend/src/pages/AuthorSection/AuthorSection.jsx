@@ -10,6 +10,7 @@ import BookIcon from '../../assets/img/add-book-icon.svg';
 import AuthorBooks from '../../components/author-components/AuthorBooks/AuthorBooks';
 import { useEntityManager } from '../../hooks/useEntityManager';
 import { useEntityManagerAPI } from '../../hooks/useEntityManagerAPI';
+import ShowAuthorBooks from '../../components/author-components/ShowAuthorBooks/ShowAuthorBooks';
 
 import { useAuth } from '../../auth/AuthContext';
 import roles from '../../auth/roles';
@@ -20,7 +21,15 @@ export default function AuthorSection() {
     const { auth } = useAuth();
     const BASE_URL = "http://localhost:4000/api/v1";
     const [filterName, setFilterName] = useState("");
+    const [filterBookTitle, setFilterBookTitle] = useState("");
+    const [filterBookCode, setFilterBookCode] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const [filters, setFilters] = useState({
+        authorName: "",
+    });
+
+
+    
 
     const {
         items,
@@ -38,11 +47,17 @@ export default function AuthorSection() {
 
     useEffect(() => {
         const delay = setTimeout(() => {
-            const filters = filterName.trim() ? { authorName: filterName } : {};
-            getItems(filters);
+            const activeFilters = Object.fromEntries(
+                Object.entries(filters).filter(([_, v]) => v.trim() !== "")
+            );
+
+            getItems(activeFilters);
         }, 300);
+
         return () => clearTimeout(delay);
-    }, [filterName]);
+    }, [filters]);
+
+
 
     useEffect(() => {
         getItems();
@@ -53,7 +68,14 @@ export default function AuthorSection() {
     const [addPopup, setAddPopup] = useState(false);
     const [selected, setSelected] = useState(false);
     const [booksPopup, setBooksPopup] = useState(false);
+
     //const { items: authorItems, getItem: getAuthorItem, createItem: createAuthorItem, updateItem: updateAuthorItem, deleteItem: deleteAuthorItem } = useEntityManager(mockAuthors, 'authors');
+
+    const handleFilterChange = (e) => {
+        const { name, value } = e.target;
+        setFilters(prev => ({ ...prev, [name]: value }));
+    };
+
 
     function getAllBooksId(books) {
         let booksId = [];
@@ -155,7 +177,15 @@ export default function AuthorSection() {
             content: <AuthorBooks method={'add'} createAuthorItem={addNewAuthor} errorMessage={errorMessage} />,
             close: () => setAddPopup(false),
             condition: addPopup
-        }
+        },
+        {
+            key: 'booksPopup',
+            title: 'Libros del autor',
+            className: '',
+            content: <ShowAuthorBooks authorSelected={selected} />,
+            close: () => setBooksPopup(false),
+            condition: booksPopup
+        },
     ];
 
     let columns = [];
@@ -189,8 +219,22 @@ export default function AuthorSection() {
                         <img src={EditIcon} alt="Editar" />
                     </button>
                 )
+            },
+            {
+                header: 'Ver libros',
+                accessor: 'books',
+                className: "action-buttons",
+                render: (_, row) => (
+                    <button className="button-table" onClick={() => {
+                        setSelected(row)
+                        setBooksPopup(true)
+                        // getLoanDetails(row)
+                    }}>
+                        <img src={BookIcon} alt="Detalles" />
+                    </button>
+                )
             }
-        ];
+];
     }
     else if ((auth.role === roles.user || auth.role === roles.reader)) {
         columns = [
@@ -230,8 +274,8 @@ export default function AuthorSection() {
                                 <input
                                     type='text'
                                     name='authorName'
-                                    value={filterName}
-                                    onChange={(e) => setFilterName(e.target.value)}
+                                    value={filters.authorName}
+                                    onChange={handleFilterChange}
                                     placeholder='Escribe un nombre...'
                                 />
                             </div>

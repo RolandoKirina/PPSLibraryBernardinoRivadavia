@@ -77,7 +77,6 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
             setErrorMessage(null);
         }
         catch(error) {
-            console.log("sss");
             setErrorMessage(error.message);
             console.error("Error al crear un Prestamo:", error);
         }
