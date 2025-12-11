@@ -10,13 +10,13 @@
 .search-partner-inputs {
     width: 100%;
     display: flex;
-    justify-content: space-between;
     margin-top: 1em;
 }
 
 .search-partner-inputs div {
     display: flex;
     flex-direction: column;
+        margin-right: 9em;
 }
 
 .search-partner-buttons {

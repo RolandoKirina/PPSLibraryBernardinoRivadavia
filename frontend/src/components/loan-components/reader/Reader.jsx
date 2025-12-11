@@ -19,7 +19,7 @@ export default function Reader({ loanType, onDataChange, readerData }) {
     <div className='search-partner-container'>
       <h2>Lector</h2>
 
-      <div className='search-partner-inputs'>
+      <div className='reader-inputs'>
         
         <div className='input'>
           <label>DNI <span className='required'>*</span></label>

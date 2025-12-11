@@ -1,9 +1,9 @@
-import "./ShowAuthorBooks.css";
+import "./ShowMaterials.css";
 import { useState, useEffect } from 'react';
-import { Table } from '../../common/table/Table';
-import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
+import { Table } from "../common/table/Table";
+import { useEntityManagerAPI } from '../../hooks/useEntityManagerAPI';
 
-export default function ShowAuthorBooks({ authorSelected }) {
+export default function ShowMaterials({ authorSelected }) {
   const BASE_URL = "http://localhost:4000/api/v1";
   const [authorBooks, setAuthorBooks] = useState([]);
   const [filteredBooks, setFilteredBooks] = useState([]);
@@ -77,49 +77,13 @@ export default function ShowAuthorBooks({ authorSelected }) {
   }, [filters, authorBooks]);
 
   const columns = [
-    { header: 'Código del libro', accessor: 'codeInventory' },
-    { header: 'Título', accessor: 'title' },
-    { header: 'Tipo', accessor: 'typeName' },
+    { header: 'Descripcion', accessor: 'codeInventory' },
   ];
 
   return (
     <div className='loan-books-container'>
-      <div className='lend-books-filters'>
-        <h3>Filtros de libros</h3>
-
-        <div className='lend-books-filters-inputs'>
-
-          <div className="loan-form-input-group">
-            <h4>Libro</h4>
-            <div>
-              <div>
-                <label>Título</label>
-                <input
-                  name="bookTitle"
-                  value={filters.bookTitle}
-                  onChange={handleChange}
-                  placeholder="Buscar por título..."
-                />
-              </div>
-              <div>
-                <label>Código</label>
-                <input
-                  name="bookCode"
-                  value={filters.bookCode}
-                  onChange={handleChange}
-                  placeholder="Buscar por código..."
-                />
-              </div>
-
-
-            </div>
-          </div>
-        </div>
-
-      </div>
-
       <div className='lend-books-container'>
-        <h2 className='lend-books-title'>Libros a Prestar</h2>
+        <h2 className='lend-books-title'>Materiales</h2>
         <Table columns={columns} data={filteredBooks} />
       </div>
     </div>
