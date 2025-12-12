@@ -4,6 +4,7 @@ import Reservations from '../../models/loan/Reservations.js';
 import * as EmployeesRepository from '../../repositories/options/EmployeesRepository.js';
 import * as PartnerRepository from '../../repositories/partner/PartnerRepository.js';
 import * as BookReservationsRepository from '../../repositories/loan/BookReservationsRepository.js';
+import { formatDate } from '../../utils/date/formatDate.js';
 
 export const getAll = async (filters) => {
   const {
@@ -55,8 +56,8 @@ export const getAll = async (filters) => {
       name: res.Partner ? `${res.Partner.name} ${res.Partner.surname}` : '—',
       surname: res.Partner ? `${res.Partner.surname}` : '—',
       title: br.Book?.title || '—',
-      reservationDate: res.reservationDate,
-      expectedDate: res.expectedDate,
+      reservationDate: formatDate(res.reservationDate),
+      expectedDate: formatDate(res.expectedDate),
       bookCode: br.Book?.codeInventory || '—',
     }))
   );

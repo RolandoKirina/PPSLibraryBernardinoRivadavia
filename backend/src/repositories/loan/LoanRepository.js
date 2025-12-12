@@ -13,6 +13,8 @@ import * as PartnerRepository from '../../repositories/partner/PartnerRepository
 import * as LoanBookRepository from '../../repositories/loan/LoanBookRepository.js';
 import * as LoanTypeRepository from '../../repositories/loan/LoanTypeRepository.js';
 
+import { formatDate } from '../../utils/date/formatDate.js';
+
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 
 import { Op } from 'sequelize';
@@ -84,15 +86,15 @@ export const getAll = async (filters) => {
       }
     ],
     order,
-    limit,
-    offset
+    // limit,
+    // offset
   });
 
   const groupedLoans = loans.map(loan => ({
     loanId: loan?.id || '',
-    retiredDate: loan.retiredDate,
-    expectedDate: loan.LoanBooks?.[0]?.expectedDate || '',
-    returnedDate: loan.LoanBooks?.[0]?.returnedDate || '',
+    retiredDate: formatDate(loan.retiredDate),
+    expectedDate: formatDate(loan.LoanBooks?.[0]?.expectedDate),
+    returnedDate: formatDate(loan.LoanBooks?.[0]?.returnedDate),
     withdrawalTime: loan?.withdrawalTime || '',
     loanType: loan.LoanType?.description || '',
     employee: loan.Employee?.name || '',
@@ -232,9 +234,9 @@ export const getReturnPrintList = async () => {
       partnerNumber: loan.Partner?.partnerNumber || '',
       partnerName: `${loan.Partner?.surname || ''} ${loan.Partner?.name || ''}`,
       partnerAddress: loan.Partner?.homeAddress || '',
-      retiredDate: loan.withdrawalTime || 'No hay fecha',
-      expectedDate: loanBook.expectedDate || 'No hay fecha',
-      returnedDate: loanBook.returnedDate || 'No hay fecha'
+    retiredDate: formatDate(loan.retiredDate),
+    expectedDate: formatDate(loanBook.expectedDate),
+    returnedDate: formatDate(loanBook.returnedDate)
     }))
   );
 
@@ -299,8 +301,8 @@ export const getPhonePrintList = async () => {
       partnerNumber: loan.Partner?.partnerNumber || '',
       partnerName: `${loan.Partner?.surname || ''} ${loan.Partner?.name || ''}`,
       partnerPhone: loan.Partner?.homePhone || '',
-      retiredDate: loan.withdrawalTime || 'No hay fecha',
-      expectedDate: loanBook.expectedDate || 'No hay fecha',
+      retiredDate: formatDate(loan.retiredDate),
+      expectedDate: formatDate(loanBook.expectedDate),
     }))
   );
 
