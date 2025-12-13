@@ -21,6 +21,7 @@ import AuthorSection from './pages/AuthorSection/AuthorSection.jsx';
 import FeeSection from './pages/FeeSection/FeeSection.jsx';
 import ReaderSection from "./pages/ReaderSection/ReaderSection.jsx";
 import { routePermissions } from "./auth/permissions.js";
+import BookAuthors from "./components/book-components/BooksAuthor/BookAuthors.jsx";
 function App() {
   return (
     <BrowserRouter>
@@ -42,7 +43,6 @@ function App() {
 
           </Route>
 
-
           <Route element={<ProtectedRoute requiredRoles={routePermissions.loggedAccess} />}>
             <Route path='loans' element={<LoanSection openRenewes={false} />} />
             <Route path='loans/renewes' element={<LoanSection openRenewes={true} />} />
@@ -56,6 +56,7 @@ function App() {
           <Route element={<ProtectedRoute requiredRoles={routePermissions.allAccess} />}>
             <Route path='books' element={<BookSection />} />
             <Route path='authors' element={<AuthorSection />} />
+            <Route path='books-authors' element={<BookAuthors />} />
           </Route>
 
 

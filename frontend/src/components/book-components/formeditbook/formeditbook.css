@@ -6,7 +6,10 @@
     color: var(--white);
     margin-bottom: 1em;
 }
-
+.editsize{
+ width: 45em;
+max-height: 90vh;
+}
 .contentformedit {
     display: flex;
     flex-direction: column;
@@ -76,7 +79,7 @@ input:checked+.checkboxin {
 }
 
 .selectform {
-    height: 1.3em;
+    height: 2em;
     width: 100%;
 }
 
@@ -152,6 +155,7 @@ textarea {
     margin-bottom: 0;
 
 }
+
 
 /* Márgenes entre grupos */
 .input,

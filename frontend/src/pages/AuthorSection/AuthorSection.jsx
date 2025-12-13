@@ -24,7 +24,6 @@ export default function AuthorSection() {
     const {
         items,
         getItems,
-        // getItem: getGroupItem,
         deleteItem,
         createItem,
         updateItem
@@ -51,8 +50,6 @@ export default function AuthorSection() {
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
     const [selected, setSelected] = useState(false);
-    const [booksPopup, setBooksPopup] = useState(false);
-    //const { items: authorItems, getItem: getAuthorItem, createItem: createAuthorItem, updateItem: updateAuthorItem, deleteItem: deleteAuthorItem } = useEntityManager(mockAuthors, 'authors');
 
     function getAllBooksId(books) {
         let booksId = [];

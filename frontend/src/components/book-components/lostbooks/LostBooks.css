@@ -7,7 +7,7 @@
 }
 
 .lost-books-content {
-  width: 30%;
+  width: auto;
   background-color: var(--primary-dark-2);
   border-radius: 0.625em;
 }
@@ -107,4 +107,10 @@
   display: flex;
   justify-content: center;
   margin: 1em 0;
+}
+.lost-books-size{
+  min-width: 40em;
+  max-width:80%;
+    background-color: var(--white);
+
 }

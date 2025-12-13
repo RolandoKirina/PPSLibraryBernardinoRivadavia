@@ -57,11 +57,11 @@
 
 .popup-container-book-form {
   background: var(--primary-dark-2);
-  overflow-y: scroll;
+  overflow-y: auto;
   border-radius: 10px;
-  margin-top: 3em;
+  margin-top: 0em;
   height: auto;
-  max-height: 100vh;
+  max-height: 95vh;
 }
 
 .input {
@@ -95,9 +95,7 @@
   margin-top: 1em;
 }
 
-.ranking-books-size {
-  width: 85%;
-}
+
 
 .books-partners-amount-size {
   width: 40%;

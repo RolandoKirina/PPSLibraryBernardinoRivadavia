@@ -8,7 +8,7 @@
 }
 
 .ranking-list-content {
-    width: 25%;
+    width: 30%;
     background-color: var(--primary-dark-2);
     border-radius: 0.625em;
 }
@@ -108,7 +108,6 @@
 .ranking-list-filter-option .filter-options .radio-inputs label {
     margin-bottom: 1em;
 }
-
-.ranking-list-filter-option {
-    border-bottom: 0.2em solid var(--primary-dark-1);
+.ranking-books-size{
+    width: 50em;
 }

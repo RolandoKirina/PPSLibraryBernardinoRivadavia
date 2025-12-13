@@ -57,9 +57,6 @@ const { items, getItems, getItem, createItem, updateItem, deleteItem } =
     setFormData(updated);
   };
 
-
-
-
   useEffect(() => {
       const filters = Object.fromEntries(
         Object.entries(formData).filter(([_, v]) => v !== "")
@@ -158,7 +155,7 @@ let columns =[];
     {
       key: 'editPopup',
       title: 'Editar Libro',
-      className: 'popup-container-book-form',
+      className: 'popup-container-book-form editsize',
       content: <FormEditBook selectedBook={selectedItem} />,
       close: () => setPopupEdit(false),
       condition: PopUpEdit

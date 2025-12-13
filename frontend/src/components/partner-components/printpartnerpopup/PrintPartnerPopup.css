@@ -149,12 +149,7 @@
 
 
 
-/* preview-list-container */
-
 .preview-list-container {
-    width: 85%;
     position: sticky;
-    background-color: var(--white);
-    overflow-y: auto;
-    top: 0;
+    top: 0;    
 }

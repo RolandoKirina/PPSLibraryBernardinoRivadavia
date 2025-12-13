@@ -1,122 +1,132 @@
-.formeditbook {
-    display: flex;
-    flex-direction: column; /* columnas apiladas */
-    align-items: center;
-    width: 100%;
-    margin-top: 1em;
-}
 
 .columns-container {
-    display: flex; 
-    gap: 2rem;     
+    display: flex;
     width: 100%;
-    justify-content: center;
+    gap: 2rem;
 }
+
 .contentformedit {
+    width: 50%;
     display: flex;
     flex-direction: column;
-    width: 40%; 
+    gap: 1.2rem;
 }
 
-.btns-row {
+.input {
     display: flex;
-    width: 100%; 
-     gap: 1rem; 
-    flex-wrap: wrap; 
-}
-
-.btns-row-container{
-    width: 100%;
-    padding: 0em 4em;
-     justify-content: space-between; 
-     gap: 1rem; 
-     margin-bottom: 1em;
-}
-.inputcheckbox {
-    width: 30%;
-}
-
-/* Para inputs que están directamente dentro de .input */
-.input:has(> input:focus)>label,
-.input .content div:has(input:focus) label,
-.input .content div:has(select:focus) label,
-input:checked+.checkboxin {
-    color: var(--secondary-light-2);
-    font-weight: bold;
-}
-
-.checkbox {
-    margin-top: 0.5em;
-    margin-left: 0.2em;
-    height: 1em;
-}
-
-.checkbox input {
-    margin-top: 0.5em;
+    flex-direction: column;
+ 
 }
 
 .input label {
-    transition: color 0.3s ease;
+    font-weight: 500;
 }
 
-.content {
-    display: flex;
+input,
+select,
+textarea {
     width: 100%;
-    gap: 0.5rem;
+    padding: 0.2em;
+    box-sizing: border-box;
 }
 
-.content-form {
-    display: flex;
-}
-
-.content-form div input {
-    width: 50%;
-}
-
-.notes {
-    height: 10em;
+textarea.notes {
+    height: 8em;
+    resize: none;
 }
 
 .divconteiner {
     display: flex;
-    align-items: center;
     gap: 1rem;
 }
 
 .divconteiner div {
+    flex: 1;
     display: flex;
     flex-direction: column;
+}
+
+.btns-row-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.flex-content {
+    display: flex;
+    gap: 2rem;
+}
+
+.flex-content > div {
     width: 50%;
 }
 
-
-.divconteiner div input {
-    width: 100%;
+.results-list {
+    list-style: none;
+    padding: 0;
 }
 
-.selectform {
-    height: 1.3em;
-    width: 100%;
-}
-
-.line {
-    margin: 10px 0 0 0.2em;
-    width: 50%;
-    height: 2px;
-    background-color: var(--white);
-}
-
-
-
-.btn {
+.result-item {
+    background: rgba(255, 255, 255, 0.08);
+    padding: 0.7em;
+    border-radius: 6px;
     display: flex;
     justify-content: space-between;
-    background-color: var(--primary-dark-2);
-    width: 12em;
+    align-items: center;
+    margin-bottom: 0.5em;
+}
+
+.add-button {
+    background: #4caf50;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.add-button:hover {
+    background: #43a047;
+}
+
+.selected-authors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.selected-author {
+    background: #5a4ce6;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.remove-button {
+    background: transparent;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.btns-row {
+    display: flex;
+    
+    justify-content: flex-start;
+    gap: 1rem;
+}
+
+.changes {
+    border: 2px solid var(--success);
+    background-color: var(--primary-light-2);
+    height: 3em;
 }
 
 .img-ico {
-
     width: 1.5em;
     height: 1.5em;
 }
@@ -126,80 +136,22 @@ input:checked+.checkboxin {
     height: 100%;
 }
 
-
-.changes {
-    justify-content: center;
-    height: 3em;
-    border: 2px solid var(--success);
-    background-color: var(--primary-light-2);
-}
-
-
-input,
-select,
-textarea {
-    margin-bottom: 0.5rem;
-    box-sizing: border-box;
-}
-
-.input,
-.divconteiner div,
-.content-form div {
-    margin-bottom: 0.5rem;
-}
-
-/* Márgenes uniformes entre inputs */
-input,
-select,
-textarea {
-    margin-bottom: 0;
-
-}
-
-/* Márgenes entre grupos */
-.input,
-.divconteiner div,
-.content-form div {
-    margin-bottom: 0.5rem;
-}
-
-/* .margininput{
-    margin-bottom: -1.2em;
-} */
-
-
-.changes.btn {
-    margin-left: auto;
-    align-self: flex-end;
-}
-
-.btns-form div button {
-    padding: 1em;
-    margin: 0.5em;
-}
-
-.btns-form {
-    display: flex;
-    width: 100%;
-    margin: 2em 0 2em 0;
-}
-
-.btn-right {
-    margin-left: 0.4em;
-}
-
-.formeditbook .input   {
-    display: flex;
-}
-
-
-.form-add-book-size {
-    background-color: var(--primary-dark-2);
-    width: 60em;
-    position: relative;
+.success {
+    color: var(--success);
+    margin-bottom: 1em;
 }
 
 .books-author-container {
     height: 80vh;
 }
-
+.formeditbook {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0em 0em 0em 5em;
+    margin: 1.5em auto;
+    gap: 2em;
+}
+.findauthor{
+    color: var(--secondary-light-2);
+}

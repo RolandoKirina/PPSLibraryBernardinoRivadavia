@@ -27,10 +27,10 @@ export default function GenerateListPopup({ dataByType, columnsByType, typeList,
                 </div>
                 {/* añadir fecha y hora y num pagina */}
 
-            {dataByType.length > 0 ? (
-                    <Table columns={columnsByType} data={dataByType} isPrintList={true} rowsPerPage={30}>
-                        <div className='print-icon-btn'>
-                            <Btn onClick={() => window.print()} variant={'primary'} text={'Imprimir'} icon={<img src={printIcon} alt='printIcon' />} />
+          {dataByType.length > 0 && (
+                <Table columns={columnsByType} data={dataByType} isPrintList={true} rowsPerPage={30}>
+                    <div className='print-icon-btn'>
+                            <Btn onClick={() => window.print()} variant='primary' text='Imprimir' icon={<img src={printIcon} alt='printIcon' />} />
                         </div>
 
                         {typeList === 'TypeOneFees' && (
@@ -47,31 +47,15 @@ export default function GenerateListPopup({ dataByType, columnsByType, typeList,
                             </div>
                         )}
                     </Table>
-                ) : (
-                    <div className="no-results">
-                        <p>No hay resultados que coincidan con los filtros seleccionados.</p>
-                    </div>
-                )}
+                )} :
 
 
-                {/* añadir info extra seguntipo de listado*/}
-                {/*
+            {dataByType.length === 0 && (
+                <div className="no-results">
+                    <p>No hay resultados que coincidan con los filtros seleccionados.</p>
+                </div>
+            )}
 
-                    en listado de cuotas x letra y categoria:
-                    entre el dia:  y el dia: + fecha y hora
-
-                    y al final:
-
-
-                    
-                    en listado de cuotas pagas por fecha - entre el dia:  y el dia: + fecha y hora
-
-                    y al final:
-                        cantidad de cuotas: $
-                        monto total: $ 
-                    
-                    
-                    */}
             </div>
         </>
     )

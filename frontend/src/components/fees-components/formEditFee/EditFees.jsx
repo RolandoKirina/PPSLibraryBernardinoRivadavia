@@ -67,9 +67,7 @@ import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
       
     };
 
-   
   
-
 
   return (
     <form className="edit-fees-form" onSubmit={handleSubmit}>

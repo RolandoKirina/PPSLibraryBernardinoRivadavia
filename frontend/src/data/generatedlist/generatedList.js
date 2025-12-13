@@ -79,20 +79,21 @@ export const columnsByType = {
     { header: 'Fecha de Inscripción', accessor: 'registrationDate' }
   ],
   BookRanking: [
-    { header: 'Código', accessor: 'bookCode' },
-    { header: 'Título', accessor: 'bookTitle' },
-    { header: 'Autores', accessor: 'authors' },
-    { header: 'CDU', accessor: 'cdu' },
-    { header: 'Cantidad', accessor: 'quantity' }
+    { header: 'Código', accessor: 'codeInventory' },
+    { header: 'Título', accessor: 'title' },
+    /*{ header: 'Autores', accessor: 'authors' },*/
+    { header: 'CDU', accessor: 'codeCDU' },
+    { header: 'Cantidad', accessor: 'Cantidad' }
   ],
   LostBooks: [
-    { header: 'Fecha', accessor: 'date' },
-    { header: 'Código', accessor: 'code' },
+    { header: 'Fecha perdida', accessor: 'lossDate' },
+    { header: 'Código libro', accessor: 'BookId' },
     { header: 'Titulo', accessor: 'title' },
     { header: 'Número Socio', accessor: 'partnerNumber' },
     { header: 'Nombre', accessor: 'name' },
-    { header: 'Dirección', accessor: 'address' },
-    { header: 'Teléfono', accessor: 'phone' }
+    { header: 'Apellido', accessor: 'surname'},
+    { header: 'Dirección', accessor: 'homeAddress' },
+    { header: 'Teléfono', accessor: 'homePhone' }
   ],
 
   TypeOneFees: [

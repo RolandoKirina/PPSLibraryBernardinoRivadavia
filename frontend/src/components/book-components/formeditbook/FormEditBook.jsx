@@ -8,13 +8,30 @@ import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
 
 export default function FormEditBook({ selectedBook }) {
     const [popupView, setPopupView] = useState('default');
-    //const [authorsSelected, setAuthorsSelected] = useState(selectedBook.authors || []);
+    const [authorsSelected, setAuthorsSelected] = useState ([]);
     const entityManagerApi = useEntityManagerAPI("books");
     const {items:booksTypes,getItems:getBookTypes,deleteItem,createItem,updateItem} = useEntityManagerAPI("book-types");
-   
-    const [selectedType, setSelectedType] = useState(
-    selectedBook?.type?.bookTypeId || "");
+    const [successMessage, setSuccessMessage] = useState("");
+  const [selectedType, setSelectedType] = useState("");
+
     const [selectedLost, setSelectedLost] = useState("");
+    const [results, setResults] = useState([]);
+    const [SearchAuthor, setSearchAuthor]= useState("");
+    const { items: authors = [], getItems: getAuthors } =
+  useEntityManagerAPI("authors");
+
+    async function onHandleFindAuthor(value) {
+    try {
+        if (!value.trim()) {
+        setResults([]);
+        return;
+        }
+        const res = await getAuthors({ authorName: value });
+        setResults(res);
+    } catch (err) {
+        console.error(err);
+    }
+    }
 
     let title = "Libros";
     useEffect(() => {
@@ -22,36 +39,21 @@ export default function FormEditBook({ selectedBook }) {
         console.log(selectedBook.authors)
     }, []);
 
-
 useEffect(() => {
-    if (selectedBook?.type?.bookTypeId) {
-        setSelectedType(String(selectedBook.type.bookTypeId));
+  if (selectedBook?.type && booksTypes.length > 0) {
+    setSelectedType(String(selectedBook.type));
+  }
+}, [selectedBook, booksTypes]);
+    
+useEffect(() => {
+    if (selectedBook?.BookAuthors) {
+        setAuthorsSelected(selectedBook.BookAuthors);
     }
+
     if (selectedBook?.lost !== undefined) {
         setSelectedLost(selectedBook.lost ? "true" : "false");
     }
 }, [selectedBook]);
-
-    const handleChange = (e) => {
-        setSelected(e.target.value);
-        if (onChange) {
-            onChange(e.target.value);
-        }
-    };
-
-    function redirect(action) {
-        switch (action) {
-            case 'renewed': {
-                window.open(`${window.location.origin}/loans/renewes`, '_blank', "renewes");
-            }
-             case 'booksauthor': {
-                window.open(`${window.location.origin}/books/booksauthor`, '_blank', title)
-            }
-             case 'authors': {
-                window.open(`${window.location.origin}/authors`, '_blank', title)
-            }
-    }}
-
 
 
     const handleSubmit = async (e) => {
@@ -63,21 +65,21 @@ useEffect(() => {
             const rawDate = data.get("dateOfBuy");
             const parsedDate = rawDate ? new Date(rawDate) : null;
                         
-                console.log(data.get("type"))
+
                 const updatedItem = {
                     codeInventory: data.get("code") || selectedBook.codeInventory,
-                    codeCDU: data.get("codeCDU1") || selectedBook.codeCDU,
+                    codeCDU: data.get("codeCDU") || selectedBook.codeCDU,
                     title: data.get("title") || selectedBook.title,
                     ubication: data.get("ubication") || selectedBook.ubication,
                     editorial: data.get("editorial") || selectedBook.editorial,
                     numberEdition: data.get("numberEdition") ? Number(data.get("numberEdition")) : selectedBook.numberEdition,
-                    yearEdition: data.get("year") ? Number(data.get("year")) : selectedBook.yearEdition,
+                    yearEdition: data.get("year") || selectedBook.yearEdition,
                     translator: data.get("translator") || selectedBook.translator,
-                    codeClasification: data.get("ubication") || selectedBook.ubication,
+                    codeClasification: data.get("codClas") || selectedBook.codeClasification,
                     pages: data.get("pages") || selectedBook.pages,
                     numberOfCopies: data.get("quantity") ? Number(data.get("quantity")) : selectedBook.numberOfCopies,
                     notes: data.get("notes") || selectedBook.notes,
-                    type: Number(selectedType),
+                    type: selectedType ? Number(selectedType) : null,                    
                     lost: selectedLost === "true" ? true : selectedLost === "false" ? false : null,
                     codeLing: data.get("codeLing") || selectedBook.codeLing,
                     idSupplier: data.get("idSupplier") ? Number(data.get("idSupplier")) : selectedBook.idSupplier,
@@ -86,8 +88,6 @@ useEffect(() => {
                     lossDate: data.get("lossDate") || selectedBook.lossDate,
                     lostPartnerNumber: data.get("lostPartnerNumber") ? Number(data.get("lostPartnerNumber")) : selectedBook.lostPartnerNumber
                 };
-
-                console.log(updatedItem);
             try {
                 const updated = await entityManagerApi.updateItem(selectedBook.BookId, updatedItem);
                 if (updated) {
@@ -114,7 +114,7 @@ useEffect(() => {
                     <input
                         id="code"
                         name="code"
-                        type="number"
+                        type="text"
                         placeholder="Código"
                         defaultValue={selectedBook?.codeInventory || ""}
                     />
@@ -122,14 +122,14 @@ useEffect(() => {
 
                     <div className="input">
                     <div className="cdu">
-                        <label htmlFor="codeCDU1">
+                        <label htmlFor="codeCDU">
                         Código CDU 
                         </label>
                         <div className="cdu-options">
                         <input
-                            id="codeCDU1"
-                            name="codeCDU1"
-                            type="number"
+                            id="codeCDU"
+                            name="codeCDU"
+                            type="text"
                             defaultValue={selectedBook?.codeCDU || ""}
                         />
                         </div>
@@ -196,21 +196,25 @@ useEffect(() => {
                         <label htmlFor="type">
                             Tipo 
                         </label>
-                        
-                        <select
-                            name="type"
-                            id="type"
-                            className="selectform"
-                            value={selectedType}
-                            onChange={(e) => setSelectedType(e.target.value)}
-                            required
+
+
+                       <select
+                        name="type"
+                        id="type"
+                        className="selectform"
+                        value={selectedType}
+                        onChange={(e) => setSelectedType(e.target.value)}
+                        required
                         >
-                            <option value="">Seleccione un tipo</option>
-                            {booksTypes.map((type) => (
-                                <option key={type.bookTypeId} value={String(type.bookTypeId)}>
-                                    {type.typeName}
-                                </option>
-                            ))}
+                        <option value="">Seleccione un tipo</option>
+                        {booksTypes.map((type) => (
+                            <option
+                            key={type.bookTypeId}
+                            value={String(type.bookTypeId)}
+                            >
+                            {type.typeName}
+                            </option>
+                        ))}
                         </select>
                                             
 
@@ -261,8 +265,143 @@ useEffect(() => {
                             defaultValue={selectedBook?.dateOfBuy || ""}
                         />
                         </div>
+                    </div>    
+                    </div>
+
+
+                    <h3 className="findauthor">Agregar autor al libro</h3>
+                        <div className="input">
+                            <label htmlFor="author">Autor</label>
+                            <input id="author" name="author" type="text" placeholder="Buscar autor" 
+                           onChange={(e) => {
+                                const value = e.target.value;
+                                setSearchAuthor(value);
+                                onHandleFindAuthor(value);
+                            }}/>
+                        </div>
+
+
+
+                               <div className="btns-row-container">
+                                <div className="flex-content">
+                                    <div>
+                                        <h4>Resultados</h4>
+                                        <ul className="results-list">
+                                            {results.map((author) => (
+                                                <li key={author.id} className="result-item">
+                                                    <span>{author.Author?.name || author.name}</span>
+                                                    <button 
+                                                        className="add-button"
+                                                        type="button"
+                                                        onClick={() => {
+                                                            if (!authorsSelected.some(a => a.id === author.id)) {
+                                                            setAuthorsSelected([...authorsSelected, author]);
+                                                            }
+                                                        }}
+                                                        >
+                                                        +
+                                                        </button>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                <div>
+                                    <h4>Autores seleccionados</h4>
+                                    <div className="selected-authors">
+                                        {authorsSelected.map((author) => (
+                                            <div key={author.AuthorId} className="selected-author">
+                                              <span>{author.Author?.name || author.name}</span>
+
+                                            <button 
+                                                className="remove-button"
+                                                type="button"
+                                                onClick={() => {
+                                                    setAuthorsSelected(authorsSelected.filter(a => a.id !== author.id));
+                                                }}
+                                                >
+                                                ❌
+                                            </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                </div>
+                                        
+
+                                  {successMessage && (
+                                    <div className="success">
+                                        <p> {successMessage}</p>
+                                    </div>
+                                   )}
+                </div>
+                   
+                    </div>
+
+                <div className="contentformedit">
+                    <div className="input">
+                    <label htmlFor="notes">Notas</label>
+                    <input
+                        id="notes"
+                        name="notes"
+                        type="text"
+                        className="notes"
+                        defaultValue={selectedBook?.notes || ""}
+                    />
+                    </div>
+
+                    <div className="input">
+                    <label htmlFor="year">Año de edición</label>
+                    <input
+                        id="year"
+                        name="year"
+                        type="number"
+                        defaultValue={selectedBook?.yearEdition  || ""}
+                    />
+                    </div>
+
+                    <div className="input">
+                    <label htmlFor="numberEdition">Número de edición</label>
+                    <input
+                        id="numberEdition"
+                        name="numberEdition"
+                        type="number"
+                        defaultValue={selectedBook?.numberEdition || ""}
+                    />
+                    </div>
+
+                    <div className="input">
+                    <label htmlFor="pages">Páginas</label>
+                    <input
+                        id="pages"
+                        name="pages"
+                        type="number"
+                        min={0}
+                        defaultValue={selectedBook?.pages || ""}
+                    />
+                    </div>
+
+                    <div className="input">
+                        <label htmlFor="codClas">Código clasificación</label>
+                        <input
+                            id="codClas"
+                            name="codClas"
+                            type="text"
+                            defaultValue={selectedBook?.codClas || ""}
+                        />
                     </div>
                     <div className="input">
+                    <label htmlFor="codeLing">Código lingüístico</label>
+                    <input
+                        id="codeLing"
+                        name="codeLing"
+                        type="text"
+                        placeholder="Código lingüístico"
+                        defaultValue={selectedBook?.codeLing || ""}
+                    />              
+                    </div>
+
+
+                           <div className="input">
                         <div>
                              <label htmlFor="lost">Perdido  <span className="required">*</span></label>
                        <select
@@ -291,88 +430,34 @@ useEffect(() => {
                                 />
                             </div>
                             <div>
-                            <label htmlFor="lostPartnerNumber">Núm. socio pérdida</label>
-                            <input
-                                id="lostPartnerNumber"
-                                name="lostPartnerNumber"
-                                type="number"
-                                placeholder="Número de socio"
-                                defaultValue={selectedBook?.lostPartnerNumber || ""}
-                            />
-                        </div>
+                                <label htmlFor="lostPartnerNumber">Núm. socio pérdida</label>
+                                <input
+                                    id="lostPartnerNumber"
+                                    name="lostPartnerNumber"
+                                    type="number"
+                                    placeholder="Número de socio"
+                                    defaultValue={selectedBook?.lostPartnerNumber || ""}
+                                />
+                            </div>
+
+                            
+                          
                         </div>
                              </div>
                             
                         
-                    </div>
-                        
-                    </div>
-                    </div>
-                
+                    </div> 
+                </div>
 
-                <div className="contentformedit">
-                    <div className="input">
-                    <label htmlFor="notes">Notas</label>
-                    <input
-                        id="notes"
-                        name="notes"
-                        type="text"
-                        className="notes"
-                        defaultValue={selectedBook?.notes || ""}
-                    />
-                    </div>
-
-                    <div className="input">
-                    <label htmlFor="year">Año de edición</label>
-                    <input
-                        id="year"
-                        name="year"
-                        type="date"
-                        defaultValue={selectedBook?.year || ""}
-                    />
-                    </div>
-
-                    <div className="input">
-                    <label htmlFor="numberEdition">Número de edición</label>
-                    <input
-                        id="numberEdition"
-                        name="numberEdition"
-                        type="text"
-                        defaultValue={selectedBook?.numberEdition || ""}
-                    />
-                    </div>
-
-                    <div className="input">
-                    <label htmlFor="pages">Páginas</label>
-                    <input
-                        id="pages"
-                        name="pages"
-                        type="text"
-                        defaultValue={selectedBook?.pages || ""}
-                    />
-                    </div>
-
-                    <div className="input">
-                    <label htmlFor="codeLing">Código lingüístico</label>
-                    <input
-                        id="codeLing"
-                        name="codeLing"
-                        type="text"
-                        placeholder="Código lingüístico"
-                        defaultValue={selectedBook?.codeLing || ""}
-                    />              
-</div>
-                    </div>
-             
-        
-                   
-                    </div>
+                  
+        </div>
                  <div className="btns-row-container">
                     <div className="btns-row">
                         <Btn text="Guardar" className="changes btn" icon={<div className="img-ico"><img src={SaveIcon} alt="Guardar" /></div>}type="submit" variant="primary"/>
-                        <Btn text="Autores del libro" className="secondary-btn" onClick={() => setPopupView('chooseAuthor')} variant="primary" />
-                        <Btn text="Ver reservas" className="secondary-btn" onClick={() => redirect('renewed')} variant="primary" />
-                        <Btn text="Ver autores" className="secondary-btn" onClick={() => redirect('authors')} variant="primary" />
+                        <Btn text="Autores del libro" 
+                        className="secondary-btn"
+                        onClick={() => setPopupView('chooseAuthor')} 
+                        variant="primary" />
                     </div>
                     </div>
                 </form>

@@ -89,7 +89,7 @@
 }
 
 .preview-list-container {
-  width: 75%;
+  width: auto;
   background-color: var(--white);
   overflow-y: auto;
   padding: 1em;

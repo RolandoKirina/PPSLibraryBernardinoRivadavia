@@ -21,7 +21,6 @@ export default function LostBooks() {
 
     setFormValues(values);
     getLostBooks(values);
-    console.log("Formulario:", values);
   };
 
   async function getLostBooks(values) {
@@ -119,7 +118,6 @@ export default function LostBooks() {
               </div>
             </form>
 
-            {error && <p className="error">{error}</p>}
           </div>
         </div>
 

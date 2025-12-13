@@ -63,3 +63,7 @@
   }
 }
 */
+
+.no-results{
+  color: var(--black);
+}

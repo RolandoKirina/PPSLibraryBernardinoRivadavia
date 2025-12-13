@@ -24,12 +24,10 @@ export default function BookFilter({ formData, onChange })  {
 
           <div className="book-form-input-group cdu">
             <label className='labelinput'>Código de CDU</label>
-            <div className='content'>
-              <div className='inputCDU'>
+       
                 <input type="text" name="codeCDU" value={formData.codeCDU} onChange={onChange} />
-              </div>
-              <input type="text" className='inputCodeCDU' disabled />
-            </div>
+      
+            
           </div>
 
           <div className="book-form-input-group">
