@@ -1,9 +1,7 @@
 .popup-memo-size {
-    min-width: 30em;
-    max-width: 50em;
     color: var(--white);
     background-color: var(--primary-dark-2);
-    max-height: 50em;
+
 }
 
 .popup-memo-size p {
@@ -11,4 +9,14 @@
     text-align: left;
     word-wrap: break-word;
     display: inline-block;
+}
+
+.partner-memo {
+    width: 68em;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.partner-memo p {
+    padding: 1em;
 }

@@ -24,7 +24,7 @@ import BookRanking from '../../components/book-components/bookranking/BookRankin
 import { useAuth } from '../../auth/AuthContext';
 import roles from '../../auth/roles';
 const BookSection = () => {
- 
+
   const { auth } = useAuth();
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
@@ -39,8 +39,8 @@ const BookSection = () => {
   const [error, setError] = useState(null);
 
 
-const { items, getItems, getItem, createItem, updateItem, deleteItem } =
-  useEntityManagerAPI("books");
+  const { items, getItems, getItem, createItem, updateItem, deleteItem } =
+    useEntityManagerAPI("books");
 
   const [formData, setFormData] = useState({
     author: "",
@@ -51,7 +51,7 @@ const { items, getItems, getItem, createItem, updateItem, deleteItem } =
     numberEdition: ""
   });
 
-   const handleFilterChange = (e) => {
+  const handleFilterChange = (e) => {
     const { name, value } = e.target;
     const updated = { ...formData, [name]: value };
     setFormData(updated);
@@ -61,84 +61,84 @@ const { items, getItems, getItem, createItem, updateItem, deleteItem } =
 
 
   useEffect(() => {
-      const filters = Object.fromEntries(
-        Object.entries(formData).filter(([_, v]) => v !== "")
-      );
+    const filters = Object.fromEntries(
+      Object.entries(formData).filter(([_, v]) => v !== "")
+    );
 
-      const delay = setTimeout(() => {
-        getItems(filters);
-      }, 300); 
+    const delay = setTimeout(() => {
+      getItems(filters);
+    }, 300);
 
-      return () => clearTimeout(delay);
-}, [formData, items]);
+    return () => clearTimeout(delay);
+  }, [formData, items]);
 
 
-let columns =[];
-   if (auth.role === roles.admin) {
+  let columns = [];
+  if (auth.role === roles.admin) {
 
-         columns = [
-          { header: 'Título', accessor: 'title' },
-          { header: 'Código de inventario', accessor: 'codeInventory' },
-          { header: 'Codigo de CDU', accessor: 'codeCDU' },
-          {
-            header: 'Borrar',
-            accessor: 'delete',
-            className: "action-buttons",
-            render: (_, row) => (
-              <button className="button-table"
-                onClick={() => {
-                    console.log("ID seleccionado:", row.BookId);
-                    setSelectedId(row.BookId);
-                    setPopUpDelete(true);
-              }}>
+    columns = [
+      { header: 'Título', accessor: 'title' },
+      { header: 'Código de inventario', accessor: 'codeInventory' },
+      { header: 'Codigo de CDU', accessor: 'codeCDU' },
+      {
+        header: 'Borrar',
+        accessor: 'delete',
+        className: "action-buttons",
+        render: (_, row) => (
+          <button className="button-table"
+            onClick={() => {
+              console.log("ID seleccionado:", row.BookId);
+              setSelectedId(row.BookId);
+              setPopUpDelete(true);
+            }}>
 
-                <img src={DeleteIcon} alt="Borrar" />
-              </button>
-            )
-          },
-          {
-            header: 'Editar',
-            accessor: 'edit',
-            className: "action-buttons",
-            render: (_, row) => (
-              <button className="button-table"
-                onClick={() => {
-                  setPopupEdit(true)
-                  setSelectedItem(row)
-                }}
+            <img src={DeleteIcon} alt="Borrar" />
+          </button>
+        )
+      },
+      {
+        header: 'Editar',
+        accessor: 'edit',
+        className: "action-buttons",
+        render: (_, row) => (
+          <button className="button-table"
+            onClick={() => {
+              setPopupEdit(true)
+              setSelectedItem(row)
+            }}
 
-              >
-                <img src={EditIcon} alt="Editar" />
-              </button>
-            )
-          },
-          {
-            header: 'Ver detalle',
-            accessor: 'details',
-            className: "action-buttons",
-            render: (_, row) => (
-              <button className="button-table">
-                <img src={DetailsIcon} alt="Detalles" onClick={
-                  () => {
-                    setPopUpDetail(true)
-                    setSelectedItem(row)
-                  }
-                } />
-              </button>
-            )
-          }
-        ];
+          >
+            <img src={EditIcon} alt="Editar" />
+          </button>
+        )
+      },
+      {
+        header: 'Ver detalle',
+        accessor: 'details',
+        className: "action-buttons",
+        render: (_, row) => (
+          <button className="button-table">
+            <img src={DetailsIcon} alt="Detalles" onClick={
+              () => {
+                setPopUpDetail(true)
+                setSelectedItem(row)
+              }
+            } />
+          </button>
+        )
+      }
+    ];
 
-   }
+  }
 
   else if ((auth.role === roles.user || auth.role === roles.reader)) {
 
-         columns = [
-          { header: 'Título', accessor: 'title' },
-          { header: 'Código de inventario', accessor: 'codeInventory' },
-          { header: 'Codigo de CDU', accessor: 'codeCDU' }];
+    columns = [
+      { header: 'Título', accessor: 'title' },
+      { header: 'Código de inventario', accessor: 'codeInventory' },
+      { header: 'Codigo de CDU', accessor: 'codeCDU' }];
   }
-  
+
   const booksPopUp = [
     {
       key: 'deletePopup',
@@ -147,9 +147,9 @@ let columns =[];
       content: (
         <PopUpDelete
           title="Libro"
-          onConfirm={() => deleteItem(selectedId)} 
+          onConfirm={() => deleteItem(selectedId)}
           closePopup={() => setPopUpDelete(false)}
-          refresh={() => getItems()} 
+          refresh={() => getItems()}
         />
       ),
       close: () => setPopUpDelete(false),
@@ -227,30 +227,30 @@ let columns =[];
     const duplicatedBook = { ...bookData, id: newId };
     createItem(duplicatedBook);
   }
-return (
+  return (
     <>
-      <GenericSection 
-  title="Listado de libros" 
-  filters={     
-     <BookFilter formData={formData} onChange={handleFilterChange} 
-     />}
-  columns={columns} 
-  data={items} 
-  popups={booksPopUp}
-  actions={
-    auth.role === roles.admin ? (
-      <div className="listbtns">
-        <Btn icon={<img src={PlusIcon} />} onClick={() => setPopupAdd(true)} text="Agregar libro" variant="primary" />
-        <Btn icon={<img src={PlusIcon} />} onClick={() => setPopUpDuplicate(true)} text="Duplicar libro" variant="primary" />
-        <Btn icon={<img src={BookIcon} />} onClick={() => setPopUpRanking(true)} text="Ranking de libros" variant="primary" />
-        <Btn icon={<img src={ReaderIcon} />} onClick={() => setPopUpBooksPartners(true)} text="Libros y socios" variant="primary" />
-        <Btn icon={<img src={LostBookIcon} />} onClick={() => setPopUpLostBooks(true)} text="Libros perdidos" variant="primary" />
-      </div>
-    ) : null
-  }
-/>
+      <GenericSection
+        title="Listado de libros"
+        filters={
+          <BookFilter formData={formData} onChange={handleFilterChange}
+          />}
+        columns={columns}
+        data={items}
+        popups={booksPopUp}
+        actions={
+          auth.role === roles.admin ? (
+            <div className="listbtns">
+              <Btn icon={<img src={PlusIcon} />} onClick={() => setPopupAdd(true)} text="Agregar libro" variant="primary" />
+              <Btn icon={<img src={PlusIcon} />} onClick={() => setPopUpDuplicate(true)} text="Duplicar libro" variant="primary" />
+              <Btn icon={<img src={BookIcon} />} onClick={() => setPopUpRanking(true)} text="Ranking de libros" variant="primary" />
+              <Btn icon={<img src={ReaderIcon} />} onClick={() => setPopUpBooksPartners(true)} text="Libros y socios" variant="primary" />
+              <Btn icon={<img src={LostBookIcon} />} onClick={() => setPopUpLostBooks(true)} text="Libros perdidos" variant="primary" />
+            </div>
+          ) : null
+        }
+      />
 
-     
+
     </>
   );
 }

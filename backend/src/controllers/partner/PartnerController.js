@@ -27,6 +27,22 @@ export const getPartner = async (req, res) => {
     }
 };
 
+export const getOneByPartnerNumber = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const result = await PartnerService.getOneByPartnerNumber(id);
+        if (!result) {
+            return res.status(HTTP_STATUS.NOT_FOUND.code).json({ msg: `Partner with id: ${id} not found` });
+        }
+
+        res.status(HTTP_STATUS.OK.code).send(result);
+    } catch (error) {
+        console.error(error);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+    }
+};
+
 export const createPartner = async (req, res) => {
     try {
         const data = req.body;
