@@ -11,7 +11,8 @@ const RemoveReason = sequelize.define("RemoveReason",
         },
         reason: {
             type: DataTypes.STRING(50),
-            field: "Motivo"
+            field: "Motivo",
+            allowNull: false
         }
     },
     {

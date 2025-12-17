@@ -1,4 +1,5 @@
 import LoanType from '../../models/loan/LoanType.js';
+import { ValidationError } from '../../utils/errors/ValidationError.js';
 
 export const getAll = async () => {
     return await LoanType.findAll();
@@ -9,15 +10,20 @@ export const getOne = async (id) => {
 };
 
 export const getOneByDescription = async (description) => {
-
-    const loanType = await LoanType.findAll({
-        where: {
-            description: description
-        },
-        limit: 1
+  try {
+    const loanType = await LoanType.findOne({
+      where: { description }
     });
 
-    return loanType[0].dataValues;
+    if (!loanType) {
+      throw new ValidationError(`El tipo de préstamo: "${description}" no existe`);
+    }
+
+    return loanType.dataValues;
+
+  } catch (err) {
+    throw err; // vuelve a lanzar el error para manejarlo arriba
+  }
 };
 
 export const create = async (loantype) => {

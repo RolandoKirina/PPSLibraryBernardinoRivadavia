@@ -15,6 +15,7 @@ import { readerDetailsInfo } from '../../data/showdetails/LoanDetails';
 import { loanDetailsInfo } from '../../data/showdetails/LoanDetails';
 import GenericForm from '../../components/generic/GenericForm/GenericForm';
 import { readerFields } from '../../data/forms/LoanForms';
+import ReaderFilter from '../../components/filter/readerfilter/ReaderFilter';
 
 export default function ReaderSection() {
     const [filters, setFilters] = useState({});
@@ -24,6 +25,8 @@ export default function ReaderSection() {
     const [editPopup, setEditPopup] = useState(false);
     const [detailsPopup, setDetailsPopup] = useState(false);
     const [booksPopup, setBooksPopup] = useState(false);
+
+    const [errorMessage, setErrorMessage] = useState(false);
 
     const {
         items,
@@ -46,26 +49,33 @@ export default function ReaderSection() {
 
     async function handleAddItem(data) {
         try {
-            const res = await createItem(data);
+            await createItem(data);
+
+            await getItems();
 
             setAddPopup(false);
 
-            await getItems();
-        } catch (err) {
-            console.error("Error al crear préstamo:", err);
+            setErrorMessage(null);
+        }
+        catch(error) {
+            setErrorMessage(error.message);
+            console.error("Error al crear un Lector:", error);
         }
     }
 
     async function handleUpdateItem(data) {
         try {
-            const res = await updateReaderBook(selected.id, data);
+            await updateItem(selected.id, data);
+
+            await getItems();
 
             setEditPopup(false);
 
-             await getItems();
+            setErrorMessage(null);
         }
-        catch (err) {
-            console.error(err);
+        catch(error) {
+            setErrorMessage(error.message);
+            console.error("Error al actualizar un Lector:", error);
         }
     }
 
@@ -90,7 +100,7 @@ export default function ReaderSection() {
             title: 'Editar lector',
             className: '',
             //content: <LoanForm method="update" createLoanItem={handleUpdateItem} loanSelected={selected} />,
-            content: <GenericForm fields={readerFields} onSubmit={(data) => handleUpdateItem(data)}/>,
+            content: <GenericForm fields={readerFields} onSubmit={(data) => handleUpdateItem(data)} />,
             close: () => setEditPopup(false),
             condition: editPopup
         },
@@ -98,8 +108,11 @@ export default function ReaderSection() {
             key: 'addPopup',
             title: 'Agregar lector',
             className: 'loans-background',
-            content: <ReaderForm createReaderItem={handleAddItem} />,
-            close: () => setAddPopup(false),
+            content: <ReaderForm createReaderItem={handleAddItem} errorMessage={errorMessage} />,
+            close: () => {
+                setAddPopup(false)
+                setErrorMessage(null);
+            },
             condition: addPopup
         },
         // {
@@ -202,7 +215,7 @@ export default function ReaderSection() {
 
     return (
         <>
-            <GenericSection title={'Listado de Lectores en sala'} columns={columns} data={items} popups={readerPopups} actions={
+            <GenericSection title={'Listado de Lectores en sala'} columns={columns} data={items} popups={readerPopups} filters={<ReaderFilter onFilterChange={setFilters} />} actions={
                 <Btn text={'Agregar'} onClick={() => setAddPopup(true)} variant={'primary'} />
             } />
         </>

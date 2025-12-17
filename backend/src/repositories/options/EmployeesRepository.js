@@ -1,11 +1,10 @@
 import Employees from '../../models/options/Employees.js';
+import { ValidationError } from '../../utils/errors/ValidationError.js';
 
 export const getAll = async (filters) => {
     const {
         whereEmployee
     } = filters;
-
-    console.log("work");
 
     return await Employees.findAll(
         { 
@@ -19,22 +18,38 @@ export const getOne = async (id) => {
 };
 
 export const getOneByCode = async (code) => {
-
-    const employee = await Employees.findAll({
-        where: {
-            code: code
-        },
-        limit: 1
+  try {
+    const employee = await Employees.findOne({
+      where: { code },
     });
 
-    return employee[0].dataValues;
+    if (!employee) {
+      throw new ValidationError(`El empleado con código "${code}" no existe`);
+    }
+
+    return employee.dataValues;
+
+  } catch (err) {
+    throw err;
+  }
 };
 
+
 export const create = async (data) => {
+
+    if (!data || !data.name || data.name.trim() === "") {
+        throw new ValidationError("El campo Nombre completo no puede estar vacío");
+    }
+
+
     return await Employees.create(data);
 };
 
 export const update = async (id, updates) => {
+    if (!updates || !updates.name || updates.name.trim() === "") {
+        throw new ValidationError("El campo Nombre completo no puede estar vacío");
+    }
+
     await Employees.update(updates, { where: { id } });
     return await Employees.findByPk(id);
 };

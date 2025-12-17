@@ -20,8 +20,8 @@ export const alreadyExists = async (authorCode, bookId) => {
     return existingBookAuthor[0];
 };
 
-export const create = async (bookAuthor) => {
-    return await BookAuthor.create(bookAuthor);
+export const create = async (bookAuthor, transaction) => {
+    return await BookAuthor.create(bookAuthor, { transaction });
 };
 
 // A diferencia de patch, los updates deben tener todos los campos de la entidad

@@ -1,4 +1,5 @@
 import Partner from '../../models/partner/Partner.js';
+import { ValidationError } from '../../utils/errors/ValidationError.js';
 
 export const getAll = async () => {
     return await Partner.findAll();
@@ -9,15 +10,22 @@ export const getOne = async (id) => {
 };
 
 export const getOneByPartnerNumber = async (partnerNumber) => {
-    const partner = await Partner.findAll({
-        where: {
-            partnerNumber: partnerNumber
-        },
-        limit: 1
+  try {
+    const partner = await Partner.findOne({
+      where: { partnerNumber },
     });
 
-    return partner[0].dataValues;
+    if (!partner) {
+      throw new ValidationError(`El socio con número "${partnerNumber}" no existe`);
+    }
+
+    return partner.dataValues;
+
+  } catch (err) {
+    throw err;
+  }
 };
+
 
 export const create = async (data) => {
     return await Partner.create(data);

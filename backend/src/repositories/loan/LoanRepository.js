@@ -13,6 +13,8 @@ import * as PartnerRepository from '../../repositories/partner/PartnerRepository
 import * as LoanBookRepository from '../../repositories/loan/LoanBookRepository.js';
 import * as LoanTypeRepository from '../../repositories/loan/LoanTypeRepository.js';
 
+import { ValidationError } from '../../utils/errors/ValidationError.js';
+
 import { Op } from 'sequelize';
 
 export const getAll = async (filters) => {
@@ -384,43 +386,64 @@ export const getPartnerPrintList = async () => {
   return Object.values(partnerMap);
 };
 
-export const create = async (loan) => {
-  if (!loan.books || loan.books.length === 0) {
-    throw new Error("No se puede crear un préstamo sin libros");
-  }
+export const create = async (data) => {
 
-  console.log(loan);
+   if (!data.books || data.books.length === 0) {
+     throw new ValidationError("No se puede crear un préstamo sin libros");
+   }
+
+   if (!data.employeeCode || data.employeeCode.trim() === "") {
+     throw new ValidationError("El campo código de empleado no puede estar vacío");
+   }
+
+   if (!data.retiredDate || data.retiredDate.trim() === "") {
+     throw new ValidationError("El campo fecha de retiro no puede estar vacío");
+   }
+
+   if (!data.expectedDate || data.expectedDate.trim() === "") {
+     throw new ValidationError("El campo fecha prevista no puede estar vacío");
+   }
+
+   if (!data.partnerNumber || data.partnerNumber.trim() === "") {
+     throw new ValidationError("El campo numero de socio no puede estar vacío");
+   }
 
   const transaction = await sequelize.transaction();
 
   try {
-    const employee = await EmployeesRepository.getOneByCode(loan.employeeCode);
+    const loanType = await LoanTypeRepository.getOneByDescription("retired");
+
+    const employee = await EmployeesRepository.getOneByCode(data.employeeCode);
+   
     if (!employee) {
-      throw new Error("Empleado no existe");
+      throw new ValidationError("Empleado no existe");
     }
 
-    const partner = await PartnerRepository.getOneByPartnerNumber(loan.partnerNumber);
+    const partner = await PartnerRepository.getOneByPartnerNumber(data.partnerNumber);
+
     if (!partner) {
-      throw new Error("Socio no existe");
+      throw new ValidationError("Socio no existe");
     }
 
-    const loanType = await LoanTypeRepository.getOneByDescription(loan.loanType);
+    if (!loanType) {
+      throw new ValidationError(`No existe un tipo de préstamo con la descripción "${description}"`);
+    }
 
     const loanData = {
       partnerId: partner.id,
       loanType: loanType.id,
-      retiredDate: loan.retiredDate,
+      retiredDate: data.retiredDate,
       employeeId: employee.id,
       name: partner.name,
     };
-
+       
     const newLoan = await Loan.create(loanData, { transaction });
 
-    const loanBooks = loan.books.map(book => ({
+    const loanBooks = data.books.map(book => ({
       BookId: book.BookId,
       loanId: newLoan.id,
       bookCode: book.codeInventory,
-      expectedDate: loan.expectedDate,
+      expectedDate: data.expectedDate,
       reneweAmount: 0,
       returned: false,
     }));
@@ -434,10 +457,12 @@ export const create = async (loan) => {
     return {
       msg: "Préstamo creado correctamente",
       loanId: newLoan.id,
-      partnerNumber: loan.partnerNumber
+      partnerNumber: data.partnerNumber
     };
   } catch (err) {
-    await transaction.rollback();
+    if (!transaction.finished) {
+      await transaction.rollback();
+    }
     throw err;
   }
 };
@@ -445,7 +470,21 @@ export const create = async (loan) => {
 
 export const update = async (id, updates) => {
   if (!updates.books || updates.books.length === 0) {
-    throw new Error("No se puede actualizar el préstamo sin libros");
+    throw new ValidationError("No se puede actualizar el préstamo sin libros");
+  }
+
+  if (!updates.employeeCode || updates.employeeCode.trim() === "") {
+    throw new ValidationError("El campo código de empleado no puede estar vacío");
+  }
+
+  if (updates.loanType === "retired") {
+    if (!updates.retiredDate || updates.retiredDate.trim() === "") {
+      throw new ValidationError("La fecha de retiro no puede estar vacía");
+    }
+  } else {
+    if (!updates.expectedDate || updates.expectedDate.trim() === "") {
+      throw new ValidationError("La fecha prevista de devolución no puede estar vacía");
+    }
   }
 
   const transaction = await sequelize.transaction();
@@ -453,7 +492,7 @@ export const update = async (id, updates) => {
   try {
     const employee = await EmployeesRepository.getOneByCode(updates.employeeCode);
     if (!employee) {
-      throw new Error("Empleado no existe");
+      throw new ValidationError("Empleado no existe");
     }
 
     // Actualiza los datos del préstamo
@@ -468,7 +507,7 @@ export const update = async (id, updates) => {
     });
 
     if (updatedCount === 0) {
-      throw new Error("No se pudo actualizar el préstamo");
+      throw new ValidationError("No se pudo actualizar el préstamo");
     }
 
     // Elimina los registros previos

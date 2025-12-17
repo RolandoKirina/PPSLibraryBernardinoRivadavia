@@ -13,16 +13,7 @@ export default function LoanFilter({ onFilterChange }) {
     getItems: getBookTypes,
   } = useEntityManagerAPI("book-types");
 
-  // useEffect(() => {
-  //   const fetchBookTypes = async () => {
-  //     const res = await getBookTypes();
-  //   };
-  //   fetchBookTypes();
-  // }, []);
-
-
   const [formData, setFormData] = useState({
-    type: '',
     state: '',
     materialType: '',
     selectedMaterial: '',
@@ -66,22 +57,6 @@ export default function LoanFilter({ onFilterChange }) {
           </div>
 
           <div className="loan-form-checkbox-group">
-            <h4>Tipo de préstamos</h4>
-            {['in_room', 'retired', 'all'].map((val) => (
-              <label key={val}>
-                <input
-                  type="radio"
-                  name="type"
-                  value={val}
-                  checked={formData.type === val}
-                  onChange={handleChange}
-                />
-                {val === 'in_room' ? 'En sala' : val === 'retired' ? 'Retirado' : 'Todos'}
-              </label>
-            ))}
-          </div>
-
-          <div className="loan-form-checkbox-group">
             <h4>Estado de préstamo</h4>
             {['current', 'returned', 'all'].map((val) => (
               <label key={val}>
@@ -96,54 +71,6 @@ export default function LoanFilter({ onFilterChange }) {
               </label>
             ))}
           </div>
-
-          {/* {auth.role === roles.admin && (
-  <div className="loan-form-checkbox-group">
-    <h4>Tipo de material retirado</h4>
-    <label>
-      <input
-        type="radio"
-        name="materialType"
-        value="all"
-        checked={formData.materialType === 'all'}
-        onChange={handleChange}
-      />
-      Todos
-    </label>
-    <label>
-      <input
-        type="radio"
-        name="materialType"
-        value="specific"
-        checked={formData.materialType === 'specific'}
-        onChange={handleChange}
-      />
-      Los del tipo:
-    </label>
-
-    {formData.materialType === 'specific' && (
-      <select
-        name="selectedMaterial"
-        value={formData.selectedMaterial}
-        onChange={handleChange}
-        className="loan-filter-select"
-      >
-        <option value="">Seleccionar tipo...</option>
-        {bookTypes && bookTypes.length > 0 ? (
-          bookTypes.map((type) => (
-            <option key={type.bookTypeId} value={type.typeName}>
-              {type.typeName}
-            </option>
-          ))
-        ) : (
-          <option disabled>Cargando tipos...</option>
-        )}
-      </select>
-    )}
-  </div>
-)} */}
-
-
 
           <div className="loan-form-input-group">
             <h4>Fecha de retiro</h4>

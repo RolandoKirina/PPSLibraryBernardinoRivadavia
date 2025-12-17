@@ -1,6 +1,7 @@
 import * as AuthorsService from '../../services/author/AuthorsService.js';
 import { HTTP_STATUS } from '../../https/httpsStatus.js';
 import { buildAuthorFilters } from '../../utils/buildAuthorFilters.js';
+import { ValidationError } from '../../utils/errors/ValidationError.js';
 
 export const getAllAuthors = async (req, res) => {
     try {
@@ -38,16 +39,33 @@ export const createAuthor = async (req, res) => {
         const author = req.body;
 
         if (!author) {
-            return res.status(HTTP_STATUS.BAD_REQUEST.code).json({ msg: "Invalid author body" });
+            return res
+                .status(HTTP_STATUS.BAD_REQUEST.code)
+                .json({ msg: "Invalid author body" });
         }
 
         const newAuthor = await AuthorsService.createAuthor(author);
-        res.status(HTTP_STATUS.CREATED.code).send(newAuthor);
+
+        return res
+            .status(HTTP_STATUS.CREATED.code)
+            .json(newAuthor);
+
     } catch (error) {
-        console.error(error);
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+
+        if (error instanceof ValidationError) {
+            return res
+                .status(HTTP_STATUS.BAD_REQUEST.code)
+                .json({ msg: error.message });
+        }
+
+        console.error("Server error:", error);
+
+        return res
+            .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
+            .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
 };
+
 
 export const updateAuthor = async (req, res) => {
     try {
@@ -59,10 +77,25 @@ export const updateAuthor = async (req, res) => {
         }
 
         const updatedAuthor = await AuthorsService.updateAuthor(id, updates);
-        res.status(HTTP_STATUS.OK.code).send(updatedAuthor);
+
+        return res
+            .status(HTTP_STATUS.OK.code)
+            .json(updatedAuthor);
+
     } catch (error) {
         console.error(error);
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+
+        // Si hay mensaje del servicio → error de validación
+        if (error.message && error.message.includes("campos")) {
+            return res
+                .status(HTTP_STATUS.BAD_REQUEST.code)
+                .json({ msg: error.message });
+        }
+
+        // Si es otro error desconocido → 500
+        return res
+            .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
+            .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
 };
 

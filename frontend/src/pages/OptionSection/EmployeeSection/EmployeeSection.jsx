@@ -24,6 +24,7 @@ export default function EmployeeSection() {
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
     const [selected, setSelected] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(false);
 
     const {
         items,
@@ -36,16 +37,38 @@ export default function EmployeeSection() {
 
     useEffect(() => {
         getItems();
-    }, [items]);
+    }, []);
 
-    function handleAddItem(data) {
-        createItem(data);
-        setAddPopup(false);
+    async function handleAddItem(data) {
+        try {
+            await createItem(data);
+
+            await getItems();
+
+            setAddPopup(false);
+
+            setErrorMessage(null);
+        }
+        catch(error) {
+            setErrorMessage(error.message);
+            console.error("Error al crear un empleado:", error);
+        }
     }
 
-    function handleEditItem(data) {
-        updateItem(selected.id, data);
-        setEditPopup(false);
+    async function handleEditItem(data) {
+        try {
+            await updateItem(selected.id, data);
+
+            await getItems();
+
+            setEditPopup(false);
+
+            setErrorMessage(null);
+        }
+        catch(error) {
+            setErrorMessage(error.message);
+            console.error("Error al actualizar un empleado:", error);
+        }
     }
 
 
@@ -76,16 +99,22 @@ export default function EmployeeSection() {
             key: 'addPopup',
             title: 'Añadir empleado',
             className: 'employee-form-size',
-            content: <GenericForm fields={employeeFields} onSubmit={(data) => handleAddItem(data)} />,
-            close: () => setAddPopup(false),
+            content: <GenericForm fields={employeeFields} onSubmit={(data) => handleAddItem(data)} error={errorMessage} />,
+            close: () => {
+                setAddPopup(false)
+                setErrorMessage(null)
+            },
             condition: addPopup
         },
         {
             key: 'editPopup',
             title: 'Editar empleado',
             className: 'employee-form-size',
-            content: <GenericForm fields={employeeFields} onSubmit={(data) => handleEditItem(data)} />,
-            close: () => setEditPopup(false),
+            content: <GenericForm fields={employeeFields} onSubmit={(data) => handleEditItem(data)} error={errorMessage} />,
+            close: () => {
+                setEditPopup(false)
+                setErrorMessage(null)
+            },
             condition: editPopup
         },
         {

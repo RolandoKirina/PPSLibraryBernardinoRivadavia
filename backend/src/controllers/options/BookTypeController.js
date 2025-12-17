@@ -1,5 +1,6 @@
 import * as BookTypeService from "../../services/options/BookTypeService.js";
 import { HTTP_STATUS } from "../../https/httpsStatus.js";
+import { ValidationError } from "../../utils/errors/ValidationError.js";
 
 export const getAllBookTypes = async (req, res) => {
     try {
@@ -22,11 +23,9 @@ export const getBookType = async (req, res) => {
         }
 
         res.status(HTTP_STATUS.OK.code).json(bookType);
-    } catch (e) {
-        console.error(e);
-        res
-            .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
-            .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+    } catch (error) {
+        console.error(error);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
 };
 
@@ -40,9 +39,18 @@ export const createBookType = async (req, res) => {
         }
         const newBookType = await BookTypeService.createBookType(bookType);
         res.status(HTTP_STATUS.CREATED.code).json(newBookType);
-    } catch (e) {
-        console.error(e);
-        res
+        
+    } catch (error) {
+
+        if (error instanceof ValidationError) {
+            return res
+                .status(HTTP_STATUS.BAD_REQUEST.code)
+                .json({ msg: error.message });
+        }
+
+        console.error("Server error:", error);
+
+        return res
             .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
             .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
@@ -59,9 +67,17 @@ export const updateBookType = async (req, res) => {
         }
         const updatedBookType = await BookTypeService.updateBookType(id, updates);
         res.status(HTTP_STATUS.OK.code).json(updatedBookType);
-    } catch (e) {
-        console.error(e);
-        res
+    } catch (error) {
+
+        if (error instanceof ValidationError) {
+            return res
+                .status(HTTP_STATUS.BAD_REQUEST.code)
+                .json({ msg: error.message });
+        }
+
+        console.error("Server error:", error);
+
+        return res
             .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
             .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }

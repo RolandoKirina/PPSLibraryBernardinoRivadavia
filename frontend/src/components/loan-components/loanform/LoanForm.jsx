@@ -20,7 +20,7 @@ import ReturnIcon from '../../../assets/img/return-icon.svg';
 import ReneweIcon from '../../../assets/img/renewe-icon.svg';
 import { useAuth } from '../../../auth/AuthContext.jsx';
 
-export default function LoanForm({ method, createLoanItem, loanSelected }) {
+export default function LoanForm({ method, createLoanItem, loanSelected, errorMessage }) {
   const [popupView, setPopupView] = useState("default");
   const [confirmSaveChangesPopup, setConfirmSaveChangesPopup] = useState(false);
   const BASE_URL = "http://localhost:4000/api/v1";
@@ -33,7 +33,7 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
   const { auth } = useAuth();
 
   const [loanData, setLoanData] = useState({
-    loanType: 'in_room',
+    loanType: 'retired',
     employeeCode: '',
     retiredDate: '',
     expectedDate: '',
@@ -377,37 +377,6 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
             </div>
 
             <div className='add-loan-form-inputs'>
-              <div>
-                <h4>Tipo de Préstamo <span className='required'>*</span></h4>
-                <div>
-                  {method === 'update' ? (
-                    <p><strong>Tipo de préstamo:</strong> {loanData.loanType === 'in_room' ? 'En sala' : 'Retirado'}</p>
-                  ) : (
-                    <>
-                      <label>
-                        <input
-                          type='radio'
-                          name='loanType'
-                          value='in_room'
-                          checked={loanData.loanType === 'in_room'}
-                          onChange={handleChange}
-                        />
-                        En sala
-                      </label>
-                      <label>
-                        <input
-                          type='radio'
-                          name='loanType'
-                          value='retired'
-                          checked={loanData.loanType === 'retired'}
-                          onChange={handleChange}
-                        />
-                        Retirado
-                      </label>
-                    </>
-                  )}
-                </div>
-              </div>
 
               <div className='add-loan-code-employee input'>
                 <label>Código Empleado <span className='required'>*</span></label>
@@ -448,30 +417,19 @@ export default function LoanForm({ method, createLoanItem, loanSelected }) {
               </div>
             </div>
 
-            {partnerSource.loanType === 'retired' ? (
-              <SearchPartner
-                method={method}
-                menu={setPopupView}
-                onDataChange={handleExtraData}
-                loanType={'retired'}
-                partnerData={{
-                  partnerName: partnerSource.name,
-                  partnerNumber: partnerSource.partnerNumber,
-                  memoSearch: partnerSource.memoSearch
-                }}
-              />
-            ) : (
-              <Reader
-                method={method}
-                menu={setPopupView}
-                onDataChange={handleExtraData}
-                loanType={'in_room'}
-                readerData={{
-                  readerDNI: readerSource.readerDNI,
-                  readerName: readerSource.readerName
-                }}
-              />
-            )}
+            <SearchPartner
+              method={method}
+              menu={setPopupView}
+              onDataChange={handleExtraData}
+              loanType={'retired'}
+              partnerData={{
+                partnerName: partnerSource.name,
+                partnerNumber: partnerSource.partnerNumber,
+                memoSearch: partnerSource.memoSearch
+              }}
+            />
+
+            <div className='reader-error'>{errorMessage && <p className="">{errorMessage}</p>}</div>
 
             <div className='lend-books-container'>
               <h2 className='lend-books-title'>Libros a Prestar</h2>

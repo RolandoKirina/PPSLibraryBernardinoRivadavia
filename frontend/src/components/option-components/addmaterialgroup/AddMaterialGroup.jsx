@@ -9,12 +9,13 @@ import ConfirmMessage from '../../common/confirmMessage/ConfirmMessage';
 import { useEffect } from 'react';
 import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
 
-export default function AddMaterialGroup({ method, createGroupItem, updateGroupItem, items, itemSelected, closePopup }) {
+export default function AddMaterialGroup({ method, createGroupItem, updateGroupItem, getItems, items, itemSelected, closePopup }) {
 
   const [selectedIds, setSelectedIds] = useState([]);
   const [confirmSaveChanges, setConfirmSaveChangesPopup] = useState(false);
   const [group, setGroup] = useState('');
   const [amount, setAmount] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
 
   const BASE_URL = "http://localhost:4000/api/v1";
 
@@ -37,25 +38,25 @@ export default function AddMaterialGroup({ method, createGroupItem, updateGroupI
 
   async function handleAddItem() {
     try {
+      if (selectedIds.length === 0) {
+      setErrorMessage("Debes elegir al menos un material de préstamo");
+      return;
+      }
+
+      setErrorMessage(null); 
+
       const newGroup = await createGroupItem({
         group,
-        maxAmount: amount
+        maxAmount: amount,
+        bookTypes: selectedIds
       });
 
-      const newGroupId = newGroup.bookTypeGroupListId;
-
-      await Promise.all(
-        selectedIds.map(bookTypeId =>
-          createBookTypeGroup({
-            BookTypeGroupListId: newGroupId,
-            bookTypeId
-          })
-        )
-      );
+      await getItems();
 
       closePopup();
 
     } catch (error) {
+      setErrorMessage(error.message);
       console.error("Error al crear grupo o materiales:", error);
     }
   }
@@ -68,6 +69,7 @@ export default function AddMaterialGroup({ method, createGroupItem, updateGroupI
         body: JSON.stringify(selectedIds)
       });
       if (!res.ok) throw new Error("Error al actualizar");
+      
       const updated = await res.json();
       }
     catch (error) {
@@ -78,18 +80,29 @@ export default function AddMaterialGroup({ method, createGroupItem, updateGroupI
 
   async function handleUpdateItem() {
     try {
+      if (selectedIds.length === 0) {
+      setErrorMessage("Debes elegir al menos un material de préstamo");
+      return;
+      }    
+
+      setErrorMessage(null); 
+
       const res = await updateGroupItem(itemSelected.bookTypeGroupListId, {
         group: group,
-        maxAmount: amount
+        maxAmount: amount,
+        bookTypes: selectedIds
       })
 
-      console.log(selectedIds);
+      await getItems();
 
-      await updateBookTypesSelected(selectedIds);
+  //    console.log(selectedIds);
+
+//      await updateBookTypesSelected(selectedIds);
       
       closePopup();
 
     } catch (error) {
+      setErrorMessage(error.message);
       console.error("Error al crear grupo o materiales:", error);
     }
 
@@ -135,6 +148,9 @@ export default function AddMaterialGroup({ method, createGroupItem, updateGroupI
               <input type='number' value={amount} onChange={(e) => setAmount(e.target.value)} />
             </div>
           </div>
+            {errorMessage && (
+                <p className="error-message">{errorMessage}</p>
+            )}
           <div className='author-books-title'>
             <h3>Tipo de material disponible <span className='required'>*</span></h3>
           </div>

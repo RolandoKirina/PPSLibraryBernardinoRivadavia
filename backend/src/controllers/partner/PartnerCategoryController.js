@@ -1,5 +1,6 @@
 import * as PartnerCategoryService from '../../services/partner/PartnerCategoryService.js';
 import { HTTP_STATUS } from '../../https/httpsStatus.js';
+import { ValidationError } from '../../utils/errors/ValidationError.js';
 
 export const getAllPartnerCategories = async (req, res) => {
     try {
@@ -37,8 +38,17 @@ export const createPartnerCategory = async (req, res) => {
         const result = await PartnerCategoryService.createPartnerCategory(data);
         res.status(HTTP_STATUS.CREATED.code).send(result);
     } catch (error) {
-        console.error(error);
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+        if (error instanceof ValidationError) {
+            return res
+                .status(HTTP_STATUS.BAD_REQUEST.code)
+                .json({ msg: error.message });
+        }
+
+        console.error("Server error:", error);
+
+        return res
+            .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
+            .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
 };
 
@@ -54,8 +64,17 @@ export const updatePartnerCategory = async (req, res) => {
         const result = await PartnerCategoryService.updatePartnerCategory(id, updates);
         res.status(HTTP_STATUS.OK.code).send(result);
     } catch (error) {
-        console.error(error);
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+        if (error instanceof ValidationError) {
+            return res
+                .status(HTTP_STATUS.BAD_REQUEST.code)
+                .json({ msg: error.message });
+        }
+
+        console.error("Server error:", error);
+
+        return res
+            .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
+            .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
 };
 

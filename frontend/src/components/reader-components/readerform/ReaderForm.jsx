@@ -19,7 +19,7 @@ import ReturnIcon from '../../../assets/img/return-icon.svg';
 import ReneweIcon from '../../../assets/img/renewe-icon.svg';
 import { useAuth } from '../../../auth/AuthContext.jsx';
 
-export default function ReaderForm({ method, createReaderItem, loanSelected }) {
+export default function ReaderForm({ method, createReaderItem, loanSelected, errorMessage }) {
   const [popupView, setPopupView] = useState("default");
   const [confirmSaveChangesPopup, setConfirmSaveChangesPopup] = useState(false);
   const BASE_URL = "http://localhost:4000/api/v1";
@@ -58,8 +58,7 @@ export default function ReaderForm({ method, createReaderItem, loanSelected }) {
     getBooks();
 
     if (method === 'update' && loanSelected?.dni) {
-      console.log("ssss");
-      console.log(loanSelected);
+
       const fetchAllBooksFromLoan = async () => {
         const loanSelectedId = loanSelected.loanId;
         const booksFromLoan = await getBooks(loanSelectedId);
@@ -106,7 +105,6 @@ export default function ReaderForm({ method, createReaderItem, loanSelected }) {
       books: loanData.books
     };
 
-    console.log(newLoan);
     createReaderItem(newLoan);
   }
 
@@ -171,7 +169,6 @@ export default function ReaderForm({ method, createReaderItem, loanSelected }) {
 
     if (!loanData.books || loanData.books.length === 0) {
       setValidateError('Debe agregar al menos un libro antes de guardar el préstamo.');
-      console.log(validateError);
       return false;
     }
 
@@ -277,7 +274,6 @@ export default function ReaderForm({ method, createReaderItem, loanSelected }) {
                     setConfirmReturnPopup(true);
                     setSelectedBook(row);
                     returnLoanBook(row);
-                    console.log(row)
                   }}
                 >
                   <img src={ReturnIcon} alt="Devolver" />
@@ -299,8 +295,6 @@ export default function ReaderForm({ method, createReaderItem, loanSelected }) {
                     setConfirmRenewePopup(true);
                     setSelectedBook(row);
                     reneweLoanBook(row);
-                    console.log(row)
-
                   }}
                 >
                   <img src={ReneweIcon} alt="Renovar" />
@@ -425,6 +419,7 @@ export default function ReaderForm({ method, createReaderItem, loanSelected }) {
               }}
             />
 
+          <div className='reader-error'>{errorMessage && <p className="">{errorMessage}</p>}</div>
 
             <div className='lend-books-container'>
               <h2 className='lend-books-title'>Libros a Prestar</h2>
@@ -517,31 +512,7 @@ export default function ReaderForm({ method, createReaderItem, loanSelected }) {
           )}
         </>
       )}
-      {/* 
-      {popupView === 'unpaidFees' && (
-        <>
-          <BackviewBtn menu={'default'} changeView={setPopupView} />
-          <UnpaidFees changeView={setPopupView} />
-        </>
-      )}
-
-      {popupView === 'editUnpaidFees' && (
-        <>
-          <BackviewBtn menu={'unpaidFees'} changeView={setPopupView} />
-          <GenericForm
-            title={'Editar cuota pendiente'}
-            fields={editLoanformFields}
-            onSubmit={(data) => console.log('Formulario enviado:', data)}
-          />
-        </>
-      )}
-
-      {popupView === 'pendingBooks' && (
-        <>
-          <Table columns={columnsPendingBooks} data={pendingbooks}></Table>
-          <BackviewBtn menu={'default'} changeView={setPopupView} />
-        </>
-      )} */}
+      
     </div>
   );
 

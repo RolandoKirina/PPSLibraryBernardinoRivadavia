@@ -16,6 +16,7 @@ export default function LoanMaterialSection() {
     const [addPopup, setAddPopup] = useState(false);
     const [selected, setSelected] = useState(false);
     // const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(mockLoanMaterials, 'loamMaterials');
+    const [errorMessage, setErrorMessage] = useState(false);
 
     const {
         items,
@@ -26,19 +27,41 @@ export default function LoanMaterialSection() {
         updateItem
     } = useEntityManagerAPI("book-types");
 
-    function handleAddItem(data) {
-        createItem(data);
-        setAddPopup(false);
+    async function handleAddItem(data) {
+        try {
+            await createItem(data);
+
+            await getItems();
+
+            setAddPopup(false);
+
+            setErrorMessage(null);
+        }
+        catch(error) {
+            setErrorMessage(error.message);
+            console.error("Error al crear un material de prestamo:", error);
+        }
     }
 
-    function handleEditItem(data) {
-        updateItem(selected.bookTypeId, data);
-        setEditPopup(false);
+    async function handleEditItem(data) {
+        try {
+            await updateItem(selected.bookTypeId, data);
+
+            await getItems();
+
+            setEditPopup(false);
+
+            setErrorMessage(null);
+        }
+        catch(error) {
+            setErrorMessage(error.message);
+            console.error("Error al actualizar un material de prestamo:", error);
+        }
     }
 
     useEffect(() => {
         getItems();
-    }, [items]);
+    }, []);
 
     const loanMaterialsPopups = [
         {
@@ -59,16 +82,22 @@ export default function LoanMaterialSection() {
             key: 'editPopup',
             title: 'Editar material de préstamo',
             className: '',
-            content: <GenericForm fields={loanMaterialsFields} onSubmit={(data) => handleEditItem(data)} />,
-            close: () => setEditPopup(false),
+            content: <GenericForm fields={loanMaterialsFields} onSubmit={(data) => handleEditItem(data)} error={errorMessage} />,
+            close: () => {
+                setEditPopup(false)
+                setErrorMessage(null)
+            },
             condition: editPopup
         },
         {
             key: 'addPopup',
             title: 'Agregar material de préstamo',
             className: '',
-            content: <GenericForm fields={loanMaterialsFields} onSubmit={(data) => handleAddItem(data)} />,
-            close: () => setAddPopup(false),
+            content: <GenericForm fields={loanMaterialsFields} onSubmit={(data) => handleAddItem(data)} error={errorMessage} />,
+            close: () => {
+                setAddPopup(false)
+                setErrorMessage(null)
+            },
             condition: addPopup
         }
     ];

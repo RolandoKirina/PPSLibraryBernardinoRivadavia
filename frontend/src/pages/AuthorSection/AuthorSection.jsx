@@ -20,6 +20,7 @@ export default function AuthorSection() {
     const { auth } = useAuth();
     const BASE_URL = "http://localhost:4000/api/v1";
     const [filterName, setFilterName] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
     const {
         items,
@@ -65,29 +66,18 @@ export default function AuthorSection() {
         try {
             const author = {
                 name: data.name,
-                nationality: data.nationality
+                nationality: data.nationality,
+                books: data.books
             }
 
-            const newAuthor = await createItem(author);
+            await createItem(author);
 
-            const newAuthorId = newAuthor.id;
-
-            await Promise.all(
-                data.books.map(book =>
-                    createBookAuthor({
-                        BookId: book.BookId,
-                        authorCode: newAuthorId,
-                        authorName: newAuthor.name,
-                        bookCode: book.codeInventory,
-                        position: book.position
-                    })
-                )
-            );
+            await getItems();
 
             setAddPopup(false);
-
         }
         catch (error) {
+            setErrorMessage(error.message);
             console.error("Error al crear un autor:", error);
         }
 
@@ -98,26 +88,17 @@ export default function AuthorSection() {
 
             await updateItem(authorCode, {
                 name: data.name,
-                nationality: data.nationality
+                nationality: data.nationality,
+                books: data.books
             });
 
-            await deleteAllAuthorBooks(authorCode);
-
-            const booksId = getAllBooksId(data.books);
-
-            await Promise.all(
-                booksId.map(id =>
-                    createBookAuthor({
-                        BookId: id,
-                        authorCode: authorCode
-                    })
-                )
-            );
+            await getItems();
 
             setEditPopup(false);
         }
         catch (error) {
-            console.error("Error al crear un autor:", error);
+            setErrorMessage(error.message);
+            console.error("Error al actualizar un autor:", error);
         }
 
     }
@@ -160,7 +141,7 @@ export default function AuthorSection() {
             key: 'editPopup',
             title: 'Editar autor',
             className: 'author-books-background',
-            content: <AuthorBooks authorSelected={selected} method={'update'} createAuthorItem={updateExistingAuthor} />,
+            content: <AuthorBooks authorSelected={selected} method={'update'} createAuthorItem={updateExistingAuthor} errorMessage={errorMessage} />,
             close: () => setEditPopup(false),
             condition: editPopup
         },
@@ -168,7 +149,7 @@ export default function AuthorSection() {
             key: 'addPopup',
             title: 'Agregar autor',
             className: 'author-books-background',
-            content: <AuthorBooks method={'add'} createAuthorItem={addNewAuthor} />,
+            content: <AuthorBooks method={'add'} createAuthorItem={addNewAuthor} errorMessage={errorMessage} />,
             close: () => setAddPopup(false),
             condition: addPopup
         }
