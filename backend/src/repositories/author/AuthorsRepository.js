@@ -66,30 +66,6 @@ export const getAll = async (filters) => {
     return authorsPlain;
 };
 
-export const getAllByName = async (name) => {
-    return await Authors.findAll({
-        attributes: ['id', 'name', 'nationality'],
-        include: [
-            {
-                model: BookAuthor,
-                as: 'BookAuthors',
-                attributes: ['position'],
-                include: [
-                    {
-                        model: Book,
-                        as: 'Book',
-                        attributes: ['codeInventory', 'title', 'codeClasification', 'codeCDU', 'codeLing']
-                    }
-                ]
-            }
-        ],
-        where: {
-            name: {
-                [Op.iLike]: `%${name}%`
-            }
-        }
-    });
-};
 
 export const getOne = async (id) => {
     return await Authors.findByPk(id);
@@ -99,7 +75,6 @@ export const create = async (author) => {
     return await Authors.create(author);
 };
 
-// A diferencia de patch, los updates deben tener todos los campos de la entidad
 export const update = async (id, updates) => {
 
     await Authors.update(updates, {

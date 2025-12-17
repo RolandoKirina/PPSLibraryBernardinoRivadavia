@@ -1,7 +1,7 @@
 import * as BookService from "../../services/book/BookService.js";
 import { HTTP_STATUS } from "../../https/httpsStatus.js";
 import Book from "../../models/book/Book.js";
-import { buildBookFilters, buildFilterRanking, buildFilterLostBook } from "../../utils/buildBookFilters.js";
+import { buildBookFilters, buildFilterRanking, buildFilterLostBook, buildFilterPartnerAndBooks } from "../../utils/buildBookFilters.js";
 
 export const getAllBooks = async (req,res) => {
     try{
@@ -19,7 +19,6 @@ export const getAllBooks = async (req,res) => {
     }
     
 }
-
 
 export const getAllBooksWithFields = async (req,res) => {
     try{
@@ -78,7 +77,6 @@ export const getAllBooksOfAuthor = async (req,res) => {
 
     }
  }
-
  
  export const getLostBooks = async (req,res) =>{
     try{
@@ -86,6 +84,21 @@ export const getAllBooksOfAuthor = async (req,res) => {
         const lostBooks =  await BookService.getLostBooks(queryOptions);
         res.status(HTTP_STATUS.OK.code).send(lostBooks);    
     }
+    catch(e){
+        console.log(e);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+
+    }
+ }
+
+  export const getPartnersAndBooks = async (req,res) => {
+
+    try{
+        const queryOptions = buildFilterPartnerAndBooks(req.query);
+        const partnerAndBooks =  await BookService.getPartnersAndBooks(queryOptions);
+        res.status(HTTP_STATUS.OK.code).send(partnerAndBooks);    
+    }
+
     catch(e){
         console.log(e);
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
@@ -115,6 +128,8 @@ export const createBook = async (req,res) =>{
     try{
         //lo que viene en el json del body de la solicitud http
         const book = req.body;
+        console.log(req.body)
+
         if(!book){
             return res.status(HTTP_STATUS.BAD_REQUEST.code).json({msg: HTTP_STATUS.BAD_REQUEST.msg});
         }

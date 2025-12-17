@@ -70,51 +70,64 @@ export const buildBookFilters = (query) => {
 
 export const buildFilterRanking = (query) => {
   const {
-    retiredDate,
-    cduBooksRetiredPartner,
-    bookCodeRetiredBooks,
-    direction,
+    dateFrom,
+    dateTo,
+    codeCDU,
+    bookCode,
+    orderBy,
+    orderDirection,
     limit,
     offset
   } = query;
 
-  const whereBooks = {}
+  const whereBooks = {};
 
-
-  if (cduBooksRetiredPartner && cduBooksRetiredPartner.trim() !== '') {
-    whereBooks.codeCDU = cduBooksRetiredPartner.trim();
+  if (codeCDU?.trim()) {
+    whereBooks.codeCDU = codeCDU.trim();
   }
 
-  if (bookCodeRetiredBooks && bookCodeRetiredBooks.trim() !== '') {
-    whereBooks.codeInventory = bookCodeRetiredBooks.trim();
+  if (bookCode?.trim()) {
+    whereBooks.codeInventory = bookCode.trim();
   }
 
+  const whereRetiredDate = {};
 
-  const whereRetiredDate = retiredDate?.trim()
-    ? { retiredDate: { [Op.gte]: retiredDate.trim() } }
-    : {};
+  // ⭐ Parsea formato DD/MM/YYYY (Argentina)
+  const parseArgDate = (str) => {
+    const [day, month, year] = str.split("/").map(Number);
+    return new Date(year, month - 1, day);
+  };
+const toStartOfDay = (str) => {
+  const d = new Date(`${str}T00:00:00`);
+  return d;
+};
+
+const toEndOfDay = (str) => {
+  const d = new Date(`${str}T23:59:59.999`);
+  return d;
+};
+
+  console.log("dateFrom:", dateFrom);
+console.log("dateTo:", dateTo);
+  if (dateFrom && dateTo) {
+    whereRetiredDate.retiredDate = {
+      [Op.between]: [
+        toStartOfDay(dateFrom),
+        toEndOfDay(dateTo)
+      ]
+    };
+  }
 
   const parsedLimit = parseInt(limit);
   const parsedOffset = parseInt(offset);
-
-  const directionNormalized = direction?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
-
-  const order = [
-        [
-          { model: LoanBook, as: 'BookLoans' },
-          { model: Loan, as: 'Loan' },
-          { model: Partner, as: 'Partner' },
-          'isActive',
-          directionNormalized
-        ]
-      ];
+  const directionNormalized = orderDirection?.toUpperCase() === "ASC" ? "ASC" : "DESC";
 
   return {
     whereBooks,
     whereRetiredDate,
-    order,
+    orderBy: orderBy || "Cantidad",
     direction: directionNormalized,
-    limit: isNaN(parsedLimit) ? 5 : parsedLimit,
+    limit: isNaN(parsedLimit) ? 10 : parsedLimit,
     offset: isNaN(parsedOffset) ? 0 : parsedOffset
   };
 };
@@ -126,14 +139,20 @@ export const buildFilterLostBook = (query) => {
 
   whereBooks.lost = true;
 
-  if (lossStartDate) whereBooks.lossDate = { [Op.gte]: new Date(lossStartDate) };
-  if (lossEndDate) {
-    whereBooks.lossDate = {
-      ...(whereBooks.lossDate || {}),
-      [Op.lte]: new Date(lossEndDate)
-    };
+  if (lossStartDate) {
+    const start = new Date(lossStartDate);
+    start.setHours(0, 0, 0, 0); // inicio del día
+    whereBooks.lossDate = { [Op.gte]: start };
   }
 
+  if (lossEndDate) {
+    const end = new Date(lossEndDate);
+    end.setHours(23, 59, 59, 999); // fin del día
+    whereBooks.lossDate = {
+      ...(whereBooks.lossDate || {}),
+      [Op.lte]: end
+    };
+  }
   const directionNormalized = direction?.toUpperCase() === "ASC" ? "ASC" : "DESC";
 
 
@@ -186,6 +205,32 @@ export const buildFilterLostBook = (query) => {
     direction: directionNormalized,
     limit: isNaN(parsedLimit) ? 5 : parsedLimit,
     offset: isNaN(parsedOffset) ? 0 : parsedOffset
+  };
+};
+
+export const buildFilterPartnerAndBooks = (query) => {
+  const { dateFrom, dateTo } = query;
+
+  const whereLoan = {};
+
+  if (dateFrom) {
+    const start = new Date(dateFrom);
+    start.setHours(0, 0, 0, 0); 
+    whereLoan.retiredDate = { [Op.gte]: start };
+  }
+
+  if (dateTo) {
+    const end = new Date(dateTo);
+    end.setHours(23, 59, 59, 999);
+    whereLoan.retiredDate = {
+      ...(whereLoan.retiredDate || {}),
+      [Op.lte]: end
+    };
+  }
+
+  console.log(whereLoan)
+  return {
+    whereLoan,
   };
 };
 

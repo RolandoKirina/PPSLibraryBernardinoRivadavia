@@ -1,14 +1,12 @@
 import GenericSection from '../../components/generic/GenericSection/GenericSection.jsx';
-//import { partners } from '../../data/mocks/partners.js';
 import PartnerFilter from '../../components/filter/partner/PartnerFilter.jsx';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DeleteIcon from '../../assets/img/delete-icon.svg';
 import EditIcon from '../../assets/img/edit-icon.svg';
 import FormEditPartner from '../../components/partner-components/formeditpartner/FormEditPartner.jsx';
 import DetailsIcon from '../../assets/img/details-icon.svg';
 import PlusIcon from '../../assets/img/plus-icon.svg';
 import PopUpDelete from '../../components/common/deletebtnComponent/PopUpDelete.jsx';
-import { useEntityManager } from '../../hooks/useEntityManager.js';
 import ShowDetails from '../../components/generic/ShowDetails/ShowDetails.jsx';
 import { DetailPartner } from '../../data/showdetails/partner.js';
 import Btn from '../../components/common/btn/Btn.jsx';
@@ -18,9 +16,10 @@ import PrintPartnerPopup from '../../components/partner-components/printpartnerp
 import PartnersBooks from '../../components/partner-components/partnersbooks/PartnersBooks.jsx';
 import ReaderIcon from '../../assets/img/reader.svg';
 import FormAddPartner from '../../components/partner-components/formaddpartner/FormAddPartner.jsx';
+import { useEntityManagerAPI } from '../../hooks/useEntityManagerAPI.js';
 export default function PartnerSection() {
 
-  //const { items, getItem, createItem, updateItem, deleteItem } = useEntityManager(partners, "partners");
+  const { items, getItems, createItem, updateItem, deleteItem } = useEntityManagerAPI("partners");
   const [selectedItem, setSelectedItem] = useState(null);
   const [PopUpDeletePartner, setPopUpDelete] = useState(false);
   const [PopUpEdit, setPopupEdit] = useState(false);
@@ -31,17 +30,48 @@ export default function PartnerSection() {
   const [PopUpDetail, setPopUpDetail] = useState(false);
   const [PopUpAdd, setPopUpAdd] = useState(false);
 
-  function getItemsDetails(item) {
+  /*function getItemsDetails(item) {
     let ItemData = getItem(item.id);
     setDetailData({ ...ItemData }); // <-- esto crea nueva referencia
 
-  }
+  }*/
+
+  const [formData, setFormData] = useState({
+      statePartner: '',
+      unpaidfees: '',
+      pendingbooks: ''
+  });
+
+
+    useEffect(() => {
+      const filters = Object.fromEntries(
+        Object.entries(formData).filter(([_, v]) => v !== "")
+      );
+
+      const delay = setTimeout(() => {
+        getItems(filters);
+        console.log(items)
+      }, 300); 
+
+      return () => clearTimeout(delay);
+}, [formData, items]);
+
+   const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    const updated = { ...formData, [name]: value };
+    setFormData(updated);
+  };
+
+
 
   const columns = [
     { header: 'Numero de socio', accessor: 'id' },
-    { header: 'Nombre', accessor: 'partnerName' },
-    { header: 'Apellido', accessor: 'partnerSurname' },
-    {
+    { header: 'Nombre', accessor: 'name' },
+    { header: 'Apellido', accessor: 'surname' },
+{
+  header: 'Activo',
+  accessor: row => row.isActive === 1 ? 'Sí' : 'No'
+},   {
       header: 'Borrar',
       accessor: 'delete',
       className: "action-buttons",
@@ -152,7 +182,7 @@ export default function PartnerSection() {
   return (
     <>
 
-      <GenericSection title="Listado socios" filters={<PartnerFilter />}
+      <GenericSection title="Listado socios" filters={<PartnerFilter formData={formData} onChange={handleFilterChange} />}
         columns={columns} data={items} popups={partnersPopUp}
         actions={
           <div>

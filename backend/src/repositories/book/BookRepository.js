@@ -23,7 +23,7 @@ export const getAll = async (filters) => {
   } = filters;
 
   return await Book.findAll({
-    subQuery: false, // usalo cuando hay includes + order + limit
+    subQuery: false,
     where: {
       ...whereCodeInventory,
       ...whereCodeCDU,
@@ -126,6 +126,68 @@ export const getAllBooksOfLoan = async (id) => {
   return flatBooks;
 };
 
+export const getLostBooks = async ({ whereBooks, order, limit, offset }) => {
+  
+  try {
+    const books = await Book.findAll({
+      where: whereBooks,
+      include: [
+        {
+          model: LoanBook,
+          as: "BookLoans",
+          include: [
+            {
+              model: Loan,
+              as: "Loan",
+              include: [
+                {
+                  model: Partner,
+                  as: "Partner",
+                }
+              ]
+            }
+          ]
+        },
+        {
+          model: BookType,
+          as: "BookType",
+          attributes: ["typeName"]
+        }
+      ],
+      order,
+      limit,
+      offset
+    });
+
+    const lostbooks = books.map(book => {
+    const firstLoan = book.BookLoans?.[0]?.Loan;
+    const partner = firstLoan?.Partner;
+
+    
+    return {
+      BookId: book.BookId,
+      title: book.title,
+      lossDate: book.lossDate,
+      typeName: book.BookType?.typeName || '',
+      partnerNumber: partner?.partnerNumber || null,
+      surname: partner?.surname || '',
+      name: partner?.name || '',
+      homeAddress: partner?.homeAddress || '',
+      homePhone: partner?.homePhone || '',
+    };
+    });
+
+    console.log(lostbooks)
+    return lostbooks;
+
+
+  } catch (error) {
+    console.error("Error en getLostBooks Repository:", error);
+    throw error;
+  }
+};
+
+
 export const getAllBooksOfAuthor = async (id, filter) => {
   const books = await Book.findAll({
     attributes: ["BookId", "title", "codeInventory", "codeCDU", "codeLing", "codeClasification"],
@@ -179,7 +241,7 @@ export const getAllBooksOfAuthor = async (id, filter) => {
   return mappedBooks;
 };
 
-
+/*
 export const getRanking = async (filters) => {
   const {
     whereBooks,
@@ -252,6 +314,105 @@ export const getRanking = async (filters) => {
 
   return books;
 };
+*/
+export const getRanking = async (filters) => {
+  const {
+    whereBooks,
+    whereRetiredDate,
+    orderBy,
+    direction,
+    limit,
+    offset
+  } = filters;
+
+  const books = await Book.findAll({
+    where: whereBooks,
+    subQuery: false,
+    include: [
+      {
+        model: LoanBook,
+        as: "BookLoans",
+        required: true,
+        attributes: [],
+        include: [
+          {
+            model: Loan,
+            as: "Loan",
+            required: true,
+            attributes: [],
+            where: whereRetiredDate
+          }
+        ]
+      }
+    ],
+    attributes: [
+      ["id", "BookId"],
+      ["codigo", "codeInventory"],
+      ["titulo", "title"],
+      ["Cod_rcdu", "codeCDU"],
+      [fn("COUNT", col("BookLoans.LoanBookId")), "Cantidad"]
+    ],
+    group: ["Book.id", "Book.codigo", "Book.titulo", "Book.Cod_rcdu"],
+    order: [[literal(`"${orderBy}"`), direction]],
+    limit,
+    offset
+  });
+
+  return books;
+};
+
+export const getPartnersAndBooks = async (filters) => {
+  const { whereLoan } = filters;
+
+  try {
+  
+    console.log(whereLoan)
+
+    const totalBooks = await Book.count({
+      distinct: true,
+      include: [
+        {
+          model: LoanBook,
+          as: "BookLoans",
+          required: true,
+          attributes: [],
+          include: [
+            {
+              model: Loan,
+              as: "Loan",
+              required: true,
+              attributes: [],
+              where: whereLoan
+            }
+          ]
+        }
+      ]
+    });
+
+    const totalPartners = await Loan.count({
+      where: whereLoan,
+      distinct: true,
+      col: 'partnerId',
+      include: [
+        {
+          model: Partner,
+          as: "Partner",
+          required: true,
+          attributes: []
+        }
+      ]
+    });
+
+    return {
+      totalBooks,
+      totalPartners,
+    };
+  } catch (error) {
+    console.error("Error en getPartnersAndBooks:", error);
+    throw error;
+  }
+};
+
 
 
 export const getById = async (id) => {
@@ -284,39 +445,3 @@ export const remove = async (id) => {
   }
 }
 
-
-export const getLostBooks = async ({ whereBooks, order, limit, offset }) => {
-  try {
-    const lostBooks = await Book.findAll({
-      where: whereBooks,
-      include: [
-        {
-          model: LoanBook,
-          as: "BookLoans",
-          include: [
-            {
-              model: Loan,
-              as: "Loan",
-              
-              include: [
-                {
-                  model: Partner,
-                  as: "Partner",
-                  attributes: ["name", "surname"],                }
-              ]
-            }
-          ]
-        }
-      ],
-      order,
-      limit,
-      offset
-    });
-
-    return lostBooks;
-
-  } catch (error) {
-    console.error("🔥 Error en getLostBooks Repository:", error);
-    throw error;
-  }
-};

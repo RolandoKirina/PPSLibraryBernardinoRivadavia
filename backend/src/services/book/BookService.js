@@ -56,3 +56,9 @@ export const deleteBook = async (id) => {
     }
     return deletedBook;
 }
+
+
+export const  getPartnersAndBooks = async (filters) => {
+    let books = await BookRepository.getPartnersAndBooks(filters);
+    return books;
+}

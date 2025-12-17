@@ -14,19 +14,11 @@ const BookAuthor = sequelize.define("BookAuthor",
             type: DataTypes.INTEGER,
             field: 'BookId',
             allowNull: false 
-        },
-        bookCode: {
-            type: DataTypes.STRING(50),
-            field: "CodLibro",
-        },
+        },   
         authorCode: {
             type: DataTypes.INTEGER,
             field: "CodAutor",
             allowNull: false
-        },
-        authorName:{
-            type: DataTypes.TEXT,
-            field: 'Nombre'
         },
         position: {
             type: DataTypes.INTEGER,

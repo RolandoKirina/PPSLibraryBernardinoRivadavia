@@ -29,23 +29,18 @@ export default function PartnerFilter() {
                     <h3 className='titleh3'>Filtro de socios</h3>
 
                     <div className="form-checkbox-group">
-                        <h4>Estado del socio</h4>
-                        {['all', 'assets', 'Dismissed'].map((val) => (
-                            <label key={val}>
-                                <input
-                                    type="radio"
-                                    name="type"
-                                    value={val}
-                                    checked={formData.type === val}
-                                    onChange={handleChange}
-                                />
-                                {{
-                                    assets: 'Activos',
-                                    Dismissed: 'Dados de baja',
-                                }[val] || 'Todos'}
-
-                            </label>
-                        ))}
+                       <div className="form-input-group">
+                            <h4>Estado del socio</h4>
+                            <select
+                                name="type"
+                                value={formData.type}
+                                onChange={handleChange}
+                            >
+                                <option value="all">Todos</option>
+                                <option value="assets">Activos</option>
+                                <option value="Dismissed">Dados de baja</option>
+                            </select>
+                            </div>
                     </div>
                     <div className="form-input-group">
                         <label>Cuotas impagas </label>

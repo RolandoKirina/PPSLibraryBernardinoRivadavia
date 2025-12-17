@@ -7,7 +7,6 @@ const router = express.Router();
 
 router.get('/', AuthorsController.getAllAuthors);
 router.get('/:id', validateIdParam("id"), AuthorsController.getAuthor);
-router.get('/by-name/:name', AuthorsController.getAllAuthorsByName);
 router.post('/', AuthorsController.createAuthor);
 router.put('/:id', validateIdParam("id"), AuthorsController.updateAuthor);
 

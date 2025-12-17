@@ -14,22 +14,6 @@ export const getAllAuthors = async (req, res) => {
     }
 };
 
-export const getAllAuthorsByName = async (req, res) => {
-    try {
-        const { name } = req.params;
-
-        if (typeof name !== 'string' || name.trim().length === 0) {
-            return res.status(HTTP_STATUS.BAD_REQUEST.code).json({ msg: 'Nombre inválido' });
-        }   
-
-        const authors = await AuthorsService.getAllAuthorsByName(name);
-
-        res.status(HTTP_STATUS.OK.code).send(authors);
-    } catch (error) {
-        console.error(error);
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
-    }
-};
 
 
 export const getAuthor = async (req, res) => {
