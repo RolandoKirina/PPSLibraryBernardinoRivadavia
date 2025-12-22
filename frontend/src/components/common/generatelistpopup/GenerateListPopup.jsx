@@ -10,52 +10,54 @@ export default function GenerateListPopup({ dataByType, columnsByType, typeList,
         <>
             <div className='generate-list-container'>
                 <div className='generate-list-title'>
-                    <h3>{title ? title : titlesByType[typeList]} </h3>
-                    <h4>{new Date().toLocaleString('es-AR', {
-                        weekday: 'long',
-                        day: '2-digit',
-                        month: 'long',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    })}
-                    </h4>
-                    {(typeList === 'TypeOneFees' || typeList === 'TypeTwoFees') && (
-                        <h4>Entre el: {feeDates.beforeDate} y el: {feeDates.afterDate}</h4>
-                    )}
+                    <div className="print-loans-area">
+                              <h3>{title ? title : titlesByType[typeList]} </h3>
+                                <h4>{new Date().toLocaleString('es-AR', {
+                                    weekday: 'long',
+                                    day: '2-digit',
+                                    month: 'long',
+                                    year: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                })}
+                                </h4>
+                                {(typeList === 'TypeOneFees' || typeList === 'TypeTwoFees') && (
+                                    <h4>Entre el: {feeDates.beforeDate} y el: {feeDates.afterDate}</h4>
+                                )}
 
-                </div>
-                {/* añadir fecha y hora y num pagina */}
+                                  {/* añadir fecha y hora y num pagina */}
 
-          {dataByType.length > 0 && (
-                <Table columns={columnsByType} data={dataByType} isPrintList={true} rowsPerPage={30}>
+                                {dataByType.length > 0 ? (
+                                        <Table columns={columnsByType} data={dataByType} isPrintList={true} rowsPerPage={15}>
+
+
+                                            {typeList === 'TypeOneFees' && (
+                                                <div className='fees-info'>
+                                                    <span>Cantidad de cuotas: </span>
+                                                    <span>Monto total: </span>
+                                                </div>
+                                            )}
+
+                                            {typeList === 'TypeTwoFees' && (
+                                                <div className='fees-info'>
+                                                    <span>| Cantidad total | Regular: 7979 | Honorario: 0 | Protector: 313 | Débito: 0 | </span>
+                                                    <span>| Importe total | Regular: $21.913.181,00 | Honorario: $204.000,00 | Protector: $1.867.450,00 | Débito: $0,00 |</span>
+                                                </div>
+                                            )}
+                                        </Table>
+                                    ) : (
+                                        <div className="no-results">
+                                            <p>No hay resultados que coincidan con los filtros seleccionados.</p>
+                                        </div>
+                                    )}
+                    </div>
+
                     <div className='print-icon-btn'>
-                            <Btn onClick={() => window.print()} variant='primary' text='Imprimir' icon={<img src={printIcon} alt='printIcon' />} />
-                        </div>
-
-                        {typeList === 'TypeOneFees' && (
-                            <div className='fees-info'>
-                                <span>Cantidad de cuotas: </span>
-                                <span>Monto total: </span>
-                            </div>
-                        )}
-
-                        {typeList === 'TypeTwoFees' && (
-                            <div className='fees-info'>
-                                <span>| Cantidad total | Regular: 7979 | Honorario: 0 | Protector: 313 | Débito: 0 | </span>
-                                <span>| Importe total | Regular: $21.913.181,00 | Honorario: $204.000,00 | Protector: $1.867.450,00 | Débito: $0,00 |</span>
-                            </div>
-                        )}
-                    </Table>
-                )} :
-
-
-            {dataByType.length === 0 && (
-                <div className="no-results">
-                    <p>No hay resultados que coincidan con los filtros seleccionados.</p>
+                        <Btn onClick={() => window.print()} variant={'primary'} text={'Imprimir'} icon={<img src={printIcon} alt='printIcon' />} />
+                    </div>
+                  
                 </div>
-            )}
-
+                  
             </div>
         </>
     )

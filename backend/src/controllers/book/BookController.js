@@ -65,6 +65,22 @@ export const getAllBooksOfAuthor = async (req,res) => {
     } 
 }
 
+export const getAllPendingBooks = async (req,res) => {
+    try{
+        const { partnerNumber } = req.params;
+
+        const books = await BookService.getAllPendingBooks(partnerNumber);
+      
+        res.status(HTTP_STATUS.OK.code).send(books);    
+
+    }
+    catch(e){
+        console.error(e);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+    } 
+}
+
+
  export const getRanking = async (req,res) =>{
     try{
         const queryOptions = buildFilterRanking(req.query);

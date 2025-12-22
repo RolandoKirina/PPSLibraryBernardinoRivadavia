@@ -183,7 +183,7 @@
 }
 
 .add-books-error p {
-    color: red;
+    color: var(--error);
 }
 
 .validate-error {

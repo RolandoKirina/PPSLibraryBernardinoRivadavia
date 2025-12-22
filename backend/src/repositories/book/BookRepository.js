@@ -50,6 +50,70 @@ export const getAll = async (filters) => {
     offset
   });
 };
+
+
+export const getAllPendingBooks = async (partnerNumber) => {
+  
+  const books = await Book.findAll({
+    attributes: ["BookId", "title", "codeInventory", "codeCDU", "codeLing", "codeClasification"],
+    include: [
+      {
+        model: LoanBook,
+        as: 'BookLoans',
+        attributes: ['BookId', 'loanId', 'reneweAmount', 'returnedDate'],
+        required: true,
+        where: {
+          returnedDate: null
+        },
+        include: [
+          {
+            model: Loan,
+            as: 'Loan',
+            attributes: ['id'],
+            required: true,
+            include: [
+              {
+                model: Partner,
+                as: 'Partner',
+                required: true,
+                where: {
+                  partnerNumber
+                }
+              }
+            ]
+          }
+        ]
+
+      },
+      {
+        model: BookType,
+        as: 'BookType',
+        attributes: ['bookTypeId', 'typeName'],
+        required: true
+      }
+    ]
+  });
+
+  const flatBooks = books.map(book => ({
+    partnerNumber: book.BookLoans?.[0]?.Loan?.Partner?.partnerNumber || null,
+    BookId: book.BookId,
+    title: book.title,
+    codeInventory: book.codeInventory,
+    codeCDU: book.codeCDU,
+    codeLing: book.codeLing,
+    codeClasification: book.codeClasification,
+    bookTypeId: book.BookType?.bookTypeId || null,
+    typeName: book.BookType?.typeName || '',
+    loanId: book.BookLoans?.[0]?.Loan?.id || null,
+    renewes: book.BookLoans?.[0]?.reneweAmount || 0,
+    returnedDate: book.BookLoans?.[0]?.returnedDate, // null o fecha real
+    returned: book.BookLoans?.[0]?.returnedDate ? 'Si' : 'No',
+    returnDateText: book.BookLoans?.[0]?.returnedDate || 'Sin fecha' // para mostrar en tabla
+  }));
+
+  return flatBooks;
+};
+
 export const getAllWithFields = async () => {
 
   const books = await Book.findAll({

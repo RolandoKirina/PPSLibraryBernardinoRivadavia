@@ -29,7 +29,6 @@ export default function applyRelationships(models) {
   Employees.hasMany(ReaderBook, { as: "ReaderBooks", foreignKey: "employeeId", sourceKey: "id" });
   ReaderBook.belongsTo(Employees, { as: "Employee", foreignKey: "employeeId", targetKey: "id" });
   
-
   Book.hasMany(ReaderBook, { as: "BookReaders", foreignKey: "BookId", sourceKey: "BookId" });
   ReaderBook.belongsTo(Book, { as: "Book", foreignKey: "BookId", targetKey: "BookId" });
 

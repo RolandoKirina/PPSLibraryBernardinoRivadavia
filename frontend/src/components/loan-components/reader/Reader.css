@@ -7,13 +7,15 @@
     color: var(--secondary-light-2);
 }
 
-.search-partner-inputs {
+.reader-inputs {
     width: 100%;
     display: flex;
     justify-content: space-between;
 }
 
-.search-partner-inputs div {
+
+
+.reader div {
     display: flex;
     flex-direction: column;
 }

@@ -13,6 +13,8 @@ import * as PartnerRepository from '../../repositories/partner/PartnerRepository
 import * as LoanBookRepository from '../../repositories/loan/LoanBookRepository.js';
 import * as LoanTypeRepository from '../../repositories/loan/LoanTypeRepository.js';
 
+import { formatDate } from '../../utils/date/formatDate.js';
+
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 
 import { Op } from 'sequelize';
@@ -84,15 +86,15 @@ export const getAll = async (filters) => {
       }
     ],
     order,
-    limit,
-    offset
+    // limit,
+    // offset
   });
 
   const groupedLoans = loans.map(loan => ({
     loanId: loan?.id || '',
-    retiredDate: loan.retiredDate,
-    expectedDate: loan.LoanBooks?.[0]?.expectedDate || '',
-    returnedDate: loan.LoanBooks?.[0]?.returnedDate || '',
+    retiredDate: formatDate(loan.retiredDate),
+    expectedDate: formatDate(loan.LoanBooks?.[0]?.expectedDate),
+    returnedDate: formatDate(loan.LoanBooks?.[0]?.returnedDate),
     withdrawalTime: loan?.withdrawalTime || '',
     loanType: loan.LoanType?.description || '',
     employee: loan.Employee?.name || '',
@@ -232,9 +234,9 @@ export const getReturnPrintList = async () => {
       partnerNumber: loan.Partner?.partnerNumber || '',
       partnerName: `${loan.Partner?.surname || ''} ${loan.Partner?.name || ''}`,
       partnerAddress: loan.Partner?.homeAddress || '',
-      retiredDate: loan.withdrawalTime || 'No hay fecha',
-      expectedDate: loanBook.expectedDate || 'No hay fecha',
-      returnedDate: loanBook.returnedDate || 'No hay fecha'
+    retiredDate: formatDate(loan.retiredDate),
+    expectedDate: formatDate(loanBook.expectedDate),
+    returnedDate: formatDate(loanBook.returnedDate)
     }))
   );
 
@@ -299,8 +301,8 @@ export const getPhonePrintList = async () => {
       partnerNumber: loan.Partner?.partnerNumber || '',
       partnerName: `${loan.Partner?.surname || ''} ${loan.Partner?.name || ''}`,
       partnerPhone: loan.Partner?.homePhone || '',
-      retiredDate: loan.withdrawalTime || 'No hay fecha',
-      expectedDate: loanBook.expectedDate || 'No hay fecha',
+      retiredDate: formatDate(loan.retiredDate),
+      expectedDate: formatDate(loanBook.expectedDate),
     }))
   );
 
@@ -386,85 +388,8 @@ export const getPartnerPrintList = async () => {
   return Object.values(partnerMap);
 };
 
-export const create = async (data) => {
-
-   if (!data.books || data.books.length === 0) {
-     throw new ValidationError("No se puede crear un préstamo sin libros");
-   }
-
-   if (!data.employeeCode || data.employeeCode.trim() === "") {
-     throw new ValidationError("El campo código de empleado no puede estar vacío");
-   }
-
-   if (!data.retiredDate || data.retiredDate.trim() === "") {
-     throw new ValidationError("El campo fecha de retiro no puede estar vacío");
-   }
-
-   if (!data.expectedDate || data.expectedDate.trim() === "") {
-     throw new ValidationError("El campo fecha prevista no puede estar vacío");
-   }
-
-   if (!data.partnerNumber || data.partnerNumber.trim() === "") {
-     throw new ValidationError("El campo numero de socio no puede estar vacío");
-   }
-
-  const transaction = await sequelize.transaction();
-
-  try {
-    const loanType = await LoanTypeRepository.getOneByDescription("retired");
-
-    const employee = await EmployeesRepository.getOneByCode(data.employeeCode);
-   
-    if (!employee) {
-      throw new ValidationError("Empleado no existe");
-    }
-
-    const partner = await PartnerRepository.getOneByPartnerNumber(data.partnerNumber);
-
-    if (!partner) {
-      throw new ValidationError("Socio no existe");
-    }
-
-    if (!loanType) {
-      throw new ValidationError(`No existe un tipo de préstamo con la descripción "${description}"`);
-    }
-
-    const loanData = {
-      partnerId: partner.id,
-      loanType: loanType.id,
-      retiredDate: data.retiredDate,
-      employeeId: employee.id,
-      name: partner.name,
-    };
-       
-    const newLoan = await Loan.create(loanData, { transaction });
-
-    const loanBooks = data.books.map(book => ({
-      BookId: book.BookId,
-      loanId: newLoan.id,
-      bookCode: book.codeInventory,
-      expectedDate: data.expectedDate,
-      reneweAmount: 0,
-      returned: false,
-    }));
-
-    await Promise.all(
-      loanBooks.map(book => LoanBookRepository.create(book, transaction))
-    );
-
-    await transaction.commit();
-
-    return {
-      msg: "Préstamo creado correctamente",
-      loanId: newLoan.id,
-      partnerNumber: data.partnerNumber
-    };
-  } catch (err) {
-    if (!transaction.finished) {
-      await transaction.rollback();
-    }
-    throw err;
-  }
+export const create = async (loanData, transaction = null) => {
+  return await Loan.create(loanData, { transaction });
 };
 
 
