@@ -47,6 +47,7 @@ const BookSection = () => {
     codeInventory: "",
     codeCDU: "",
     codeSignature: "",
+    bookTitle: "",
     yearEdition: "",
     numberEdition: ""
   });
