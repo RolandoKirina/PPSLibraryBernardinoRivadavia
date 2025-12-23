@@ -67,7 +67,7 @@ const BookSection = () => {
     }, 300);
 
     return () => clearTimeout(delay);
-  }, [formData, items]);
+  }, [formData]);
 
 
   let columns = [];
@@ -156,7 +156,7 @@ const BookSection = () => {
       key: 'editPopup',
       title: 'Editar Libro',
       className: 'popup-container-book-form editsize',
-      content: <FormEditBook selectedBook={selectedItem} />,
+      content: <FormEditBook selectedBook={selectedItem} getItems={getItems} />,
       close: () => setPopupEdit(false),
       condition: PopUpEdit
     },
@@ -164,7 +164,7 @@ const BookSection = () => {
       key: 'AddPopup',
       title: 'Agregar Libro',
       className: 'popup-container-book-form',
-      content: <FormAddBook />,
+      content: <FormAddBook getItems={getItems} />,
       close: () => setPopupAdd(false),
       condition: PopUpAdd
     },

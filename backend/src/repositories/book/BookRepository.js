@@ -7,6 +7,8 @@ import Loan from "../../models/loan/Loan.js";
 import BookType from "../../models/options/BookType.js";
 import { fn, col, literal } from "sequelize";
 import Op from "sequelize";
+import sequelize from "../../configs/database.js";
+import * as BookAuthorRepository from '../author/BookAuthorRepository.js';
 
 export const getAll = async (filters) => {
   const {
@@ -53,7 +55,7 @@ export const getAll = async (filters) => {
 
 
 export const getAllPendingBooks = async (partnerNumber) => {
-  
+
   const books = await Book.findAll({
     attributes: ["BookId", "title", "codeInventory", "codeCDU", "codeLing", "codeClasification"],
     include: [
@@ -191,7 +193,7 @@ export const getAllBooksOfLoan = async (id) => {
 };
 
 export const getLostBooks = async ({ whereBooks, order, limit, offset }) => {
-  
+
   try {
     const books = await Book.findAll({
       where: whereBooks,
@@ -224,27 +226,24 @@ export const getLostBooks = async ({ whereBooks, order, limit, offset }) => {
     });
 
     const lostbooks = books.map(book => {
-    const firstLoan = book.BookLoans?.[0]?.Loan;
-    const partner = firstLoan?.Partner;
+      const firstLoan = book.BookLoans?.[0]?.Loan;
+      const partner = firstLoan?.Partner;
 
-    
-    return {
-      BookId: book.BookId,
-      title: book.title,
-      lossDate: book.lossDate,
-      typeName: book.BookType?.typeName || '',
-      partnerNumber: partner?.partnerNumber || null,
-      surname: partner?.surname || '',
-      name: partner?.name || '',
-      homeAddress: partner?.homeAddress || '',
-      homePhone: partner?.homePhone || '',
-    };
+
+      return {
+        BookId: book.BookId,
+        title: book.title,
+        lossDate: book.lossDate,
+        typeName: book.BookType?.typeName || '',
+        partnerNumber: partner?.partnerNumber || null,
+        surname: partner?.surname || '',
+        name: partner?.name || '',
+        homeAddress: partner?.homeAddress || '',
+        homePhone: partner?.homePhone || '',
+      };
     });
 
-    console.log(lostbooks)
     return lostbooks;
-
-
   } catch (error) {
     console.error("Error en getLostBooks Repository:", error);
     throw error;
@@ -429,8 +428,6 @@ export const getPartnersAndBooks = async (filters) => {
   const { whereLoan } = filters;
 
   try {
-  
-    console.log(whereLoan)
 
     const totalBooks = await Book.count({
       distinct: true,
@@ -477,8 +474,6 @@ export const getPartnersAndBooks = async (filters) => {
   }
 };
 
-
-
 export const getById = async (id) => {
   return await Book.findByPk(id);
 }
@@ -488,11 +483,44 @@ export const create = async (book) => {
 }
 
 export const update = async (id, book) => {
-  const [rowsUpdated] = await Book.update(book, { where: { id } });
-  if (rowsUpdated === 0) {
-    return null;
+  const transaction = await sequelize.transaction();
+
+  try {
+
+    await Book.update(book, {
+      where: { id }, transaction
+    });
+
+    await BookAuthor.destroy({
+      where: { BookId: id },
+      transaction
+    });
+
+    const newAssociations = book.authors.map(author => ({
+      BookId: id, 
+      authorCode: author.authorCode || author.id, 
+      position: author.position || null,
+    }));
+
+
+    await Promise.all(
+      newAssociations.map(assoc =>
+        BookAuthorRepository.create(assoc, transaction)
+      )
+    );
+
+    await transaction.commit();
+
+    return {
+      msg: "Libro actualizado correctamente",
+      updatedId: id
+    };
+
+  } catch (err) {
+    await transaction.rollback();
+    throw err;
   }
-  return await Book.findByPk(id);
+
 }
 
 export const remove = async (id) => {

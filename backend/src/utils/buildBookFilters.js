@@ -62,7 +62,7 @@ export const buildBookFilters = (query) => {
     whereCodeSignature,
     yearEdition,
     numberEdition,
-    limit: isNaN(parsedLimit) ? 20 : parsedLimit,
+    limit: isNaN(parsedLimit) ? 40 : parsedLimit,
     offset: isNaN(parsedOffset) ? 0 : parsedOffset
   };
 }

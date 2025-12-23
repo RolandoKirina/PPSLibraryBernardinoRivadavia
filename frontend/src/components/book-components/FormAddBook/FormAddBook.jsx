@@ -6,7 +6,7 @@ import BackviewBtn from "../../common/backviewbtn/BackviewBtn.jsx";
 import BookAuthors from "../BooksAuthor/BookAuthors.jsx";
 import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
 
-export default function FormAddBook() {
+export default function FormAddBook({ getItems }) {
 
     const [popupView, setPopupView] = useState('default');
     const [authorsSelected, setAuthorsSelected] = useState([]);
@@ -83,7 +83,6 @@ async function onHandleFindAuthor() {
 
             if (authorsSelected.length > 0) {
                 for (const author of authorsSelected) {
-                    console.log(author);
                     await createBookAuthor({
                     BookId: createdBook.BookId,
                     authorCode: author.id
@@ -95,6 +94,8 @@ async function onHandleFindAuthor() {
             setSuccessMessage(" ✅ Libro guardado con exito");
            
             setTimeout(() => setSuccessMessage(""), 10000);
+
+            await getItems();
 
             form.reset();
             setAuthorsSelected([]);
