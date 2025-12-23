@@ -25,6 +25,8 @@ export const getAll = async (filters) => {
     offset
   } = filters;
 
+  console.log(whereNumberEdition);
+
   return await Book.findAll({
     subQuery: false,
     where: {

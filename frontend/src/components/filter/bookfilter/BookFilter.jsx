@@ -43,7 +43,7 @@ export default function BookFilter({ formData, onChange }) {
 
           <div className="book-form-input-group">
             <label>Año</label>
-            <input type="date" name="yearEdition" value={formData.yearEdition} onChange={onChange} />
+            <input type="number" name="yearEdition" value={formData.yearEdition} onChange={onChange} />
           </div>
 
           <div className="book-form-input-group">

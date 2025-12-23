@@ -26,8 +26,6 @@ export const buildBookFilters = (query) => {
   const whereYearEdition = {};
   const whereNumberEdition = {};
 
-
-
   if (author && author.trim() !== '') {
     whereAuthor.name = {
       [Op.iLike]: `%${author.trim()}%`
@@ -57,7 +55,7 @@ export const buildBookFilters = (query) => {
   if (numberEdition) {
     whereNumberEdition.numberEdition = numberEdition;
   }
-  
+
   const parsedLimit = parseInt(limit);
   const parsedOffset = parseInt(offset);
 
@@ -67,8 +65,8 @@ export const buildBookFilters = (query) => {
     whereCodeCDU,
     whereCodeSignature,
     whereBookTitle,
-    yearEdition,
-    numberEdition,
+    whereYearEdition,
+    whereNumberEdition,
     limit: isNaN(parsedLimit) ? 40 : parsedLimit,
     offset: isNaN(parsedOffset) ? 0 : parsedOffset
   };
@@ -235,7 +233,6 @@ export const buildFilterPartnerAndBooks = (query) => {
     };
   }
 
-  console.log(whereLoan)
   return {
     whereLoan,
   };
