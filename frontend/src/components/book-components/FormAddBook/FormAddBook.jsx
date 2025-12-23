@@ -12,34 +12,64 @@ export default function FormAddBook({ getItems }) {
     const [authorsSelected, setAuthorsSelected] = useState([]);
     const [selectedType, setSelectedType] = useState();
     const [successMessage, setSuccessMessage] = useState("");
-    const [SearchAuthor, setSearchAuthor]= useState("");
+    const [SearchAuthor, setSearchAuthor] = useState("");
     const entityManagerApi = useEntityManagerAPI("books");
     const [results, setResults] = useState([]);
 
-  const {items: authors = [], getItems: getAuthors} = useEntityManagerAPI("authors");
-    const {items: booksTypes = [],getItems: getBookTypes} = useEntityManagerAPI("book-types");
-    
-useEffect(() => {
-    if (SearchAuthor.trim() === "") {
-        setResults([]);          
-        getAuthors({ authorName: "" });
-    }
-}, [SearchAuthor]);
+    const { items: authors = [], getItems: getAuthors } = useEntityManagerAPI("authors");
+    const { items: booksTypes = [], getItems: getBookTypes } = useEntityManagerAPI("book-types");
 
-async function onHandleFindAuthor() {
-    try {
+    const [bookForm, setBookForm] = useState({
+        code: '',
+        codeCDU1: '',
+        title: '',
+        ubication: '',
+        quantity: '',
+        editorial: '',
+        type: '',
+        translator: '',
+        idSupplier: '',
+        numfactura: '',
+        dateOfBuy: '',
+        notes: '',
+        year: '',
+        numberEdition: '',
+        pages: '',
+        codeLing: '',
+        codClas: ''
+    });
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setBookForm(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+
+
+    useEffect(() => {
         if (SearchAuthor.trim() === "") {
-            setResults([]); 
-            return;
+            setResults([]);
+            getAuthors({ authorName: "" });
         }
+    }, [SearchAuthor]);
 
-        const res = await getAuthors({ authorName: SearchAuthor });
-        setResults(res); 
-    } catch (err) {
-        console.error(err);
-        setSuccessMessage("");
+    async function onHandleFindAuthor() {
+        try {
+            if (SearchAuthor.trim() === "") {
+                setResults([]);
+                return;
+            }
+
+            const res = await getAuthors({ authorName: SearchAuthor });
+            setResults(res);
+        } catch (err) {
+            console.error(err);
+            setSuccessMessage("");
+        }
     }
-}
     const {
         items: bookAuthors,
         getItems: getBookAuthors,
@@ -84,15 +114,15 @@ async function onHandleFindAuthor() {
             if (authorsSelected.length > 0) {
                 for (const author of authorsSelected) {
                     await createBookAuthor({
-                    BookId: createdBook.BookId,
-                    authorCode: author.id
-                });
-                
+                        BookId: createdBook.BookId,
+                        authorCode: author.id
+                    });
+
                 }
             }
 
             setSuccessMessage(" ✅ Libro guardado con exito");
-           
+
             setTimeout(() => setSuccessMessage(""), 10000);
 
             await getItems();
@@ -112,189 +142,253 @@ async function onHandleFindAuthor() {
         <>
             {popupView === 'default' && (
                 <>
-                    
                     <form className="formeditbook" onSubmit={handleSubmit}>
                         <div className="columns-container">
+
                             <div className="contentformedit">
 
                                 <div className="input">
-                                    <label htmlFor="code">
-                                        Codigo <span className="required">*</span>
-                                    </label>
-                                    <input id="code" name="code" type="number" placeholder="Codigo" required />
+                                    <label>Codigo <span className="required">*</span></label>
+                                    <input
+                                        name="code"
+                                        type="number"
+                                        value={bookForm.code}
+                                        onChange={handleInputChange}
+                                        required
+                                    />
                                 </div>
 
                                 <div className="input">
-                                    <div className="cdu">
-                                        <label htmlFor="codeCDU1">
-                                            Código CDU <span className="required">*</span>
-                                        </label>
-                                        <div className="cdu-options">
-                                            <input name="codeCDU1" type="number" required />
-                                        </div>
-                                    </div>
+                                    <label>Código CDU <span className="required">*</span></label>
+                                    <input
+                                        name="codeCDU1"
+                                        type="number"
+                                        value={bookForm.codeCDU1}
+                                        onChange={handleInputChange}
+                                        required
+                                    />
                                 </div>
 
                                 <div className="input">
-                                    <label htmlFor="title">
-                                        Titulo <span className="required">*</span>
-                                    </label>
-                                    <input id="title" name="title" type="text" placeholder="Titulo" required />
+                                    <label>Titulo <span className="required">*</span></label>
+                                    <input
+                                        name="title"
+                                        type="text"
+                                        value={bookForm.title}
+                                        onChange={handleInputChange}
+                                        required
+                                    />
                                 </div>
 
                                 <div className="input">
-                                    <div className="divconteiner content">
-                                        <div>
-                                            <label htmlFor="ubication">
-                                                Ubicación <span className="required">*</span>
-                                            </label>
-                                            <input id="ubication" name="ubication" type="text" placeholder="Ubicacion" required />
-                                        </div>
-                                        <div>
-                                            <label htmlFor="quantity">
-                                                Cantidad <span className="required">*</span>
-                                            </label>
-                                            <input id="quantity" name="quantity" type="number" placeholder="Cantidad" required maxLength={3} />
-                                        </div>
-                                    </div>
+                                    <label>Ubicación <span className="required">*</span></label>
+                                    <input
+                                        name="ubication"
+                                        type="text"
+                                        value={bookForm.ubication}
+                                        onChange={handleInputChange}
+                                        required
+                                    />
                                 </div>
 
                                 <div className="input">
-                                    <div className="divconteiner content">
-                                        <div>
-                                            <label htmlFor="editorial">
-                                                Editorial <span className="required">*</span>
-                                            </label>
-                                            <input id="editorial" name="editorial" type="text" placeholder="Editorial" required />
-                                        </div>
-                                        <div>
-                                            <label htmlFor="type">
-                                                Tipo <span className="required">*</span>
-                                            </label>
-                                            <select
-                                                name="type"
-                                                id="type"
-                                                className="selectform"
-                                                value={selectedType || ""}
-                                                onChange={(e) => setSelectedType(e.target.value)}
-                                                required
-                                            >
-                                                <option value="">Seleccione un tipo</option>
-                                                {booksTypes.map((type) => (
-                                                    <option key={type.bookTypeId} value={type.bookTypeId}>
-                                                        {type.typeName}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                    </div>
+                                    <label>Cantidad <span className="required">*</span></label>
+                                    <input
+                                        name="quantity"
+                                        type="number"
+                                        value={bookForm.quantity}
+                                        onChange={handleInputChange}
+                                        required
+                                    />
                                 </div>
 
                                 <div className="input">
-                                    <label htmlFor="translator">Traductor <span className="required">*</span></label>
-                                    <input id="translator" name="translator" type="text" placeholder="Traductor" required />
+                                    <label>Editorial <span className="required">*</span></label>
+                                    <input
+                                        name="editorial"
+                                        type="text"
+                                        value={bookForm.editorial}
+                                        onChange={handleInputChange}
+                                        required
+                                    />
                                 </div>
 
                                 <div className="input">
-                                    <div className="divconteiner content">
-                                        <div>
-                                            <label htmlFor="idSupplier">Numero de prov <span className="required">*</span></label>
-                                            <input id="idSupplier" name="idSupplier" type="number" placeholder="Numero de prov" required />
-                                        </div>
-                                        <div>
-                                            <label htmlFor="numfactura">Num factura <span className="required">*</span></label>
-                                            <input id="numfactura" name="numfactura" type="text" placeholder="Numero de factura" required />
-                                        </div>
-                                    </div>
-                                    <div className="input">
-                                        <label htmlFor="dateOfBuy">Fecha de compra <span className="required">*</span></label>
-                                        <input id="dateOfBuy" name="dateOfBuy" type="date" required />
-                                    </div>
+                                    <label>Tipo <span className="required">*</span></label>
+                                    <select
+                                        name="type"
+                                        value={bookForm.type}
+                                        onChange={handleInputChange}
+                                        required
+                                    >
+                                        <option value="">Seleccione un tipo</option>
+                                        {booksTypes.map(type => (
+                                            <option key={type.bookTypeId} value={type.bookTypeId}>
+                                                {type.typeName}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
 
-                                    <h3 className="findauthor">Agregar autor al libro</h3>
-                                        <div className="input">
-                                            <label htmlFor="author">Autor</label>
-                                            <input id="author" name="author" type="text" placeholder="Buscar autor" 
-                                            onChange={(e) => {
-                                                setSearchAuthor(e.target.value);
-                                                onHandleFindAuthor();
-                                            }}/>
-                                        </div>
-                              
+                                <div className="input">
+                                    <label>Traductor <span className="required">*</span></label>
+                                    <input
+                                        name="translator"
+                                        type="text"
+                                        value={bookForm.translator}
+                                        onChange={handleInputChange}
+                                        required
+                                    />
+                                </div>
+
+                                <div className="input">
+                                    <label>Numero de prov <span className="required">*</span></label>
+                                    <input
+                                        name="idSupplier"
+                                        type="number"
+                                        value={bookForm.idSupplier}
+                                        onChange={handleInputChange}
+                                        required
+                                    />
+                                </div>
+
+                                <div className="input">
+                                    <label>Num factura <span className="required">*</span></label>
+                                    <input
+                                        name="numfactura"
+                                        type="text"
+                                        value={bookForm.numfactura}
+                                        onChange={handleInputChange}
+                                        required
+                                    />
+                                </div>
+
+                                <div className="input">
+                                    <label>Fecha de compra <span className="required">*</span></label>
+                                    <input
+                                        name="dateOfBuy"
+                                        type="date"
+                                        value={bookForm.dateOfBuy}
+                                        onChange={handleInputChange}
+                                        required
+                                    />
+                                </div>
+
+                                {/* 🔴 ESTO NO SE TOCA */}
+                                <h3 className="findauthor">Agregar autor al libro</h3>
+
+                                <div className="input">
+                                    <label>Autor</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Buscar autor"
+                                        onChange={(e) => {
+                                            setSearchAuthor(e.target.value);
+                                            onHandleFindAuthor();
+                                        }}
+                                    />
+                                </div>
+
                             </div>
-                                                                
 
-
-                           
                             <div className="contentformedit">
-                                    <div className="input">
-                                        <label htmlFor="notes">Notas</label>
-                                        <input id="notes" name="notes" type="text" className="notes" />
-                                    </div>
 
-                                    <div className="input">
-                                        <label htmlFor="year">Año de edición <span className="required">*</span></label>
-                                        <input id="year" name="year" type="number" min="1850" max="2035" required />
-                                    </div>
-
-                                    <div className="input">
-                                        <label htmlFor="number">Numero de edición <span className="required">*</span></label>
-                                        <input id="numberEdition" name="numberEdition" type="text" required maxLength={4} />
-                                    </div>
-
-                                    <div className="input">
-                                        <label htmlFor="pages">Páginas <span className="required">*</span></label>
-                                        <input id="pages" name="pages" type="number" required />
-                                    </div>
-
-                                    <div className="input">
-                                        <label htmlFor="codeLing">Codigo linguistico</label>
-                                        <input id="codeLing" name="codeLing" type="text" placeholder="Codigo linguistico" />
-                                    </div>
-                                      <div className="input">
-                                        <label htmlFor="codClas">Código clasificación</label>
-                                        <input
-                                            id="codClas"
-                                            name="codClas"
-                                            type="text"
-                                            placeholder="Codigo clasificación"
-                                        />
-                                    </div>
-
+                                <div className="input">
+                                    <label>Notas</label>
+                                    <input
+                                        name="notes"
+                                        type="text"
+                                        value={bookForm.notes}
+                                        onChange={handleInputChange}
+                                    />
                                 </div>
-                                
+
+                                <div className="input">
+                                    <label>Año de edición <span className="required">*</span></label>
+                                    <input
+                                        name="year"
+                                        type="number"
+                                        value={bookForm.year}
+                                        onChange={handleInputChange}
+                                        required
+                                    />
+                                </div>
+
+                                <div className="input">
+                                    <label>Numero de edición <span className="required">*</span></label>
+                                    <input
+                                        name="numberEdition"
+                                        type="text"
+                                        value={bookForm.numberEdition}
+                                        onChange={handleInputChange}
+                                        required
+                                    />
+                                </div>
+
+                                <div className="input">
+                                    <label>Páginas <span className="required">*</span></label>
+                                    <input
+                                        name="pages"
+                                        type="number"
+                                        value={bookForm.pages}
+                                        onChange={handleInputChange}
+                                        required
+                                    />
+                                </div>
+
+                                <div className="input">
+                                    <label>Codigo linguistico</label>
+                                    <input
+                                        name="codeLing"
+                                        type="text"
+                                        value={bookForm.codeLing}
+                                        onChange={handleInputChange}
+                                    />
+                                </div>
+
+                                <div className="input">
+                                    <label>Código clasificación</label>
+                                    <input
+                                        name="codClas"
+                                        type="text"
+                                        value={bookForm.codClas}
+                                        onChange={handleInputChange}
+                                    />
+                                </div>
+
                             </div>
-                            
-                                <div className="btns-row-container">
-                                <div className="flex-content">
-                                    <div>
-                                        <h4>Resultados</h4>
-                                        <ul className="results-list">
-                                            {results.map((author) => (
-                                                <li key={author.id} className="result-item">
-                                                    <span>{author.name}</span>
-                                                    <button 
-                                                        className="add-button"
-                                                        onClick={() => {
-                                                            if (!authorsSelected.some(a => a.id === author.id)) {
-                                                                setAuthorsSelected([...authorsSelected, author]);
-                                                            }
-                                                        }}
-                                                    >
-                                                        +
-                                                    </button>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
+
+                        </div>
+
+                        <div className="btns-row-container">
+                            <div className="flex-content">
+                                <div>
+                                    <h4>Resultados</h4>
+                                    <ul className="results-list">
+                                        {results.map((author) => (
+                                            <li key={author.id} className="result-item">
+                                                <span>{author.name}</span>
+                                                <button
+                                                    className="add-button"
+                                                    onClick={() => {
+                                                        if (!authorsSelected.some(a => a.id === author.id)) {
+                                                            setAuthorsSelected([...authorsSelected, author]);
+                                                        }
+                                                    }}
+                                                >
+                                                    +
+                                                </button>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
                                 <div>
                                     <h4>Autores seleccionados</h4>
                                     <div className="selected-authors">
                                         {authorsSelected.map((author) => (
                                             <div key={author.id} className="selected-author">
                                                 {author.name}
-                                                <button 
+                                                <button
                                                     className="remove-button"
                                                     onClick={() => {
                                                         setAuthorsSelected(authorsSelected.filter(a => a.id !== author.id));
@@ -306,15 +400,15 @@ async function onHandleFindAuthor() {
                                         ))}
                                     </div>
                                 </div>
-                                </div>
-                                        
+                            </div>
 
-                                  {successMessage && (
-                                    <div className="success">
-                                        <p> {successMessage}</p>
-                                    </div>
-                                   )}
-                  
+
+                            {successMessage && (
+                                <div className="success">
+                                    <p> {successMessage}</p>
+                                </div>
+                            )}
+
                             <div className="btns-row">
                                 <Btn
                                     text="Guardar"
@@ -333,8 +427,8 @@ async function onHandleFindAuthor() {
                             </div>
                         </div>
 
-              
-                    
+
+
 
                     </form>
                 </>

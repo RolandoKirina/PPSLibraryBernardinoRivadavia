@@ -164,7 +164,7 @@ const BookSection = () => {
     {
       key: 'AddPopup',
       title: 'Agregar Libro',
-      className: 'popup-container-book-form',
+      className: 'popup-container-book-form editsize',
       content: <FormAddBook getItems={getItems} />,
       close: () => setPopupAdd(false),
       condition: PopUpAdd

@@ -91,8 +91,12 @@ export default function FormEditBook({ selectedBook, getItems }) {
         };
         try {
             const updated = await entityManagerApi.updateItem(selectedBook.BookId, updatedItem);
+
             if (updated) {
-                alert("Libro actualizado con éxito");
+                setSuccessMessage(" ✅ Libro actualizado con exito");
+
+                setTimeout(() => setSuccessMessage(""), 10000);
+
                 await getItems();
             }
         } catch (error) {
@@ -289,53 +293,67 @@ export default function FormEditBook({ selectedBook, getItems }) {
                                         <div>
                                             <h4>Resultados</h4>
                                             <ul className="results-list">
-                                                {results.map((author) => (
-                                                    <li key={author.id} className="result-item">
-                                                        <span>{author.Author?.name || author.name}</span>
-                                                        <button
-                                                            className="add-button"
-                                                            type="button"
-                                                            onClick={() => {
-                                                                if (!authorsSelected.some(a => a.authorCode === author.id)) {
-                                                                    setAuthorsSelected([...authorsSelected, author]);
-                                                                }
-                                                            }}
-                                                        >
-                                                            +
-                                                        </button>
-                                                    </li>
-                                                ))}
+                                                {results.map((author) => {
+                                                    const authorKey = author.authorCode || author.AuthorId || author.id;
+
+                                                    return (
+                                                        <li key={authorKey} className="result-item">
+                                                            <span>{author.Author?.name || author.name}</span>
+                                                            <button
+                                                                className="add-button"
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    if (!authorsSelected.some(a =>
+                                                                        (a.authorCode || a.AuthorId || a.id) === authorKey
+                                                                    )) {
+                                                                        setAuthorsSelected([...authorsSelected, author]);
+                                                                    }
+                                                                }}
+                                                            >
+                                                                +
+                                                            </button>
+                                                        </li>
+                                                    );
+                                                })}
                                             </ul>
                                         </div>
+
                                         <div>
                                             <h4>Autores seleccionados</h4>
                                             <div className="selected-authors">
-                                                {authorsSelected.map((author) => (
-                                                    <div key={author.AuthorId} className="selected-author">
-                                                        <span>{author.Author?.name || author.name}</span>
+                                                {authorsSelected.map((author) => {
+                                                    const authorKey = author.authorCode || author.AuthorId || author.id;
 
-                                                        <button
-                                                            className="remove-button"
-                                                            type="button"
-                                                            onClick={() => {
-                                                                setAuthorsSelected(authorsSelected.filter(a => a.authorCode !== author.authorCode));
-                                                            }}
-                                                        >
-                                                            ❌
-                                                        </button>
-                                                    </div>
-                                                ))}
+                                                    return (
+                                                        <div key={authorKey} className="selected-author">
+                                                            <span>{author.Author?.name || author.name}</span>
+                                                            <button
+                                                                className="remove-button"
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    setAuthorsSelected(
+                                                                        authorsSelected.filter(a =>
+                                                                            (a.authorCode || a.AuthorId || a.id) !== authorKey
+                                                                        )
+                                                                    );
+                                                                }}
+                                                            >
+                                                                ❌
+                                                            </button>
+                                                        </div>
+                                                    );
+                                                })}
                                             </div>
                                         </div>
                                     </div>
 
-
                                     {successMessage && (
                                         <div className="success">
-                                            <p> {successMessage}</p>
+                                            <p>{successMessage}</p>
                                         </div>
                                     )}
                                 </div>
+
 
                             </div>
 
@@ -453,6 +471,7 @@ export default function FormEditBook({ selectedBook, getItems }) {
 
 
                         </div>
+
                         <div className="btns-row-container">
                             <div className="btns-row">
                                 <Btn text="Guardar" className="changes btn" icon={<div className="img-ico"><img src={SaveIcon} alt="Guardar" /></div>} type="submit" variant="primary" />
