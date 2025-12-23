@@ -37,24 +37,23 @@ export default function PartnerSection() {
   }*/
 
   const [formData, setFormData] = useState({
-      statePartner: '',
-      unpaidfees: '',
-      pendingbooks: ''
+       unpaidFees: "",
+        pendingBooks: "",
+        isActive: "all",
   });
 
 
-    useEffect(() => {
-      const filters = Object.fromEntries(
-        Object.entries(formData).filter(([_, v]) => v !== "")
-      );
+   useEffect(() => {
+  const filters = Object.fromEntries(
+    Object.entries(formData).filter(([_, v]) => v !== "")
+  );
 
-      const delay = setTimeout(() => {
-        getItems(filters);
-        console.log(items)
-      }, 300); 
+  const delay = setTimeout(() => {
+    getItems(filters);
+  }, 300);
 
-      return () => clearTimeout(delay);
-}, [formData, items]);
+  return () => clearTimeout(delay);
+}, [formData]);
 
    const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -62,29 +61,20 @@ export default function PartnerSection() {
     setFormData(updated);
   };
 
+  
 
 
   const columns = [
     { header: 'Numero de socio', accessor: 'id' },
     { header: 'Nombre', accessor: 'name' },
     { header: 'Apellido', accessor: 'surname' },
-{
-  header: 'Activo',
-  accessor: row => row.isActive === 1 ? 'Sí' : 'No'
-},   {
-      header: 'Borrar',
-      accessor: 'delete',
-      className: "action-buttons",
-      render: (_, row) => (
-        <button className="button-table"
-          onClick={() => {
-            setPopUpDelete(true)
-            setSelectedItem(row)
-          }}>
-          <img src={DeleteIcon} alt="Borrar" />
-        </button>
-      )
-    },
+
+{ header: 'Estado', 
+  accessor: 'isActive', 
+  render: (_, row) => { const value = row.isActive; 
+    if (value === 1 || value === true) return 'Activo'; 
+    if (value === 2 || value === false || value === 0) return 'Inactivo';
+     return `Valor desconocido: ${value}`; } },
     {
       header: 'Editar',
       accessor: 'edit',

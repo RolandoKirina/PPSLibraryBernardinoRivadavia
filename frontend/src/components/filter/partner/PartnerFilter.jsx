@@ -1,59 +1,50 @@
-import { useState } from "react";
-import './PartnerFilter.css';
-export default function PartnerFilter() {
+import "./PartnerFilter.css"
 
-    const [formData, setFormData] = useState({
-        type: 'assets',
-        unpaidfees: '',
-        pendingbooks: ''
+export default function PartnerFilter({ formData, onChange }) {
+  return (
+    <aside className="filter-aside">
+      <div className="filter-form">
+        <form onSubmit={(e) => e.preventDefault()}>
+          <h3 className="titleh3">Filtro de socios</h3>
 
-    });
+          <div className="form-input-group">
+            <h4>Estado del socio</h4>
+            <select
+              name="isActive"
+              value={formData.isActive}
+              onChange={onChange}
+            >
+              <option value="all">Todos</option>
+              <option value="1">Activos</option>
+              <option value="2">Inactivos</option>
+            </select>
+          </div>
 
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        const newValue = type === 'checkbox' ? checked : value;
+          <div className="form-input-group">
+            <label>Cuotas impagas</label>
+            <input
+              type="number"
+              name="unpaidFees"
+              min="0"
+              max="15"
+              value={formData.unpaidFees}
+              onChange={onChange}
+            />
+          </div>
 
-        setFormData((prev) => {
-            const updated = { ...prev, [name]: newValue };
-            console.log('Campo modificado:', name, '→', newValue);
-            console.log('Nuevo estado del form:', updated);
-            return updated;
-        });
-    };
-    return (
-        <aside className="filter-aside">
-
-            <div className="filter-form">
-
-                <form>
-                    <h3 className='titleh3'>Filtro de socios</h3>
-
-                    <div className="form-checkbox-group">
-                       <div className="form-input-group">
-                            <h4>Estado del socio</h4>
-                            <select
-                                name="type"
-                                value={formData.type}
-                                onChange={handleChange}
-                            >
-                                <option value="all">Todos</option>
-                                <option value="assets">Activos</option>
-                                <option value="Dismissed">Dados de baja</option>
-                            </select>
-                            </div>
-                    </div>
-                    <div className="form-input-group">
-                        <label>Cuotas impagas </label>
-                        <input type="number" name="unpaidfees" max="15" />
-                    </div>
-
-                    <div className="form-input-group">
-                        <label>Libros pendientes </label>
-                        <input type="number" name="pendingbooks" max="15" />
-                    </div>
-
-                </form>
-            </div>
-        </aside>
-    )
+          <div className="form-input-group">
+            <label>Libros pendientes</label>
+            <input
+              type="number"
+              name="pendingBooks"
+              min="0"
+              max="15"
+              value={formData.pendingBooks}
+              onChange={onChange}
+            />
+          </div>
+        </form>
+      </div>
+    </aside>
+  );
 }

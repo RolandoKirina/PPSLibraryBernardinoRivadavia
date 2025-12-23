@@ -1,8 +1,11 @@
 import Partner from '../../models/partner/Partner.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 
-export const getAll = async () => {
-    return await Partner.findAll();
+export const getAll = async (filters = {}) => {
+ const { wherePartner } = filters; 
+ const partners = await Partner.findAll({ where: wherePartner }); 
+ 
+ return partners;
 };
 
 export const getOne = async (id) => {
