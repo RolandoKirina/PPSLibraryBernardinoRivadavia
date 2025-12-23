@@ -15,11 +15,6 @@ export const buildFeeFilters = (query) => {
     const whereFees = {};
     const wherePartner ={};
 
-    console.log(status)
-
-
-    
-
      if (status === "unpaid") {
         whereFees.paid = false;
       } else if (status === "paid") {

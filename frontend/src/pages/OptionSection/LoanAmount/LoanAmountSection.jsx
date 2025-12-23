@@ -10,11 +10,13 @@ import AddMaterialGroup from '../../../components/option-components/addmaterialg
 import { useEntityManager } from '../../../hooks/useEntityManager';
 import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
 import { useEffect } from 'react';
+import ShowMaterials from '../../../components/option-components/ShowMaterials';
 
 export default function LoanAmountSection() {
     const [deletePopup, setDeletePopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
+    
     const [selected, setSelected] = useState(false);
     const {
         items: groupItems,
@@ -88,8 +90,8 @@ export default function LoanAmountSection() {
     ];
 
     const columns = [
-        { header: 'Descripción grupo', accessor: 'group' },
-        { header: 'Días préstamo', accessor: 'maxAmount' },
+        { header: 'Grupo', accessor: 'group' },
+        { header: 'Cantidad maxima', accessor: 'maxAmount' },
         {
             header: 'Borrar',
             accessor: 'delete',
@@ -113,7 +115,7 @@ export default function LoanAmountSection() {
                     <img src={EditIcon} alt="Editar" />
                 </button>
             )
-        }
+        },
     ];
 
     return (

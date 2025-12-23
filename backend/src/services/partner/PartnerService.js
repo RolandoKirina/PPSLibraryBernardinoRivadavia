@@ -10,6 +10,10 @@ export const getPartner = async (id) => {
     return await PartnerRepository.getOne(id);
 };
 
+export const getOneByPartnerNumber = async (id) => {
+    return await PartnerRepository.getOneByPartnerNumber(id);
+};
+
 export const createPartner = async (data) => {
     return await PartnerRepository.create(data);
 };

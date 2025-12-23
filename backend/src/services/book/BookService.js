@@ -20,6 +20,11 @@ export const getAllBooksOfLoan = async (id) => {
     return books;
 }
 
+export const getAllPendingBooks = async (partnerNumber) => {
+    let books = await BookRepository.getAllPendingBooks(partnerNumber);
+    return books;
+}
+
 
 export const getRanking = async (filters) => {
     let ranking = await BookRepository.getRanking(filters);

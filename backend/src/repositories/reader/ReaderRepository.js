@@ -6,6 +6,7 @@ import sequelize from '../../configs/database.js';
 import * as EmployeesRepository from '../../repositories/options/EmployeesRepository.js';
 import * as ReaderBookRepository from '../../repositories/reader/ReaderBookRepository.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
+import { formatDate } from '../../utils/date/formatDate.js';
 
 export const getAll = async (filters) => {
    const {
@@ -68,10 +69,10 @@ export const getAll = async (filters) => {
         name: reader.name,
         bookCode: book?.codeInventory ?? '',
         bookTitle: book?.title ?? '',
-        retiredDate: rb.retiredDate ?? '',                // YYYY-MM-DD
-        retiredHour: rb.retiredHour ?? '',   // HH:mm
-        returnedDate: rb.returnedDate ?? '',              // YYYY-MM-DD
-        returnedHour: rb.returnedHour ?? '', // HH:mm
+        retiredDate: formatDate(rb.retiredDate),                
+        retiredHour: rb.retiredHour ?? '',   
+        returnedDate: formatDate(rb.returnedDate),             
+        returnedHour: rb.returnedHour ?? '',
         employee: employee?.name ?? '',
         id: rb.ReaderBookId 
       };

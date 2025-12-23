@@ -19,6 +19,8 @@ import { useEntityLookup } from '../../../hooks/useEntityLookup.js';
 import ReturnIcon from '../../../assets/img/return-icon.svg';
 import ReneweIcon from '../../../assets/img/renewe-icon.svg';
 import { useAuth } from '../../../auth/AuthContext.jsx';
+import PendingBooks from '../pendingBooks/PendingBooks.jsx';
+import PartnerMemo from '../partnermemo/PartnerMemo.jsx';
 
 export default function LoanForm({ method, createLoanItem, loanSelected, errorMessage }) {
   const [popupView, setPopupView] = useState("default");
@@ -526,25 +528,21 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
       {popupView === 'unpaidFees' && (
         <>
           <BackviewBtn menu={'default'} changeView={setPopupView} />
-          <UnpaidFees changeView={setPopupView} />
-        </>
-      )}
-
-      {popupView === 'editUnpaidFees' && (
-        <>
-          <BackviewBtn menu={'unpaidFees'} changeView={setPopupView} />
-          <GenericForm
-            title={'Editar cuota pendiente'}
-            fields={editLoanformFields}
-            onSubmit={(data) => console.log('Formulario enviado:', data)}
-          />
+          <UnpaidFees changeView={setPopupView} partnerNumber={partnerSource.partnerNumber} />
         </>
       )}
 
       {popupView === 'pendingBooks' && (
         <>
-          <Table columns={columnsPendingBooks} data={pendingbooks}></Table>
           <BackviewBtn menu={'default'} changeView={setPopupView} />
+          <PendingBooks changeView={setPopupView} partnerNumber={partnerSource.partnerNumber} />
+        </>
+      )}
+
+      {popupView === 'partnerMemo' && (
+        <>
+          <BackviewBtn menu={'default'} changeView={setPopupView} />
+          <PartnerMemo changeView={setPopupView} partnerNumber={partnerSource.partnerNumber} />
         </>
       )}
     </div>

@@ -8,6 +8,9 @@ import { useEntityLookup } from '../../../hooks/useEntityLookup';
 
 export default function SearchPartner({ onFilterChange, method, menu, onDataChange, partnerData }) {
   const [memoPopup, setMemoPopup] = useState(false);
+  const [partnerMessageError, setPartnerMessageError] = useState(false);
+  const [errorTarget, setErrorTarget] = useState(null);
+
 
   const { data: foundPartner, error: partnerError, loading: partnerLoading } = useEntityLookup(
     partnerData.partnerNumber,
@@ -30,6 +33,32 @@ export default function SearchPartner({ onFilterChange, method, menu, onDataChan
     }));
   }
   };
+
+  useEffect(() => {
+  if (partnerData?.partnerNumber) {
+    setPartnerMessageError(false);
+  }
+}, [partnerData?.partnerNumber]);
+
+
+const handleMenu = (option) => {
+  const hasPartner =
+    foundPartner ||
+    (partnerData?.partnerName && partnerData.partnerName.trim() !== "");
+
+  if (!hasPartner) {
+    setPartnerMessageError(true);
+    setErrorTarget(option);
+    return;
+  }
+
+  setPartnerMessageError(false);
+  setErrorTarget(null);
+  menu(option);
+};
+
+
+
 
   return (
     <div className='search-partner-container'>
@@ -81,18 +110,48 @@ export default function SearchPartner({ onFilterChange, method, menu, onDataChan
         )}
       </div>
 
-
       <div className='search-partner-buttons'>
-        <Btn text={'Cuotas Impagas'} onClick={() => menu('unpaidFees')} />
-        <Btn text={'Libros Pendientes'} onClick={() => menu('pendingBooks')} />
-        <Btn text={'Memo del Socio'} onClick={() => setMemoPopup(true)} />
+
+        <div className='partnerOptionBtn'>
+          <Btn
+            text={'Cuotas Impagas'}
+            onClick={() => handleMenu('unpaidFees')}
+          />
+          {partnerMessageError && errorTarget === 'unpaidFees' && (
+            <p className="partner-error">
+              Debes ingresar un número de socio
+            </p>
+          )}
+        </div>
+
+        <div className='partnerOptionBtn'>
+          <Btn
+            text={'Libros Pendientes'}
+            onClick={() => handleMenu('pendingBooks')}
+          />
+          {partnerMessageError && errorTarget === 'pendingBooks' && (
+            <p className="partner-error">
+              Debes ingresar un número de socio
+            </p>
+          )}
+        </div>
+
+        <div className='partnerOptionBtn'>
+          <Btn
+            text={'Memo del Socio'}
+            onClick={() => handleMenu('partnerMemo')}
+          />
+          {partnerMessageError && errorTarget === 'memo' && (
+            <p className="partner-error">
+              Debes ingresar un número de socio
+            </p>
+          )}
+        </div>
+
       </div>
 
-      {memoPopup && (
-        <PopUp title={'Memo del Socio'} className={'popup-memo-size'} onClick={() => setMemoPopup(false)}>
-          <PartnerMemo />
-        </PopUp>
-      )}
+
+
     </div>
   );
 }
