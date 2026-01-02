@@ -475,10 +475,12 @@ export default function FormEditBook({ selectedBook, getItems }) {
                         <div className="btns-row-container">
                             <div className="btns-row">
                                 <Btn text="Guardar" className="changes btn" icon={<div className="img-ico"><img src={SaveIcon} alt="Guardar" /></div>} type="submit" variant="primary" />
-                                <Btn text="Autores del libro"
+                                <Btn
+                                    text="Calcular signatura"
                                     className="secondary-btn"
-                                    onClick={() => setPopupView('chooseAuthor')}
-                                    variant="primary" />
+                                    onClick={() => setPopupView('signature')}
+                                    variant="primary"
+                                />
                             </div>
                         </div>
                     </form>
@@ -493,6 +495,18 @@ export default function FormEditBook({ selectedBook, getItems }) {
                             selectedBook={selectedBook}
                         //authorsSelected={authorsSelected}
                         //setAuthorsSelected={setAuthorsSelected}
+                        />
+                    </div>
+                </>
+            )}
+
+            {popupView === 'signature' && (
+                <>
+                    <div className="books-author-container">
+                        <BackviewBtn menu={'default'} changeView={setPopupView} />
+                        <BookAuthors
+                            authorsSelected={authorsSelected}
+                            setAuthorsSelected={setAuthorsSelected}
                         />
                     </div>
                 </>

@@ -25,7 +25,8 @@ export const getAll = async (filters) => {
     offset
   } = filters;
 
-  console.log(whereNumberEdition);
+  const hasAuthorFilter =
+    whereAuthor && Object.keys(whereAuthor).length > 0;
 
   return await Book.findAll({
     subQuery: false,
@@ -42,11 +43,13 @@ export const getAll = async (filters) => {
       {
         model: BookAuthor,
         as: 'BookAuthors',
+        required: hasAuthorFilter,
         include: [
           {
             model: Authors,
             as: 'Author',
-            where: whereAuthor
+            where: whereAuthor,
+            required: hasAuthorFilter,
           }
         ]
       }
@@ -482,9 +485,41 @@ export const getById = async (id) => {
   return await Book.findByPk(id);
 }
 
+export const getByCodeInventory = async (codeInventory) => {
+  return await Book.findOne({
+    where: {
+      codeInventory
+    }
+  });
+};
+
+
 export const create = async (book) => {
   return await Book.create(book);
 }
+
+export const duplicateBook = async (book) => {
+  const oldBook = await getByCodeInventory(book.codeInventory);
+
+  if (!oldBook) {
+    throw new Error('Libro no encontrado');
+  }
+
+  // Convertimos a objeto plano
+  const oldBookData = oldBook.get({ plain: true });
+
+  // Eliminamos el ID autoincremental
+  delete oldBookData.BookId;
+
+  return await Book.create({
+    ...oldBookData,
+    codeInventory: book.newCodeInventory,
+    lost: false,
+    lossDate: null,
+    lostPartnerNumber: null
+  });
+};
+
 
 export const update = async (id, book) => {
   const transaction = await sequelize.transaction();
@@ -501,8 +536,8 @@ export const update = async (id, book) => {
     });
 
     const newAssociations = book.authors.map(author => ({
-      BookId: id, 
-      authorCode: author.authorCode || author.id, 
+      BookId: id,
+      authorCode: author.authorCode || author.id,
       position: author.position || null,
     }));
 

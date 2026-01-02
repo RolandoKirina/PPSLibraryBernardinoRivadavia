@@ -5,6 +5,7 @@ export default function BookFilter({ formData, onChange }) {
   const [partnerNumber, setPartnerNumber] = useState('');
   const [paidFeeCount, setPaidFeeCount] = useState(0);
 
+  console.log(formData);
 
   return (
     <aside className="book-filter-aside">

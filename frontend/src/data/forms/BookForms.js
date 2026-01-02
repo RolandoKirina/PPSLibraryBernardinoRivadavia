@@ -1,18 +1,16 @@
 export const duplicateBook = [
     {
         label: 'Codigo del libro a duplicar',
-        name: 'code',
-        type: 'number'
+        name: 'codeInventory',
+        type: 'text',
+        required: true
     },
     {
-        label: 'Titulo del libro',
-        name: 'codeCDU',
-        type: 'text'
-    },
-    {
-        label: 'Nuevo código',
-        name: 'ubication',
-        type: 'text'
+        label: 'Nuevo código de inventario',
+        name: 'newCodeInventory',
+        type: 'text',
+        required: true
+
     }
 ];
 

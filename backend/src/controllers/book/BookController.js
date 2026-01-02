@@ -8,6 +8,8 @@ export const getAllBooks = async (req,res) => {
 
         const queryOptions = buildBookFilters(req.query);
 
+        console.log(queryOptions);
+
         const books = await BookService.getAllBooks(queryOptions);
       
         res.status(HTTP_STATUS.OK.code).send(books);    
@@ -138,6 +140,27 @@ export const getBook = async (req,res) => {
     
     }
 
+}
+
+export const duplicateBook = async (req,res) =>{
+    try{
+        //lo que viene en el json del body de la solicitud http
+        const book = req.body;
+
+        if(!book){
+            return res.status(HTTP_STATUS.BAD_REQUEST.code).json({msg: HTTP_STATUS.BAD_REQUEST.msg});
+        }
+
+        const newBook = await BookService.duplicateBook(book);
+
+        console.log(newBook);
+        res.status(HTTP_STATUS.CREATED.code).json(newBook);
+    }
+    catch(e){
+        console.error(e);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });   
+
+    }
 }
 
 export const createBook = async (req,res) =>{

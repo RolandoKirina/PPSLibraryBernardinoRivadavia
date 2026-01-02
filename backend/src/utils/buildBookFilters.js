@@ -29,7 +29,7 @@ export const buildBookFilters = (query) => {
   if (author && author.trim() !== '') {
     whereAuthor.name = {
       [Op.iLike]: `%${author.trim()}%`
-    }
+    };
   }
 
   if (codeInventory && codeInventory.trim() !== '') {
@@ -41,11 +41,15 @@ export const buildBookFilters = (query) => {
   }
 
   if (codeSignature && codeSignature.trim() !== '') {
-    whereCodeSignature.codeSignature = codeSignature.trim();
+    whereCodeSignature.codeSignature = {
+      [Op.iLike]: `%${codeSignature.trim()}%`
+    };
   }
 
   if (bookTitle && bookTitle.trim() !== '') {
-    whereBookTitle.title = bookTitle.trim();
+    whereBookTitle.title = {
+      [Op.iLike]: `%${bookTitle.trim()}%`
+    };
   }
 
   if (yearEdition) {

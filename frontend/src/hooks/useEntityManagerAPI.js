@@ -11,6 +11,7 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
     setLoading(true);
     setError(null);
 
+    console.log(filters);
     const cleanFilters = Object.fromEntries(
       Object.entries(filters).filter(([key, value]) => {
         if (["type", "state"].includes(key)) return true;
