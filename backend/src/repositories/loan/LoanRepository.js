@@ -234,9 +234,9 @@ export const getReturnPrintList = async () => {
       partnerNumber: loan.Partner?.partnerNumber || '',
       partnerName: `${loan.Partner?.surname || ''} ${loan.Partner?.name || ''}`,
       partnerAddress: loan.Partner?.homeAddress || '',
-    retiredDate: formatDate(loan.retiredDate),
-    expectedDate: formatDate(loanBook.expectedDate),
-    returnedDate: formatDate(loanBook.returnedDate)
+      retiredDate: formatDate(loan.retiredDate),
+      expectedDate: formatDate(loanBook.expectedDate),
+      returnedDate: formatDate(loanBook.returnedDate)
     }))
   );
 
@@ -442,10 +442,10 @@ export const update = async (id, updates) => {
       BookId: book.BookId,
       loanId: id,
       bookCode: book.codeInventory,
-      expectedDate: updates.expectedDate,
+      expectedDate: updates.expectedDate, 
       reneweAmount: book.renewes || 0,
       returned: book.returned === "Sí" || book.returned === true,
-      returnedDate: book.returnedDate ? new Date(book.returnedDate) : null, // <- nombre correcto
+      returnedDate: book.returnedDate || null, 
     }));
 
     await Promise.all(

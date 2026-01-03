@@ -34,6 +34,12 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
 
   const { auth } = useAuth();
 
+  const formatToInputDate = (date) => {
+    if (!date) return '';
+    const [day, month, year] = date.split('-');
+    return `20${year}-${month}-${day}`;
+  };
+
   const [loanData, setLoanData] = useState({
     loanType: 'retired',
     employeeCode: '',
@@ -62,12 +68,12 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
       const fetchAllBooksFromLoan = async () => {
         const loanSelectedId = loanSelected.loanId;
         const booksFromLoan = await getBooks(loanSelectedId);
-
+        console.log(loanSelected);
         setLoanData({
           loanType: loanSelected.loanType || 'in_room',
           employeeCode: loanSelected.employeeCode || '',
-          retiredDate: loanSelected.retiredDate || '',
-          expectedDate: loanSelected.expectedDate || '',
+          retiredDate: formatToInputDate(loanSelected.retiredDate),
+          expectedDate: formatToInputDate(loanSelected.expectedDate),
           books: booksFromLoan || []
         });
       };
@@ -241,7 +247,6 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
       })
     }));
   }
-
 
 
   const bookshelfBooksColumns = [
