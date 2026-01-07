@@ -30,12 +30,6 @@ export default function PartnerSection() {
   const [PopUpDetail, setPopUpDetail] = useState(false);
   const [PopUpAdd, setPopUpAdd] = useState(false);
 
-  /*function getItemsDetails(item) {
-    let ItemData = getItem(item.id);
-    setDetailData({ ...ItemData }); // <-- esto crea nueva referencia
-
-  }*/
-
   const [formData, setFormData] = useState({
        unpaidFees: "",
         pendingBooks: "",
@@ -61,13 +55,12 @@ export default function PartnerSection() {
     setFormData(updated);
   };
 
-  
-
-
   const columns = [
     { header: 'Numero de socio', accessor: 'id' },
     { header: 'Nombre', accessor: 'name' },
     { header: 'Apellido', accessor: 'surname' },
+    {header:'Cuotas impagas',accessor:'unpaidFees'},
+    {header:'Libros pendientes',accessor:'pendingBooks'},
 
 { header: 'Estado', 
   accessor: 'isActive', 
@@ -97,7 +90,7 @@ export default function PartnerSection() {
         <button className="button-table">
           <img src={DetailsIcon} alt="Detalles" onClick={() => {
             setPopUpDetail(true)
-            getItemsDetails(row);
+                setSelectedItem(row)
           }
           }
           />
@@ -130,8 +123,10 @@ export default function PartnerSection() {
       key: 'editPopup',
       title: 'Editar socio',
       className: 'popup-container add-edit-partner-size',
-      content: <FormEditPartner />,
-      close: () => setPopupEdit(false),
+      content: <FormEditPartner selectedPartner={selectedItem}/>,
+      close: () => {
+        getItems();
+        setPopupEdit(false);},
       condition: PopUpEdit
     },
     {
@@ -147,7 +142,7 @@ export default function PartnerSection() {
       title: 'Detalles del socio',
       className: '',
 
-      content: <ShowDetails data={DetailData} detailsData={DetailPartner} isPopup={true} />,
+      content: <ShowDetails data={selectedItem} detailsData={DetailPartner} isPopup={true} />,
       close: () => setPopUpDetail(false),
       condition: PopUpDetail
     },
@@ -171,7 +166,6 @@ export default function PartnerSection() {
 
   return (
     <>
-
       <GenericSection title="Listado socios" filters={<PartnerFilter formData={formData} onChange={handleFilterChange} />}
         columns={columns} data={items} popups={partnersPopUp}
         actions={

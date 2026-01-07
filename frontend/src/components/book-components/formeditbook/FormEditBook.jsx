@@ -21,16 +21,16 @@ export default function FormEditBook({ selectedBook }) {
   useEntityManagerAPI("authors");
 
     async function onHandleFindAuthor(value) {
-    try {
-        if (!value.trim()) {
-        setResults([]);
-        return;
-        }
-        const res = await getAuthors({ authorName: value });
-        setResults(res);
-    } catch (err) {
+        try {
+            if (!value.trim()) {
+            setResults([]);
+            return;
+            }
+            const res = await getAuthors({ authorName: value });
+            setResults(res);
+        } catch (err) {
         console.error(err);
-    }
+        }
     }
 
     let title = "Libros";
