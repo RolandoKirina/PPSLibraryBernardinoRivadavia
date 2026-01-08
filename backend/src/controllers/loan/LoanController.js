@@ -122,3 +122,17 @@ export const removeLoan = async (req, res) => {
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
 };
+
+
+export const getLoansByEmployeeCount = async (req, res) => {
+    try {
+        //const queryOptions = buildLoanFilters(req.query);
+
+        const loans = await LoanService.getLoansByEmployeeCount(req.query);
+
+        res.status(HTTP_STATUS.OK.code).send(loans);
+    } catch (error) {
+        console.error(error);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+    }
+};

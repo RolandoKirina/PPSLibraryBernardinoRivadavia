@@ -442,10 +442,10 @@ export const update = async (id, updates) => {
       BookId: book.BookId,
       loanId: id,
       bookCode: book.codeInventory,
-      expectedDate: updates.expectedDate, 
+      expectedDate: updates.expectedDate,
       reneweAmount: book.renewes || 0,
       returned: book.returned === "Sí" || book.returned === true,
-      returnedDate: book.returnedDate || null, 
+      returnedDate: book.returnedDate || null,
     }));
 
     await Promise.all(
@@ -477,3 +477,67 @@ export const remove = async (id) => {
     msg: "Loan deleted successfully",
   }
 }
+
+export const getLoansByEmployeeCount = async (filters) => {
+  const replacements = {};
+  let baseQuery = `
+    SELECT "Empleados"."Nombre", COUNT(DISTINCT "Prestamo"."Id") AS "Cantidad"
+    FROM "Prestamo"
+    INNER JOIN "Empleados" ON "Prestamo"."IdEmpleado" = "Empleados"."Id"
+  `;
+
+  if (filters.ignoreLossDate === 'devueltos') {
+    baseQuery += `
+    WHERE "Prestamo"."Id" IN (
+      SELECT "IdPrestamo"
+      FROM "PrestamoLibro"
+      GROUP BY "IdPrestamo"
+      HAVING COUNT(*) = COUNT("FechaDevolucion")
+         AND COUNT(*) = COUNT(CASE WHEN "FechaDevolucion" > "FechaPrevista" THEN 1 END)
+         AND COUNT(*) = COUNT(CASE 
+                                WHEN (${filters.afterDateFrom ? '"FechaDevolucion" >= :afterDateFrom' : '1=1'})
+                                 AND (${filters.beforeDateTo ? '"FechaDevolucion" <= :beforeDateTo' : '1=1'})
+                                THEN 1 END)
+    )
+    GROUP BY "Empleados"."Nombre"
+  `;
+
+    if (filters.afterDateFrom) replacements.afterDateFrom = filters.afterDateFrom;
+    if (filters.beforeDateTo) replacements.beforeDateTo = filters.beforeDateTo;
+  }
+  else if (filters.ignoreLossDate === 'sinDevolver') {
+    // Join normal, pero todos sin devolver
+    baseQuery += `
+      INNER JOIN "PrestamoLibro" ON "Prestamo"."Id" = "PrestamoLibro"."IdPrestamo"
+      WHERE "PrestamoLibro"."FechaDevolucion" IS NULL
+      ${filters.afterDateFrom ? 'AND "PrestamoLibro"."FechaPrevista" >= :afterDateFrom' : ''}
+      ${filters.beforeDateTo ? 'AND "PrestamoLibro"."FechaPrevista" <= :beforeDateTo' : ''}
+      GROUP BY "Empleados"."Nombre"
+    `;
+
+    if (filters.afterDateFrom) replacements.afterDateFrom = filters.afterDateFrom;
+    if (filters.beforeDateTo) replacements.beforeDateTo = filters.beforeDateTo;
+
+  } else {
+    const conditions = [];
+    if (filters.afterDateFrom) {
+      conditions.push(`"PrestamoLibro"."FechaDevolucion" >= :afterDateFrom`);
+      replacements.afterDateFrom = filters.afterDateFrom;
+    }
+    if (filters.beforeDateTo) {
+      conditions.push(`"PrestamoLibro"."FechaDevolucion" <= :beforeDateTo`);
+      replacements.beforeDateTo = filters.beforeDateTo;
+    }
+
+    const whereClause = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
+
+    baseQuery += `
+      INNER JOIN "PrestamoLibro" ON "Prestamo"."Id" = "PrestamoLibro"."IdPrestamo"
+      ${whereClause}
+      GROUP BY "Empleados"."Nombre"
+    `;
+  }
+
+  const [results] = await sequelize.query(baseQuery, { replacements });
+  return results;
+};
