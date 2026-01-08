@@ -37,7 +37,7 @@ const BookSection = () => {
   const [PopUpBooksPartners, setPopUpBooksPartners] = useState(false);
   const [PopUpLostBooks, setPopUpLostBooks] = useState(false);
   const [error, setError] = useState(null);
-
+  const BASE_URL = "http://localhost:4000/api/v1/books";
 
   const { items, getItems, getItem, createItem, updateItem, deleteItem } =
     useEntityManagerAPI("books");
@@ -47,6 +47,7 @@ const BookSection = () => {
     codeInventory: "",
     codeCDU: "",
     codeSignature: "",
+    bookTitle: "",
     yearEdition: "",
     numberEdition: ""
   });
@@ -67,7 +68,7 @@ const BookSection = () => {
     }, 300);
 
     return () => clearTimeout(delay);
-  }, [formData, items]);
+  }, [formData]);
 
 
   let columns = [];
@@ -156,15 +157,15 @@ const BookSection = () => {
       key: 'editPopup',
       title: 'Editar Libro',
       className: 'popup-container-book-form editsize',
-      content: <FormEditBook selectedBook={selectedItem} />,
+      content: <FormEditBook selectedBook={selectedItem} getItems={getItems} />,
       close: () => setPopupEdit(false),
       condition: PopUpEdit
     },
     {
       key: 'AddPopup',
       title: 'Agregar Libro',
-      className: 'popup-container-book-form',
-      content: <FormAddBook />,
+      className: 'popup-container-book-form editsize',
+      content: <FormAddBook getItems={getItems} />,
       close: () => setPopupAdd(false),
       condition: PopUpAdd
     },
@@ -217,13 +218,38 @@ const BookSection = () => {
     }
   ]
 
-  function duplicateBooks(data) {
-    let bookData = getItem(data.id);
-    const maxId = Math.max(...items.map(b => b.id), 0);
-    const newId = maxId + 1;
-    const duplicatedBook = { ...bookData, id: newId };
-    createItem(duplicatedBook);
+  async function duplicateBooks(data) {
+    try {
+      const response = await fetch(BASE_URL+"/duplicateBook", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          codeInventory: data.codeInventory,
+          newCodeInventory: data.newCodeInventory,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Error al duplicar el libro');
+      }
+
+      const result = await response.json();
+      console.log('Libro duplicado:', result);
+
+      await getItems();
+
+      return result;
+
+    } catch (error) {
+      console.error('Error duplicando el libro:', error.message);
+      throw error; // opcional: para manejarlo más arriba
+    }
   }
+
+
   return (
     <>
       <GenericSection

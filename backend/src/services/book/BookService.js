@@ -45,6 +45,10 @@ export const createBook = async( book) => {
     return await BookRepository.create(book);
 }
 
+export const duplicateBook = async( book) => {
+    return await BookRepository.duplicateBook(book);
+}
+
 export const updateBook = async (id, data) => {
   const updatedBook = await BookRepository.update(id, data);
   if (!updatedBook) {

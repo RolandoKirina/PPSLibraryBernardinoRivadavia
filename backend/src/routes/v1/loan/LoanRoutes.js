@@ -6,6 +6,7 @@ import * as LoanController from '../../../controllers/loan/LoanController.js';
 const router = express.Router();
 
 router.get('/', LoanController.getAllLoans);
+router.get('/employee-count', LoanController.getLoansByEmployeeCount);
 router.get('/print-list/:option', LoanController.getLoanPrintList);
 router.get('/returns', LoanController.getAllReturns);
 //agregue un middleware para evitar repetir codigo en la funcion validateid
@@ -17,6 +18,9 @@ router.put('/:id', validateIdParam("id"), LoanController.updateLoan);
 //quizas añadir patch
 
 router.delete('/:id', validateIdParam("id"), LoanController.removeLoan);
+
+
+
 
 
 

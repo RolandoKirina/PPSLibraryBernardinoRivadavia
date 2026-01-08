@@ -13,35 +13,46 @@ export const getAll = async (filters) => {
         whereAuthor,
         limit,
         offset,
-        sortBy,
-        direction,
+        order,
     } = filters;
+
 
     const authors = await Authors.findAll({
         attributes: ['id', 'name', 'nationality'],
+
         where: Object.keys(whereAuthor).length ? whereAuthor : undefined,
-        required: Object.keys(whereAuthor).length > 0,
+        required: false,
+        subQuery: false,
+
         include: [
             {
                 model: BookAuthor,
                 as: 'BookAuthors',
                 attributes: ['position'],
+
                 include: [
                     {
                         model: Book,
                         as: 'Book',
-                        attributes: ['codeInventory', 'title', 'codeClasification', 'codeCDU', 'codeLing'],
+                        attributes: [
+                            'codeInventory',
+                            'title',
+                            'codeClasification',
+                            'codeCDU',
+                            'codeLing'
+                        ],
                         include: [
                             {
                                 model: LoanBook,
                                 as: 'BookLoans',
-                                attributes: [],
+                                attributes: [],   
                                 required: false,
+
                                 include: [
                                     {
                                         model: Loan,
                                         as: 'Loan',
-                                        attributes: [],
+                                        attributes: [], 
                                         required: false,
                                     }
                                 ]
@@ -50,17 +61,23 @@ export const getAll = async (filters) => {
                     }
                 ]
             }
-        ]
+        ],
 
+        limit,
+        offset,
+        order
     });
 
+    // Convertir a objetos planos
     const authorsPlain = authors.map(a => a.get({ plain: true }));
 
+    // Calcular isBorrowed
     for (const author of authorsPlain) {
         for (const bookAuthor of author.BookAuthors) {
             const book = bookAuthor.Book;
 
-            const isBorrowed = book.LoanBooks?.some(lb => lb.returnedDate === null) || false;
+            const isBorrowed =
+                book.BookLoans?.some(lb => lb.returnedDate === null) || false;
 
             book.isBorrowed = isBorrowed;
         }
@@ -68,6 +85,7 @@ export const getAll = async (filters) => {
 
     return authorsPlain;
 };
+
 
 
 export const getOne = async (id) => {
@@ -147,7 +165,6 @@ export const update = async (id, updates) => {
             BookId: book.BookId,
             bookCode: book.codeInventory,
             authorCode: id,
-            authorName: updates.name,
             position: book.position
         }));
 

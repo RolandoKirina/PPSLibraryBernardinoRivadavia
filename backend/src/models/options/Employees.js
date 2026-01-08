@@ -1,7 +1,7 @@
 import sequelize from "../../configs/database.js";
 import { DataTypes } from "sequelize";
 
-const Employees = sequelize.define("Employees", 
+const Employees = sequelize.define("Employees",
     {
         id: {
             autoIncrement: true,
@@ -11,11 +11,13 @@ const Employees = sequelize.define("Employees",
         },
         name: {
             type: DataTypes.STRING(100),
-            field: "Nombre"
+            field: "Nombre",
+            allowNull: false
         },
         code: {
             type: DataTypes.STRING(10),
-            field: "Codigo"
+            field: "Codigo",
+            allowNull: false
         }
     },
     {
