@@ -1,11 +1,37 @@
 import Partner from '../../models/partner/Partner.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 
+export const getUnpaidFeesByPartner = async ( id) => { 
+ try {
+    const partner = await Partner.findByPk(id, {
+      include: [
+        {
+          model: Fees,
+          as: 'Fees',
+          where: {
+            paid: false
+          },
+          required: false,
+        }
+      ]
+    });
+
+    if (!partner) {
+      throw new ValidationError(`El socio con id "${id}" no existe`);
+    }
+
+    return partner.Fees;
+  } catch (err) {
+    throw err;
+  }
+
+};
+
 export const getAll = async (filters = {}) => {
- const { wherePartner } = filters; 
- const partners = await Partner.findAll({ where: wherePartner }); 
- 
- return partners;
+    const { wherePartner } = filters; 
+    const partners = await Partner.findAll({ where: wherePartner }); 
+    
+    return partners;
 };
 
 export const getOne = async (id) => {

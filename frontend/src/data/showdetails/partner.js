@@ -1,49 +1,3 @@
-/*export const DetailPartner = [
-  {
-    id: 1,
-    title: 'Datos personales',
-    active: false,
-    rows: [
-      [
-        { label: 'Número de socio', value: 'información', attribute: "id" },
-        { label: 'Nombre', value: 'información', attribute: "name" },
-      ],
-      [
-        { label: 'Apellido', value: 'información', attribute: "surname" },
-        { label: 'DNI', value: 'información', attribute: "documentNumber" },
-      ],
-      [
-        { label: 'Estado', value: 'información', attribute: "isActive" }
-      ]
-    ]
-  },
-  {
-    id: 2,
-    title: 'Contacto',
-    active: false,
-    rows: [
-      [
-        { label: 'Numero de teléfono', value: 'información', attribute: 'homePhone' },
-        { label: 'Dirección de cobro', value: 'información', attribute: 'collectionAddress' }
-      ],
-    ]
-  },
-  {
-    id: 3,
-    title: 'Estado de la cuenta',
-    active: false,
-    rows: [
-      [
-        { label: 'Libros pendientes', value: 'información', attribute: 'pendingBooks' },
-        { label: 'Cuentas impagas', value: 'información', attribute: 'unpaidFees' }
-      ], [
-        { label: 'Motivo baja', value: 'información', attribute: 'idReason' },
-        { label: 'Categoria', value: 'información', attribute: 'idCategory' }
-      ]
-    ]
-  }
-];
-*/
 
 
 export const DetailPartner = [
@@ -129,4 +83,5 @@ export const DetailPartner = [
   
     ]
   }
+
 ];

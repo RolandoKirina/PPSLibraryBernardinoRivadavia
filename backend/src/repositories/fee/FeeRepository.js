@@ -35,6 +35,34 @@ export const getAll = async (filters) => {
   return mappedFees;
 };
 
+export const getUnpaidFeesByPartner = async (idPartner) => {
+  const fees = await Fees.findAll({
+    where: {
+      idPartner,
+      paid: false
+    },
+    include: [
+      {
+        model: Partner,
+        as: 'Partner',
+        attributes: ['id', 'name', 'surname', 'partnerNumber']
+      }
+    ]
+  });
+
+  return fees.map(fee => ({
+    id: fee.id,
+        partnerNumber: fee.Partner?.partnerNumber ?? '—',     
+    name: fee.Partner
+      ? `${fee.Partner.name} ${fee.Partner.surname}`: '—',
+    month: fee.month,
+    year: fee.year,
+    amount: fee.amount,
+  
+    date_of_paid: fee.date_of_paid
+   
+  }));
+};
 
 export const getQuantityPaidFees = async (partnerNumber) => {
 

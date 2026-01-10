@@ -91,35 +91,9 @@ export default function FormEditPartner({selectedPartner}) {
     }
   };
 
-  const columnsPendingBooks = [
-    { header: 'Código de libro', accessor: 'bookCode' },
-    { header: 'Título', accessor: 'title' },
-    { header: 'Fecha de retiro', accessor: 'retiredDate' },
-    { header: 'Fecha prevista', accessor: 'expectedDate' },
-    { header: 'Fecha de devolución', accessor: 'returnedDate' },
-    { header: 'Renovaciones', accessor: 'renewes' },
-    { header: 'Devuelto', accessor: row => row.returned ? 'Sí' : 'No' }
-  ];
 
-  function renderView() {
-    switch (popupView) {
-      case "unpaidfees":
-        return (
-          <div>
-            <UnpaidFees />
-            <BackviewBtn menu={'default'} changeView={setPopupView} />
-          </div>
-        );
-
-      case "pendingbooks":
-        return (
-          <>
-            <Table columns={columnsPendingBooks} data={selectedPartner.pendingBooks}></Table>
-            <BackviewBtn menu={'default'} changeView={setPopupView} />
-          </>
-        );
-
-      default:
+function renderView(){
+ 
         return (
           <form onSubmit={handleSubmit}>
             <Accordion
@@ -322,10 +296,7 @@ export default function FormEditPartner({selectedPartner}) {
                 </div>
    
 
-                <div className="partner-state-btns">
-                  <Btn text="Cuotas impagas" variant="secondary" onClick={() => setPopupView("unpaidfees")} />
-                  <Btn text="Libros pendientes" variant="secondary" onClick={() => setPopupView("pendingbooks")} />
-                </div>
+              
               </div>
 
               <div className="items-info-details-form-accordion">
@@ -353,12 +324,13 @@ export default function FormEditPartner({selectedPartner}) {
                 icon={<div className="img-ico"><img src={SaveIcon} alt="Guardar"/></div>}
                 variant="primary"
               />
+               
             </div>
 
           </form>
         );
     }
-  }
+  
 
   return (
     <div className="form-edit-partner">

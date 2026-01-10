@@ -1,8 +1,7 @@
 import sequelize from '../../configs/database.js';
 import { DataTypes } from "sequelize";
 
-const Partner = sequelize.define("Partner", 
-{   
+const Partner = sequelize.define("Partner", {   
     id: {
         autoIncrement: true,
         primaryKey: true,
@@ -122,11 +121,6 @@ const Partner = sequelize.define("Partner",
     workLocationId: {
         type: DataTypes.INTEGER,
         field: "IdLocal_trab"
-    },
-    
-    collector: {
-        type: DataTypes.INTEGER,
-        field: "Cobrador"
     },
     unpaidFees: {
         type: DataTypes.INTEGER,

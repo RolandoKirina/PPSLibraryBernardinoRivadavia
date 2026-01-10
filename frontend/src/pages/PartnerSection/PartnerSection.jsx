@@ -37,6 +37,8 @@ export default function PartnerSection() {
   });
 
 
+  
+
    useEffect(() => {
   const filters = Object.fromEntries(
     Object.entries(formData).filter(([_, v]) => v !== "")
@@ -142,7 +144,7 @@ export default function PartnerSection() {
       title: 'Detalles del socio',
       className: '',
 
-      content: <ShowDetails data={selectedItem} detailsData={DetailPartner} isPopup={true} />,
+      content: <ShowDetails data={selectedItem} detailsData={DetailPartner} isPopup={true} actions={true}/>,
       close: () => setPopUpDetail(false),
       condition: PopUpDetail
     },

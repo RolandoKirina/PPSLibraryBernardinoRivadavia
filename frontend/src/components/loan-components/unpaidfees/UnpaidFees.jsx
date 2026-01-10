@@ -6,21 +6,13 @@ import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
 import { useState } from 'react';
 import { useEffect } from 'react';
 
-export default function UnpaidFees({ changeView, partnerNumber }) {
+export default function UnpaidFees({ data, loading }) {
     const { items, getItems, getItem, createItem, updateItem, deleteItem } = useEntityManagerAPI("fees");
 
     const [filters, setFilters] = useState({});
+    
+    if (loading) return <p>Cargando cuotas impagas...</p>;
 
-    useEffect(() => {
-        const delay = setTimeout(() => {
-            getItems({
-                status: 'unpaid',
-                partnerNumber: partnerNumber
-            });
-        }, 500);
-
-        return () => clearTimeout(delay);
-    }, [filters]);
 
     const formatDate = (value) => {
 
@@ -41,8 +33,10 @@ export default function UnpaidFees({ changeView, partnerNumber }) {
 
     
       const columns = [
-        { header: 'Numero de cuota', accessor: 'feeid' },
+        { header: 'Numero de cuota', accessor: 'id' },
         { header: 'Nombre de socio',  accessor: 'name'},
+        {header: 'Mes',accessor:"month"},
+        {header:'Año',accessor:"year"},
         { header: 'valor', accessor: 'amount' },
         {header: 'Numero de socio', accessor: 'partnerNumber'},
         {header: "Fecha de pago", 
@@ -57,7 +51,7 @@ export default function UnpaidFees({ changeView, partnerNumber }) {
         <>
             <div className='unpaid-quotes-container'>
                 <h3>Cuotas impagas</h3>
-                <Table columns={columns} data={items} />
+                <Table columns={columns} data={data} />
             </div>
         </>
     )
