@@ -28,11 +28,16 @@ export default function AuthorSection() {
         authorName: "",
     });
 
+    const chunkSize = 100;
+    const rowsPerPage = 5;
+    const [offsetActual, setOffsetActual] = useState(0);
+    const [resetPageTrigger, setResetPageTrigger] = useState(0);
 
-    
 
     const {
         items,
+        loading,
+        totalItems,
         getItems,
         deleteItem,
         createItem,
@@ -46,21 +51,32 @@ export default function AuthorSection() {
 
     useEffect(() => {
         const delay = setTimeout(() => {
+            setOffsetActual(0);
+            setResetPageTrigger(prev => prev + 1);
+
             const activeFilters = Object.fromEntries(
-                Object.entries(filters).filter(([_, v]) => v.trim() !== "")
+                Object.entries(filters).filter(([_, v]) => v !== "" && v !== null && v !== undefined)
             );
 
-            getItems(activeFilters);
+            getItems({ ...activeFilters, limit: chunkSize, offset: 0 });
         }, 300);
-
+        console.log(totalItems);
         return () => clearTimeout(delay);
     }, [filters]);
 
 
+    async function handleChangePage(page) {
+        const numberPage = Number(page);
+        const lastItemIndex = numberPage * rowsPerPage;
 
-    useEffect(() => {
-        getItems();
-    }, []);
+        // Si necesitamos traer más items
+        if (lastItemIndex > items.length) {
+            const newOffset = items.length; // desde donde ya terminé de cargar
+            await getItems({ ...filters, limit: chunkSize, offset: newOffset }, true);
+            setOffsetActual(newOffset);
+        }
+
+    }
 
     const [deletePopup, setDeletePopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
@@ -233,7 +249,7 @@ export default function AuthorSection() {
                     </button>
                 )
             }
-];
+        ];
     }
     else if ((auth.role === roles.user || auth.role === roles.reader)) {
         columns = [
@@ -257,7 +273,7 @@ export default function AuthorSection() {
 
     return (
         <>
-            <GenericSection title={'Listado de autores'} columns={columns} data={items} popups={authorsPopups}
+            <GenericSection title={'Listado de autores'} columns={columns} data={items} popups={authorsPopups} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger}
                 actions={
                     <>
                         <div className='author-actions'>

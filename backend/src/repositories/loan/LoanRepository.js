@@ -135,7 +135,7 @@ export const getAll = async (filters) => {
 };
 
 export const getCount = async (filters) => {
-  console.log(filters);
+
   const {
     whereLoan,
     whereLoanType,

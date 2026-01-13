@@ -17,7 +17,6 @@ import { editLoanformFields } from "../../data/forms/LoanForms";
 import { loanDetailsInfo } from '../../data/showdetails/LoanDetails';
 import PopUpDelete from '../../components/common/deletebtnComponent/PopUpDelete';
 import { useEffect } from "react";
-import { useEntityManager } from "../../hooks/useEntityManager";
 import { useAuth } from "../../auth/AuthContext";
 import { useEntityManagerAPI } from "../../hooks/useEntityManagerAPI";
 import LoanBooks from "../../components/loan-components/loanbooks/LoanBooks";
@@ -81,14 +80,12 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
         const numberPage = Number(page);
         const lastItemIndex = numberPage * rowsPerPage;
 
-        if (lastItemIndex > items.length + offsetActual) {
-            const newOffset = offsetActual + items.length;
-            console.log("llamado");
-            console.log(newOffset);
-            const itemss = await getItems({ ...filters, limit: chunkSize, offset: newOffset }, true);
-            console.log(itemss);
-            setOffsetActual(newOffset); // offsetActual es un useState en LoanSection
+        if (lastItemIndex > items.length) {
+            const newOffset = items.length;
+            await getItems({ ...filters, limit: chunkSize, offset: newOffset }, true);
+            setOffsetActual(newOffset);
         }
+
     }
 
 

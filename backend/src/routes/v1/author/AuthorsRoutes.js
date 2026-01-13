@@ -6,6 +6,7 @@ import * as AuthorsController from '../../../controllers/author/AuthorsControlle
 const router = express.Router();
 
 router.get('/', AuthorsController.getAllAuthors);
+router.get('/count', AuthorsController.getCount);
 router.get('/:id', validateIdParam("id"), AuthorsController.getAuthor);
 router.post('/', AuthorsController.createAuthor);
 router.put('/:id', validateIdParam("id"), AuthorsController.updateAuthor);
