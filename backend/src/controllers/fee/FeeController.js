@@ -2,6 +2,22 @@ import * as FeeService from "../../services/fee/FeeService.js";
 import { HTTP_STATUS } from "../../https/httpsStatus.js";
 import { buildFeeFilters } from "../../utils/buildFeeFilters.js";
 
+
+export const getUnpaidFeesByPartner = async (req, res) => {
+  try {
+    const { partnerId } = req.params;
+    const fees = await FeeService.getUnpaidFeesByPartner(partnerId);
+
+    res.status(HTTP_STATUS.OK.code).json(fees);
+  } catch (e) {
+    console.error(e);
+    res
+      .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
+      .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+  }
+};
+
+
 export const getAllFees = async (req, res) => {
     try {
         
@@ -9,7 +25,6 @@ export const getAllFees = async (req, res) => {
         const fees = await FeeService.getAllFees(queryOptions);
         res.status(HTTP_STATUS.OK.code).json(fees);  
     } catch (e) {
-        console.error("🔥 ERROR EN CONTROLLER:", e); 
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
 };

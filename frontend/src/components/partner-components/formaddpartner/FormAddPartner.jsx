@@ -15,6 +15,7 @@ export default function FormAddPartner() {
   const handleToggle = (id) => {
     setActiveAccordion(prev => prev === id ? null : id);
   };
+  
 const columnsPendingBooks = [
   { header: 'Código de libro', accessor: 'bookCode' },
   { header: 'Título', accessor: 'title' },

@@ -1,6 +1,7 @@
 import * as PartnerService from '../../services/partner/PartnerService.js';
 import { HTTP_STATUS } from '../../https/httpsStatus.js';
 import { buildPartnerFilters } from "../../utils/buildPartnerFilters.js";
+
 export const getAllPartners = async (req, res) => {
     try {
          const queryOptions = buildPartnerFilters(req.query);

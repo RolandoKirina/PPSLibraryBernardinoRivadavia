@@ -23,14 +23,13 @@ export default function FormEditBook({ selectedBook, getItems }) {
     async function onHandleFindAuthor(value) {
         try {
             if (!value.trim()) {
-                setResults([]);
-                return;
+            setResults([]);
+            return;
             }
             const res = await getAuthors({ authorName: value });
-
             setResults(res);
         } catch (err) {
-            console.error(err);
+        console.error(err);
         }
     }
 

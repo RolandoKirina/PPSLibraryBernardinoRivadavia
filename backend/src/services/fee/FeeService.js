@@ -1,6 +1,14 @@
 import * as FeeRepository from "../../repositories/fee/FeeRepository.js";
 import { getAll, create, update, remove }  from "../../repositories/partner/PartnerRepository.js";
-// Uso
+
+
+export const getUnpaidFeesByPartner = async (id) => {
+
+    const fees = await FeeRepository.getUnpaidFeesByPartner(id);
+    return fees;
+};
+
+    
 export const getAllFees = async (filters) => {
     const fees = await FeeRepository.getAll(filters);
     return fees;
@@ -98,8 +106,15 @@ export const updateFee = async (id, data) => {
         throw new Error("La fecha de pago no es válida.");
     }
 
+if (
+  (data.paid === false || data.paid === "false") &&
+  data.date_of_paid) {
+  throw new Error(
+    "Una cuota impaga no puede tener fecha de pago."
+  );
+}
 
-    // Si está todo OK → actualizar
+    
     const updatedFee = await FeeRepository.update(id, data);
 
     if (!updatedFee) {
@@ -108,6 +123,7 @@ export const updateFee = async (id, data) => {
 
     return updatedFee;
 };
+
 export const deleteFee = async (id) => {
     const deletedFee = await FeeRepository.remove(id);
     if (!deletedFee) {

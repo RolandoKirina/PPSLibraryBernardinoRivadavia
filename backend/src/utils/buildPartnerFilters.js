@@ -14,7 +14,6 @@ export const buildPartnerFilters = (query) => {
   }
 
   if (isActive && isActive !== 'all') {
-    console.log(isActive)
     wherePartner.isActive = Number(isActive);
   }
 

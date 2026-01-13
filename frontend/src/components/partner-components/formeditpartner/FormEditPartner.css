@@ -79,13 +79,6 @@
   margin: 1em 0;
 }
 
-.partner-state-btns {
-  display: flex;
-  margin: 0.5rem;
-  width: 20em;
-  justify-content: space-between;
-}
-
 /*empuja el ultimo btn a la derecha*/
 /* .btn-list-formeditpartner> *:last-child {
   margin-left: auto;
