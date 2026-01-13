@@ -33,45 +33,68 @@ export const getAll = async (filters) => {
     offset
   } = filters;
 
-  const loans = await Loan.findAll({
-    attributes: ['id', 'withdrawalTime', 'retiredDate'],
+  //separacion de ids principales con los joins posteriores para que el limit funcione correctamente
+
+  const loanIds = await Loan.findAll({
+    attributes: ['id'],
     where: whereLoan,
-    subQuery: false,
     include: [
       {
         model: LoanType,
         as: 'LoanType',
-        attributes: ['description'],
         where: Object.keys(whereLoanType).length ? whereLoanType : undefined,
         required: Object.keys(whereLoanType).length > 0
       },
       {
         model: Partner,
         as: 'Partner',
-        attributes: ['id', 'homePhone', 'homeAddress', 'name', 'surname', 'partnerNumber'],
         where: Object.keys(wherePartner).length ? wherePartner : undefined,
-        required: true,
+        required: true
+      }
+    ],
+    order,
+    limit,
+    offset,
+    raw: true
+  });
+
+  const ids = loanIds.map(l => l.id);
+
+  if (!ids.length) return [];
+
+  const loans = await Loan.findAll({
+    where: {
+      id: ids
+    },
+    include: [
+      {
+        model: LoanType,
+        as: 'LoanType',
+        attributes: ['description']
+      },
+      {
+        model: Partner,
+        as: 'Partner',
+        attributes: ['id', 'homePhone', 'homeAddress', 'name', 'surname', 'partnerNumber']
       },
       {
         model: LoanBook,
         as: 'LoanBooks',
+        required: true,
         attributes: ['bookCode', 'expectedDate', 'returnedDate'],
         where: Object.keys(whereLoanBook).length ? whereLoanBook : undefined,
-        required: true,
         include: [
           {
             model: Book,
             as: 'Book',
             attributes: ['title', 'codeInventory'],
             where: Object.keys(whereBook).length ? whereBook : undefined,
-            required: true,
             include: [
               {
                 model: BookType,
                 as: 'BookType',
-                attributes: ["typeName"],
-                where: Object.keys(whereBookType).length ? whereBookType : undefined,
-                required: true
+                attributes: ['typeName'],
+                where: Object.keys(whereBookType).length ? whereBookType : undefined
               }
             ]
           }
@@ -85,12 +108,10 @@ export const getAll = async (filters) => {
         required: Object.keys(whereEmployee).length > 0
       }
     ],
-    order,
-    // limit,
-    // offset
+    order
   });
 
-  const groupedLoans = loans.map(loan => ({
+  return loans.map(loan => ({
     loanId: loan?.id || '',
     retiredDate: formatDate(loan.retiredDate),
     expectedDate: formatDate(loan.LoanBooks?.[0]?.expectedDate),
@@ -111,10 +132,8 @@ export const getAll = async (filters) => {
       typeName: book.Book.BookType?.typeName || ''
     }))
   }));
-
-
-  return groupedLoans;
 };
+
 
 export const getAllReturns = async (filters) => {
   const {

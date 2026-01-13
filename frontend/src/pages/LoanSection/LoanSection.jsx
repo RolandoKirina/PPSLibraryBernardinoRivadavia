@@ -58,7 +58,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
 
     useEffect(() => {
         const delay = setTimeout(() => {
-            getItems(filters);
+            getItems({...filters, limit: 20, offset: 0});
         }, 500);
 
         return () => clearTimeout(delay);

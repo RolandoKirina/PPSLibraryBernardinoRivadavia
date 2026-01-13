@@ -33,7 +33,7 @@ export default function Pagination({
     }
   };
 
-    const visiblePages = Array.from(
+  const visiblePages = Array.from(
     { length: Math.max(0, endPage - startPage + 1) },
     (_, i) => startPage + i
   );
@@ -46,7 +46,7 @@ export default function Pagination({
             ←
           </button>
 
-      {[...Array(Math.max(0, endPage - startPage + 1))].map((_, i) => {
+          {[...Array(Math.max(0, endPage - startPage + 1))].map((_, i) => {
             const pageNumber = startPage + i;
             return (
               <button
