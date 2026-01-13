@@ -4,5 +4,16 @@
 
 .unpaid-quotes-container h3 {
     text-align: center;
-    margin-top: 1em;
+}
+
+.msg-unpaidfees{
+    display: flex;
+    justify-content: center;
+    border-radius: 2px;
+    width: 50%;
+    margin: 1.3em auto;    
+    background-color: var(--primary);
+    text-align: center;
+   text-decoration: underline;
+   font-size:larger;
 }

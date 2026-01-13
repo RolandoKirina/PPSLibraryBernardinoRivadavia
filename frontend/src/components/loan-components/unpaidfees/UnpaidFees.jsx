@@ -6,12 +6,12 @@ import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
 import { useState } from 'react';
 import { useEffect } from 'react';
 
-export default function UnpaidFees({ data, loading }) {
+export default function UnpaidFees({ data}) {
     const { items, getItems, getItem, createItem, updateItem, deleteItem } = useEntityManagerAPI("fees");
 
     const [filters, setFilters] = useState({});
     
-    if (loading) return <p>Cargando cuotas impagas...</p>;
+   
 
 
     const formatDate = (value) => {
@@ -47,12 +47,16 @@ export default function UnpaidFees({ data, loading }) {
     
 
 
-    return (
-        <>
-            <div className='unpaid-quotes-container'>
-                <h3>Cuotas impagas</h3>
-                <Table columns={columns} data={data} />
-            </div>
-        </>
-    )
-}
+   return (
+  <div className="unpaid-quotes-container">
+    <h3>Cuotas impagas</h3>
+
+    {data && data.length > 0 ? (
+      <Table columns={columns} data={data} />
+    ) : (
+      <div className='msg-unpaidfees'>
+        <p>No hay cuotas impagas</p>
+      </div>
+    )}
+  </div>
+)}

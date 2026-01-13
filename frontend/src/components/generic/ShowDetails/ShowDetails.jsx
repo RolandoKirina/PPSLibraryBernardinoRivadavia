@@ -9,7 +9,7 @@ export default function ShowDetails({ data, isPopup, detailsData, titleText,acti
 
  const [popupView,setPopupView]= useState(null);
  const [unpaidFees, setUnpaidFees] = useState([]);
- const [loadingFees, setLoadingFees] = useState(false);
+ const [pendingBooks,setPendingBooks] = useState([]);
 
   const normalizeFees = (fees) =>
   fees.map(fee => ({
@@ -20,7 +20,6 @@ export default function ShowDetails({ data, isPopup, detailsData, titleText,acti
   
 async function fetchUnpaidFees() {
   try {
-    setLoadingFees(true);
 
     const res = await fetch(`http://localhost:4000/api/v1/fees/partners/${data.id}/unpaid-fees`);
     
@@ -31,42 +30,64 @@ async function fetchUnpaidFees() {
 
   } catch (error) {
     console.error("Error al cargar cuotas impagas", error);
-  } finally {
-    setLoadingFees(false);
-  }
+  } 
 }
 
+async function fetchPendingBooks() {
+  try {
+    
+    const res = await fetch(`http://localhost:4000/api/v1/books/pendingBooks/${data.id}`);
+    const json = await res.json();
+    setPendingBooks(json);
+    setPopupView("pendingbooks");
+
+  } catch (error) {
+    console.error("Error al cargar cuotas impagas", error);
+  }
+}
    const columnsPendingBooks = [
      { header: 'Código de libro', accessor: 'bookCode' },
      { header: 'Título', accessor: 'title' },
      { header: 'Fecha de retiro', accessor: 'retiredDate' },
      { header: 'Fecha prevista', accessor: 'expectedDate' },
      { header: 'Fecha de devolución', accessor: 'returnedDate' },
-     { header: 'Renovaciones', accessor: 'renewes' },
-     { header: 'Devuelto', accessor: row => row.returned ? 'Sí' : 'No' }
+     { header: 'Renovaciones', accessor: 'renewes' }
    ];
 
-
  function renderView () {
-    switch (popupView) {
-      case "unpaidfees":
-    return (
-      <div>
-        <UnpaidFees data={unpaidFees} loading={loadingFees} />
-        <BackviewBtn menu="default" changeView={setPopupView} />
-      </div>
-    );
+    if (!actions) {
+      return null; 
+    }
 
-      case "pendingbooks":
-        console.log(data)
+    switch (popupView) {
+          case "unpaidfees":
         return (
-          <>
-            <Table columns={columnsPendingBooks} data={data.pendingBooks}></Table>
-            <BackviewBtn menu={'default'} changeView={setPopupView} />
-          </>
+          <div >
+            <UnpaidFees data={unpaidFees} />
+            <BackviewBtn menu="default" changeView={setPopupView} />
+          </div>
         );
 
-  }}
+         case "pendingbooks":
+            return (
+              <>
+                {pendingBooks && pendingBooks.length > 0 ? (
+                  <Table
+                    columns={columnsPendingBooks}
+                    data={pendingBooks}
+                  />
+                ) : (
+                  <div className="msg-unpaidfees">
+                    <p>No hay libros pendientes</p>
+                  </div>
+                )}
+
+                <BackviewBtn menu="default" changeView={setPopupView} />
+              </>
+            );
+      }
+  }
+    
 
   function fillDetailsWithData(detailsData, data) {
     if (!data) return detailsData;
@@ -152,12 +173,14 @@ async function fetchUnpaidFees() {
 
             
           ))}
+          {actions && (
+            
           <div  className="partner-state-btns">
-                  <div>
-          <Btn text="Cuotas impagas"variant="secondary" onClick={fetchUnpaidFees}/>                   
-          <Btn text="Libros pendientes" variant="secondary" onClick={() => setPopupView("pendingbooks")} />
-                  </div>
-          </div>
+              <div>
+                <Btn text="Cuotas impagas"variant="secondary" onClick={fetchUnpaidFees}/>                   
+                <Btn text="Libros pendientes" variant="secondary" onClick={fetchPendingBooks} />
+              </div>
+          </div>)}
           {renderView()}
         
         </div>
