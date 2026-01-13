@@ -18,7 +18,7 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
     }
   };
 
-  const getItems = async (filters = {}) => {
+  const getItems = async (filters = {}, append = false) => {
     setLoading(true);
     setError(null);
 
@@ -41,15 +41,18 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
       : "";
 
     try {
+      // Obtener el total de items para la paginación
       const count = await getCount(query);
       setTotalItems(count);
-      console.log(count);
 
+      // Traer los items del backend
       const res = await fetch(`${baseUrl}/${entityName}${query}`);
       if (!res.ok) throw new Error("Error al obtener datos");
 
       const data = await res.json();
-      setItems(Array.isArray(data) ? data : [data]);
+
+      // Acumular o reemplazar items según 'append'
+      setItems(prev => append ? [...prev, ...(Array.isArray(data) ? data : [data])] : (Array.isArray(data) ? data : [data]));
 
       return data;
     } catch (err) {
@@ -58,6 +61,7 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
       setLoading(false);
     }
   };
+
 
 
 

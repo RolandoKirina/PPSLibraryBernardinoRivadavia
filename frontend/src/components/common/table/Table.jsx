@@ -1,9 +1,18 @@
 import Pagination from "../pagination/Pagination";
 import './Table.css';
-import { useState } from "react";
-export const Table = ({ columns = [], data = [], children, popupLength, isPrintList, rowsPerPage = 5, totalItems, handleChangePage, loading }) => {
+import { useState, useEffect } from "react";
+export const Table = ({ columns = [], data = [], children, popupLength, isPrintList, rowsPerPage = 5, totalItems, handleChangePage, loading, resetPageTrigger }) => {
   const actionAccessors = ["add", "delete", "edit", "details", "return", "renewe", "choose", "materials"];
   const [currentPage, setCurrentPage] = useState(1);
+  const indexOfLastRow = currentPage * rowsPerPage;
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+  const currentRows = data.slice(indexOfFirstRow, indexOfLastRow);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [resetPageTrigger]);
+
+
 
   return (
     <div className="content-table">
@@ -23,7 +32,7 @@ export const Table = ({ columns = [], data = [], children, popupLength, isPrintL
             </tr>
           </thead>
           <tbody className={isPrintList && 'tbodyPrint'}>
-            {data.map((row, i) => (
+            {currentRows.map((row, i) => (
               <tr key={i}>
                 {columns.map((col, j) => (
                   <td
