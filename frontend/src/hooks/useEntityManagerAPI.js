@@ -2,10 +2,21 @@ import { useState, useEffect } from "react";
 
 export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000/api/v1") => {
   const [items, setItems] = useState([]);
+  const [totalItems, setTotalItems] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-
+  const getCount = async (query = "") => {
+    try {
+      const res = await fetch(`${baseUrl}/${entityName}/count${query}`);
+      if (!res.ok) throw new Error("Error al obtener el conteo de datos");
+      const data = await res.json();
+      return data ?? 0;
+    } catch (err) {
+      console.error("Error en getCount:", err);
+      return 0;
+    }
+  };
 
   const getItems = async (filters = {}) => {
     setLoading(true);
@@ -30,6 +41,10 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
       : "";
 
     try {
+      const count = await getCount(query);
+      setTotalItems(count);
+      console.log(count);
+
       const res = await fetch(`${baseUrl}/${entityName}${query}`);
       if (!res.ok) throw new Error("Error al obtener datos");
 
@@ -144,6 +159,7 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
 
   return {
     items,
+    totalItems,
     loading,
     error,
     getItems,

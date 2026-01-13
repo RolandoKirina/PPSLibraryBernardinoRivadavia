@@ -108,3 +108,6 @@ td {
   text-align: center;
 }
 
+.table-data-info {
+  color: var(--black);
+}

@@ -8,7 +8,8 @@ export default function Pagination({
   itemsPerPage,
   currentPage,
   onPageChange,
-  buttonsPerBlock = 4
+  buttonsPerBlock = 4,
+  handleChangePage
 }
 ) {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -23,13 +24,17 @@ export default function Pagination({
   const endPage = Math.min(startPage + buttonsPerBlock - 1, totalPages);
   const handlePrevBlock = () => {
     if (startPage > 1) {
+      console.log(startPage - 1);
       onPageChange(startPage - 1);
+      handleChangePage(startPage - 1);
     }
   };
 
   const handleNextBlock = () => {
     if (endPage < totalPages) {
+      console.log(endPage + 1);
       onPageChange(endPage + 1);
+      handleChangePage(endPage + 1);
     }
   };
 
@@ -52,7 +57,10 @@ export default function Pagination({
               <button
                 key={pageNumber}
                 className={currentPage === pageNumber ? 'active' : ''}
-                onClick={() => onPageChange(pageNumber)}
+                onClick={() => {
+                  onPageChange(pageNumber)
+                  handleChangePage(pageNumber)
+                }}
               >
                 {pageNumber}
               </button>

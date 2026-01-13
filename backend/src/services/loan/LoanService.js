@@ -10,6 +10,10 @@ export const getAllLoans = async (filters) => {
     return await LoanRepository.getAll(filters);
 }
 
+export const getCount = async (filters) => {
+    return await LoanRepository.getCount(filters);
+}
+
 export const getLoanPrintList = async (option) => {
     let loans = [];
 

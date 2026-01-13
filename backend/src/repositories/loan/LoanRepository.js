@@ -134,6 +134,68 @@ export const getAll = async (filters) => {
   }));
 };
 
+export const getCount = async (filters) => {
+  console.log(filters);
+  const {
+    whereLoan,
+    whereLoanType,
+    wherePartner,
+    whereLoanBook,
+    whereBook,
+    whereBookType,
+    whereEmployee
+  } = filters;
+
+  const count = await Loan.count({
+    where: whereLoan,
+    distinct: true,
+    col: 'Id',
+    include: [
+      {
+        model: LoanType,
+        as: 'LoanType',
+        where: Object.keys(whereLoanType).length ? whereLoanType : undefined,
+        required: Object.keys(whereLoanType).length > 0
+      },
+      {
+        model: Partner,
+        as: 'Partner',
+        where: Object.keys(wherePartner).length ? wherePartner : undefined,
+        required: true
+      },
+      {
+        model: LoanBook,
+        as: 'LoanBooks',
+        required: true,
+        where: Object.keys(whereLoanBook).length ? whereLoanBook : undefined,
+        include: [
+          {
+            model: Book,
+            as: 'Book',
+            where: Object.keys(whereBook).length ? whereBook : undefined,
+            include: [
+              {
+                model: BookType,
+                as: 'BookType',
+                where: Object.keys(whereBookType).length ? whereBookType : undefined
+              }
+            ]
+          }
+        ]
+      },
+      {
+        model: Employees,
+        as: 'Employee',
+        where: Object.keys(whereEmployee).length ? whereEmployee : undefined,
+        required: Object.keys(whereEmployee).length > 0
+      }
+    ]
+  });
+
+  return count;
+};
+
+
 
 export const getAllReturns = async (filters) => {
   const {

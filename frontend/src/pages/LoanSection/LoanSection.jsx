@@ -42,6 +42,8 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
 
     const {
         items,
+        loading,
+        totalItems,
         getItems,
         deleteItem,
         createItem,
@@ -58,11 +60,19 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
 
     useEffect(() => {
         const delay = setTimeout(() => {
-            getItems({...filters, limit: 20, offset: 0});
+            getItems({...filters, limit: 5, offset: 0});
         }, 500);
 
         return () => clearTimeout(delay);
     }, [filters]);
+
+    async function handleChangePage(page) {
+        const numberPage = Number(page);
+
+        const offset = (numberPage * 5) - 5;
+
+        await getItems({...filters, limit: 5, offset: offset});
+    }
 
 
 
@@ -267,7 +277,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
 
     return (
         <>
-            <GenericSection title={auth.role === 'admin' ? 'Listado de préstamos' : 'Listado de tus préstamos'} filters={<LoanFilter onFilterChange={setFilters} />} columns={columns} data={items} popups={loanPopups}
+            <GenericSection title={auth.role === 'admin' ? 'Listado de préstamos' : 'Listado de tus préstamos'} filters={<LoanFilter onFilterChange={setFilters} />} columns={columns} data={items} popups={loanPopups} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading}
                 actions={
                     <LoanButtons
                         displayLoanform={() => setAddPopup(true)}
