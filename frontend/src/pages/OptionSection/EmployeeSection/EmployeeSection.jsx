@@ -129,7 +129,7 @@ export default function EmployeeSection() {
 
     const columns = [
         { header: 'Nombre', accessor: 'name' },
-        { header: 'Codigo', accessor: 'id' },
+        { header: 'Codigo', accessor: 'code' },
         {
             header: 'Borrar',
             accessor: 'delete',

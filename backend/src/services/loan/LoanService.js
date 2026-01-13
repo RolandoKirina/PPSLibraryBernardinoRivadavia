@@ -131,3 +131,7 @@ export const removeLoan = async (id) => {
 
     return await LoanRepository.remove(id);
 }
+
+export const getLoansByEmployeeCount = async (filters) => {
+    return await LoanRepository.getLoansByEmployeeCount(filters);
+}

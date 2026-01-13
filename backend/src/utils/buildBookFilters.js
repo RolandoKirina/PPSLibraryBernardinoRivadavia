@@ -13,6 +13,7 @@ export const buildBookFilters = (query) => {
     codeSignature,
     yearEdition,
     numberEdition,
+    bookTitle,
     limit,
     offset
   } = query;
@@ -20,16 +21,15 @@ export const buildBookFilters = (query) => {
   const whereAuthor = {};
   const whereCodeInventory = {};
   const whereCodeCDU = {};
+  const whereBookTitle = {};
   const whereCodeSignature = {};
   const whereYearEdition = {};
   const whereNumberEdition = {};
 
-
-
   if (author && author.trim() !== '') {
     whereAuthor.name = {
       [Op.iLike]: `%${author.trim()}%`
-    }
+    };
   }
 
   if (codeInventory && codeInventory.trim() !== '') {
@@ -41,17 +41,25 @@ export const buildBookFilters = (query) => {
   }
 
   if (codeSignature && codeSignature.trim() !== '') {
-    whereCodeSignature.codeSignature = codeSignature.trim();
+    whereCodeSignature.codeSignature = {
+      [Op.iLike]: `%${codeSignature.trim()}%`
+    };
+  }
+
+  if (bookTitle && bookTitle.trim() !== '') {
+    whereBookTitle.title = {
+      [Op.iLike]: `%${bookTitle.trim()}%`
+    };
   }
 
   if (yearEdition) {
     whereYearEdition.yearEdition = parseInt(yearEdition);
   }
 
-
   if (numberEdition) {
     whereNumberEdition.numberEdition = numberEdition;
   }
+
   const parsedLimit = parseInt(limit);
   const parsedOffset = parseInt(offset);
 
@@ -60,9 +68,10 @@ export const buildBookFilters = (query) => {
     whereCodeInventory,
     whereCodeCDU,
     whereCodeSignature,
-    yearEdition,
-    numberEdition,
-    limit: isNaN(parsedLimit) ? 20 : parsedLimit,
+    whereBookTitle,
+    whereYearEdition,
+    whereNumberEdition,
+    limit: isNaN(parsedLimit) ? 40 : parsedLimit,
     offset: isNaN(parsedOffset) ? 0 : parsedOffset
   };
 }
@@ -97,18 +106,18 @@ export const buildFilterRanking = (query) => {
     const [day, month, year] = str.split("/").map(Number);
     return new Date(year, month - 1, day);
   };
-const toStartOfDay = (str) => {
-  const d = new Date(`${str}T00:00:00`);
-  return d;
-};
+  const toStartOfDay = (str) => {
+    const d = new Date(`${str}T00:00:00`);
+    return d;
+  };
 
-const toEndOfDay = (str) => {
-  const d = new Date(`${str}T23:59:59.999`);
-  return d;
-};
+  const toEndOfDay = (str) => {
+    const d = new Date(`${str}T23:59:59.999`);
+    return d;
+  };
 
   console.log("dateFrom:", dateFrom);
-console.log("dateTo:", dateTo);
+  console.log("dateTo:", dateTo);
   if (dateFrom && dateTo) {
     whereRetiredDate.retiredDate = {
       [Op.between]: [
@@ -215,7 +224,7 @@ export const buildFilterPartnerAndBooks = (query) => {
 
   if (dateFrom) {
     const start = new Date(dateFrom);
-    start.setHours(0, 0, 0, 0); 
+    start.setHours(0, 0, 0, 0);
     whereLoan.retiredDate = { [Op.gte]: start };
   }
 
@@ -228,7 +237,6 @@ export const buildFilterPartnerAndBooks = (query) => {
     };
   }
 
-  console.log(whereLoan)
   return {
     whereLoan,
   };

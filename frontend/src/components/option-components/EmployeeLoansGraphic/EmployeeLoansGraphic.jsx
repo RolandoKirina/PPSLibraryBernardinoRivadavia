@@ -5,24 +5,76 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 //import { mockLoans } from '../../../data/mocks/loans';
 import "./EmployeeLoansGraphic.css";
 ChartJS.register(ArcElement, Tooltip, Legend);
+import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
 
 export default function EmployeeLoansGraphic() {
+  const {
+    items,
+    getItems,
+    deleteItem,
+    createItem,
+    updateItem
+  } = useEntityManagerAPI("loans");
 
+  const URL = 'http://localhost:4000/api/v1/loans/employee-count';
 
   const [formValues, setFormValues] = useState({});
   const [showChart, setShowChart] = useState(false);
   const [error, setError] = useState("");
-  const [employeeCounts, setEmployeeCounts] = useState({});
+  const [mockLoans, setMockLoans] = useState([]);
+  const [employeeCounts, setEmployeeCounts] = useState([]);
+  const [loans, setLoans] = useState([]);
 
 
-  useEffect(() => {
-    if (!error && showChart) {
-      const counts = getLoanCountsByEmployee();
-      setEmployeeCounts(counts);
-    }
-  }, [formValues, error, showChart]);
+  // useEffect(() => {
+  //   if (!error && showChart) {
+  //     const counts = getCountQuantityAllLoansEmployee();
+  //     setEmployeeCounts(counts);
+  //   }
+  // }, [formValues, error, showChart]);
 
   let inputs = ["sinDevolver", "devueltos"];
+
+  async function getCountQuantityAllLoansEmployee() {
+    try {
+
+      const cleanFilters = Object.fromEntries(
+        Object.entries(formValues).filter(([key, value]) => {
+          if (["type", "state"].includes(key)) return true;
+          return (
+            value !== "" &&
+            value !== null &&
+            value !== undefined &&
+            value !== "all" &&
+            value !== false
+          );
+        })
+      );
+
+      console.log(cleanFilters);
+
+      const query = Object.keys(cleanFilters).length
+        ? `?${new URLSearchParams(cleanFilters).toString()}`
+        : "";
+
+      const response = await fetch((`${URL}${query}`));
+
+      if (!response.ok) throw new Error(`Response status: ${response.status}`);
+
+      const result = await response.json();
+      console.log(result);
+
+      return result;
+
+    }
+    catch (err) {
+      console.error(err);
+    }
+  }
+
+
+
+
   function countQuantityAllLoansEmployee() {
     const { afterDateFrom, beforeDateTo } = formValues;
 
@@ -42,7 +94,7 @@ export default function EmployeeLoansGraphic() {
   function getLoanCountsByEmployee() {
     const counts = {};
 
-    mockLoans.forEach((loan) => {
+    loans.forEach((loan) => {
       if (isWithinRange(loan)) {
         if (formValues.ignoreLossDate === inputs[1] && !isitLate(loan)) {
           return;
@@ -112,7 +164,7 @@ export default function EmployeeLoansGraphic() {
 
 
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const data = {};
@@ -140,28 +192,65 @@ export default function EmployeeLoansGraphic() {
         setShowChart(false);
         return;
       }
-
-
     }
 
-    setError(""); // limpio error si está todo bien
     setFormValues(data);
-    setShowChart(true);
+
+    console.log(data);
+
+    try {
+      // const loansData = await getItems();
+
+      // setLoans(loansData);
+
+
+      //console.log(loansData);
+      const results = await getCountQuantityAllLoansEmployee();
+      setEmployeeCounts(results);
+
+
+
+      setShowChart(true);
+      setError("");
+
+      /*
+            const counts = getLoanCountsByEmployee();
+      
+            setEmployeeCounts(counts);
+      
+            setShowChart(true);
+            setError("");*/
+    }
+    catch (err) {
+      console.log(err);
+    }
+
+
+
+    // 
+
+    // setError(""); // limpio error si está todo bien
+    // setFormValues(data);
+    // setShowChart(true);
+
+
   };
 
 
 
   const pieData = {
-    labels: Object.keys(employeeCounts),
+    labels: employeeCounts.map(item => item.Nombre),
     datasets: [
       {
-        data: Object.values(employeeCounts),
+        data: employeeCounts.map(item => Number(item.Cantidad)),
         backgroundColor: ['#2A9D8F', '#E76F51', '#F4A261', '#264653', '#A8DADC'],
         borderColor: '#fff',
         borderWidth: 2,
       },
     ],
   };
+
+
   return (
     <div className='filter-graphic-container'>
 
