@@ -4,6 +4,10 @@ export const getAllReaders = async (queryOptions) => {
     return await ReaderRepository.getAll(queryOptions);
 };
 
+export const getCount = async (queryOptions) => {
+    return await ReaderRepository.getCount(queryOptions);
+};
+
 export const getReader = async (id) => {
     return await ReaderRepository.getOne(id);
 };

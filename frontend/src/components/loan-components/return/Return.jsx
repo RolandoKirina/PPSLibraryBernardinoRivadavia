@@ -26,6 +26,11 @@ export default function Return() {
 
     const { auth } = useAuth();
 
+    const chunkSize = 100;
+    const rowsPerPage = 5;
+    const [offsetActual, setOffsetActual] = useState(0);
+    const [resetPageTrigger, setResetPageTrigger] = useState(0);
+
     const [confirmReturnPopup, setConfirmReturnPopup] = useState(false);
     const [confirmRenewePopup, setConfirmRenewePopup] = useState(false);
     const [confirmReturnAllPopup, setConfirmReturnAllPopup] = useState(false);
@@ -46,6 +51,8 @@ export default function Return() {
 
     const {
         items,
+        loading,
+        totalItems,
         getItems,
         deleteItem,
         updateItem
@@ -53,11 +60,26 @@ export default function Return() {
 
     useEffect(() => {
         const delay = setTimeout(() => {
-            getItems(filters);
+            setOffsetActual(0);
+
+            setResetPageTrigger(prev => prev + 1);
+
+            getItems({ ...filters, limit: chunkSize, offset: 0 });
         }, 500);
 
         return () => clearTimeout(delay);
     }, [filters]);
+
+    async function handleChangePage(page) {
+        const numberPage = Number(page);
+        const lastItemIndex = numberPage * rowsPerPage;
+
+        if (lastItemIndex > items.length) {
+            const newOffset = items.length;
+            await getItems({ ...filters, limit: chunkSize, offset: newOffset }, true);
+            setOffsetActual(newOffset);
+        }
+    }
 
     const returnBooksPopups = [
         {
@@ -179,7 +201,10 @@ export default function Return() {
                             <div className='lend-books-container'>
                                 <h2 className='lend-books-title'>Libros Prestados</h2>
 
-                                <Table columns={columnsReturnForm} data={items} />
+                                <Table columns={columnsReturnForm} data={items} totalItems={totalItems}
+                                    handleChangePage={handleChangePage}
+                                    loading={loading}
+                                    resetPageTrigger={resetPageTrigger} />
 
                                 {returnBooksPopups.map(({ condition, title, className, content, close, variant }, idx) => (
                                     condition && (

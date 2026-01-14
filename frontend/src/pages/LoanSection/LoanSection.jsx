@@ -75,7 +75,6 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
         return () => clearTimeout(delay);
     }, [filters]);
 
-
     async function handleChangePage(page) {
         const numberPage = Number(page);
         const lastItemIndex = numberPage * rowsPerPage;
@@ -85,10 +84,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
             await getItems({ ...filters, limit: chunkSize, offset: newOffset }, true);
             setOffsetActual(newOffset);
         }
-
     }
-
-
 
     async function handleAddItem(data) {
         try {

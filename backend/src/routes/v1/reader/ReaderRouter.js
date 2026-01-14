@@ -5,6 +5,7 @@ import validateIdParam from "../../../middlewares/ValidateId.js";
 const router = express.Router();
 
 router.get("/", ReaderController.getAllReaders);
+router.get("/count", ReaderController.getCount);
 router.get("/:id", validateIdParam("id"), ReaderController.getReader);
 router.post("/", ReaderController.createReader);
 router.put("/:id", validateIdParam("id"), ReaderController.updateReader);

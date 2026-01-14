@@ -9,7 +9,7 @@ import { ValidationError } from '../../utils/errors/ValidationError.js';
 import { formatDate } from '../../utils/date/formatDate.js';
 
 export const getAll = async (filters) => {
-   const {
+  const {
     whereReader,
     whereReaderBook,
     whereBook,
@@ -19,15 +19,47 @@ export const getAll = async (filters) => {
     order
   } = filters;
 
+  const readerBookIds = await ReaderBook.findAll({
+    attributes: ['ReaderBookId'],
+    where: whereReaderBook,
+    include: [
+      {
+        model: Reader,
+        as: 'Reader',
+        attributes: [], 
+        where: whereReader
+      },
+      {
+        model: Book,
+        as: 'Book',
+        attributes: [],
+        where: whereBook
+      },
+      {
+        model: Employees,
+        as: 'Employee',
+        attributes: [],
+        where: whereEmployee
+      }
+    ],
+    limit,
+    offset,
+    order,
+    raw: true
+  });
+
+  const ids = readerBookIds.map(rb => rb.ReaderBookId);
+
+  if (!ids.length) return [];
+
   const readers = await Reader.findAll({
-    where: whereReader,                   // 🔹 Filtros del Reader
+    where: whereReader,
     attributes: ['dni', 'name'],
-    subQuery: false,
     include: [
       {
         model: ReaderBook,
         as: 'ReaderBooks',
-        where: whereReaderBook,           // 🔹 Filtros del ReaderBook
+        where: { ReaderBookId: ids },
         attributes: [
           'employeeId',
           'returnedDate',
@@ -42,20 +74,16 @@ export const getAll = async (filters) => {
           {
             model: Book,
             as: 'Book',
-            attributes: ['codeInventory', 'title'],
-            where: whereBook              // 🔹 Filtros del Book (ahora vacío pero preparado)
+            attributes: ['codeInventory', 'title']
           },
           {
             model: Employees,
             as: 'Employee',
-            attributes: ['id', 'name', 'code'],
-            where: whereEmployee          // 🔹 Filtros del empleado (vacío ahora)
+            attributes: ['id', 'name', 'code']
           }
         ]
       }
     ],
-    limit,
-    offset,
     order
   });
 
@@ -69,20 +97,54 @@ export const getAll = async (filters) => {
         name: reader.name,
         bookCode: book?.codeInventory ?? '',
         bookTitle: book?.title ?? '',
-        retiredDate: formatDate(rb.retiredDate),                
-        retiredHour: rb.retiredHour ?? '',   
-        returnedDate: formatDate(rb.returnedDate),             
+        retiredDate: formatDate(rb.retiredDate),
+        retiredHour: rb.retiredHour ?? '',
+        returnedDate: formatDate(rb.returnedDate),
         returnedHour: rb.returnedHour ?? '',
         employee: employee?.name ?? '',
-        id: rb.ReaderBookId 
+        id: rb.ReaderBookId
       };
     })
   );
 
   return flatReaders;
-
-
 };
+
+export const getCount = async (filters) => {
+  const {
+    whereReader,
+    whereReaderBook,
+    whereBook,
+    whereEmployee
+  } = filters;
+
+  const countResult = await ReaderBook.count({
+    where: whereReaderBook,
+    include: [
+      {
+        model: Reader,
+        as: 'Reader',
+        where: whereReader,
+        attributes: [] // no necesitamos columnas, solo el join
+      },
+      {
+        model: Book,
+        as: 'Book',
+        where: whereBook,
+        attributes: []
+      },
+      {
+        model: Employees,
+        as: 'Employee',
+        where: whereEmployee,
+        attributes: []
+      }
+    ]
+  });
+
+  return countResult;
+};
+
 
 export const getOne = async (id) => {
   return await Reader.findByPk(id);
@@ -115,7 +177,7 @@ export const create = async (data) => {
     if (!employee) {
       throw new ValidationError("Empleado no existe");
     }
-    
+
     let existingReader = await getOne(data.readerDNI);
 
     let reader = existingReader;

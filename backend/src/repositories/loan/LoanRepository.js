@@ -195,8 +195,6 @@ export const getCount = async (filters) => {
   return count;
 };
 
-
-
 export const getAllReturns = async (filters) => {
   const {
     wherePartner,
@@ -205,52 +203,115 @@ export const getAllReturns = async (filters) => {
     offset
   } = filters;
 
-  const returns = await Loan.findAll({
-    attributes: ['retiredDate'],
-    subQuery: false,
+  const loanBookIds = await LoanBook.findAll({
+    attributes: ['LoanBookId'],
+    where: {
+      returnedDate: {
+        [Op.ne]: null
+      }
+    },
     include: [
       {
-        model: Partner,
-        as: 'Partner',
-        attributes: ['id', 'name', 'surname', 'observations'],
-        where: Object.keys(wherePartner).length ? wherePartner : undefined,
-        required: true
-      },
-      {
-        model: LoanBook,
-        as: 'LoanBooks',
-        attributes: ['LoanBookId', 'expectedDate', 'reneweAmount'],
-        where: {
-          returnedDate: {
-            [Op.ne]: null
-          }
-        },
+        model: Loan,
+        as: 'Loan',
+        attributes: [],
         include: [
           {
-            model: Book,
-            as: 'Book',
-            attributes: ['BookId', 'title', 'codeInventory'],
+            model: Partner,
+            as: 'Partner',
+            attributes: [],
+            where: Object.keys(wherePartner).length
+              ? wherePartner
+              : undefined,
             required: true
-
           }
         ]
       }
     ],
     order,
     limit,
-    offset
+    offset,
+    raw: true
   });
 
-  const floatReturns = returns.flatMap(loan =>
-    loan.LoanBooks.map(lb => ({
-      bookCode: lb.Book.codeInventory,
-      bookTitle: lb.Book.title,
-      renewes: lb.reneweAmount,
-    }))
-  );
+  const ids = loanBookIds.map(lb => lb.LoanBookId);
 
-  return floatReturns;
+  if (!ids.length) return [];
+
+  const returns = await LoanBook.findAll({
+    where: {
+      LoanBookId: ids
+    },
+    attributes: ['LoanBookId', 'expectedDate', 'reneweAmount'],
+    include: [
+      {
+        model: Loan,
+        as: 'Loan',
+        attributes: ['retiredDate'],
+        include: [
+          {
+            model: Partner,
+            as: 'Partner',
+            attributes: ['id', 'name', 'surname', 'observations']
+          }
+        ]
+      },
+      {
+        model: Book,
+        as: 'Book',
+        attributes: ['BookId', 'title', 'codeInventory'],
+        required: true
+      }
+    ]
+  });
+
+  return returns.map(lb => ({
+    id: lb.LoanBookId,
+    bookCode: lb.Book.codeInventory,
+    bookTitle: lb.Book.title,
+    renewes: lb.reneweAmount,
+    retiredDate: lb.Loan.retiredDate,
+    partnerName: lb.Loan.Partner.name,
+    partnerSurname: lb.Loan.Partner.surname
+  }));
 };
+
+export const getReturnsCount = async (filters) => {
+  const {
+    wherePartner
+  } = filters;
+
+  const total = await LoanBook.count({
+    where: {
+      returnedDate: {
+        [Op.ne]: null
+      }
+    },
+    include: [
+      {
+        model: Loan,
+        as: 'Loan',
+        required: true,
+        include: [
+          {
+            model: Partner,
+            as: 'Partner',
+            required: true,
+            where: Object.keys(wherePartner).length
+              ? wherePartner
+              : undefined
+          }
+        ]
+      }
+    ],
+    distinct: true,
+    col: 'LoanBookId'
+  });
+
+  return total;
+};
+
+
 
 export const getOne = async (id) => {
   return await Loan.findByPk(id);

@@ -26,10 +26,16 @@ export default function ReaderSection() {
     const [detailsPopup, setDetailsPopup] = useState(false);
     const [booksPopup, setBooksPopup] = useState(false);
 
+    const chunkSize = 100;
+    const rowsPerPage = 5;
+    const [offsetActual, setOffsetActual] = useState(0);
+    const [resetPageTrigger, setResetPageTrigger] = useState(0);
     const [errorMessage, setErrorMessage] = useState(false);
 
     const {
         items,
+        loading,
+        totalItems,
         getItems,
         createItem,
     } = useEntityManagerAPI("readers");
@@ -41,11 +47,26 @@ export default function ReaderSection() {
 
     useEffect(() => {
         const delay = setTimeout(() => {
-            getItems(filters);
+            setOffsetActual(0);
+
+            setResetPageTrigger(prev => prev + 1);
+
+            getItems({ ...filters, limit: chunkSize, offset: 0 });
         }, 500);
 
         return () => clearTimeout(delay);
     }, [filters]);
+
+    async function handleChangePage(page) {
+        const numberPage = Number(page);
+        const lastItemIndex = numberPage * rowsPerPage;
+
+        if (lastItemIndex > items.length) {
+            const newOffset = items.length;
+            await getItems({ ...filters, limit: chunkSize, offset: newOffset }, true);
+            setOffsetActual(newOffset);
+        }
+    }
 
     async function handleAddItem(data) {
         try {
@@ -57,7 +78,7 @@ export default function ReaderSection() {
 
             setErrorMessage(null);
         }
-        catch(error) {
+        catch (error) {
             setErrorMessage(error.message);
             console.error("Error al crear un Lector:", error);
         }
@@ -73,7 +94,7 @@ export default function ReaderSection() {
 
             setErrorMessage(null);
         }
-        catch(error) {
+        catch (error) {
             setErrorMessage(error.message);
             console.error("Error al actualizar un Lector:", error);
         }
@@ -197,27 +218,42 @@ export default function ReaderSection() {
                 </button>
             )
         },
-            {
-                header: 'Ver detalle',
-                accessor: 'details',
-                className: "action-buttons",
-                render: (_, row) => (
-                    <button className="button-table" onClick={() => {
-                        setSelected(row)
-                        setDetailsPopup(true)
-                    }}>
-                        <img src={DetailsIcon} alt="Detalles" />
-                    </button>
-                )
-            },
+        {
+            header: 'Ver detalle',
+            accessor: 'details',
+            className: "action-buttons",
+            render: (_, row) => (
+                <button className="button-table" onClick={() => {
+                    setSelected(row)
+                    setDetailsPopup(true)
+                }}>
+                    <img src={DetailsIcon} alt="Detalles" />
+                </button>
+            )
+        },
     ];
 
 
     return (
         <>
-            <GenericSection title={'Listado de Lectores en sala'} columns={columns} data={items} popups={readerPopups} filters={<ReaderFilter onFilterChange={setFilters} />} actions={
-                <Btn text={'Agregar'} onClick={() => setAddPopup(true)} variant={'primary'} />
-            } />
+            <GenericSection
+                title={'Listado de Lectores en sala'}
+                columns={columns}
+                data={items}
+                popups={readerPopups}
+                rowsPerPage={rowsPerPage}                 
+                totalItems={totalItems}                  
+                handleChangePage={handleChangePage}      
+                loading={loading}
+                filters={
+                    <ReaderFilter
+                        onFilterChange={setFilters}
+                    />
+                }
+                actions={
+                    <Btn text={'Agregar'} onClick={() => setAddPopup(true)} variant={'primary'} />
+                }
+            />
         </>
     )
 

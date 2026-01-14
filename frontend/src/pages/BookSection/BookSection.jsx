@@ -24,7 +24,10 @@ import BookRanking from '../../components/book-components/bookranking/BookRankin
 import { useAuth } from '../../auth/AuthContext';
 import roles from '../../auth/roles';
 const BookSection = () => {
-
+  const chunkSize = 100;
+  const rowsPerPage = 5;
+  const [offsetActual, setOffsetActual] = useState(0);
+  const [resetPageTrigger, setResetPageTrigger] = useState(0);
   const { auth } = useAuth();
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
@@ -39,7 +42,7 @@ const BookSection = () => {
   const [error, setError] = useState(null);
   const BASE_URL = "http://localhost:4000/api/v1/books";
 
-  const { items, getItems, getItem, createItem, updateItem, deleteItem } =
+  const { items, loading, totalItems, getItems, getItem, createItem, updateItem, deleteItem } =
     useEntityManagerAPI("books");
 
   const [formData, setFormData] = useState({
@@ -59,17 +62,34 @@ const BookSection = () => {
   };
 
   useEffect(() => {
-    const filters = Object.fromEntries(
-      Object.entries(formData).filter(([_, v]) => v !== "")
-    );
-
     const delay = setTimeout(() => {
-      getItems(filters);
-    }, 300);
+      const activeFilters = Object.fromEntries(
+        Object.entries(formData).filter(([_, v]) => v !== "")
+      );
+
+      setOffsetActual(0);
+      setResetPageTrigger(prev => prev + 1);
+
+      getItems({
+        ...activeFilters,
+        limit: chunkSize,
+        offset: 0
+      });
+    }, 500);
 
     return () => clearTimeout(delay);
   }, [formData]);
 
+  async function handleChangePage(page) {
+    const numberPage = Number(page);
+    const lastItemIndex = numberPage * rowsPerPage;
+
+    if (lastItemIndex > items.length) {
+      const newOffset = items.length;
+      await getItems({ ...formData, limit: chunkSize, offset: newOffset }, true);
+      setOffsetActual(newOffset);
+    }
+  }
 
   let columns = [];
   if (auth.role === roles.admin) {
@@ -220,7 +240,7 @@ const BookSection = () => {
 
   async function duplicateBooks(data) {
     try {
-      const response = await fetch(BASE_URL+"/duplicateBook", {
+      const response = await fetch(BASE_URL + "/duplicateBook", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -260,6 +280,10 @@ const BookSection = () => {
         columns={columns}
         data={items}
         popups={booksPopUp}
+        totalItems={totalItems} 
+        handleChangePage={handleChangePage} 
+        loading={loading}
+        resetPageTrigger={resetPageTrigger}
         actions={
           auth.role === roles.admin ? (
             <div className="listbtns">

@@ -21,7 +21,7 @@ export const getCount = async (req, res) => {
         const queryOptions = buildLoanFilters(req.query);
 
         const count = await LoanService.getCount(queryOptions);
-        
+
         res.status(HTTP_STATUS.OK.code).send(count);
     } catch (error) {
         console.error(error);
@@ -49,6 +49,19 @@ export const getAllReturns = async (req, res) => {
         const loans = await LoanService.getAllReturns(queryOptions);
 
         res.status(HTTP_STATUS.OK.code).send(loans);
+    } catch (error) {
+        console.error(error);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+    }
+};
+
+export const getReturnsCount = async (req, res) => {
+    try {
+        const queryOptions = buildReturnFilters(req.query);
+
+        const count = await LoanService.getReturnsCount(queryOptions);
+
+        res.status(HTTP_STATUS.OK.code).send(count);
     } catch (error) {
         console.error(error);
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });

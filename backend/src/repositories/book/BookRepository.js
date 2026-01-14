@@ -9,7 +9,6 @@ import { fn, col, literal } from "sequelize";
 import Op from "sequelize";
 import sequelize from "../../configs/database.js";
 import * as BookAuthorRepository from '../author/BookAuthorRepository.js';
-
 export const getAll = async (filters) => {
   const {
     whereAuthor,
@@ -28,7 +27,8 @@ export const getAll = async (filters) => {
   const hasAuthorFilter =
     whereAuthor && Object.keys(whereAuthor).length > 0;
 
-  return await Book.findAll({
+  const bookIds = await Book.findAll({
+    attributes: ['id'],
     subQuery: false,
     where: {
       ...whereCodeInventory,
@@ -49,15 +49,84 @@ export const getAll = async (filters) => {
             model: Authors,
             as: 'Author',
             where: whereAuthor,
-            required: hasAuthorFilter,
+            required: hasAuthorFilter
           }
         ]
       }
     ],
     order,
     limit,
-    offset
+    offset,
+    raw: true
   });
+
+  const ids = bookIds.map(b => b.id);
+
+  if (!ids.length) return [];
+
+  return await Book.findAll({
+    where: { id: ids },
+    include: [
+      {
+        model: BookAuthor,
+        as: 'BookAuthors',
+        include: [
+          {
+            model: Authors,
+            as: 'Author'
+          }
+        ]
+      }
+    ],
+    order
+  });
+};
+
+export const getCount = async (filters) => {
+  const {
+    whereAuthor,
+    whereCodeInventory,
+    whereCodeCDU,
+    whereCodeSignature,
+    whereBookTitle,
+    whereEdition,
+    whereYearEdition,
+    whereNumberEdition,
+  } = filters;
+
+  const hasAuthorFilter =
+    whereAuthor && Object.keys(whereAuthor).length > 0;
+
+  const total = await Book.count({
+    where: {
+      ...whereCodeInventory,
+      ...whereCodeCDU,
+      ...whereCodeSignature,
+      ...whereBookTitle,
+      ...whereEdition,
+      ...whereYearEdition,
+      ...whereNumberEdition,
+    },
+    include: [
+      {
+        model: BookAuthor,
+        as: 'BookAuthors',
+        required: hasAuthorFilter,
+        include: [
+          {
+            model: Authors,
+            as: 'Author',
+            required: hasAuthorFilter,
+            where: hasAuthorFilter ? whereAuthor : undefined
+          }
+        ]
+      }
+    ],
+    distinct: true,
+    col: 'id'
+  });
+
+  return total;
 };
 
 
