@@ -4,6 +4,10 @@ export const getAllEmployees = async (filters) => {
     return await EmployeesRepository.getAll(filters);
 };
 
+export const getCount = async (filters) => {
+    return await EmployeesRepository.getCount(filters);
+};
+
 export const getEmployee = async (id) => {
     return await EmployeesRepository.getOne(id);
 };

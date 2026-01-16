@@ -2,15 +2,31 @@ import Employees from '../../models/options/Employees.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 
 export const getAll = async (filters) => {
-    const {
-        whereEmployee
-    } = filters;
+  const {
+    whereEmployee,
+    limit,
+    offset,
+    order
+  } = filters;
 
-    return await Employees.findAll(
-        { 
-            where: whereEmployee
-        }
-    );
+  return await Employees.findAll({
+    where: Object.keys(whereEmployee || {}).length ? whereEmployee : undefined,
+    limit,
+    offset,
+    order
+  });
+};
+
+export const getCount = async (filters) => {
+  const {
+    whereEmployee
+  } = filters;
+
+  const total = await Employees.count({
+    where: Object.keys(whereEmployee || {}).length ? whereEmployee : undefined
+  });
+
+  return total;
 };
 
 export const getOne = async (id) => {
@@ -18,20 +34,20 @@ export const getOne = async (id) => {
 };
 
 export const getOneByCode = async (code) => {
-  try {
-    const employee = await Employees.findOne({
-      where: { code },
-    });
+    try {
+        const employee = await Employees.findOne({
+            where: { code },
+        });
 
-    if (!employee) {
-      throw new ValidationError(`El empleado con código "${code}" no existe`);
+        if (!employee) {
+            throw new ValidationError(`El empleado con código "${code}" no existe`);
+        }
+
+        return employee.dataValues;
+
+    } catch (err) {
+        throw err;
     }
-
-    return employee.dataValues;
-
-  } catch (err) {
-    throw err;
-  }
 };
 
 
@@ -54,14 +70,14 @@ export const update = async (id, updates) => {
     return await Employees.findByPk(id);
 };
 
-export const remove = async (id) =>{
+export const remove = async (id) => {
     const employees = await Employees.findByPk(id);
 
-      if (!employees) {
+    if (!employees) {
         return null;
-      }
+    }
     await employees.destroy();
-  
+
     return {
         msg: "employees deleted successfully",
         data: employees

@@ -1,18 +1,29 @@
 import { Op } from "sequelize";
 
 export const buildEmployeeFilters = (query) => {
-    const {
-        code
-    } = query;
+  const {
+    code,
+    limit,
+    offset,
+    orderBy,
+    orderDir
+  } = query;
 
-    const whereEmployee = {};
+  const whereEmployee = {};
 
-    if (code) whereEmployee.code = code;
+  if (code) whereEmployee.code = code;
 
-    console.log(whereEmployee);
+  const parsedLimit = limit ? Number(limit) : undefined;
+  const parsedOffset = offset ? Number(offset) : undefined;
 
-    return {
-        whereEmployee
-    };
+  const order = orderBy
+    ? [[orderBy, orderDir?.toUpperCase() === "DESC" ? "DESC" : "ASC"]]
+    : undefined;
 
-}
+  return {
+    whereEmployee,
+    limit: parsedLimit,
+    offset: parsedOffset,
+    order
+  };
+};
