@@ -12,15 +12,26 @@ import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
 import { useEffect } from 'react';
 
 export default function PartnerCategorySection() {
+    const chunkSize = 100;
+    const rowsPerPage = 5;
+    const [offsetActual, setOffsetActual] = useState(0);
+    const [resetPageTrigger, setResetPageTrigger] = useState(0);
+
     const [deletePopup, setDeletePopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
     const [selected, setSelected] = useState(null);
     const [errorMessage, setErrorMessage] = useState(false);
 
+    const [filters, setFilters] = useState({});
+
+
     const {
         items,
+        loading,
+        totalItems,
         getItems,
+
         // getItem: getGroupItem,
         deleteItem,
         createItem,
@@ -37,7 +48,7 @@ export default function PartnerCategorySection() {
 
             setErrorMessage(null);
         }
-        catch(error) {
+        catch (error) {
             setErrorMessage(error.message);
             console.error("Error al crear una categoria de socio:", error);
         }
@@ -53,15 +64,35 @@ export default function PartnerCategorySection() {
 
             setErrorMessage(null);
         }
-        catch(error) {
+        catch (error) {
             setErrorMessage(error.message);
             console.error("Error al actualizar una categoria de socio:", error);
         }
     }
 
     useEffect(() => {
-        getItems();
-    }, []);
+        const delay = setTimeout(() => {
+            setOffsetActual(0);
+
+            setResetPageTrigger(prev => prev + 1);
+
+            getItems({ ...filters, limit: chunkSize, offset: 0 });
+        }, 500);
+
+        return () => clearTimeout(delay);
+    }, [filters]);
+
+    async function handleChangePage(page) {
+        const numberPage = Number(page);
+        const lastItemIndex = numberPage * rowsPerPage;
+
+        if (lastItemIndex > items.length) {
+            const newOffset = items.length;
+            await getItems({ ...filters, limit: chunkSize, offset: newOffset }, true);
+            setOffsetActual(newOffset);
+        }
+    }
+
 
     const authorsPopups = [
         {
@@ -134,7 +165,7 @@ export default function PartnerCategorySection() {
 
     return (
         <>
-            <GenericSection title={'Listado de categorias de socios'} columns={columns} data={items} popups={authorsPopups} actions={
+            <GenericSection title={'Listado de categorias de socios'} columns={columns} data={items} popups={authorsPopups} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger} actions={
                 <Btn variant={'primary'} className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg' />} />
             } />
         </>

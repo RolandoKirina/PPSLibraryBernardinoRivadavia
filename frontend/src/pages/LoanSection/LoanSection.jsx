@@ -22,7 +22,6 @@ import { useEntityManagerAPI } from "../../hooks/useEntityManagerAPI";
 import LoanBooks from "../../components/loan-components/loanbooks/LoanBooks";
 
 export default function LoanSection({ openRenewes, pendientBooks }) {
-    //const { items: loanItems, getItem: getLoanItem, createItem: createLoanItem, updateItem: updateLoanItem, deleteItem: deleteLoanItem } = useEntityManager(mockLoans, 'loans');
     const chunkSize = 100;
     const rowsPerPage = 5;
     const [offsetActual, setOffsetActual] = useState(0);

@@ -1,10 +1,22 @@
 import * as PartnerCategoryService from '../../services/partner/PartnerCategoryService.js';
 import { HTTP_STATUS } from '../../https/httpsStatus.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
+import { buildPartnerCategoryFilters } from '../../utils/buildPartnerCategoryFilters.js';
 
 export const getAllPartnerCategories = async (req, res) => {
     try {
-        const result = await PartnerCategoryService.getAllPartnerCategories();
+        const queryOptions = buildPartnerCategoryFilters(req.query); 
+        const result = await PartnerCategoryService.getAllPartnerCategories(queryOptions);
+        res.status(HTTP_STATUS.OK.code).send(result);
+    } catch (error) {
+        console.error(error);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+    }
+};
+
+export const getCount = async (req, res) => {
+    try {
+        const result = await PartnerCategoryService.getCount();
         res.status(HTTP_STATUS.OK.code).send(result);
     } catch (error) {
         console.error(error);
