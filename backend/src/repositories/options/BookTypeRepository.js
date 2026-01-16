@@ -1,9 +1,27 @@
 import BookType from "../../models/options/BookType.js";
 import { ValidationError } from "../../utils/errors/ValidationError.js";
 
-export const getAll = async () => {
-    return await BookType.findAll();
+export const getAll = async (filters) => {
+    const {
+        whereBookType,
+        limit,
+        offset,
+        order
+    } = filters;
+
+    return await BookType.findAll({
+        where: Object.keys(whereBookType).length ? whereBookType : undefined,
+        limit,
+        offset,
+        order
+    });
 };
+
+export const getCount = async () => {
+
+    return await BookType.count();
+};
+
 
 export const getById = async (id) => {
     return await BookType.findByPk(id);

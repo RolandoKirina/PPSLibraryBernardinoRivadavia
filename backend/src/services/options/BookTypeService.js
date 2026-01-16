@@ -1,8 +1,13 @@
 import * as BookTypeRepository from "../../repositories/options/BookTypeRepository.js";
 
-export const getAllBookTypes = async () => {
-    const bookTypes = await BookTypeRepository.getAll();
+export const getAllBookTypes = async (filters) => {
+    const bookTypes = await BookTypeRepository.getAll(filters);
     return bookTypes;
+};
+
+export const getCount = async () => {
+    const count = await BookTypeRepository.getCount();
+    return count;
 };
 
 export const getBookType = async (id) => {
