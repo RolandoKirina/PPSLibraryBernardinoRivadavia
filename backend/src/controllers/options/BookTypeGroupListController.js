@@ -1,10 +1,22 @@
 import * as BookTypeGroupListService from '../../services/options/BookTypeGroupListService.js';
 import { HTTP_STATUS } from '../../https/httpsStatus.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
+import { buildLoanAmountFilters } from '../../utils/buildLoanAmountFilters.js';
 
 export const getAllBookTypeGroupLists = async (req, res) => {
     try {
-        const result = await BookTypeGroupListService.getAllBookTypeGroupLists();
+        const queryOptions = buildLoanAmountFilters(req.query);
+        const result = await BookTypeGroupListService.getAllBookTypeGroupLists(queryOptions);
+        res.status(HTTP_STATUS.OK.code).send(result);
+    } catch (error) {
+        console.error(error);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+    }
+};
+
+export const getCount = async (req, res) => {
+    try {
+        const result = await BookTypeGroupListService.getCount();
         res.status(HTTP_STATUS.OK.code).send(result);
     } catch (error) {
         console.error(error);

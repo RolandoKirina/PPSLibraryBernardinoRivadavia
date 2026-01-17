@@ -4,10 +4,22 @@ import { buildPartnerFilters } from "../../utils/buildPartnerFilters.js";
 
 export const getAllPartners = async (req, res) => {
     try {
-         const queryOptions = buildPartnerFilters(req.query);
-         const partners = await PartnerService.getAllPartners(queryOptions);
-        
-         res.status(HTTP_STATUS.OK.code).send(partners);    
+        const queryOptions = buildPartnerFilters(req.query);
+        const partners = await PartnerService.getAllPartners(queryOptions);
+
+        res.status(HTTP_STATUS.OK.code).send(partners);
+
+    } catch (error) {
+        console.error(error);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+    }
+};
+
+export const getCount = async (req, res) => {
+    try {
+        const count = await PartnerService.getCount();
+
+        res.status(HTTP_STATUS.OK.code).send(count);
 
     } catch (error) {
         console.error(error);

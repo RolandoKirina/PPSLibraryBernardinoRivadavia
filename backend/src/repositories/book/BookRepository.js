@@ -192,10 +192,39 @@ export const getAllPendingBooks = async (partnerNumber) => {
   return flatBooks;
 };
 
-export const getAllWithFields = async () => {
+export const getAllWithFields = async ({ limit, offset }) => {
+
+  console.log(limit);
+  console.log(offset);
+
+  const { rows: ids, count } = await Book.findAndCountAll({
+    attributes: ['BookId'],
+    limit,
+    offset,
+    distinct: true
+  });
+
+  const bookIds = ids.map(b => b.BookId);
+
+  if (!bookIds.length) {
+    return {
+      rows: [],
+      total: count
+    };
+  }
 
   const books = await Book.findAll({
-    attributes: ["BookId", "title", "codeInventory", "codeCDU", "codeLing", "codeClasification"],
+    where: {
+      BookId: bookIds
+    },
+    attributes: [
+      "BookId",
+      "title",
+      "codeInventory",
+      "codeCDU",
+      "codeLing",
+      "codeClasification"
+    ],
     include: [
       {
         model: LoanBook,
@@ -205,9 +234,16 @@ export const getAllWithFields = async () => {
         where: {
           returnedDate: null
         },
-        include: [{ model: Loan, as: 'Loan', attributes: ['id'] }]
+        include: [
+          {
+            model: Loan,
+            as: 'Loan',
+            attributes: ['id']
+          }
+        ]
       }
-    ]
+    ],
+    order: [['BookId', 'ASC']]
   });
 
   const mappedBooks = books.map(book => ({
@@ -215,8 +251,12 @@ export const getAllWithFields = async () => {
     isBorrowed: book.BookLoans?.length > 0
   }));
 
-  return mappedBooks;
+  return {
+    rows: mappedBooks,
+    total: count
+  };
 };
+
 
 export const getAllBooksOfLoan = async (id) => {
 

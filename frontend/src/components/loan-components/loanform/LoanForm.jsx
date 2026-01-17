@@ -23,6 +23,11 @@ import PendingBooks from '../pendingBooks/PendingBooks.jsx';
 import PartnerMemo from '../partnermemo/PartnerMemo.jsx';
 
 export default function LoanForm({ method, createLoanItem, loanSelected, errorMessage }) {
+  const chunkSize = 10;
+  const rowsPerPage = 5;
+  const [offsetActual, setOffsetActual] = useState(0);
+  const [resetPageTrigger, setResetPageTrigger] = useState(0);
+
   const [popupView, setPopupView] = useState("default");
   const [confirmSaveChangesPopup, setConfirmSaveChangesPopup] = useState(false);
   const BASE_URL = "http://localhost:4000/api/v1";
@@ -53,22 +58,28 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
   const partnerSource = isUpdate ? loanSelected : loanData;
   const readerSource = isUpdate ? loanSelected : loanData;
 
-  // 🔹 Error unificado
   const [validateError, setValidateError] = useState('');
   const [selectedBook, setSelectedBook] = useState('');
 
   const { data: employeeInfo, error: employeeError, loading: employeeLoading } = useEntityLookup(loanData.employeeCode, `${BASE_URL}/employees?code=`);
 
   const [books, setBooks] = useState([]);
+  const [totalBooks, setTotalBooks] = useState(0);
+  const [loadingBooks, setLoadingBooks] = useState(false);
+
 
   useEffect(() => {
-    getBooks();
+    getBooks(null, { limit: chunkSize, offset: 0 });
 
     if (method === 'update' && loanSelected?.loanId) {
       const fetchAllBooksFromLoan = async () => {
         const loanSelectedId = loanSelected.loanId;
-        const booksFromLoan = await getBooks(loanSelectedId);
-        console.log(loanSelected);
+
+        const booksFromLoan = await getBooks(
+          loanSelectedId,
+          { limit: chunkSize, offset: 0 }
+        );
+
         setLoanData({
           loanType: loanSelected.loanType || 'in_room',
           employeeCode: loanSelected.employeeCode || '',
@@ -82,23 +93,71 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
     }
   }, []);
 
-  const getBooks = async (loanSelectedId) => {
+
+  const getBooks = async (
+    loanSelectedId = null,
+    filters = {},
+    append = false
+  ) => {
     try {
-      let url = loanSelectedId
-        ? `${BASE_URL}/books/withFields/loan/${loanSelectedId}`
-        : `${BASE_URL}/books/withFields`;
+      setLoadingBooks(true);
 
-      const response = await fetch(url);
-      if (!response.ok) throw new Error("Error al obtener libros");
-      const data = await response.json();
+      const {
+        limit = chunkSize,
+        offset = 0,
+        ...restFilters
+      } = filters;
 
-      if (!loanSelectedId) setBooks(data);
-      return data;
-    } catch (error) {
-      console.error(error);
+      const queryParams = new URLSearchParams({
+        limit,
+        offset,
+        ...restFilters
+      }).toString();
+
+      const url = loanSelectedId
+        ? `${BASE_URL}/books/withFields/loan/${loanSelectedId}?${queryParams}`
+        : `${BASE_URL}/books/withFields?${queryParams}`;
+
+      console.log(url);
+
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("Error al obtener libros");
+
+      const { rows, total } = await res.json();
+
+      setTotalBooks(total);
+      setBooks(prev => append ? [...prev, ...rows] : rows);
+
+      return rows;
+    } catch (err) {
+      console.error(err);
       return [];
+    } finally {
+      setLoadingBooks(false);
     }
   };
+
+
+  async function handleChangePage(page) {
+    const numberPage = Number(page);
+    const lastItemIndex = numberPage * rowsPerPage;
+
+    if (lastItemIndex > books.length) {
+      const newOffset = books.length;
+
+      await getBooks(
+        loanSelected?.loanId ?? null,
+        {
+          limit: chunkSize,
+          offset: newOffset
+        },
+        true
+      );
+    }
+  }
+
+
+
 
   function handleAddNewLoan() {
     if (validateError) return;
@@ -441,7 +500,8 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
             <div className='lend-books-container'>
               <h2 className='lend-books-title'>Libros a Prestar</h2>
 
-              <Table columns={columns} data={loanData.books}>
+  
+                              <Table columns={lendBooksColumns} data={loanData.books} totalItems={loanData.books.length} handleChangePage={() => {console.log("work")}} loading={loadingBooks} resetPageTrigger={resetPageTrigger} >
                 <div className='add-book-to-lend'>
                   <Btn
                     variant={'primary'}
@@ -513,13 +573,13 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
               <div className='author-books-title'>
                 <h3>Libros cargados en la biblioteca</h3>
               </div>
-              <Table columns={bookshelfBooksColumns} data={books} />
+              <Table columns={bookshelfBooksColumns} data={books} totalItems={totalBooks} handleChangePage={handleChangePage} loading={loadingBooks} resetPageTrigger={resetPageTrigger} />
             </div>
             <div className='author-books'>
               <div className='author-books-title'>
                 <h3>Libros de este autor</h3>
               </div>
-              <Table columns={lendBooksColumns} data={loanData.books} />
+              <Table columns={lendBooksColumns} data={loanData.books} totalItems={loanData.books.length} handleChangePage={() => {console.log("work")}} loading={loadingBooks} resetPageTrigger={resetPageTrigger} />
             </div>
           </div>
           {addBookMessage && (

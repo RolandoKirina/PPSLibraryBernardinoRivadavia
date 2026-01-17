@@ -5,8 +5,25 @@ import sequelize from '../../configs/database.js';
 import * as BookTypeGroupRepository from '../../repositories/options/BookTypeGroupRepository.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 
-export const getAll = async () => {
+export const getAll = async (filters) => {
+    const { limit, offset, where } = filters;
+
+    const idsResult = await BookTypeGroupList.findAll({
+        where,
+        attributes: ['bookTypeGroupListId'],
+        limit,
+        offset,
+        order: [['bookTypeGroupListId', 'ASC']]
+    });
+
+    const ids = idsResult.map(r => r.bookTypeGroupListId);
+
+    if (!ids.length) return [];
+
     return await BookTypeGroupList.findAll({
+        where: {
+            bookTypeGroupListId: ids
+        },
         attributes: ['bookTypeGroupListId', 'group', 'maxAmount'],
         include: [
             { 
@@ -21,9 +38,20 @@ export const getAll = async () => {
                     }
                 ]
             }
-        ]
+        ],
+        order: [['bookTypeGroupListId', 'ASC']]
     });
 };
+
+
+export const getCount = async () => {
+
+    return await BookTypeGroupList.count({
+        distinct: true,
+        col: 'Id'
+    });
+};
+
 
 export const getOne = async (id) => {
     return await BookTypeGroupList.findByPk(id);
@@ -43,7 +71,7 @@ export const create = async (data) => {
         };
 
         const newBookTypeGroupList = await BookTypeGroupList.create(groupData, { transaction });
-        
+
         const newBookTypeGroupListId = newBookTypeGroupList.dataValues.bookTypeGroupListId;
 
         const bookTypeGroups = data.bookTypes.map(bookTypeId => ({
@@ -54,15 +82,15 @@ export const create = async (data) => {
         await Promise.all(
             bookTypeGroups.map(bookTypeGroup => BookTypeGroupRepository.create(bookTypeGroup, transaction))
         );
-    
+
         await transaction.commit();
 
         return {
-        msg: "Grupo de material creado correctamente",
-        newBookTypeGroupListId: newBookTypeGroupListId,
+            msg: "Grupo de material creado correctamente",
+            newBookTypeGroupListId: newBookTypeGroupListId,
         };
     }
-    catch(err) {
+    catch (err) {
         await transaction.rollback();
         throw err;
     }
@@ -128,14 +156,14 @@ export const update = async (id, updates) => {
 };
 
 
-export const remove = async (id) =>{
+export const remove = async (id) => {
     const bookTypeGroupList = await BookTypeGroupList.findByPk(id);
 
-      if (!bookTypeGroupList) {
+    if (!bookTypeGroupList) {
         return null;
-      }
+    }
     await bookTypeGroupList.destroy();
-  
+
     return {
         msg: "BookTypeGroupList deleted successfully",
         data: bookTypeGroupList

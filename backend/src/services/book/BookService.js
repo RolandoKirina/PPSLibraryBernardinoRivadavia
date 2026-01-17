@@ -10,8 +10,8 @@ export const getCount = async (filters) => {
     return count;
 }
 
-export const getAllBooksWithFields = async () => {
-    let books = await BookRepository.getAllWithFields();
+export const getAllBooksWithFields = async (filters) => {
+    let books = await BookRepository.getAllWithFields(filters);
     return books;
 }
 
@@ -20,13 +20,13 @@ export const getAllBooksOfAuthor = async (id, filter) => {
     return books;
 }
 
-export const getAllBooksOfLoan = async (id) => {
-    let books = await BookRepository.getAllBooksOfLoan(id);
+export const getAllBooksOfLoan = async (id, filters) => {
+    let books = await BookRepository.getAllBooksOfLoan(id, filters);
     return books;
 }
 
-export const getAllPendingBooks = async (partnerNumber) => {
-    let books = await BookRepository.getAllPendingBooks(partnerNumber);
+export const getAllPendingBooks = async (partnerNumber, filters) => {
+    let books = await BookRepository.getAllPendingBooks(partnerNumber, filters);
     return books;
 }
 

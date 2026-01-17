@@ -18,8 +18,12 @@ import ReaderIcon from '../../assets/img/reader.svg';
 import FormAddPartner from '../../components/partner-components/formaddpartner/FormAddPartner.jsx';
 import { useEntityManagerAPI } from '../../hooks/useEntityManagerAPI.js';
 export default function PartnerSection() {
+  const chunkSize = 100;
+  const rowsPerPage = 5;
+  const [offsetActual, setOffsetActual] = useState(0);
+  const [resetPageTrigger, setResetPageTrigger] = useState(0);
 
-  const { items, getItems, createItem, updateItem, deleteItem } = useEntityManagerAPI("partners");
+  const { items, loading, totalItems, getItems, createItem, updateItem, deleteItem } = useEntityManagerAPI("partners");
   const [selectedItem, setSelectedItem] = useState(null);
   const [PopUpDeletePartner, setPopUpDelete] = useState(false);
   const [PopUpEdit, setPopupEdit] = useState(false);
@@ -31,45 +35,66 @@ export default function PartnerSection() {
   const [PopUpAdd, setPopUpAdd] = useState(false);
 
   const [formData, setFormData] = useState({
-       unpaidFees: "",
-        pendingBooks: "",
-        isActive: "all",
+    unpaidFees: "",
+    pendingBooks: "",
+    isActive: "all",
   });
 
 
-  
 
-   useEffect(() => {
-  const filters = Object.fromEntries(
-    Object.entries(formData).filter(([_, v]) => v !== "")
-  );
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      const activeFilters = Object.fromEntries(
+        Object.entries(formData).filter(([_, v]) => v !== "")
+      );
 
-  const delay = setTimeout(() => {
-    getItems(filters);
-  }, 300);
+      setOffsetActual(0);
+      setResetPageTrigger(prev => prev + 1);
 
-  return () => clearTimeout(delay);
-}, [formData]);
+      getItems({
+        ...activeFilters,
+        limit: chunkSize,
+        offset: 0
+      });
+    }, 500);
 
-   const handleFilterChange = (e) => {
+    return () => clearTimeout(delay);
+  }, [formData]);
+
+  const handleFilterChange = (e) => {
     const { name, value } = e.target;
     const updated = { ...formData, [name]: value };
     setFormData(updated);
   };
 
+  async function handleChangePage(page) {
+    const numberPage = Number(page);
+    const lastItemIndex = numberPage * rowsPerPage;
+
+    if (lastItemIndex > items.length) {
+      const newOffset = items.length;
+      await getItems({ ...formData, limit: chunkSize, offset: newOffset }, true);
+      setOffsetActual(newOffset);
+    }
+  }
+
   const columns = [
     { header: 'Numero de socio', accessor: 'id' },
     { header: 'Nombre', accessor: 'name' },
     { header: 'Apellido', accessor: 'surname' },
-    {header:'Cuotas impagas',accessor:'unpaidFees'},
-    {header:'Libros pendientes',accessor:'pendingBooks'},
+    { header: 'Cuotas impagas', accessor: 'unpaidFees' },
+    { header: 'Libros pendientes', accessor: 'pendingBooks' },
 
-{ header: 'Estado', 
-  accessor: 'isActive', 
-  render: (_, row) => { const value = row.isActive; 
-    if (value === 1 || value === true) return 'Activo'; 
-    if (value === 2 || value === false || value === 0) return 'Inactivo';
-     return `Valor desconocido: ${value}`; } },
+    {
+      header: 'Estado',
+      accessor: 'isActive',
+      render: (_, row) => {
+        const value = row.isActive;
+        if (value === 1 || value === true) return 'Activo';
+        if (value === 2 || value === false || value === 0) return 'Inactivo';
+        return `Valor desconocido: ${value}`;
+      }
+    },
     {
       header: 'Editar',
       accessor: 'edit',
@@ -92,7 +117,7 @@ export default function PartnerSection() {
         <button className="button-table">
           <img src={DetailsIcon} alt="Detalles" onClick={() => {
             setPopUpDetail(true)
-                setSelectedItem(row)
+            setSelectedItem(row)
           }
           }
           />
@@ -125,10 +150,11 @@ export default function PartnerSection() {
       key: 'editPopup',
       title: 'Editar socio',
       className: 'popup-container add-edit-partner-size',
-      content: <FormEditPartner selectedPartner={selectedItem}/>,
+      content: <FormEditPartner selectedPartner={selectedItem} />,
       close: () => {
         getItems();
-        setPopupEdit(false);},
+        setPopupEdit(false);
+      },
       condition: PopUpEdit
     },
     {
@@ -144,7 +170,7 @@ export default function PartnerSection() {
       title: 'Detalles del socio',
       className: '',
 
-      content: <ShowDetails data={selectedItem} detailsData={DetailPartner} isPopup={true} actions={true}/>,
+      content: <ShowDetails data={selectedItem} detailsData={DetailPartner} isPopup={true} actions={true} />,
       close: () => setPopUpDetail(false),
       condition: PopUpDetail
     },
@@ -169,7 +195,7 @@ export default function PartnerSection() {
   return (
     <>
       <GenericSection title="Listado socios" filters={<PartnerFilter formData={formData} onChange={handleFilterChange} />}
-        columns={columns} data={items} popups={partnersPopUp}
+        columns={columns} data={items} popups={partnersPopUp} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger}
         actions={
           <div>
             <div className='partner-buttons'>

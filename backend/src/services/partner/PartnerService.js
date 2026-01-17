@@ -1,13 +1,15 @@
 import * as PartnerRepository from '../../repositories/partner/PartnerRepository.js';
 
-
-
-export const getAllPartners = async (filters ) => { 
-    console.log(filters)
+export const getAllPartners = async (filters) => {
     const partners = await PartnerRepository.getAll(filters);
-     return partners; 
-    
+    return partners;
 };
+
+export const getCount = async (filters) => {
+    const count = await PartnerRepository.getCount(filters);
+    return count;
+};
+
 export const getPartner = async (id) => {
     return await PartnerRepository.getOne(id);
 };

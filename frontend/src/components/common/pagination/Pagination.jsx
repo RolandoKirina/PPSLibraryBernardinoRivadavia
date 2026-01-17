@@ -1,7 +1,5 @@
 import './Pagination.css';
-
 import { useState, useEffect } from 'react';
-
 
 export default function Pagination({
   totalItems,
@@ -10,8 +8,7 @@ export default function Pagination({
   onPageChange,
   buttonsPerBlock = 4,
   handleChangePage
-}
-) {
+}) {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const [paginationBlock, setPaginationBlock] = useState(0);
 
@@ -22,32 +19,33 @@ export default function Pagination({
 
   const startPage = paginationBlock * buttonsPerBlock + 1;
   const endPage = Math.min(startPage + buttonsPerBlock - 1, totalPages);
+
+  const changePage = (page) => {
+    onPageChange(page);
+    handleChangePage?.(page);
+  };
+
   const handlePrevBlock = () => {
     if (startPage > 1) {
-      console.log(startPage - 1);
-      onPageChange(startPage - 1);
-      handleChangePage(startPage - 1);
+      changePage(startPage - 1);
     }
   };
 
   const handleNextBlock = () => {
     if (endPage < totalPages) {
-      console.log(endPage + 1);
-      onPageChange(endPage + 1);
-      handleChangePage(endPage + 1);
+      changePage(endPage + 1);
     }
   };
-
-  const visiblePages = Array.from(
-    { length: Math.max(0, endPage - startPage + 1) },
-    (_, i) => startPage + i
-  );
 
   return (
     <div className="pagination">
       <div className="pagination-options">
         <div className="number-buttons">
-          <button onClick={handlePrevBlock} disabled={startPage === 1}>
+          <button
+            type="button"
+            onClick={handlePrevBlock}
+            disabled={startPage === 1}
+          >
             ←
           </button>
 
@@ -55,12 +53,10 @@ export default function Pagination({
             const pageNumber = startPage + i;
             return (
               <button
+                type="button"
                 key={pageNumber}
                 className={currentPage === pageNumber ? 'active' : ''}
-                onClick={() => {
-                  onPageChange(pageNumber)
-                  handleChangePage(pageNumber)
-                }}
+                onClick={() => changePage(pageNumber)}
               >
                 {pageNumber}
               </button>
@@ -68,6 +64,7 @@ export default function Pagination({
           })}
 
           <button
+            type="button"
             className="next-button"
             onClick={handleNextBlock}
             disabled={endPage === totalPages}

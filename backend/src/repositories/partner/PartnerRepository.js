@@ -28,11 +28,23 @@ export const getUnpaidFeesByPartner = async ( id) => {
 };
 
 export const getAll = async (filters = {}) => {
-    const { wherePartner } = filters; 
-    const partners = await Partner.findAll({ where: wherePartner }); 
-    
-    return partners;
+    const { wherePartner, limit, offset } = filters;
+
+    return await Partner.findAll({
+        where: wherePartner,
+        limit,
+        offset
+    });
 };
+
+export const getCount = async (filters = {}) => {
+    const { wherePartner } = filters;
+
+    return await Partner.count({
+        where: wherePartner
+    });
+};
+
 
 export const getOne = async (id) => {
     return await Partner.findByPk(id);

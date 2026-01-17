@@ -44,8 +44,9 @@ export const getCount = async (req, res) => {
 
 export const getAllBooksWithFields = async (req, res) => {
     try {
-
-        const books = await BookService.getAllBooksWithFields();
+        const limit = req.query.limit ? Number(req.query.limit) : undefined;
+        const offset = req.query.offset ? Number(req.query.offset) : undefined;
+        const books = await BookService.getAllBooksWithFields({ limit, offset });
 
         res.status(HTTP_STATUS.OK.code).send(books);
 
@@ -59,8 +60,10 @@ export const getAllBooksWithFields = async (req, res) => {
 
 export const getAllBooksOfLoan = async (req, res) => {
     try {
+        const limit = req.query.limit ? Number(req.query.limit) : undefined;
+        const offset = req.query.offset ? Number(req.query.offset) : undefined;
         const { id } = req.params;
-        const books = await BookService.getAllBooksOfLoan(id);
+        const books = await BookService.getAllBooksOfLoan(id, { limit, offset });
 
         res.status(HTTP_STATUS.OK.code).send(books);
 
@@ -73,10 +76,14 @@ export const getAllBooksOfLoan = async (req, res) => {
 
 export const getAllBooksOfAuthor = async (req, res) => {
     try {
+        const limit = req.query.limit ? Number(req.query.limit) : undefined;
+        const offset = req.query.offset ? Number(req.query.offset) : undefined;
         const { id } = req.params;
         const { filter } = req.query;
+        
+        const filters = {...filter, limit, offset};
 
-        const books = await BookService.getAllBooksOfAuthor(id, filter);
+        const books = await BookService.getAllBooksOfAuthor(id, filters);
 
         res.status(HTTP_STATUS.OK.code).send(books);
 
@@ -89,9 +96,11 @@ export const getAllBooksOfAuthor = async (req, res) => {
 
 export const getAllPendingBooks = async (req, res) => {
     try {
+        const limit = req.query.limit ? Number(req.query.limit) : undefined;
+        const offset = req.query.offset ? Number(req.query.offset) : undefined;
         const { partnerNumber } = req.params;
 
-        const books = await BookService.getAllPendingBooks(partnerNumber);
+        const books = await BookService.getAllPendingBooks(partnerNumber, { limit, offset });
 
         res.status(HTTP_STATUS.OK.code).send(books);
 

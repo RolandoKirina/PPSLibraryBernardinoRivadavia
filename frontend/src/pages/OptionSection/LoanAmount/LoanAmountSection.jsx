@@ -13,13 +13,22 @@ import { useEffect } from 'react';
 import ShowMaterials from '../../../components/option-components/ShowMaterials';
 
 export default function LoanAmountSection() {
+    const chunkSize = 100;
+    const rowsPerPage = 5;
+    const [offsetActual, setOffsetActual] = useState(0);
+    const [resetPageTrigger, setResetPageTrigger] = useState(0);
+
+    const [filters, setFilters] = useState({});
+
     const [deletePopup, setDeletePopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
-    
+
     const [selected, setSelected] = useState(false);
     const {
         items: groupItems,
+        loading,
+        totalItems,
         getItems: getGroupItem,
         // getItem: getGroupItem,
         deleteItem,
@@ -40,9 +49,28 @@ export default function LoanAmountSection() {
     //const [bookTypes, setBookTypes] = useState([]);
 
     useEffect(() => {
-        getGroupItem(); // solo dispara la carga
-        getBookTypes();
-    }, []);
+        const delay = setTimeout(() => {
+            setOffsetActual(0);
+
+            setResetPageTrigger(prev => prev + 1);
+
+            getGroupItem({ ...filters, limit: chunkSize, offset: 0 });
+        }, 500);
+
+        return () => clearTimeout(delay);
+    }, [filters]);
+
+    async function handleChangePage(page) {
+        const numberPage = Number(page);
+        const lastItemIndex = numberPage * rowsPerPage;
+
+        if (lastItemIndex > items.length) {
+            const newOffset = items.length;
+            await getGroupItem({ ...filters, limit: chunkSize, offset: newOffset }, true);
+            getBookTypes();
+            setOffsetActual(newOffset);
+        }
+    }
 
     // useEffect(() => {
     //     if (groupItems.length > 0) {
@@ -120,7 +148,7 @@ export default function LoanAmountSection() {
 
     return (
         <>
-            <GenericSection title={'Configurar grupos para cantidad maxima de prestamos'} columns={columns} data={groupItems} popups={loanMaterialsPopups} actions={
+            <GenericSection title={'Configurar grupos para cantidad maxima de prestamos'} columns={columns} data={groupItems} popups={loanMaterialsPopups} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger} actions={
                 <div className='loan-amount-group-buttons'>
                     <Btn variant='primary' className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg' />} />
                 </div>
