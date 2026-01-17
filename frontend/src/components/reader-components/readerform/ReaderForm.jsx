@@ -46,7 +46,6 @@ export default function ReaderForm({ method, createReaderItem, loanSelected, err
   const partnerSource = isUpdate ? loanSelected : loanData;
   const readerSource = isUpdate ? loanSelected : loanData;
 
-  // 🔹 Error unificado
   const [validateError, setValidateError] = useState('');
   const [selectedBook, setSelectedBook] = useState('');
 

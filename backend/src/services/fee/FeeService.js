@@ -2,9 +2,9 @@ import * as FeeRepository from "../../repositories/fee/FeeRepository.js";
 import { getAll, create, update, remove } from "../../repositories/partner/PartnerRepository.js";
 
 
-export const getUnpaidFeesByPartner = async (id) => {
+export const getUnpaidFeesByPartner = async (id, filters) => {
 
-    const fees = await FeeRepository.getUnpaidFeesByPartner(id);
+    const fees = await FeeRepository.getUnpaidFeesByPartner(id, filters);
     return fees;
 };
 

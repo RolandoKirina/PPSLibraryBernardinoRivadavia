@@ -52,7 +52,6 @@ export const getAll = async (filters = {}) => {
   };
 };
 
-
 export const getOne = async (id) => {
   return await Partner.findByPk(id);
 };

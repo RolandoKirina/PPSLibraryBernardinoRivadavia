@@ -67,9 +67,10 @@ export const getAll = async (filters = {}) => {
     count
   };
 };
+export const getUnpaidFeesByPartner = async (idPartner, filters = {}) => {
+  const { limit, offset } = filters;
 
-export const getUnpaidFeesByPartner = async (idPartner) => {
-  const fees = await Fees.findAll({
+  const { rows, count } = await Fees.findAndCountAll({
     where: {
       idPartner,
       paid: false
@@ -80,21 +81,26 @@ export const getUnpaidFeesByPartner = async (idPartner) => {
         as: 'Partner',
         attributes: ['id', 'name', 'surname', 'partnerNumber']
       }
-    ]
+    ],
+    limit,
+    offset,
+    order: [['id', 'ASC']]
   });
 
-  return fees.map(fee => ({
-    id: fee.id,
-    partnerNumber: fee.Partner?.partnerNumber ?? '—',
-    name: fee.Partner
-      ? `${fee.Partner.name} ${fee.Partner.surname}` : '—',
-    month: fee.month,
-    year: fee.year,
-    amount: fee.amount,
-
-    date_of_paid: fee.date_of_paid
-
-  }));
+  return {
+    rows: rows.map(fee => ({
+      id: fee.id,
+      partnerNumber: fee.Partner?.partnerNumber ?? '—',
+      name: fee.Partner
+        ? `${fee.Partner.name} ${fee.Partner.surname}`
+        : '—',
+      month: fee.month,
+      year: fee.year,
+      amount: fee.amount,
+      date_of_paid: fee.date_of_paid
+    })),
+    count
+  };
 };
 
 export const getQuantityPaidFees = async (partnerNumber) => {

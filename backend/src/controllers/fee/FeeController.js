@@ -4,17 +4,24 @@ import { buildFeeFilters } from "../../utils/buildFeeFilters.js";
 
 
 export const getUnpaidFeesByPartner = async (req, res) => {
-  try {
-    const { partnerId } = req.params;
-    const fees = await FeeService.getUnpaidFeesByPartner(partnerId);
+    try {
+        const { partnerId } = req.params;
+        const { limit, offset } = req.query;
 
-    res.status(HTTP_STATUS.OK.code).json(fees);
-  } catch (e) {
-    console.error(e);
-    res
-      .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
-      .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
-  }
+        const filters = {
+            limit: limit ? Number(limit) : undefined,
+            offset: offset ? Number(offset) : undefined
+        };
+
+        const result = await FeeService.getUnpaidFeesByPartner(partnerId, filters);
+
+        res.status(HTTP_STATUS.OK.code).json(result);
+    } catch (e) {
+        console.error(e);
+        res
+            .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
+            .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+    }
 };
 
 
@@ -22,7 +29,7 @@ export const getAllFees = async (req, res) => {
     try {
         const queryOptions = buildFeeFilters(req.query);
         const fees = await FeeService.getAllFees(queryOptions);
-        res.status(HTTP_STATUS.OK.code).json(fees);  
+        res.status(HTTP_STATUS.OK.code).json(fees);
     } catch (e) {
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
@@ -32,7 +39,7 @@ export const generateUnpaidFees = async (req, res) => {
     try {
         console.log(req.body)
         const fees = await FeeService.generateUnpaidFees(req.body);
-        res.status(HTTP_STATUS.OK.code).json(fees);  
+        res.status(HTTP_STATUS.OK.code).json(fees);
     } catch (e) {
         console.error(e);
         res.status(HTTP_STATUS.BAD_REQUEST.code).json({ message: e.message });
@@ -49,11 +56,11 @@ export const getPaidFeeCountByPartner = async (req, res) => {
     try {
         const count = await FeeService.getQuantityPaidFees(partnerNumber);
         return res.json({ count });
-    } 
+    }
     catch (error) {
         return res.status(INTERNAL_SERVER_ERROR).json({ error: "Error al contar cuotas pagas" });
     }
-    
+
 };
 
 
