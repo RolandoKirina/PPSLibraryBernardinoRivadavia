@@ -16,19 +16,6 @@ export const getAllLoans = async (req, res) => {
     }
 };
 
-export const getCount = async (req, res) => {
-    try {
-        const queryOptions = buildLoanFilters(req.query);
-
-        const count = await LoanService.getCount(queryOptions);
-
-        res.status(HTTP_STATUS.OK.code).send(count);
-    } catch (error) {
-        console.error(error);
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
-    }
-};
-
 export const getLoanPrintList = async (req, res) => {
     try {
         const { option } = req.params;

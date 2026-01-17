@@ -5,28 +5,35 @@ import sequelize from '../../configs/database.js';
 import * as BookTypeGroupRepository from '../../repositories/options/BookTypeGroupRepository.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 
-export const getAll = async (filters) => {
+export const getAll = async (filters = {}) => {
     const { limit, offset, where } = filters;
 
-    const idsResult = await BookTypeGroupList.findAll({
+    const { rows: idsResult, count } = await BookTypeGroupList.findAndCountAll({
         where,
         attributes: ['bookTypeGroupListId'],
         limit,
         offset,
-        order: [['bookTypeGroupListId', 'ASC']]
+        order: [['bookTypeGroupListId', 'ASC']],
+        distinct: true,
+        col: 'bookTypeGroupListId'
     });
 
     const ids = idsResult.map(r => r.bookTypeGroupListId);
 
-    if (!ids.length) return [];
+    if (!ids.length) {
+        return {
+            items: [],
+            count
+        };
+    }
 
-    return await BookTypeGroupList.findAll({
+    const rows = await BookTypeGroupList.findAll({
         where: {
             bookTypeGroupListId: ids
         },
         attributes: ['bookTypeGroupListId', 'group', 'maxAmount'],
         include: [
-            { 
+            {
                 model: BookTypeGroup,
                 as: 'BookTypeGroups',
                 attributes: ['BookTypeGroupListId', 'bookTypeId'],
@@ -41,15 +48,11 @@ export const getAll = async (filters) => {
         ],
         order: [['bookTypeGroupListId', 'ASC']]
     });
-};
 
-
-export const getCount = async () => {
-
-    return await BookTypeGroupList.count({
-        distinct: true,
-        col: 'Id'
-    });
+    return {
+        rows,
+        count
+    };
 };
 
 

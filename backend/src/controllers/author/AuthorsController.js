@@ -15,21 +15,6 @@ export const getAllAuthors = async (req, res) => {
     }
 };
 
-export const getCount = async (req, res) => {
-    try {
-        const queryOptions = buildAuthorFilters(req.query);
-
-        const count = await AuthorsService.getCount(queryOptions);
-        
-        res.status(HTTP_STATUS.OK.code).send(count);
-    } catch (error) {
-        console.error(error);
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
-    }
-};
-
-
-
 export const getAuthor = async (req, res) => {
     try {
         const { id } = req.params;

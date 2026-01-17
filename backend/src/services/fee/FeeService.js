@@ -14,11 +14,6 @@ export const getAllFees = async (filters) => {
     return fees;
 };
 
-export const getCount = async (filters) => {
-    const count = await FeeRepository.getCount(filters);
-    return count;
-};
-
 export const generateUnpaidFees = async (body) => {
     if (!body) {
         throw new Error("No se recibieron datos para generar cuotas");

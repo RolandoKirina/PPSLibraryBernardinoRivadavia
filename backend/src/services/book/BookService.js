@@ -5,11 +5,6 @@ export const getAllBooks = async (filters) => {
     return books;
 }
 
-export const getCount = async (filters) => {
-    let count = await BookRepository.getCount(filters);
-    return count;
-}
-
 export const getAllBooksWithFields = async (filters) => {
     let books = await BookRepository.getAllWithFields(filters);
     return books;

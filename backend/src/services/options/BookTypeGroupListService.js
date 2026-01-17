@@ -4,10 +4,6 @@ export const getAllBookTypeGroupLists = async (filters) => {
     return await BookTypeGroupListRepository.getAll(filters);
 };
 
-export const getCount = async () => {
-    return await BookTypeGroupListRepository.getCount();
-};
-
 export const getBookTypeGroupList = async (id) => {
     return await BookTypeGroupListRepository.getOne(id);
 };

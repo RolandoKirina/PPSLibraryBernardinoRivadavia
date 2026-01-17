@@ -8,31 +8,9 @@ export const getAllBooks = async (req, res) => {
 
         const queryOptions = buildBookFilters(req.query);
 
-        console.log(queryOptions);
-
         const books = await BookService.getAllBooks(queryOptions);
 
         res.status(HTTP_STATUS.OK.code).send(books);
-
-    }
-    catch (e) {
-        console.error(e);
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
-    }
-
-}
-
-
-export const getCount = async (req, res) => {
-    try {
-
-        const queryOptions = buildBookFilters(req.query);
-
-        console.log(queryOptions);
-
-        const count = await BookService.getCount(queryOptions);
-
-        res.status(HTTP_STATUS.OK.code).send(count);
 
     }
     catch (e) {

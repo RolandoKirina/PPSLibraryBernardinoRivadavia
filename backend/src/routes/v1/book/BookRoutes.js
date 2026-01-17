@@ -10,8 +10,6 @@ router.get('/partners-books', BookController.getPartnersAndBooks);
 
 router.get("/", BookController.getAllBooks);
 
-router.get("/count", BookController.getCount);
-
 router.get("/withFields", BookController.getAllBooksWithFields);
 
 router.get("/withFields/author/:id", BookController.getAllBooksOfAuthor);

@@ -4,10 +4,6 @@ export const getAllPartnerCategories = async () => {
     return await PartnerCategoryRepository.getAll();
 };
 
-export const getCount = async () => {
-    return await PartnerCategoryRepository.getCount();
-};
-
 export const getPartnerCategory = async (id) => {
     return await PartnerCategoryRepository.getOne(id);
 };

@@ -5,7 +5,6 @@ import validateIdParam from "../../../middlewares/ValidateId.js";
 const router = express.Router();
 
 router.get("/", PartnerController.getAllPartners);
-router.get("/count", PartnerController.getCount);
 router.get("/:id", validateIdParam("id"), PartnerController.getPartner);
 router.get("/partner-number/:id", validateIdParam("id"), PartnerController.getOneByPartnerNumber);
 router.post("/", PartnerController.createPartner);

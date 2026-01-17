@@ -1,33 +1,22 @@
 import Employees from '../../models/options/Employees.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 
-export const getAll = async (filters) => {
-  const {
-    whereEmployee,
-    limit,
-    offset,
-    order
-  } = filters;
+export const getAll = async (filters = {}) => {
+    const { whereEmployee, limit, offset, order } = filters;
 
-  return await Employees.findAll({
-    where: Object.keys(whereEmployee || {}).length ? whereEmployee : undefined,
-    limit,
-    offset,
-    order
-  });
+    const { rows, count } = await Employees.findAndCountAll({
+        where: Object.keys(whereEmployee || {}).length ? whereEmployee : undefined,
+        limit,
+        offset,
+        order
+    });
+
+    return {
+        rows,
+        count
+    };
 };
 
-export const getCount = async (filters) => {
-  const {
-    whereEmployee
-  } = filters;
-
-  const total = await Employees.count({
-    where: Object.keys(whereEmployee || {}).length ? whereEmployee : undefined
-  });
-
-  return total;
-};
 
 export const getOne = async (id) => {
     return await Employees.findByPk(id);

@@ -1,27 +1,21 @@
 import BookType from "../../models/options/BookType.js";
 import { ValidationError } from "../../utils/errors/ValidationError.js";
 
-export const getAll = async (filters) => {
-    const {
-        whereBookType,
-        limit,
-        offset,
-        order
-    } = filters;
+export const getAll = async (filters = {}) => {
+  const { whereBookType, limit, offset, order } = filters;
 
-    return await BookType.findAll({
-        where: Object.keys(whereBookType).length ? whereBookType : undefined,
-        limit,
-        offset,
-        order
-    });
+  const { rows, count } = await BookType.findAndCountAll({
+    where: Object.keys(whereBookType || {}).length ? whereBookType : undefined,
+    limit,
+    offset,
+    order
+  });
+
+  return {
+    rows,
+    count
+  };
 };
-
-export const getCount = async () => {
-
-    return await BookType.count();
-};
-
 
 export const getById = async (id) => {
     return await BookType.findByPk(id);
@@ -32,7 +26,7 @@ export const create = async (bookType) => {
         throw new ValidationError("El campo Nombre de material de libro no puede estar vacío");
     }
 
-     bookType.loanDays = Number(bookType.loanDays);
+    bookType.loanDays = Number(bookType.loanDays);
 
     if (
         typeof bookType.loanDays !== "number" ||

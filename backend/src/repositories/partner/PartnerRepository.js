@@ -1,8 +1,8 @@
 import Partner from '../../models/partner/Partner.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 
-export const getUnpaidFeesByPartner = async ( id) => { 
- try {
+export const getUnpaidFeesByPartner = async (id) => {
+  try {
     const partner = await Partner.findByPk(id, {
       include: [
         {
@@ -28,26 +28,33 @@ export const getUnpaidFeesByPartner = async ( id) => {
 };
 
 export const getAll = async (filters = {}) => {
-    const { wherePartner, limit, offset } = filters;
+  const { wherePartner, limit, offset } = filters;
 
-    return await Partner.findAll({
-        where: wherePartner,
-        limit,
-        offset
-    });
-};
+  const query = {};
 
-export const getCount = async (filters = {}) => {
-    const { wherePartner } = filters;
+  if (wherePartner && Object.keys(wherePartner).length) {
+    query.where = wherePartner;
+  }
 
-    return await Partner.count({
-        where: wherePartner
-    });
+  if (Number.isInteger(limit)) {
+    query.limit = limit;
+  }
+
+  if (Number.isInteger(offset)) {
+    query.offset = offset;
+  }
+  
+  const { rows, count } = await Partner.findAndCountAll(query);
+
+  return {
+    rows,
+    count
+  };
 };
 
 
 export const getOne = async (id) => {
-    return await Partner.findByPk(id);
+  return await Partner.findByPk(id);
 };
 
 export const getOneByPartnerNumber = async (partnerNumber) => {
@@ -69,24 +76,24 @@ export const getOneByPartnerNumber = async (partnerNumber) => {
 
 
 export const create = async (data) => {
-    return await Partner.create(data);
+  return await Partner.create(data);
 };
 
 export const update = async (id, updates) => {
-    await Partner.update(updates, { where: { id } });
-    return await Partner.findByPk(id);
+  await Partner.update(updates, { where: { id } });
+  return await Partner.findByPk(id);
 };
 
 export const remove = async (id) => {
-    const partner = await Partner.findByPk(id);
+  const partner = await Partner.findByPk(id);
 
-    if (!partner) {
-        return null;
-    }
-    await partner.destroy();
+  if (!partner) {
+    return null;
+  }
+  await partner.destroy();
 
-    return {
-        msg: "Partner deleted successfully",
-        data: partner
-    };
+  return {
+    msg: "Partner deleted successfully",
+    data: partner
+  };
 };

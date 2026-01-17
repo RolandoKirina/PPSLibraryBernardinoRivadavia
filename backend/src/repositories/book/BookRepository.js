@@ -27,6 +27,35 @@ export const getAll = async (filters) => {
   const hasAuthorFilter =
     whereAuthor && Object.keys(whereAuthor).length > 0;
 
+  const count = await Book.count({
+    where: {
+      ...whereCodeInventory,
+      ...whereCodeCDU,
+      ...whereCodeSignature,
+      ...whereBookTitle,
+      ...whereEdition,
+      ...whereYearEdition,
+      ...whereNumberEdition,
+    },
+    include: [
+      {
+        model: BookAuthor,
+        as: 'BookAuthors',
+        required: hasAuthorFilter,
+        include: [
+          {
+            model: Authors,
+            as: 'Author',
+            required: hasAuthorFilter,
+            where: hasAuthorFilter ? whereAuthor : undefined
+          }
+        ]
+      }
+    ],
+    distinct: true,
+    col: 'id'
+  });
+
   const bookIds = await Book.findAll({
     attributes: ['id'],
     subQuery: false,
@@ -62,9 +91,14 @@ export const getAll = async (filters) => {
 
   const ids = bookIds.map(b => b.id);
 
-  if (!ids.length) return [];
+  if (!ids.length) {
+    return {
+      rows: [],
+      count
+    };
+  }
 
-  return await Book.findAll({
+  const rows = await Book.findAll({
     where: { id: ids },
     include: [
       {
@@ -80,55 +114,12 @@ export const getAll = async (filters) => {
     ],
     order
   });
+
+  return {
+    rows,
+    count
+  };
 };
-
-export const getCount = async (filters) => {
-  const {
-    whereAuthor,
-    whereCodeInventory,
-    whereCodeCDU,
-    whereCodeSignature,
-    whereBookTitle,
-    whereEdition,
-    whereYearEdition,
-    whereNumberEdition,
-  } = filters;
-
-  const hasAuthorFilter =
-    whereAuthor && Object.keys(whereAuthor).length > 0;
-
-  const total = await Book.count({
-    where: {
-      ...whereCodeInventory,
-      ...whereCodeCDU,
-      ...whereCodeSignature,
-      ...whereBookTitle,
-      ...whereEdition,
-      ...whereYearEdition,
-      ...whereNumberEdition,
-    },
-    include: [
-      {
-        model: BookAuthor,
-        as: 'BookAuthors',
-        required: hasAuthorFilter,
-        include: [
-          {
-            model: Authors,
-            as: 'Author',
-            required: hasAuthorFilter,
-            where: hasAuthorFilter ? whereAuthor : undefined
-          }
-        ]
-      }
-    ],
-    distinct: true,
-    col: 'id'
-  });
-
-  return total;
-};
-
 
 export const getAllPendingBooks = async (partnerNumber) => {
 

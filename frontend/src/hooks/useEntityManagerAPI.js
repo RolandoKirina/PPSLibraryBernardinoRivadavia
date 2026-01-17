@@ -6,22 +6,11 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const getCount = async (query = "") => {
-    try {
-      const res = await fetch(`${baseUrl}/${entityName}/count${query}`);
-      if (!res.ok) throw new Error("Error al obtener el conteo de datos");
-      const data = await res.json();
-      return data ?? 0;
-    } catch (err) {
-      console.error("Error en getCount:", err);
-      return 0;
-    }
-  };
 
   const getItems = async (filters = {}, append = false) => {
     setLoading(true);
     setError(null);
-    
+
     const cleanFilters = Object.fromEntries(
       Object.entries(filters).filter(([key, value]) => {
         if (["type", "state"].includes(key)) return true;
@@ -40,27 +29,27 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
       : "";
 
     try {
-      // Obtener el total de items para la paginación
-      const count = await getCount(query);
-      setTotalItems(count);
-
-      // Traer los items del backend
       const res = await fetch(`${baseUrl}/${entityName}${query}`);
       if (!res.ok) throw new Error("Error al obtener datos");
 
-      const data = await res.json();
+      const { rows, count } = await res.json();
 
-      // Acumular o reemplazar items según 'append'
-      setItems(prev => append ? [...prev, ...(Array.isArray(data) ? data : [data])] : (Array.isArray(data) ? data : [data]));
+      console.log(rows, count);
 
-      return data;
+      setTotalItems(count ?? 0);
+
+      setItems(prev =>
+        append ? [...prev, ...(rows || [])] : (rows || [])
+      );
+
+      return rows || [];
     } catch (err) {
       setError(err.message);
+      return [];
     } finally {
       setLoading(false);
     }
   };
-
 
 
 

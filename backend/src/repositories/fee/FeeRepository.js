@@ -2,21 +2,27 @@ import Fees from "../../models/fee/Fee.js";
 import Partner from "../../models/partner/Partner.js";
 import { Op } from "sequelize";
 
-export const getAll = async (filters) => {
+export const getAll = async (filters = {}) => {
   const { wherePartner, whereFees, limit, offset } = filters;
+
+  const baseInclude = [
+    {
+      model: Partner,
+      as: "Partner",
+      required: true,
+      where: wherePartner && Object.keys(wherePartner).length ? wherePartner : undefined
+    }
+  ];
 
   const idsResult = await Fees.findAll({
     attributes: ['id'],
+    where: whereFees && Object.keys(whereFees).length ? whereFees : undefined,
     include: [
       {
-        model: Partner,
-        as: "Partner",
-        required: true,
-        where: wherePartner,
+        ...baseInclude[0],
         attributes: []
       }
     ],
-    where: whereFees,
     limit,
     offset,
     subQuery: false,
@@ -25,59 +31,42 @@ export const getAll = async (filters) => {
 
   const ids = idsResult.map(r => r.id);
 
-  if (!ids.length) return [];
+  if (!ids.length) {
+    return { items: [], count: 0 };
+  }
 
   const fees = await Fees.findAll({
-    where: {
-      id: ids
-    },
-    include: [
-      {
-        model: Partner,
-        as: "Partner",
-        required: true,
-        where: wherePartner
-      }
-    ],
+    where: { id: ids },
+    include: baseInclude,
     order: [['id', 'ASC']]
   });
 
-  return fees.map(fee => ({
-    feeid: fee.id,
-    month: fee.month,
-    year: fee.year,
-    amount: fee.amount,
-    observation: fee.observation,
-    paid: fee.paid,
-    paidLabel: fee.paid ? "Pagada" : "Impaga",
-    date_of_paid: fee.date_of_paid
-      ? fee.date_of_paid.toISOString().substring(0, 10)
-      : "",
-    partnerNumber: fee.Partner?.partnerNumber,
-    name: fee.Partner ? `${fee.Partner.name} ${fee.Partner.surname}` : "",
-    surname: fee.Partner?.surname,
-  }));
-};
-
-export const getCount = async (filters) => {
-  const { wherePartner, whereFees } = filters;
-
-  const total = await Fees.count({
-    where: whereFees,
-    include: [
-      {
-        model: Partner,
-        as: "Partner",
-        required: true,
-        where: Object.keys(wherePartner).length ? wherePartner : undefined
-      }
-    ]
+  const count = await Fees.count({
+    where: whereFees && Object.keys(whereFees).length ? whereFees : undefined,
+    include: baseInclude,
+    distinct: true,
+    col: 'Id'
   });
 
-  return total;
+  return {
+    rows: fees.map(fee => ({
+      feeid: fee.id,
+      month: fee.month,
+      year: fee.year,
+      amount: fee.amount,
+      observation: fee.observation,
+      paid: fee.paid,
+      paidLabel: fee.paid ? "Pagada" : "Impaga",
+      date_of_paid: fee.date_of_paid
+        ? fee.date_of_paid.toISOString().substring(0, 10)
+        : "",
+      partnerNumber: fee.Partner?.partnerNumber,
+      name: fee.Partner ? `${fee.Partner.name} ${fee.Partner.surname}` : "",
+      surname: fee.Partner?.surname
+    })),
+    count
+  };
 };
-
-
 
 export const getUnpaidFeesByPartner = async (idPartner) => {
   const fees = await Fees.findAll({

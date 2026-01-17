@@ -6,7 +6,6 @@ import * as LoanController from '../../../controllers/loan/LoanController.js';
 const router = express.Router();
 
 router.get('/', LoanController.getAllLoans);
-router.get('/count', LoanController.getCount);
 router.get('/employee-count', LoanController.getLoansByEmployeeCount);
 router.get('/print-list/:option', LoanController.getLoanPrintList);
 router.get('/returns', LoanController.getAllReturns);

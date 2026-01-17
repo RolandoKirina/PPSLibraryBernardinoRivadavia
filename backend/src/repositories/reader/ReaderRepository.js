@@ -7,7 +7,6 @@ import * as EmployeesRepository from '../../repositories/options/EmployeesReposi
 import * as ReaderBookRepository from '../../repositories/reader/ReaderBookRepository.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 import { formatDate } from '../../utils/date/formatDate.js';
-
 export const getAll = async (filters) => {
   const {
     whereReader,
@@ -19,6 +18,30 @@ export const getAll = async (filters) => {
     order
   } = filters;
 
+  const count = await ReaderBook.count({
+    where: whereReaderBook,
+    include: [
+      {
+        model: Reader,
+        as: 'Reader',
+        where: whereReader,
+        attributes: []
+      },
+      {
+        model: Book,
+        as: 'Book',
+        where: whereBook,
+        attributes: []
+      },
+      {
+        model: Employees,
+        as: 'Employee',
+        where: whereEmployee,
+        attributes: []
+      }
+    ]
+  });
+
   const readerBookIds = await ReaderBook.findAll({
     attributes: ['ReaderBookId'],
     where: whereReaderBook,
@@ -26,7 +49,7 @@ export const getAll = async (filters) => {
       {
         model: Reader,
         as: 'Reader',
-        attributes: [], 
+        attributes: [],
         where: whereReader
       },
       {
@@ -50,7 +73,12 @@ export const getAll = async (filters) => {
 
   const ids = readerBookIds.map(rb => rb.ReaderBookId);
 
-  if (!ids.length) return [];
+  if (!ids.length) {
+    return {
+      rows: [],
+      count
+    };
+  }
 
   const readers = await Reader.findAll({
     where: whereReader,
@@ -87,62 +115,25 @@ export const getAll = async (filters) => {
     order
   });
 
-  const flatReaders = readers.flatMap(reader =>
-    reader.ReaderBooks.map(rb => {
-      const book = rb.Book;
-      const employee = rb.Employee;
-
-      return {
-        dni: reader.dni,
-        name: reader.name,
-        bookCode: book?.codeInventory ?? '',
-        bookTitle: book?.title ?? '',
-        retiredDate: formatDate(rb.retiredDate),
-        retiredHour: rb.retiredHour ?? '',
-        returnedDate: formatDate(rb.returnedDate),
-        returnedHour: rb.returnedHour ?? '',
-        employee: employee?.name ?? '',
-        id: rb.ReaderBookId
-      };
-    })
+  const rows = readers.flatMap(reader =>
+    reader.ReaderBooks.map(rb => ({
+      dni: reader.dni,
+      name: reader.name,
+      bookCode: rb.Book?.codeInventory ?? '',
+      bookTitle: rb.Book?.title ?? '',
+      retiredDate: formatDate(rb.retiredDate),
+      retiredHour: rb.retiredHour ?? '',
+      returnedDate: formatDate(rb.returnedDate),
+      returnedHour: rb.returnedHour ?? '',
+      employee: rb.Employee?.name ?? '',
+      id: rb.ReaderBookId
+    }))
   );
 
-  return flatReaders;
-};
-
-export const getCount = async (filters) => {
-  const {
-    whereReader,
-    whereReaderBook,
-    whereBook,
-    whereEmployee
-  } = filters;
-
-  const countResult = await ReaderBook.count({
-    where: whereReaderBook,
-    include: [
-      {
-        model: Reader,
-        as: 'Reader',
-        where: whereReader,
-        attributes: [] // no necesitamos columnas, solo el join
-      },
-      {
-        model: Book,
-        as: 'Book',
-        where: whereBook,
-        attributes: []
-      },
-      {
-        model: Employees,
-        as: 'Employee',
-        where: whereEmployee,
-        attributes: []
-      }
-    ]
-  });
-
-  return countResult;
+  return {
+    rows,
+    count
+  };
 };
 
 

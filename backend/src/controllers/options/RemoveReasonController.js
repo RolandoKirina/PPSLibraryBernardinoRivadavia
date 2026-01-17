@@ -14,16 +14,6 @@ export const getAllRemoveReasons = async (req, res) => {
     }
 };
 
-export const getCount = async (req, res) => {
-    try {
-        const result = await RemoveReasonService.getCount();
-        res.status(HTTP_STATUS.OK.code).send(result);
-    } catch (error) {
-        console.error(error);
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
-    }
-};
-
 export const getRemoveReason = async (req, res) => {
     try {
         const { id } = req.params;

@@ -7,7 +7,6 @@ import LoanBook from '../../models/loan/LoanBook.js';
 import sequelize from '../../configs/database.js';
 import * as BookAuthorRepository from '../author/BookAuthorRepository.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
-
 export const getAll = async (filters) => {
     const {
         whereAuthor,
@@ -15,6 +14,10 @@ export const getAll = async (filters) => {
         offset,
         order,
     } = filters;
+
+    const count = await Authors.count({
+        where: Object.keys(whereAuthor).length ? whereAuthor : undefined
+    });
 
     const authorIdsResult = await Authors.findAll({
         attributes: ['id'],
@@ -26,7 +29,13 @@ export const getAll = async (filters) => {
     });
 
     const ids = authorIdsResult.map(a => a.id);
-    if (!ids.length) return [];
+
+    if (!ids.length) {
+        return {
+            rows: [],
+            count
+        };
+    }
 
     const authors = await Authors.findAll({
         where: { id: ids },
@@ -74,36 +83,21 @@ export const getAll = async (filters) => {
     for (const author of authorsPlain) {
         for (const bookAuthor of author.BookAuthors) {
             const book = bookAuthor.Book;
-            const isBorrowed = book.BookLoans?.some(lb => lb.returnedDate === null) || false;
+            const isBorrowed =
+                book.BookLoans?.some(lb => lb.returnedDate === null) || false;
             book.isBorrowed = isBorrowed;
         }
     }
 
-    return authorsPlain;
+    return {
+        rows: authorsPlain,
+        count
+    };
 };
-
-export const getCount = async (filters) => {
-    const { whereAuthor } = filters;
-
-    const count = await Authors.count({
-        where: Object.keys(whereAuthor).length ? whereAuthor : undefined
-    });
-
-    return count;
-};
-
-
 
 export const getOne = async (id) => {
     return await Authors.findByPk(id);
 };
-
-// export const create = async (author) => {
-//     if (!author.name.trim() || !author.nationality.trim()) {
-//     throw new Error("Los campos Nombre y Nacionalidad no pueden estar vacíos");
-//     }
-//     return await Authors.create(author);
-// };
 
 export const create = async (author) => {
     if (!author.name.trim() || !author.nationality.trim()) {

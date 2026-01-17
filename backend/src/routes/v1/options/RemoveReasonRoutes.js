@@ -5,7 +5,6 @@ import validateIdParam from "../../../middlewares/ValidateId.js";
 const router = express.Router();
 
 router.get('/', RemoveReasonController.getAllRemoveReasons);
-router.get('/count', RemoveReasonController.getCount);
 router.get('/:id', validateIdParam("id"), RemoveReasonController.getRemoveReason);
 router.post('/', RemoveReasonController.createRemoveReason);
 router.put('/:id', validateIdParam("id"), RemoveReasonController.updateRemoveReason);

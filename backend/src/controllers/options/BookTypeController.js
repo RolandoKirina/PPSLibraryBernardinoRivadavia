@@ -14,16 +14,6 @@ export const getAllBookTypes = async (req, res) => {
     }
 };
 
-export const getCount = async (req, res) => {
-    try {
-        const count = await BookTypeService.getCount();
-        res.json(count); 
-    } catch (e) {
-        console.error(e);
-        res.status(500).json({ msg: "error" });
-    }
-};
-
 export const getBookType = async (req, res) => {
     try {
         const bookType = await BookTypeService.getBookType(req.params.id);

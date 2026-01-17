@@ -5,11 +5,6 @@ export const getAllPartners = async (filters) => {
     return partners;
 };
 
-export const getCount = async (filters) => {
-    const count = await PartnerRepository.getCount(filters);
-    return count;
-};
-
 export const getPartner = async (id) => {
     return await PartnerRepository.getOne(id);
 };

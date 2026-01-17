@@ -33,119 +33,7 @@ export const getAll = async (filters) => {
     offset
   } = filters;
 
-  //separacion de ids principales con los joins posteriores para que el limit funcione correctamente
-
-  const loanIds = await Loan.findAll({
-    attributes: ['id'],
-    where: whereLoan,
-    include: [
-      {
-        model: LoanType,
-        as: 'LoanType',
-        where: Object.keys(whereLoanType).length ? whereLoanType : undefined,
-        required: Object.keys(whereLoanType).length > 0
-      },
-      {
-        model: Partner,
-        as: 'Partner',
-        where: Object.keys(wherePartner).length ? wherePartner : undefined,
-        required: true
-      }
-    ],
-    order,
-    limit,
-    offset,
-    raw: true
-  });
-
-  const ids = loanIds.map(l => l.id);
-
-  if (!ids.length) return [];
-
-  const loans = await Loan.findAll({
-    where: {
-      id: ids
-    },
-    include: [
-      {
-        model: LoanType,
-        as: 'LoanType',
-        attributes: ['description']
-      },
-      {
-        model: Partner,
-        as: 'Partner',
-        attributes: ['id', 'homePhone', 'homeAddress', 'name', 'surname', 'partnerNumber']
-      },
-      {
-        model: LoanBook,
-        as: 'LoanBooks',
-        required: true,
-        attributes: ['bookCode', 'expectedDate', 'returnedDate'],
-        where: Object.keys(whereLoanBook).length ? whereLoanBook : undefined,
-        include: [
-          {
-            model: Book,
-            as: 'Book',
-            attributes: ['title', 'codeInventory'],
-            where: Object.keys(whereBook).length ? whereBook : undefined,
-            include: [
-              {
-                model: BookType,
-                as: 'BookType',
-                attributes: ['typeName'],
-                where: Object.keys(whereBookType).length ? whereBookType : undefined
-              }
-            ]
-          }
-        ]
-      },
-      {
-        model: Employees,
-        as: 'Employee',
-        attributes: ['name', 'code'],
-        where: Object.keys(whereEmployee).length ? whereEmployee : undefined,
-        required: Object.keys(whereEmployee).length > 0
-      }
-    ],
-    order
-  });
-
-  return loans.map(loan => ({
-    loanId: loan?.id || '',
-    retiredDate: formatDate(loan.retiredDate),
-    expectedDate: formatDate(loan.LoanBooks?.[0]?.expectedDate),
-    returnedDate: formatDate(loan.LoanBooks?.[0]?.returnedDate),
-    withdrawalTime: loan?.withdrawalTime || '',
-    loanType: loan.LoanType?.description || '',
-    employee: loan.Employee?.name || '',
-    employeeCode: loan.Employee?.code || '',
-    partnerId: loan.Partner?.id || null,
-    partnerNumber: loan.Partner?.partnerNumber || '',
-    name: `${loan.Partner?.name || ''} ${loan.Partner?.surname || ''}`,
-    surname: loan.Partner?.surname || '',
-    homePhone: loan.Partner?.homePhone || '',
-    homeAddress: loan.Partner?.homeAddress || '',
-    books: loan.LoanBooks.map(book => ({
-      codeInventory: book.Book?.codeInventory || book.bookCode,
-      title: book.Book?.title || '',
-      typeName: book.Book.BookType?.typeName || ''
-    }))
-  }));
-};
-
-export const getCount = async (filters) => {
-
-  const {
-    whereLoan,
-    whereLoanType,
-    wherePartner,
-    whereLoanBook,
-    whereBook,
-    whereBookType,
-    whereEmployee
-  } = filters;
-
+  // COUNT TOTAL (sin limit/offset)
   const count = await Loan.count({
     where: whereLoan,
     distinct: true,
@@ -192,7 +80,112 @@ export const getCount = async (filters) => {
     ]
   });
 
-  return count;
+  // IDs paginados (para que limit funcione bien)
+  const loanIds = await Loan.findAll({
+    attributes: ['Id'],
+    where: whereLoan,
+    include: [
+      {
+        model: LoanType,
+        as: 'LoanType',
+        where: Object.keys(whereLoanType).length ? whereLoanType : undefined,
+        required: Object.keys(whereLoanType).length > 0
+      },
+      {
+        model: Partner,
+        as: 'Partner',
+        where: Object.keys(wherePartner).length ? wherePartner : undefined,
+        required: true
+      }
+    ],
+    order,
+    limit,
+    offset,
+    raw: true
+  });
+
+  const ids = loanIds.map(l => l.Id);
+
+  if (!ids.length) {
+    return {
+      rows: [],
+      count
+    };
+  }
+
+  const loans = await Loan.findAll({
+    where: { id: ids },
+    include: [
+      {
+        model: LoanType,
+        as: 'LoanType',
+        attributes: ['description']
+      },
+      {
+        model: Partner,
+        as: 'Partner',
+        attributes: ['id', 'homePhone', 'homeAddress', 'name', 'surname', 'partnerNumber']
+      },
+      {
+        model: LoanBook,
+        as: 'LoanBooks',
+        required: true,
+        attributes: ['bookCode', 'expectedDate', 'returnedDate'],
+        where: Object.keys(whereLoanBook).length ? whereLoanBook : undefined,
+        include: [
+          {
+            model: Book,
+            as: 'Book',
+            attributes: ['title', 'codeInventory'],
+            where: Object.keys(whereBook).length ? whereBook : undefined,
+            include: [
+              {
+                model: BookType,
+                as: 'BookType',
+                attributes: ['typeName'],
+                where: Object.keys(whereBookType).length ? whereBookType : undefined
+              }
+            ]
+          }
+        ]
+      },
+      {
+        model: Employees,
+        as: 'Employee',
+        attributes: ['name', 'code'],
+        where: Object.keys(whereEmployee).length ? whereEmployee : undefined,
+        required: Object.keys(whereEmployee).length > 0
+      }
+    ],
+    order
+  });
+
+  const rows = loans.map(loan => ({
+    loanId: loan?.id || '',
+    retiredDate: formatDate(loan.retiredDate),
+    expectedDate: formatDate(loan.LoanBooks?.[0]?.expectedDate),
+    returnedDate: formatDate(loan.LoanBooks?.[0]?.returnedDate),
+    withdrawalTime: loan?.withdrawalTime || '',
+    loanType: loan.LoanType?.description || '',
+    employee: loan.Employee?.name || '',
+    employeeCode: loan.Employee?.code || '',
+    partnerId: loan.Partner?.id || null,
+    partnerNumber: loan.Partner?.partnerNumber || '',
+    name: `${loan.Partner?.name || ''} ${loan.Partner?.surname || ''}`,
+    surname: loan.Partner?.surname || '',
+    homePhone: loan.Partner?.homePhone || '',
+    homeAddress: loan.Partner?.homeAddress || '',
+    books: loan.LoanBooks.map(book => ({
+      codeInventory: book.Book?.codeInventory || book.bookCode,
+      title: book.Book?.title || '',
+      typeName: book.Book.BookType?.typeName || ''
+    }))
+  }));
+
+  return {
+    rows,
+    count
+  };
 };
 
 export const getAllReturns = async (filters) => {

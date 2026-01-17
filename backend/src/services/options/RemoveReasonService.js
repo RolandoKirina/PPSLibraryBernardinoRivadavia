@@ -4,10 +4,6 @@ export const getAllRemoveReasons = async (filters) => {
     return await RemoveReasonRepository.getAll(filters);
 };
 
-export const getCount = async () => {
-    return await RemoveReasonRepository.getCount();
-};
-
 export const getRemoveReason = async (id) => {
     return await RemoveReasonRepository.getOne(id);
 };
