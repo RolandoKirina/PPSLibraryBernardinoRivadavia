@@ -1,7 +1,7 @@
 import Btn from "../../../components/common/btn/Btn.jsx";
 import SaveIcon from '../../../assets/img/save-icon.svg';
 import Accordion from "../../generic/accordion/Accordion.jsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./FormEditPartner.css";
 import BackviewBtn from "../../common/backviewbtn/BackviewBtn.jsx";
 import UnpaidFees from "../../loan-components/unpaidfees/UnpaidFees.jsx";
@@ -9,37 +9,75 @@ import { Table } from "../../common/table/Table.jsx";
 import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
 export default function FormEditPartner({selectedPartner}) {
   const options = ["default", "unpaidfees", "pendingbooks"];
-  const [popupView, setPopupView] = useState(options[0]);
+  const [reasonOfWithdrawal,setreasonOfWithdrawal] = useState([]);
   const [activeAccordion, setActiveAccordion] = useState(null);
   const entityManagerApi = useEntityManagerAPI("partners");
 
   const [formValues, setFormValues] = useState({
-    name: selectedPartner.name || "",
+    name: "",
+    surname:  "",
+    birthDate:  "",
+    documentNumber:  "",
+    profession: "",
+    presentedBy: "",
+    nacionality:  "",
+    address: "",
+    phone: "",
+    postalcode:  "",
+    collectionAddress:  "",
+    collectiontime:  "",
+    resignationdate:  "",
+    observations: "",
+    workplace:"",
+    workAddress: "",
+    workPhone:  "",
+    workPostalCode: "",
+    collector:  "",
+    documentType:  "",
+    maritalstatus:  "",
+    category: "",
+    locality: "",
+    isActive:"",
+    reasonOfWithdrawal: "",
+    registrationDate: "",
+  });
+
+  useEffect(() => {
+  if (selectedPartner) {
+    setFormValues({
+     name: selectedPartner.name || "",
     surname: selectedPartner.surname || "",
     birthDate: selectedPartner.birthDate || "",
-    documentType: selectedPartner.documentType || "",
     documentNumber: selectedPartner.documentNumber || "",
     profession: selectedPartner.profession || "",
     presentedBy: selectedPartner.presentedBy || "",
-    maritalstatus: selectedPartner.MaritalStatusId || "",
-    category: selectedPartner.idCategory || "",
     nacionality: selectedPartner.nationality || "",
     address: selectedPartner.homeAddress || "",
     phone: selectedPartner.homePhone || "",
-    locality: selectedPartner.LocalityId || "",
     postalcode: selectedPartner.homePostalCode || "",
     collectionAddress: selectedPartner.collectionAddress || "",
     collectiontime: selectedPartner.preferredTime ? selectedPartner.preferredTime.slice(11,16) : "",
-    reasonOfWithdrawal: selectedPartner.idReason || "",
     resignationdate: selectedPartner.resignationDate || "",
     observations: selectedPartner.observations || "",
-    isActive: selectedPartner.isActive || "",
     workplace: selectedPartner.workplace || "",
     workAddress: selectedPartner.workAddress || "",
     workPhone: selectedPartner.workPhone || "",
     workPostalCode : selectedPartner.workPostalCode || "",
-    collector: selectedPartner.colector   || "",
-  });
+    collector: selectedPartner.collector   || "",
+    documentType: selectedPartner.documentType?.toString() || "",
+    maritalstatus: selectedPartner.MaritalStatusId?.toString() || "",
+    category: selectedPartner.idCategory?.toString() || "",
+    locality: selectedPartner.LocalityId?.toString() || "",
+    isActive: selectedPartner.isActive?.toString() || "",
+    reasonOfWithdrawal: selectedPartner.idReason?.toString() || "",
+    registrationDate: selectedPartner.registrationDate || "",
+    });
+  }
+}, [selectedPartner]);
+
+  useEffect(() => {
+    fetchReasonWithDrawal();
+  }, []);
 
   const handleToggle = (id) => {
     setActiveAccordion(prev => prev === id ? null : id);
@@ -69,7 +107,6 @@ export default function FormEditPartner({selectedPartner}) {
       nationality: formValues.nacionality,
       resignationDate: formValues.resignationdate || null,
       observations: formValues.observations || null,
-      isActive: Number(formValues.isActive) === 1 ? 1 : 2,
       preferredTime: formValues.collectiontime || null,
       presentedBy: formValues.presentedBy || null,
       workplace: formValues.workplace || null,
@@ -77,19 +114,38 @@ export default function FormEditPartner({selectedPartner}) {
       workPhone: formValues.workPhone || null,
       workPostalCode : formValues.workPostalCode || null,
       collectionAddress: formValues.collectionAddress || null,
-      collector: formValues.collector || null
+      collector: formValues.collector || null,
+      idReason: Number(formValues.isActive) === 2
+        ? Number(formValues.reasonOfWithdrawal) : null,  
+      isActive: formValues.isActive !== ""
+        ? Number(formValues.isActive)
+        : null,        
     };
 
     try {
       const updated = await entityManagerApi.updateItem(selectedPartner.id, updatedPartner);
       if (updated) {
         console.log(updated)
-        alert("Socio actualizado con éxito");
+        
       }
     } catch (error) {
       alert("Error al actualizar el socio");
     }
   };
+
+
+
+  async function fetchReasonWithDrawal() {
+    try {
+
+      const res = await fetch(`http://localhost:4000/api/v1/reason-for-withdrawal`);
+      const json = await res.json();
+      setreasonOfWithdrawal(json);
+
+    } catch (error) {
+      console.error("Error al cargar cuotas impagas", error);
+    } 
+  }
 
 
 function renderView(){
@@ -177,7 +233,7 @@ function renderView(){
 
                 <div className="form-details">
                   <label htmlFor="presentedBy">Presentado por</label>
-                  <input id="presentedBy" name="presentedBy" type="text" placeholder="Presentado por" onChange={handleChange} value={formValues.presentedby}/>
+                  <input id="presentedBy" name="presentedBy" type="text" placeholder="Presentado por" onChange={handleChange} value={formValues.presentedBy}/>
                 </div>
               </div>
               <div className="items-info-details-form-accordion">
@@ -301,18 +357,23 @@ function renderView(){
 
               <div className="items-info-details-form-accordion">
                 <div className="form-details">
-                  <label htmlFor="reasonOfWithdrawal">Motivo de baja </label>
-                  <select id="reasonOfWithdrawal" name="reasonOfWithdrawal" onChange={handleChange} value={formValues.reasonOfWithdrawal}>
-                    <option value="" disabled>Seleccione un motivo</option>
-                    <option value="1">Renunció</option>
-                    <option value="2">Deuda</option>
-                    <option value="3">Aumento de cuota</option>
-                    <option value="4">No puede pagar</option>
-                    <option value="5">De baja</option>
-                    <option value="6">Sin domicilio</option>
-                    <option value="7">Falleció</option>
-                    <option value="8">Perdió interes</option>
-                  </select>
+                 <label htmlFor="reasonOfWithdrawal">Motivo de baja</label>
+                      <select
+                        id="reasonOfWithdrawal"
+                        name="reasonOfWithdrawal"
+                        onChange={handleChange}
+                        value={formValues.reasonOfWithdrawal}>
+
+                        <option value="" disabled>
+                          Seleccione un motivo
+                        </option>
+
+                        {reasonOfWithdrawal.map((reason) => (
+                          <option key={reason.idReason} value={reason.idReason}>
+                            {reason.reason}
+                          </option>
+                        ))}
+                      </select>
                 </div>
               </div>
             </Accordion>
