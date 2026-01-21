@@ -32,9 +32,9 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
       const res = await fetch(`${baseUrl}/${entityName}${query}`);
       if (!res.ok) throw new Error("Error al obtener datos");
 
-      const { rows, count } = await res.json();
+      console.log(`${baseUrl}/${entityName}${query}`);
 
-      console.log(rows, count);
+      const { rows, count } = await res.json();
 
       setTotalItems(count ?? 0);
 

@@ -14,7 +14,7 @@ export default function SearchPartner({ onFilterChange, method, menu, onDataChan
 
   const { data: foundPartner, error: partnerError, loading: partnerLoading } = useEntityLookup(
     partnerData.partnerNumber,
-    'http://localhost:4000/api/v1/partners/partner-number/'//falta hacer
+    'http://localhost:4000/api/v1/partners/partner-number/'
   );
 
   const handleChange = (e) => {
@@ -39,18 +39,6 @@ export default function SearchPartner({ onFilterChange, method, menu, onDataChan
       setPartnerMessageError(false);
     }
   }, [partnerData?.partnerNumber]);
-
-  useEffect(() => {
-    if (foundPartner && onDataChange) {
-      console.log(foundPartner);
-      // onDataChange({
-      //   ...partnerData,
-      //   partnerNumber: foundPartner.partnerNumber,
-      //   partnerName: `${foundPartner.name} ${foundPartner.surname}`
-      // });
-    }
-  }, [foundPartner]);
-
 
 
   const handleMenu = (option) => {

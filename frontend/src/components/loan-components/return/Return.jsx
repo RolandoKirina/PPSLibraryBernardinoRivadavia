@@ -20,6 +20,8 @@ import roles from '../../../auth/roles';
 //import { pendingbooks } from "../../../data/mocks/pendingbooks.js";
 import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI.js';
 import { useEffect } from 'react';
+import PartnerMemo from '../partnermemo/PartnerMemo.jsx';
+import PendingBooks from '../pendingBooks/PendingBooks.jsx';
 
 export default function Return() {
     //cuando se usan los inputs de partner se filtran las devoluciones y se pueden renovar, devolver o devolver todos
@@ -74,7 +76,7 @@ export default function Return() {
         const numberPage = Number(page);
         const lastItemIndex = numberPage * rowsPerPage;
 
-        if (lastItemIndex > items.length) {
+        if (items.length < totalItems && lastItemIndex > items.length) {
             const newOffset = items.length;
             await getItems({ ...filters, limit: chunkSize, offset: newOffset }, true);
             setOffsetActual(newOffset);
@@ -137,7 +139,21 @@ export default function Return() {
     if (auth.role === roles.admin) {
         columnsReturnForm = [
             { header: 'Código del libro', accessor: 'bookCode' },
-            { header: 'Título', accessor: 'bookTitle' }
+            { header: 'Título', accessor: 'bookTitle' },
+            { header: 'Numero Socio', accessor: 'partnerNumber' },
+            { header: 'Renovaciones', accessor: 'renewes' },
+            {
+                header: 'Detalles',
+                accessor: 'details',
+                render: (_, row) => (
+                    <button type='button' className="button-table" onClick={() => {
+                        setPopupView('details')
+                        setSelected(row)
+                    }}>
+                        <img src={DetailsIcon} alt="Detalles" />
+                    </button>
+                )
+            }
         ];
     }
     else if (auth.role === roles.user) {
@@ -179,6 +195,8 @@ export default function Return() {
             console.log("devolucion actualizado con datos externos:", updated);
             return updated;
         });
+
+
     };
 
     return (
@@ -229,13 +247,21 @@ export default function Return() {
                 {popupView === 'unpaidFees' && (
                     <>
                         <BackviewBtn menu={'default'} changeView={setPopupView} />
-                        <UnpaidFees changeView={setPopupView} />
+                        <UnpaidFees changeView={setPopupView} partnerNumber={partnerData.partnerNumber} />
                     </>
                 )}
+
                 {popupView === 'pendingBooks' && (
                     <>
-                        <Table columns={columnsPendingBooks} data={pendingbooks}></Table>
                         <BackviewBtn menu={'default'} changeView={setPopupView} />
+                        <PendingBooks changeView={setPopupView} partnerNumber={partnerData.partnerNumber} />
+                    </>
+                )}
+
+                {popupView === 'partnerMemo' && (
+                    <>
+                        <BackviewBtn menu={'default'} changeView={setPopupView} />
+                        <PartnerMemo changeView={setPopupView} partnerNumber={partnerData.partnerNumber} />
                     </>
                 )}
 

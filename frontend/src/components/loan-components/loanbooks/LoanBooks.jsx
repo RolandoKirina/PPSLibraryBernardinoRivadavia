@@ -27,8 +27,8 @@ export default function LoanBooks({ loanSelected }) {
       const loanSelectedId = loanSelected.loanId;
       const booksFromLoan = await getBooks(loanSelectedId);
       console.log(booksFromLoan);
-      setLoanBooks(booksFromLoan);
-      setFilteredBooks(booksFromLoan);
+      setLoanBooks(booksFromLoan.rows);
+      setFilteredBooks(booksFromLoan.rows);
     };
     fetchAllBooksFromLoan();
   }, [loanSelected]);
@@ -145,7 +145,7 @@ export default function LoanBooks({ loanSelected }) {
 
       <div className='lend-books-container'>
         <h2 className='lend-books-title'>Libros a Prestar</h2>
-        <Table columns={columns} data={filteredBooks} />
+        <Table columns={columns} data={filteredBooks} totalItems={filteredBooks.length} />
       </div>
     </div>
   );

@@ -188,15 +188,16 @@ export const getAll = async (filters) => {
   };
 };
 
-export const getAllReturns = async (filters) => {
+
+export const getAllReturns = async (filters = {}) => {
   const {
-    wherePartner,
+    wherePartner = {},
     order,
     limit,
     offset
   } = filters;
 
-  const loanBookIds = await LoanBook.findAll({
+  const { rows: idRows, count } = await LoanBook.findAndCountAll({
     attributes: ['LoanBookId'],
     where: {
       returnedDate: {
@@ -208,28 +209,33 @@ export const getAllReturns = async (filters) => {
         model: Loan,
         as: 'Loan',
         attributes: [],
+        required: true,
         include: [
           {
             model: Partner,
             as: 'Partner',
             attributes: [],
+            required: true,
             where: Object.keys(wherePartner).length
               ? wherePartner
-              : undefined,
-            required: true
+              : undefined
           }
         ]
       }
     ],
+    distinct: true,
+    col: 'LoanBookId',
     order,
     limit,
     offset,
-    raw: true
+    subQuery: false
   });
 
-  const ids = loanBookIds.map(lb => lb.LoanBookId);
+  const ids = idRows.map(r => r.LoanBookId);
 
-  if (!ids.length) return [];
+  if (!ids.length) {
+    return { rows: [], count };
+  }
 
   const returns = await LoanBook.findAll({
     where: {
@@ -245,7 +251,7 @@ export const getAllReturns = async (filters) => {
           {
             model: Partner,
             as: 'Partner',
-            attributes: ['id', 'name', 'surname', 'observations']
+            attributes: ['id', 'name', 'surname', 'observations', 'partnerNumber']
           }
         ]
       },
@@ -258,50 +264,18 @@ export const getAllReturns = async (filters) => {
     ]
   });
 
-  return returns.map(lb => ({
+  const rows = returns.map(lb => ({
     id: lb.LoanBookId,
     bookCode: lb.Book.codeInventory,
     bookTitle: lb.Book.title,
-    renewes: lb.reneweAmount,
+    renewes: lb.reneweAmount || 0,
     retiredDate: lb.Loan.retiredDate,
     partnerName: lb.Loan.Partner.name,
-    partnerSurname: lb.Loan.Partner.surname
+    partnerSurname: lb.Loan.Partner.surname,
+    partnerNumber: lb.Loan.Partner.partnerNumber,
   }));
-};
 
-export const getReturnsCount = async (filters) => {
-  const {
-    wherePartner
-  } = filters;
-
-  const total = await LoanBook.count({
-    where: {
-      returnedDate: {
-        [Op.ne]: null
-      }
-    },
-    include: [
-      {
-        model: Loan,
-        as: 'Loan',
-        required: true,
-        include: [
-          {
-            model: Partner,
-            as: 'Partner',
-            required: true,
-            where: Object.keys(wherePartner).length
-              ? wherePartner
-              : undefined
-          }
-        ]
-      }
-    ],
-    distinct: true,
-    col: 'LoanBookId'
-  });
-
-  return total;
+  return { rows, count };
 };
 
 
@@ -529,6 +503,7 @@ export const create = async (loanData, transaction = null) => {
 
 
 export const update = async (id, updates) => {
+  console.log("updates ", updates);
   if (!updates.books || updates.books.length === 0) {
     throw new ValidationError("No se puede actualizar el préstamo sin libros");
   }
@@ -550,7 +525,8 @@ export const update = async (id, updates) => {
   const transaction = await sequelize.transaction();
 
   try {
-    const employee = await EmployeesRepository.getOneByCode(updates.employeeCode);
+    const employee = await EmployeesRepository.getOneByCode(null, updates.employeeCode);
+    console.log("employee: ", employee);
     if (!employee) {
       throw new ValidationError("Empleado no existe");
     }

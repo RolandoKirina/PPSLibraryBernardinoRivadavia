@@ -1,6 +1,7 @@
 import * as ReaderService from '../../services/reader/ReaderService.js';
 import { HTTP_STATUS } from '../../https/httpsStatus.js';
 import { buildReaderFilters } from '../../utils/buildReaderFilters.js';
+import { ValidationError } from '../../utils/errors/ValidationError.js';
 
 export const getAllReaders = async (req, res) => {
     try {
@@ -41,11 +42,13 @@ export const createReader = async (req, res) => {
         res.status(HTTP_STATUS.CREATED.code).send(result);
     } catch (error) {
 
-        if (error.message && error.message.includes("campo")) {
+        if (error instanceof ValidationError) {
             return res
                 .status(HTTP_STATUS.BAD_REQUEST.code)
                 .json({ msg: error.message });
         }
+
+        console.error("Server error:", error);
 
         return res
             .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)

@@ -18,16 +18,14 @@ import { useEntityLookup } from '../../../hooks/useEntityLookup.js';
 import ReturnIcon from '../../../assets/img/return-icon.svg';
 import ReneweIcon from '../../../assets/img/renewe-icon.svg';
 import { useAuth } from '../../../auth/AuthContext.jsx';
-
 export default function ReaderForm({ method, createReaderItem, loanSelected, errorMessage }) {
+  const chunkSize = 100;
+  const rowsPerPage = 5;
+
   const [popupView, setPopupView] = useState("default");
   const [confirmSaveChangesPopup, setConfirmSaveChangesPopup] = useState(false);
   const BASE_URL = "http://localhost:4000/api/v1";
   const [addBookMessage, setAddBookMessage] = useState('');
-
-  const [confirmReturnAllPopup, setConfirmReturnAllPopup] = useState(false);
-  const [confirmReturnPopup, setConfirmReturnPopup] = useState(false);
-  const [confirmRenewePopup, setConfirmRenewePopup] = useState(false);
 
   const { auth } = useAuth();
 
@@ -40,85 +38,75 @@ export default function ReaderForm({ method, createReaderItem, loanSelected, err
     readerName: ''
   });
 
-
   const isUpdate = method === 'update';
-
-  const partnerSource = isUpdate ? loanSelected : loanData;
   const readerSource = isUpdate ? loanSelected : loanData;
 
   const [validateError, setValidateError] = useState('');
   const [selectedBook, setSelectedBook] = useState('');
 
-  const { data: employeeInfo, error: employeeError, loading: employeeLoading } = useEntityLookup(loanData.employeeCode, `${BASE_URL}/employees?code=`);
+  const { data: employeeInfo, error: employeeError, loading: employeeLoading } = useEntityLookup(loanData.employeeCode, `${BASE_URL}/employees/by-code/`);
 
-  const [books, setBooks] = useState([]);
+
+  const [libraryBooks, setLibraryBooks] = useState([]);
+  const [totalLibraryBooks, setTotalLibraryBooks] = useState(0);
+  const [loadingBooks, setLoadingBooks] = useState(false);
+  const [resetPageTrigger, setResetPageTrigger] = useState(0);
 
   useEffect(() => {
-    getBooks();
+    fetchLibraryBooks({ limit: chunkSize, offset: 0 });
 
-    if (method === 'update' && loanSelected?.dni) {
-
-      const fetchAllBooksFromLoan = async () => {
-        const loanSelectedId = loanSelected.loanId;
-        const booksFromLoan = await getBooks(loanSelectedId);
-
+    if (isUpdate && loanSelected?.loanId) {
+      fetchLoanBooks(loanSelected.loanId).then(rows => {
         setLoanData({
-          books: booksFromLoan || [],
+          books: rows || [],
           employeeCode: loanSelected.employeeCode || '',
           retiredDate: loanSelected.retiredDate || '',
           readerDNI: loanSelected.dni,
-          readerName: loanSelected.name,
-
+          readerName: loanSelected.name
         });
-      };
-
-      fetchAllBooksFromLoan();
+      });
     }
   }, []);
 
-  const getBooks = async (loanSelectedId) => {
-    try {
-      let url = loanSelectedId
-        ? `${BASE_URL}/books/withFields/loan/${loanSelectedId}`
-        : `${BASE_URL}/books/withFields`;
+  const fetchLibraryBooks = async (filters = {}, append = false) => {
+    setLoadingBooks(true);
 
-      const response = await fetch(url);
-      if (!response.ok) throw new Error("Error al obtener libros");
-      const data = await response.json();
+    const queryParams = new URLSearchParams(filters).toString();
+    const res = await fetch(`${BASE_URL}/books/withFields?${queryParams}`);
+    const { rows, total } = await res.json();
 
-      if (!loanSelectedId) setBooks(data);
-      return data;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
+    setTotalLibraryBooks(total);
+    console.log(total);
+    setLibraryBooks(prev => (append ? [...prev, ...rows] : rows));
+    console.log(libraryBooks);
+
+    setLoadingBooks(false);
+    return rows;
   };
 
-  function handleAddNewLoan() {
-    if (validateError) return;
-    const newLoan = {
-      employeeCode: loanData.employeeCode,
-      retiredDate: loanData.retiredDate,
-      readerDNI: loanData.readerDNI,
-      readerName: loanData.readerName,
-      books: loanData.books
-    };
+  const fetchLoanBooks = async (loanId) => {
+    const res = await fetch(`${BASE_URL}/books/withFields/loan/${loanId}`);
+    const { rows } = await res.json();
+    return rows;
+  };
 
-    createReaderItem(newLoan);
+  async function handleChangePage(page) {
+    const numberPage = Number(page);
+    const lastItemIndex = numberPage * rowsPerPage;
+
+    if (lastItemIndex > libraryBooks.length) {
+      const newOffset = libraryBooks.length;
+
+      await fetchLibraryBooks(
+        { limit: chunkSize, offset: newOffset },
+        true
+      );
+    }
   }
 
-  function handleEditLoan() {
-    if (validateError) return;
-    const updatedLoan = {
-      employeeCode: loanData.employeeCode,
-      retiredDate: loanData.retiredDate,
-      returnedDate: loanData.returnedDate,
-      readerDNI: loanData.readerDNI,
-      readerName: loanData.readerName,
-      books: loanData.books
-    };
-    createReaderItem(updatedLoan);
-  }
+  const handleExtraData = (newData) => { setLoanData(prev => { const updated = { ...prev, ...newData }; return updated; }); };
+
+  const handleChange = (e) => { const { name, value } = e.target; setLoanData(prev => { const updated = { ...prev, [name]: value }; return updated; }); };
 
   async function handleAddBook(book) {
     const res = await verifyIfExists(book.BookId);
@@ -129,9 +117,7 @@ export default function ReaderForm({ method, createReaderItem, loanSelected, err
     }
 
     setLoanData(prev => {
-      const alreadyExists = prev.books.some(b => b.BookId === book.BookId);
-
-      if (alreadyExists) {
+      if (prev.books.some(b => b.BookId === book.BookId)) {
         setAddBookMessage(`El libro "${book.title}" ya fue añadido.`);
         return prev;
       }
@@ -143,106 +129,41 @@ export default function ReaderForm({ method, createReaderItem, loanSelected, err
   }
 
   async function verifyIfExists(bookId) {
-    try {
-      const res = await fetch(`${BASE_URL}/reader-books/repeated-book/${bookId}`);
-      if (!res.ok) throw new Error("Error al obtener datos");
-      const data = await res.json();
-      return data;
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
+    const res = await fetch(`${BASE_URL}/reader-books/repeated-book/${bookId}`);
+    return res.ok ? res.json() : { available: false };
   }
 
   function handleDeleteBook(book) {
-    setLoanData(prev => {
-      let alreadyExists = prev.books.some(b => b.BookId === book.BookId);
-      if (!alreadyExists) return prev;
-
-      let booksUpdated = prev.books.filter(b => b.BookId !== book.BookId);
-      return { ...prev, books: booksUpdated };
-    });
+    setLoanData(prev => ({
+      ...prev,
+      books: prev.books.filter(b => b.BookId !== book.BookId)
+    }));
   }
 
   const validateBeforeSave = () => {
-
-    if (!loanData.books || loanData.books.length === 0) {
+    if (!loanData.books.length) {
       setValidateError('Debe agregar al menos un libro antes de guardar el préstamo.');
       return false;
     }
-
     setValidateError('');
     return true;
   };
 
-
-  async function returnLoanBook(loanBook) {
-
-    const { BookId } = loanBook;
-
-    setLoanData(prev => ({
-      ...prev,
-      books: prev.books.map(b => {
-        if (b.BookId !== BookId) return b;
-
-        const now = new Date();
-        const formattedDate = now.toLocaleDateString();
-
-        return {
-          ...b,
-          returned: "Sí",             // antes era "No"
-          returnedDate: now,          // guardamos la fecha real (si la usás)
-          returnDateText: formattedDate, // tu campo correcto
-        };
-      }),
-    }));
+  function handleAddNewLoan() {
+    if (validateError) return;
+    createReaderItem(loanData);
   }
 
-  async function reneweLoanBook(loanBook) {
-
-    const { BookId } = loanBook;
-
-    setLoanData(prev => ({
-      ...prev,
-      books: prev.books.map(b =>
-        b.BookId === BookId
-          ? {
-            ...b,
-            renewes: (b.renewes || 0) + 1,
-          }
-          : b
-      ),
-    }));
+  function handleEditLoan() {
+    if (validateError) return;
+    createReaderItem(loanData);
   }
-
-  function returnAllLoanBooks() {
-    setLoanData(prev => ({
-      ...prev,
-      books: prev.books.map(b => {
-
-        if (b.returnedDate) return b;
-
-        const now = new Date();
-        const formattedDate = now.toLocaleDateString();
-
-        return {
-          ...b,
-          returned: "Sí",
-          returnedDate: now,
-          returnDateText: formattedDate
-        };
-      })
-    }));
-  }
-
-
 
   const bookshelfBooksColumns = [
-    { header: 'Codigo', accessor: 'codeInventory' },
+    { header: 'Código', accessor: 'codeInventory' },
     { header: 'Título', accessor: 'title' },
     {
       header: 'Agregar',
-      accessor: 'add',
       render: (_, row) => (
         <button type='button' className="button-table" onClick={() => handleAddBook(row)}>
           <img src={AddBookIcon} alt="Agregar" />
@@ -251,68 +172,11 @@ export default function ReaderForm({ method, createReaderItem, loanSelected, err
     }
   ];
 
-  const columns = [
-    { header: 'Código del libro', accessor: 'codeInventory' },
-    { header: 'Título', accessor: 'title' },
-    ...(method === 'update'
-      ? [
-        { header: 'Devuelto', accessor: 'returned' },
-        { header: 'Fecha Devolución', accessor: 'returnDateText' },
-        { header: 'Renovado', accessor: 'renewes' },
-        {
-          header: 'Devolver',
-          accessor: 'return',
-          render: (_, row) => (
-            row.returnedDate
-              ? <span className="status-text">Ya devuelto</span>
-              : (
-                <button
-                  type='button'
-                  className="button-table"
-                  onClick={() => {
-                    setConfirmReturnPopup(true);
-                    setSelectedBook(row);
-                    returnLoanBook(row);
-                  }}
-                >
-                  <img src={ReturnIcon} alt="Devolver" />
-                </button>
-              )
-          )
-        },
-        {
-          header: 'Renovar',
-          accessor: 'renewe',
-          render: (_, row) => (
-            row.returnedDate
-              ? <span className="status-text">No disponible</span>
-              : (
-                <button
-                  type='button'
-                  className="button-table"
-                  onClick={() => {
-                    setConfirmRenewePopup(true);
-                    setSelectedBook(row);
-                    reneweLoanBook(row);
-                  }}
-                >
-                  <img src={ReneweIcon} alt="Renovar" />
-                </button>
-              )
-          )
-        }
-
-      ]
-      : [])
-  ];
-
-
   const lendBooksColumns = [
     { header: 'Código del libro', accessor: 'codeInventory' },
     { header: 'Título', accessor: 'title' },
     {
       header: 'Borrar',
-      accessor: 'delete',
       render: (_, row) => (
         <button type='button' className="button-table" onClick={() => handleDeleteBook(row)}>
           <img src={DeleteIcon} alt="Borrar" />
@@ -321,35 +185,7 @@ export default function ReaderForm({ method, createReaderItem, loanSelected, err
     }
   ];
 
-  const columnsPendingBooks = [
-    { header: 'Código de libro', accessor: 'codeInventory' },
-    { header: 'Título', accessor: 'title' },
-    { header: 'Fecha de retiro', accessor: 'retiredDate' },
-    { header: 'Fecha prevista', accessor: 'expectedDate' },
-    { header: 'Fecha de devolución', accessor: 'returnedDate' },
-    { header: 'Renovaciones', accessor: 'renewes' },
-    {
-      header: 'Devuelto', accessor: 'returned',
-      render: (value) => value ? 'Sí' : 'No'
-    }
-  ];
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    setLoanData(prev => {
-      const updated = { ...prev, [name]: value };
-      return updated;
-    });
-
-  };
-
-  const handleExtraData = (newData) => {
-    setLoanData(prev => {
-      const updated = { ...prev, ...newData };
-      return updated;
-    });
-  };
+  const columns = [{ header: 'Código del libro', accessor: 'codeInventory' }, { header: 'Título', accessor: 'title' }, ...(method === 'update' ? [{ header: 'Devuelto', accessor: 'returned' }, { header: 'Fecha Devolución', accessor: 'returnDateText' }, { header: 'Renovado', accessor: 'renewes' }, { header: 'Devolver', accessor: 'return', render: (_, row) => (row.returnedDate ? <span className="status-text">Ya devuelto</span> : (<button type='button' className="button-table" onClick={() => { setConfirmReturnPopup(true); setSelectedBook(row); returnLoanBook(row); }} > <img src={ReturnIcon} alt="Devolver" /> </button>)) }, { header: 'Renovar', accessor: 'renewe', render: (_, row) => (row.returnedDate ? <span className="status-text">No disponible</span> : (<button type='button' className="button-table" onClick={() => { setConfirmRenewePopup(true); setSelectedBook(row); reneweLoanBook(row); }} > <img src={ReneweIcon} alt="Renovar" /> </button>)) }] : [])];
 
   return (
     <div className='add-loan-form-container'>
@@ -396,13 +232,13 @@ export default function ReaderForm({ method, createReaderItem, loanSelected, err
                   <input
                     type='datetime-local'
                     name='returnedDate'
-                    
+
                     onChange={handleChange}
                   />
                 </div>
               )}
 
-    
+
             </div>
 
 
@@ -418,12 +254,12 @@ export default function ReaderForm({ method, createReaderItem, loanSelected, err
               }}
             />
 
-          <div className='reader-error'>{errorMessage && <p className="">{errorMessage}</p>}</div>
+            <div className='reader-error'>{errorMessage && <p className="">{errorMessage}</p>}</div>
 
             <div className='lend-books-container'>
               <h2 className='lend-books-title'>Libros a Prestar</h2>
 
-              <Table columns={columns} data={loanData.books}>
+              <Table columns={columns} data={loanData.books} totalItems={loanData.books.length} handleChangePage={() => { console.log("work") }} loading={loadingBooks} resetPageTrigger={resetPageTrigger} >
                 <div className='add-book-to-lend'>
                   <Btn
                     variant={'primary'}
@@ -495,13 +331,13 @@ export default function ReaderForm({ method, createReaderItem, loanSelected, err
               <div className='author-books-title'>
                 <h3>Libros cargados en la biblioteca</h3>
               </div>
-              <Table columns={bookshelfBooksColumns} data={books} />
+              <Table columns={bookshelfBooksColumns} data={libraryBooks} totalItems={totalLibraryBooks} handleChangePage={handleChangePage} loading={loadingBooks} resetPageTrigger={resetPageTrigger} />
             </div>
             <div className='author-books'>
               <div className='author-books-title'>
-                <h3>Libros de este autor</h3>
+                <h3>Libros para este lector</h3>
               </div>
-              <Table columns={lendBooksColumns} data={loanData.books} />
+              <Table columns={lendBooksColumns} data={loanData.books} totalItems={loanData.books.length} handleChangePage={() => { console.log("work") }} loading={loadingBooks} resetPageTrigger={resetPageTrigger} />
             </div>
           </div>
           {addBookMessage && (
@@ -511,8 +347,7 @@ export default function ReaderForm({ method, createReaderItem, loanSelected, err
           )}
         </>
       )}
-      
+
     </div>
   );
-
 }

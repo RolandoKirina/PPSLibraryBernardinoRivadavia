@@ -42,19 +42,6 @@ export const getAllReturns = async (req, res) => {
     }
 };
 
-export const getReturnsCount = async (req, res) => {
-    try {
-        const queryOptions = buildReturnFilters(req.query);
-
-        const count = await LoanService.getReturnsCount(queryOptions);
-
-        res.status(HTTP_STATUS.OK.code).send(count);
-    } catch (error) {
-        console.error(error);
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
-    }
-};
-
 export const getLoan = async (req, res) => {
     try {
         const { id } = req.params;

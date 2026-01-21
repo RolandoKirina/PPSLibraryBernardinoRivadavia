@@ -22,7 +22,8 @@ export const getOne = async (id) => {
     return await Employees.findByPk(id);
 };
 
-export const getOneByCode = async (code) => {
+export const getOneByCode = async (filters, code) => {
+    console.log(code);
     try {
         const employee = await Employees.findOne({
             where: { code },

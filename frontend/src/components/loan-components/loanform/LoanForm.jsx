@@ -56,12 +56,11 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
   const isUpdate = method === 'update';
 
   const partnerSource = isUpdate ? loanSelected : loanData;
-  const readerSource = isUpdate ? loanSelected : loanData;
 
   const [validateError, setValidateError] = useState('');
   const [selectedBook, setSelectedBook] = useState('');
 
-  const { data: employeeInfo, error: employeeError, loading: employeeLoading } = useEntityLookup(loanData.employeeCode, `${BASE_URL}/employees?code=`);
+  const { data: employeeInfo, error: employeeError, loading: employeeLoading } = useEntityLookup(loanData.employeeCode, `${BASE_URL}/employees/by-code/`);
 
   const [books, setBooks] = useState([]);
 
@@ -118,13 +117,11 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
     return rows;
   };
 
-
-
   async function handleChangePage(page) {
     const numberPage = Number(page);
     const lastItemIndex = numberPage * rowsPerPage;
 
-    if (lastItemIndex > books.length) {
+    if (books.length < totalLibraryBooks && lastItemIndex > books.length) {
       const newOffset = books.length;
 
       await getLibraryBooks(
@@ -136,9 +133,6 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
       );
     }
   }
-
-
-
 
   function handleAddNewLoan() {
     if (validateError) return;
@@ -484,6 +478,7 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
 
 
               <Table columns={lendBooksColumns} data={loanData.books} totalItems={loanData.books.length} handleChangePage={() => { console.log("work") }} loading={loadingBooks} resetPageTrigger={resetPageTrigger} >
+                
                 <div className='add-book-to-lend'>
                   <Btn
                     variant={'primary'}

@@ -9,7 +9,6 @@ router.get('/', LoanController.getAllLoans);
 router.get('/employee-count', LoanController.getLoansByEmployeeCount);
 router.get('/print-list/:option', LoanController.getLoanPrintList);
 router.get('/returns', LoanController.getAllReturns);
-router.get('/returns/count', LoanController.getReturnsCount);
 //agregue un middleware para evitar repetir codigo en la funcion validateid
 //router.get("/loan/:id", validateIdParam("loan id"), getLoan);
 router.get('/:id', validateIdParam("id"), LoanController.getLoan);

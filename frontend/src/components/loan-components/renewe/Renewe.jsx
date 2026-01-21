@@ -32,8 +32,16 @@ export default function Renewe() {
 
     const [books, setBooks] = useState([]);
 
+    const chunkSize = 100;
+    const rowsPerPage = 5;
+    const [offsetActual, setOffsetActual] = useState(0);
+    const [resetPageTrigger, setResetPageTrigger] = useState(0);
+
+
     const {
         items,
+        totalItems,
+        loading,
         getItems,
         createItem: createReneweItem,
         updateItem: updateReneweItem,
@@ -42,7 +50,11 @@ export default function Renewe() {
 
     useEffect(() => {
         const delay = setTimeout(() => {
-            getItems(filters);
+            setOffsetActual(0);
+
+            setResetPageTrigger(prev => prev + 1);
+
+            getItems({ ...filters, limit: chunkSize, offset: 0 });
         }, 500);
 
         return () => clearTimeout(delay);
@@ -54,13 +66,28 @@ export default function Renewe() {
         try {
             setPopupView('default'); // Solo se ejecuta tras obtener la respuesta
 
-            const data = await getItems(); // Espera a que se complete la llamada
+            setOffsetActual(0);
+
+            setResetPageTrigger(prev => prev + 1);
+
+            const data = await getItems({ ...filters, limit: chunkSize, offset: 0 });
             console.log("Datos recibidos:", data);
         } catch (error) {
             console.error("Error al refrescar items:", error);
         }
     }
 
+    async function handleChangePage(page) {
+        const numberPage = Number(page);
+        const lastItemIndex = numberPage * rowsPerPage;
+
+        if (items.length < totalItems && lastItemIndex > items.length) {
+            const newOffset = items.length;
+            console.log("newooffset: "+newOffset);
+
+            await getItems({ ...filters, limit: chunkSize, offset: newOffset });
+        }
+    }
 
     const renewespopup = [
         {
@@ -92,7 +119,7 @@ export default function Renewe() {
         columns = [
             { header: 'Número socio', accessor: 'partnerNumber' },
             { header: 'Socio', accessor: 'name' },
-            { header: 'Titulo libro', accessor: 'title' },
+            { header: 'Titulo libro', accessor: 'bookTitle' },
             {
                 header: 'Borrar',
                 accessor: 'delete',
@@ -220,6 +247,17 @@ export default function Renewe() {
                                         }
                                     />
                                 </div>
+
+                                <div className='input'>
+                                    <label>Numero de Socio</label>
+                                    <input
+                                        type='text'
+                                        value={filters.partnerNumber || ''}
+                                        onChange={(e) =>
+                                            setFilters((prev) => ({ ...prev, partnerNumber: e.target.value }))
+                                        }
+                                    />
+                                </div>
                             </div>
 
                         </div>
@@ -229,7 +267,7 @@ export default function Renewe() {
                                 <h2>Reservas
                                 </h2>
                             </div>
-                            <Table columns={columns} data={items}>
+                            <Table columns={columns} data={items} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger} >
                                 {auth.role === roles.admin && (
                                     <div className='add-renew-btn'>
                                         <Btn variant={'primary'} text={'Nueva reserva'} onClick={() => setPopupView('addRenewe')} icon={<img src={PlusIcon} alt={PlusIcon} />} />

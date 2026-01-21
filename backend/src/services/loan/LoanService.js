@@ -39,10 +39,6 @@ export const getAllReturns= async (filters) => {
     return await LoanRepository.getAllReturns(filters);
 }
 
-export const getReturnsCount= async (filters) => {
-    return await LoanRepository.getReturnsCount(filters);
-}
-
 export const getLoan = async (id) => {
     return await LoanRepository.getOne(id);
 }

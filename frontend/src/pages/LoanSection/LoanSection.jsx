@@ -261,7 +261,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
         {
             key: 'returnsPopup',
             title: 'Devoluciones de libros',
-            className: '',
+            className: 'addPopup',
             content: <Return />,
             close: () => setReturnsPopup(false),
             condition: returnsPopup

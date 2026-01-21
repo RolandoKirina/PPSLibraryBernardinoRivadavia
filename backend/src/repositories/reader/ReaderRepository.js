@@ -141,6 +141,7 @@ export const getOne = async (id) => {
   return await Reader.findByPk(id);
 };
 export const create = async (data) => {
+
   if (!data.books || data.books.length === 0) {
     throw new ValidationError("No se puede crear un lector sin libros");
   }
@@ -164,7 +165,7 @@ export const create = async (data) => {
   const transaction = await sequelize.transaction();
 
   try {
-    const employee = await EmployeesRepository.getOneByCode(data.employeeCode);
+    const employee = await EmployeesRepository.getOneByCode(null, data.employeeCode);
     if (!employee) {
       throw new ValidationError("Empleado no existe");
     }

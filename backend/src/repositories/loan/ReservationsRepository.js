@@ -6,40 +6,40 @@ import * as PartnerRepository from '../../repositories/partner/PartnerRepository
 import * as BookReservationsRepository from '../../repositories/loan/BookReservationsRepository.js';
 import { formatDate } from '../../utils/date/formatDate.js';
 
-export const getAll = async (filters) => {
+export const getAll = async (filters = {}) => {
   const {
-    whereReservation,
-    wherePartner,
-    whereBook,
+    whereReservation = {},
+    wherePartner = {},
+    whereBook = {},
     order,
     limit,
     offset
   } = filters;
 
-  const reservations = await Reservations.findAll({
+  const idRows = await Reservations.findAll({
     subQuery: false,
-    attributes: ['id', 'reservationDate', 'expectedDate'],
+    attributes: ['id'],
     where: Object.keys(whereReservation).length ? whereReservation : undefined,
-    required: Object.keys(whereReservation).length > 0,
     include: [
       {
         model: Partner,
         as: 'Partner',
-        attributes: ['partnerNumber', 'name', 'surname'],
-        where: Object.keys(wherePartner).length ? wherePartner : undefined,
-        required: Object.keys(wherePartner).length > 0
+        attributes: [],
+        required: Object.keys(wherePartner).length > 0,
+        where: Object.keys(wherePartner).length ? wherePartner : undefined
       },
       {
         model: BookReservations,
         as: 'BookReservations',
-        attributes: ['BookId', 'reservationId'],
+        attributes: [],
+        required: Object.keys(whereBook).length > 0,
         include: [
           {
             model: Book,
             as: 'Book',
-            attributes: ['title', 'codeInventory'],
-            where: Object.keys(whereBook).length ? whereBook : undefined,
-            required: Object.keys(whereBook).length > 0
+            attributes: [],
+            required: Object.keys(whereBook).length > 0,
+            where: Object.keys(whereBook).length ? whereBook : undefined
           }
         ]
       }
@@ -49,20 +49,76 @@ export const getAll = async (filters) => {
     offset
   });
 
-  const floatReservations = reservations.flatMap(res =>
+  const reservationIds = idRows.map(r => r.id);
+
+  if (!reservationIds.length) {
+    return { rows: [], count: 0 };
+  }
+
+  const count = await BookReservations.count({
+    where: {
+      reservationId: reservationIds
+    },
+    include: [
+      {
+        model: Book,
+        as: 'Book',
+        required: Object.keys(whereBook).length > 0,
+        where: Object.keys(whereBook).length ? whereBook : undefined
+      }
+    ]
+  });
+
+  const reservations = await Reservations.findAll({
+    subQuery: false,
+    attributes: ['id', 'reservationDate', 'expectedDate'],
+    where: {
+      id: reservationIds
+    },
+    include: [
+      {
+        model: Partner,
+        as: 'Partner',
+        attributes: ['partnerNumber', 'name', 'surname']
+      },
+      {
+        model: BookReservations,
+        as: 'BookReservations',
+        attributes: ['BookId', 'reservationId'],
+        required: Object.keys(whereBook).length > 0,
+        include: [
+          {
+            model: Book,
+            as: 'Book',
+            attributes: ['title', 'codeInventory'],
+            required: Object.keys(whereBook).length > 0,
+            where: Object.keys(whereBook).length ? whereBook : undefined
+          }
+        ]
+      }
+    ],
+    order
+  });
+
+  const rows = reservations.flatMap(res =>
     res.BookReservations.map(br => ({
       id: res.id,
       partnerNumber: res.Partner?.partnerNumber || '—',
-      name: res.Partner ? `${res.Partner.name} ${res.Partner.surname}` : '—',
-      surname: res.Partner ? `${res.Partner.surname}` : '—',
-      title: br.Book?.title || '—',
-      reservationDate: formatDate(res.reservationDate),
-      expectedDate: formatDate(res.expectedDate),
+      name: res.Partner
+        ? `${res.Partner.name} ${res.Partner.surname}`
+        : '—',
+      surname: res.Partner?.surname || '—',
+      bookTitle: br.Book?.title || '—',
       bookCode: br.Book?.codeInventory || '—',
+      reservationDate: formatDate(res.reservationDate),
+      expectedDate: formatDate(res.expectedDate)
     }))
   );
 
-  return floatReservations;
+  return {
+    rows,
+    count
+  };
 };
 
 
@@ -70,7 +126,8 @@ export const getOne = async (id) => {
   return await Reservations.findByPk(id);
 };
 
-export const create = async (reservation) => {;
+export const create = async (reservation) => {
+  ;
 
   if (!reservation.books || reservation.books.length === 0) {
     throw new Error("No se puede crear un préstamo sin libros");
@@ -95,7 +152,7 @@ export const create = async (reservation) => {;
     const newReservation = await Reservations.create(reservationData, { transaction });
     console.log(newReservation.id);
     console.log(reservation.books);
-  
+
     const reservationBooks = reservation.books.map(book => ({
       BookId: book.BookId,
       reservationId: newReservation.id,
