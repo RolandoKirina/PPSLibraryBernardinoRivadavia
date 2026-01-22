@@ -3,7 +3,7 @@ import ToggleIcon from '../../../assets/img/toggle-icon.svg';
 
 export default function Accordion({ title, isActive, onToggle, children }) {
   return (
-    <div className='accordion-container'>
+    <div className="accordion-container">
       <div className="dropdown-title" onClick={onToggle}>
         <h4>{title}</h4>
         <button type="button">
@@ -11,11 +11,9 @@ export default function Accordion({ title, isActive, onToggle, children }) {
         </button>
       </div>
 
-      {isActive && (
-        <div className="detailsInfoMenu">
-          {children}
-        </div>
-      )}
+      <div className={`detailsInfoMenu ${isActive ? "open" : "closed"}`}>
+        {children}
+      </div>
     </div>
   );
 }

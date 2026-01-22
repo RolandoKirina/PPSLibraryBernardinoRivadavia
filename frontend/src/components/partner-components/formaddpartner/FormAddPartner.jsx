@@ -1,267 +1,155 @@
 import Btn from "../../../components/common/btn/Btn.jsx";
-import SaveIcon from '../../../assets/img/save-icon.svg';
+import SaveIcon from "../../../assets/img/save-icon.svg";
 import Accordion from "../../generic/accordion/Accordion.jsx";
 import { useState } from "react";
 import "../formeditpartner/FormEditPartner.css";
-
+import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
 
 export default function FormAddPartner() {
-  const options = ["default"];
-  const [popupView, setPopupView] = useState(options[0]);
   const [activeAccordion, setActiveAccordion] = useState(null);
+  const entityManagerApi = useEntityManagerAPI("partners");
 
-  const [formValues, setFormValues] = useState({});
+  const [formValues, setFormValues] = useState({
+    name: "",
+    surname: "",
+    dateofbirthday: "",
+    typeofdni: "",
+    DNI: "",
+    dateofinscription: "",
+    profession: "",
+    presentedby: "",
+    maritalstatus: "",
+    category: "",
+    nacionality: "",
+    address: "",
+    phone: "",
+    locality: "",
+    postalcode: "",
+    collectionaddress: "",
+    collectiontime: ""
+  });
 
   const handleToggle = (id) => {
-    setActiveAccordion(prev => prev === id ? null : id);
+    setActiveAccordion((prev) => (prev === id ? null : id));
   };
-  
-const columnsPendingBooks = [
-  { header: 'Código de libro', accessor: 'bookCode' },
-  { header: 'Título', accessor: 'title' },
-  { header: 'Fecha de retiro', accessor: 'retiredDate' },
-  { header: 'Fecha prevista', accessor: 'expectedDate' },
-  { header: 'Fecha de devolución', accessor: 'returnedDate' },
-  { header: 'Renovaciones', accessor: 'renewes' },
-  { header: 'Devuelto', accessor: 'returned',  
-   render: (value) => value ? 'Sí' : 'No' }
-];
-
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-
-    // manejo de checkboxes múltiples
-    if (type === "checkbox") {
-      if (e.target.closest(".checkbox-group")) {
-        setFormValues((prev) => {
-          const current = prev[name] || [];
-          if (checked) {
-            return { ...prev, [name]: [...current, value] };
-          } else {
-            return { ...prev, [name]: current.filter((v) => v !== value) };
-          }
-        });
-      } else {
-        setFormValues((prev) => ({ ...prev, [name]: checked }));
-      }
-    } else {
-      setFormValues((prev) => ({ ...prev, [name]: value }));
-    }
+    const { name, value } = e.target;
+    setFormValues((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
-    Object.entries(formValues).forEach(([key, value]) => {
-      if (Array.isArray(value)) {
-        value.forEach((v) => formData.append(key, v));
-      } else {
-        formData.append(key, value);
-      }
-    });
-
-    console.log("FormData values:");
-    for (let [key, value] of formData.entries()) {
-      console.log(key, value);
+    try {
+      await entityManagerApi.createItem(formValues);
+      alert("Socio creado correctamente");
+      console.log("Enviado:", formValues);
+    } catch (error) {
+      console.error(error);
+      alert("Error al crear el socio");
     }
-
-    console.log("Raw formValues object:", formValues);
   };
-
-
-
-  
-  function renderView() {
-    switch (popupView) {
-   
-      default:
-        return (
-          <form onSubmit={handleSubmit}>
-            <Accordion
-              title="Datos personales"
-              isActive={activeAccordion === 'personaldata'}
-              onToggle={() => handleToggle('personaldata')}>
-
-              <div className="items-info-details-form-accordion">
-                <div className="form-details">
-                  <label htmlFor="name" className="title-name">Nombre <span className='required'>*</span></label>
-                  <input id="name" name="name" type="text" placeholder="Ingrese su nombre" onChange={handleChange} />
-                </div>
-
-                <div className="form-details">
-                  <label htmlFor="surname">Apellido <span className='required'>*</span></label>
-                  <input id="surname" name="surname" type="text" placeholder="Ingrese su apellido" onChange={handleChange} />
-                </div>
-
-
-              </div>
-
-              <div className="items-info-details-form-accordion">
-                <div className="form-details">
-                  <label htmlFor="dateofbirthday">Fecha de nacimiento <span className='required'>*</span></label>
-                  <input id="dateofbirthday" name="dateofbirthday" type="date" onChange={handleChange} />
-                </div>
-
-                <div className="form-details">
-                  <label htmlFor="typeofdni">Tipo de documento <span className='required'>*</span></label>
-                  <select id="typeofdni" name="typeofdni" defaultValue="" onChange={handleChange}>
-                    <option value="" disabled>Seleccione un tipo</option>
-                    <option value="dni">DNI</option>
-                    <option value="le">LE (Libreta de Enrolamiento)</option>
-                    <option value="lc">LC (Libreta Cívica)</option>
-                    <option value="pasaporte">Pasaporte</option>
-                    <option value="otro">Otro</option>
-                  </select>
-                </div>
-
-              </div>
-
-              <div className="items-info-details-form-accordion">
-                <div className="form-details">
-                  <label htmlFor="DNI">DNI <span className='required'>*</span></label>
-                  <input id="DNI" name="DNI" type="number" placeholder="Ingrese su DNI" onChange={handleChange} />
-                </div>
-
-                <div className="form-details">
-                  <label htmlFor="dateofinscription">Fecha de inscripción <span className='required'>*</span></label>
-                  <input id="dateofinscription" name="dateofinscription" type="date" onChange={handleChange} />
-                </div>
-              </div>
-
-              <div className="items-info-details-form-accordion">
-                <div className="form-details">
-                  <label htmlFor="profession">Profesión <span className='required'>*</span></label>
-                  <input id="profession" name="profession" type="text" placeholder="Ingrese su profesión" onChange={handleChange} />
-                </div>
-
-                <div className="form-details">
-                  <label htmlFor="presentedby">Presentado por <span className='required'>*</span></label>
-                  <input id="presentedby" name="presentedby" type="text" placeholder="Presentado por" onChange={handleChange} />
-                </div>
-              </div>
-
-              <div className="items-info-details-form-accordion">
-                <div className="form-details">
-                  <label htmlFor="maritalstatus">Estado civil <span className='required'>*</span></label>
-                  <select id="maritalstatus" name="maritalstatus" defaultValue="" onChange={handleChange}>
-                    <option value="" disabled>Seleccione un estado</option>
-                    <option value="soltero">Soltero/a</option>
-                    <option value="casado">Casado/a</option>
-                    <option value="divorciado">Divorciado/a</option>
-                    <option value="viudo">Viudo/a</option>
-                    <option value="union">Unión convivencial</option>
-                  </select>
-                </div>
-
-                <div className="form-details">
-                  <label htmlFor="category">Categoría <span className='required'>*</span></label>
-                  <select id="category" name="category" defaultValue="" onChange={handleChange}>
-                    <option value="" disabled>Seleccione una categoría</option>
-                    <option value="regular">Regular</option>
-                    <option value="honorario">Honorario</option>
-                    <option value="protector">Protector</option>
-                    <option value="socio">Socio</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="items-info-details-form-accordion">
-                <div className="form-details">
-                  <label htmlFor="nacionality">Nacionalidad <span className='required'>*</span></label>
-                  <input id="nacionality" name="nacionality" type="text" placeholder="Nacionalidad" onChange={handleChange} />
-                </div>
-              </div>
-            </Accordion>
-
-            <Accordion
-              title="Contacto particular"
-              isActive={activeAccordion === 'privatecontact'}
-              onToggle={() => handleToggle('privatecontact')}>
-
-              <div className="items-info-details-form-accordion">
-                <div className="form-details">
-                  <label htmlFor="address">Dirección <span className='required'>*</span></label>
-                  <input id="address" name="address" type="text" placeholder="Ingrese su dirección" onChange={handleChange} />
-                </div>
-
-                <div className="form-details">
-                  <label htmlFor="phone">Teléfono <span className='required'>*</span></label>
-                  <input id="phone" name="phone" type="tel" placeholder="Ingrese su teléfono" onChange={handleChange} />
-                </div>
-              </div>
-
-              <div className="items-info-details-form-accordion">
-                <div className="form-details">
-                  <label htmlFor="locality">Localidad <span className='required'>*</span></label>
-                  <select id="locality" name="locality" defaultValue="" onChange={handleChange}>
-                    <option value="" disabled>Seleccione una localidad</option>
-                    <option value="caba">Ciudad Autónoma de Buenos Aires</option>
-                    <option value="cordoba">Córdoba</option>
-                    <option value="rosario">Rosario</option>
-                    <option value="mendoza">Mendoza</option>
-                    <option value="la_plata">La Plata</option>
-                    <option value="san_miguel">San Miguel</option>
-                    <option value="mar_del_plata">Mar del Plata</option>
-                    <option value="tucuman">San Miguel de Tucumán</option>
-                  </select>
-                </div>
-
-                <div className="form-details">
-                  <label htmlFor="postalcode">Código postal <span className='required'>*</span></label>
-                  <input id="postalcode" name="postalcode" type="text" placeholder="Ingrese el código postal" onChange={handleChange} />
-                </div>
-              </div>
-            </Accordion>
-
-            <Accordion
-              title="Cobro"
-              isActive={activeAccordion === 'collection'}
-              onToggle={() => handleToggle('collection')}>
-
-              <div className="items-info-details-form-accordion">
-                <div className="form-details">
-                  <label htmlFor="collectionaddress">Direcciones de cobro <span className='required'>*</span></label>
-                  <input id="collectionaddress" name="collectionaddress" type="text" placeholder="Ingrese la dirección de cobro" onChange={handleChange} />
-                </div>
-
-                <div className="form-details">
-                  <label htmlFor="collectiontime">Hora preferida <span className='required'>*</span></label>
-                  <input id="collectiontime" name="collectiontime" type="datetime-local" placeholder="Ingrese su hora de cobro" onChange={handleChange} />
-                </div>
-              </div>
-            </Accordion>
-
-          
-            <Accordion
-              title="Guardar socio"
-              isActive={activeAccordion === 'savepartner'}
-              onToggle={() => handleToggle('savepartner')}>
-              <div className="btn-list-formeditpartner">
-                <div>
-                  <Btn
-                    text="Guardar"
-                    type="submit"
-                    icon={
-                      <div className="img-ico">
-                        <img src={SaveIcon} alt="Guardar" />
-                      </div>
-                    }
-                    variant="primary"
-                  />
-                </div>
-              </div>
-            </Accordion>
-
-          </form>
-        );
-    }
-  }
 
   return (
     <div className="form-edit-partner">
-      {renderView()}
+      <form onSubmit={handleSubmit}>
+
+        {/* DATOS PERSONALES */}
+        <Accordion
+          title="Datos personales"
+          isActive={activeAccordion === "personal"}
+          onToggle={() => handleToggle("personal")}
+        >
+          <div className="items-info-details-form-accordion">
+            <input name="name" value={formValues.name} onChange={handleChange} placeholder="Nombre" />
+            <input name="surname" value={formValues.surname} onChange={handleChange} placeholder="Apellido" />
+            <input type="date" name="dateofbirthday" value={formValues.dateofbirthday} onChange={handleChange} />
+
+            <select name="typeofdni" value={formValues.typeofdni} onChange={handleChange}>
+              <option value="">Tipo documento</option>
+              <option value="dni">DNI</option>
+              <option value="le">LE</option>
+              <option value="lc">LC</option>
+              <option value="pasaporte">Pasaporte</option>
+            </select>
+
+            <input name="DNI" value={formValues.DNI} onChange={handleChange} placeholder="DNI" />
+            <input type="date" name="dateofinscription" value={formValues.dateofinscription} onChange={handleChange} />
+
+            <input name="profession" value={formValues.profession} onChange={handleChange} placeholder="Profesión" />
+            <input name="presentedby" value={formValues.presentedby} onChange={handleChange} placeholder="Presentado por" />
+
+            <select name="maritalstatus" value={formValues.maritalstatus} onChange={handleChange}>
+              <option value="">Estado civil</option>
+              <option value="soltero">Soltero</option>
+              <option value="casado">Casado</option>
+              <option value="divorciado">Divorciado</option>
+              <option value="viudo">Viudo</option>
+            </select>
+
+            <select name="category" value={formValues.category} onChange={handleChange}>
+              <option value="">Categoría</option>
+              <option value="regular">Regular</option>
+              <option value="honorario">Honorario</option>
+            </select>
+
+            <input name="nacionality" value={formValues.nacionality} onChange={handleChange} placeholder="Nacionalidad" />
+          </div>
+        </Accordion>
+
+        {/* CONTACTO */}
+        <Accordion
+          title="Contacto"
+          isActive={activeAccordion === "contact"}
+          onToggle={() => handleToggle("contact")}
+        >
+          <input name="address" value={formValues.address} onChange={handleChange} placeholder="Dirección" />
+          <input name="phone" value={formValues.phone} onChange={handleChange} placeholder="Teléfono" />
+
+          <select name="locality" value={formValues.locality} onChange={handleChange}>
+            <option value="">Localidad</option>
+            <option value="caba">CABA</option>
+            <option value="cordoba">Córdoba</option>
+          </select>
+
+          <input name="postalcode" value={formValues.postalcode} onChange={handleChange} placeholder="Código postal" />
+        </Accordion>
+
+        {/* COBRO */}
+        <Accordion
+          title="Cobro"
+          isActive={activeAccordion === "collection"}
+          onToggle={() => handleToggle("collection")}
+        >
+          <input
+            name="collectionaddress"
+            value={formValues.collectionaddress}
+            onChange={handleChange}
+            placeholder="Dirección de cobro"
+          />
+          <input
+            type="datetime-local"
+            name="collectiontime"
+            value={formValues.collectiontime}
+            onChange={handleChange}
+          />
+        </Accordion>
+
+        {/* GUARDAR */}
+        <Accordion
+          title="Guardar socio"
+          isActive={activeAccordion === "save"}
+          onToggle={() => handleToggle("save")}
+        >
+          <Btn
+            text="Guardar"
+            type="submit"
+            icon={<img src={SaveIcon} alt="Guardar" />}
+          />
+        </Accordion>
+
+      </form>
     </div>
   );
 }

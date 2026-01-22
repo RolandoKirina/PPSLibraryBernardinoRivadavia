@@ -11,3 +11,12 @@
     flex-direction: column;
     align-items: center;
 }
+.closed{
+    display: none;
+}
+.open{
+    display: block;
+}
+
+
+.items-info-details-form-accordion { display: flex; flex-direction: column; gap: 1em; padding: 1em; width: 100%; } .items-info-details-form-accordion input, .items-info-details-form-accordion select { width: 100%; padding: 0.6em; font-size: 1em; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }

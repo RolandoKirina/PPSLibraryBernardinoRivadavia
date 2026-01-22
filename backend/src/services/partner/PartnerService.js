@@ -21,6 +21,9 @@ export const createPartner = async (data) => {
 };
 
 export const updatePartner = async (id, updates) => {
+    if (updates.idReason === 0) {
+    updates.idReason = null;
+    }
     const existing = await PartnerRepository.getOne(id);
     if (!existing) throw new Error("Partner not found");
     return await PartnerRepository.update(id, updates);
