@@ -10,20 +10,20 @@ export const getAllLoans = async (filters) => {
     return await LoanRepository.getAll(filters);
 }
 
-export const getLoanPrintList = async (option) => {
+export const getLoanPrintList = async (filters, option) => {
     let loans = [];
 
     switch(option) {
         case 'return': {
-            loans = await LoanRepository.getReturnPrintList();
+            loans = await LoanRepository.getReturnPrintList(filters);
             break;
         }
         case 'phone': {
-            loans = await LoanRepository.getPhonePrintList();
+            loans = await LoanRepository.getPhonePrintList(filters);
             break;
         }
         case 'partner': {
-            loans = await LoanRepository.getPartnerPrintList();
+            loans = await LoanRepository.getPartnerPrintList(filters);
             break;
         }
         default: {

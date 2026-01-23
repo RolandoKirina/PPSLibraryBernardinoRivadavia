@@ -87,7 +87,7 @@ export const columnsByType = {
   ],
   LostBooks: [
     { header: 'Fecha perdida', accessor: 'lossDate' },
-    { header: 'Código libro', accessor: 'BookId' },
+    { header: 'Código libro', accessor: 'bookCode' },
     { header: 'Titulo', accessor: 'title' },
     { header: 'Número Socio', accessor: 'partnerNumber' },
     { header: 'Nombre', accessor: 'name' },

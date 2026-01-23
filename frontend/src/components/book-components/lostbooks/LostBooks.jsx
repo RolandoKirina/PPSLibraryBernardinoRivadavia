@@ -5,9 +5,19 @@ import GenerateListPopup from '../../common/generatelistpopup/GenerateListPopup'
 import { dataByType, columnsByType } from '../../../data/generatedlist/generatedList';
 
 export default function LostBooks() {
+  const BASE_URL = "http://localhost:4000/api/v1";
   const [formValues, setFormValues] = useState({});
   const [error, setError] = useState(null);
   const [lostBooksData, setLostBooksData] = useState([]);
+
+  const chunkSize = 100;
+  const rowsPerPage = 35;
+  const [offsetActual, setOffsetActual] = useState(0);
+  const [resetPageTrigger, setResetPageTrigger] = useState(0);
+
+  const [items, setItems] = useState([]);
+  const [totalItems, setTotalItems] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -16,15 +26,22 @@ export default function LostBooks() {
     const values = {};
 
     formData.forEach((value, key) => {
-      values[key] = value;
+      if (value !== '') values[key] = value;
     });
 
     setFormValues(values);
-    getLostBooks(values);
+
+    setItems([]);
+    setOffsetActual(0);
+    setResetPageTrigger(prev => prev + 1);
+
+    getLostBooks(values, { limit: chunkSize, offset: 0 });
   };
 
-  async function getLostBooks(values) {
+  async function getLostBooks(values, { limit, offset }, append = false) {
     try {
+      setLoading(true);
+
       const params = new URLSearchParams();
 
       if (values.lossDateFrom) params.append("lossStartDate", values.lossDateFrom);
@@ -32,23 +49,47 @@ export default function LostBooks() {
       if (values.orderBy) params.append("orderBy", values.orderBy);
       if (values.orderDirection) params.append("direction", values.orderDirection);
 
-      const url = `http://localhost:4000/api/v1/books/lost-book?${params.toString()}`;
-      console.log("URL generada:", url);
+      params.append("limit", limit);
+      params.append("offset", offset);
+
+      const url = `${BASE_URL}/books/lostBooks?${params.toString()}`;
 
       const res = await fetch(url);
 
       if (!res.ok) {
-        const errorData = await res.json().catch(() => ({ msg: "Error inesperado del servidor" }));
+        const errorData = await res.json().catch(() => ({ msg: "Error del servidor" }));
         setError(errorData.msg || "Error desconocido");
         return;
       }
 
-      const lostBooks = await res.json();
-      
-      setLostBooksData(lostBooks);
+      const data = await res.json();
 
+      setItems(prev =>
+        append ? [...prev, ...data.rows] : data.rows
+      );
+
+      setTotalItems(data.count);
     } catch (err) {
       setError("No se pudo conectar con el servidor");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleChangePage(page) {
+    const numberPage = Number(page);
+    const lastItemIndex = numberPage * rowsPerPage;
+
+    if (items.length < totalItems && lastItemIndex > items.length) {
+      const newOffset = items.length;
+
+      await getLostBooks(
+        formValues,
+        { limit: chunkSize, offset: newOffset },
+        true
+      );
+
+      setOffsetActual(newOffset);
     }
   }
 
@@ -59,7 +100,7 @@ export default function LostBooks() {
           <div className='lost-books-filters'>
             <form onSubmit={handleSubmit}>
               <div className='lost-books-filter-option'>
-                
+
                 <div className='lost-books-filter-title'>
                   <h3>Fecha de Perdida</h3>
                 </div>
@@ -123,10 +164,15 @@ export default function LostBooks() {
 
         <div className='preview-list-container'>
           <GenerateListPopup
-            dataByType={lostBooksData}
+            dataByType={items}
+            totalItems={totalItems}
             columnsByType={columnsByType["LostBooks"]}
             typeList={'LostBooks'}
             title={formValues.listTitle}
+            handleChangePage={handleChangePage}
+            loading={loading}
+            resetPageTrigger={resetPageTrigger}
+            rowsPerPage={rowsPerPage}
           />
         </div>
       </div>

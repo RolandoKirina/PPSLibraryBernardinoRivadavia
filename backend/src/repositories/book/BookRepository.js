@@ -9,6 +9,8 @@ import { fn, col, literal } from "sequelize";
 import Op from "sequelize";
 import sequelize from "../../configs/database.js";
 import * as BookAuthorRepository from '../author/BookAuthorRepository.js';
+import { formatDate } from "../../utils/date/formatDate.js";
+
 export const getAll = async (filters) => {
   const {
     whereAuthor,
@@ -156,12 +158,6 @@ export const getAllPendingBooks = async (partnerNumber, filters = {}) => {
     offset
   });
 
-  console.log(count);
-  console.log(count);
-  console.log(count);
-  console.log(count);
-  console.log(count);
-
   const bookIds = idRows.map(b => b.BookId);
 
   if (bookIds.length === 0) {
@@ -221,7 +217,7 @@ export const getAllPendingBooks = async (partnerNumber, filters = {}) => {
     typeName: book.BookType?.typeName ?? '',
     loanId: book.BookLoans?.[0]?.Loan?.id ?? null,
     renewes: book.BookLoans?.[0]?.reneweAmount ?? 0,
-    returnedDate: book.BookLoans?.[0]?.returnedDate,
+    returnedDate: formatDate(book.BookLoans?.[0]?.returnedDate),
     returned: book.BookLoans?.[0]?.returnedDate ? 'Si' : 'No',
     returnDateText: book.BookLoans?.[0]?.returnedDate || 'Sin fecha'
   }));
@@ -372,7 +368,7 @@ export const getAllBooksOfLoan = async (id, filters = {}) => {
     typeName: book.BookType?.typeName ?? "",
     loanId: book.BookLoans?.[0]?.Loan?.id ?? null,
     renewes: book.BookLoans?.[0]?.reneweAmount ?? 0,
-    returnedDate: book.BookLoans?.[0]?.returnedDate ?? null,
+    returnedDate: formatDate(book.BookLoans?.[0]?.returnedDate),
     returned: book.BookLoans?.[0]?.returnedDate ? "Si" : "No",
     returnDateText: book.BookLoans?.[0]?.returnedDate ?? "Sin fecha"
   }));
@@ -382,12 +378,60 @@ export const getAllBooksOfLoan = async (id, filters = {}) => {
     count
   };
 };
-
 export const getLostBooks = async ({ whereBooks, order, limit, offset }) => {
-
   try {
-    const books = await Book.findAll({
+    const count = await Book.count({
       where: whereBooks,
+      distinct: true,
+      col: "id",
+      include: [
+        {
+          model: LoanBook,
+          as: "BookLoans",
+          required: true,
+          include: [
+            {
+              model: Loan,
+              as: "Loan",
+              required: true
+            }
+          ]
+        }
+      ]
+    });
+
+    const bookIds = await Book.findAll({
+      where: whereBooks,
+      attributes: ["id"],
+      include: [
+        {
+          model: LoanBook,
+          as: "BookLoans",
+          required: true,
+          include: [
+            {
+              model: Loan,
+              as: "Loan",
+              required: true
+            }
+          ]
+        }
+      ],
+      order,
+      limit,
+      offset,
+      subQuery: false,
+      raw: true
+    });
+
+    const ids = bookIds.map(b => b.id);
+
+    if (!ids.length) {
+      return { rows: [], count };
+    }
+
+    const books = await Book.findAll({
+      where: { id: ids },
       include: [
         {
           model: LoanBook,
@@ -399,7 +443,7 @@ export const getLostBooks = async ({ whereBooks, order, limit, offset }) => {
               include: [
                 {
                   model: Partner,
-                  as: "Partner",
+                  as: "Partner"
                 }
               ]
             }
@@ -411,20 +455,18 @@ export const getLostBooks = async ({ whereBooks, order, limit, offset }) => {
           attributes: ["typeName"]
         }
       ],
-      order,
-      limit,
-      offset
+      order
     });
 
-    const lostbooks = books.map(book => {
+    const rows = books.map(book => {
       const firstLoan = book.BookLoans?.[0]?.Loan;
       const partner = firstLoan?.Partner;
 
-
       return {
-        BookId: book.BookId,
+        BookId: book.id,
         title: book.title,
-        lossDate: book.lossDate,
+        bookCode: book.codeInventory,
+        lossDate: formatDate(book.lossDate),
         typeName: book.BookType?.typeName || '',
         partnerNumber: partner?.partnerNumber || null,
         surname: partner?.surname || '',
@@ -434,7 +476,11 @@ export const getLostBooks = async ({ whereBooks, order, limit, offset }) => {
       };
     });
 
-    return lostbooks;
+    return {
+      rows,
+      count
+    };
+
   } catch (error) {
     console.error("Error en getLostBooks Repository:", error);
     throw error;
@@ -495,19 +541,20 @@ export const getAllBooksOfAuthor = async (id, filter) => {
   return mappedBooks;
 };
 
-/*
 export const getRanking = async (filters) => {
   const {
     whereBooks,
     whereRetiredDate,
-    whereByStatus,
+    orderBy = "Cantidad",
+    direction = "DESC",
     limit,
     offset
   } = filters;
 
-  const books = await Book.findAll({
+  const countResult = await Book.count({
     where: whereBooks,
-    subQuery: false,
+    distinct: true,
+    col: "id",
     include: [
       {
         model: LoanBook,
@@ -520,66 +567,14 @@ export const getRanking = async (filters) => {
             as: "Loan",
             required: true,
             attributes: [],
-            where: whereRetiredDate,
-            include: [
-              {
-                model: Partner,
-                as: "Partner",
-                attributes: [],
-                required: true,
-                where: whereByStatus
-              }
-            ]
-          }
-        ]
-      },
-      {
-        model: BookAuthor,
-        as: "BookAuthors",
-        required: true,
-        attributes: [],
-        include: [
-          {
-            model: Authors,
-            as: "Author",
-            required: true,
-            attributes: ["name"]
+            where: whereRetiredDate
           }
         ]
       }
-    ],
-    attributes: [
-      ["id", "BookId"],
-      ["codigo", "codeInventory"],
-      ["titulo", "title"],
-      ["Cod_rcdu", "codeCDU"],
-      [fn("COUNT", col("BookLoans.LoanBookId")), "Cantidad"]
-    ],
-    group: [
-      "Book.id",
-      "Book.codigo",
-      "Book.titulo",
-      "Book.Cod_rcdu"
-    ],
-    order: [[literal('"Cantidad"'), "DESC"]],
-    limit,
-    offset
+    ]
   });
 
-  return books;
-};
-*/
-export const getRanking = async (filters) => {
-  const {
-    whereBooks,
-    whereRetiredDate,
-    orderBy,
-    direction,
-    limit,
-    offset
-  } = filters;
-
-  const books = await Book.findAll({
+  const rows = await Book.findAll({
     where: whereBooks,
     subQuery: false,
     include: [
@@ -612,8 +607,12 @@ export const getRanking = async (filters) => {
     offset
   });
 
-  return books;
+  return {
+    rows,
+    count: countResult
+  };
 };
+
 
 export const getPartnersAndBooks = async (filters) => {
   const { whereLoan } = filters;

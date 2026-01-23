@@ -4,7 +4,7 @@ import Btn from '../../common/btn/Btn';
 import printIcon from '../../../assets/img/print-icon.svg';
 import { titlesByType } from '../../../data/generatedlist/generatedList';
 
-export default function GenerateListPopup({ dataByType, columnsByType, typeList, title, feeDates }) {
+export default function GenerateListPopup({ dataByType, totalItems, columnsByType, typeList, title, feeDates, handleChangePage, loading, resetPageTrigger, rowsPerPage }) {
 
     return (
         <>
@@ -28,7 +28,7 @@ export default function GenerateListPopup({ dataByType, columnsByType, typeList,
                                   {/* añadir fecha y hora y num pagina */}
 
                                 {dataByType.length > 0 ? (
-                                        <Table columns={columnsByType} data={dataByType} isPrintList={true} rowsPerPage={15}>
+                                        <Table columns={columnsByType} data={dataByType} isPrintList={true} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger} rowsPerPage={rowsPerPage}>
 
 
                                             {typeList === 'TypeOneFees' && (
