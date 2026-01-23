@@ -8,7 +8,6 @@ export default function LostBooks() {
   const BASE_URL = "http://localhost:4000/api/v1";
   const [formValues, setFormValues] = useState({});
   const [error, setError] = useState(null);
-  const [lostBooksData, setLostBooksData] = useState([]);
 
   const chunkSize = 100;
   const rowsPerPage = 35;

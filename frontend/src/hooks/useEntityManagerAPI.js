@@ -5,7 +5,7 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
   const [totalItems, setTotalItems] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  const [others, setOthers] = useState(null);
 
   const getItems = async (filters = {}, append = false) => {
     setLoading(true);
@@ -34,7 +34,7 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
 
       console.log(`${baseUrl}/${entityName}${query}`);
 
-      const { rows, count } = await res.json();
+      const { rows, count, others } = await res.json();
 
       setTotalItems(count ?? 0);
 
@@ -42,6 +42,8 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
         append ? [...prev, ...(rows || [])] : (rows || [])
       );
 
+      setOthers(others);
+      
       return rows || [];
     } catch (err) {
       setError(err.message);
@@ -154,6 +156,7 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
     totalItems,
     loading,
     error,
+    others,
     getItems,
     getItem,
     createItem,

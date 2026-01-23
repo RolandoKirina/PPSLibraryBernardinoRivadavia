@@ -9,8 +9,8 @@ export const getUnpaidFeesByPartner = async (id, filters) => {
 };
 
 
-export const getAllFees = async (filters) => {
-    const fees = await FeeRepository.getAll(filters);
+export const getAllFees = async (filters, listType) => {
+    const fees = await FeeRepository.getAll(filters, listType);
     return fees;
 };
 

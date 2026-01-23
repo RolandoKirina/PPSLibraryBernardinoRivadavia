@@ -97,11 +97,11 @@ export const columnsByType = {
   ],
 
   TypeOneFees: [
-    { header: 'Número de Socio', accessor: 'memberNumber' },
-    { header: 'Apellido', accessor: 'lastName' },
-    { header: 'Nombre', accessor: 'firstName' },
+    { header: 'Número de Socio', accessor: 'partnerNumber' },
+    { header: 'Apellido', accessor: 'surname' },
+    { header: 'Nombre', accessor: 'name' },
     { header: 'Monto', accessor: 'amount' },
-    { header: 'Cantidad de Cuotas', accessor: 'installments' }
+    { header: 'Cantidad de Cuotas', accessor: 'amountFeesPerPartner' }
   ],
   //*este*/
   TypeTwoFees: [

@@ -28,7 +28,8 @@ export const getUnpaidFeesByPartner = async (req, res) => {
 export const getAllFees = async (req, res) => {
     try {
         const queryOptions = buildFeeFilters(req.query);
-        const fees = await FeeService.getAllFees(queryOptions);
+        const listType = req.query.listType;
+        const fees = await FeeService.getAllFees(queryOptions, listType);
         res.status(HTTP_STATUS.OK.code).json(fees);
     } catch (e) {
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });

@@ -6,33 +6,67 @@ import { useState } from 'react';
 import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
 
 export default function FeesBetweenDates() {
-    const [formValues, setFormValues] = useState({});
+    const [formValues, setFormValues] = useState({
+        listType: 'TypeOneFees'
+    });
 
-    const { items, getItems, getItem, createItem, updateItem, deleteItem } = useEntityManagerAPI("fees");
+    const chunkSize = 100;
+    const rowsPerPage = 35;
+    const [offsetActual, setOffsetActual] = useState(0);
+    const [resetPageTrigger, setResetPageTrigger] = useState(0);
+
+    const { items, getItems, others, getItem, createItem, updateItem, deleteItem } = useEntityManagerAPI("fees");
+    const [totalItems, setTotalItems] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const data = {};
-            formData.forEach((value, key) => {
-                data[key] = value;
-            });
-            setFormValues(data);
-            console.log("Formulario:", data);
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const data = {};
+        formData.forEach((value, key) => {
+            if (value !== '') data[key] = value;
+        });
 
-            try {
-                const filteredItems = await getItems({
-                    beforeDate: data.beforeDate,
-                    afterDate: data.afterDate,
-                    listType: data.listType
-                });
-                
-                console.log("Items filtrados:", filteredItems);
-            } catch (err) {
-                console.error("Error al traer cuotas filtradas:", err);
-            }
+        if (!data.listType) {
+            data.listType = 'TypeOneFees';
+        }
+
+        setFormValues(data);
+
+        setOffsetActual(0);
+        setResetPageTrigger(prev => prev + 1);
+
+        try {
+            const filteredItems = await getItems({
+                beforeDate: data.beforeDate,
+                afterDate: data.afterDate,
+                listType: data.listType,
+                limit: chunkSize,
+                offset: 0
+            });
+
+            console.log("Items filtrados:", filteredItems);
+        } catch (err) {
+            console.error("Error al traer cuotas filtradas:", err);
+        }
     };
-    
+
+    async function handleChangePage(page) {
+        const numberPage = Number(page);
+        const lastItemIndex = numberPage * rowsPerPage;
+
+        if (items.length < totalItems && lastItemIndex > items.length) {
+            const newOffset = items.length;
+
+            await getItems(
+                formValues,
+                { limit: chunkSize, offset: newOffset },
+                true
+            );
+
+            setOffsetActual(newOffset);
+        }
+    }
 
     return (
         <>
@@ -80,18 +114,39 @@ export default function FeesBetweenDates() {
                     </div>
                 </div>
 
+                {/* original*/}
                 <div className='preview-list-container'>
                     <GenerateListPopup
                         dataByType={items}
-                        columnsByType={columnsByType}
+                        totalItems={totalItems}
+                        columnsByType={columnsByType[formValues.listType]}
                         typeList={formValues.listType ? formValues.listType : 'TypeOneFees'}
                         title={formValues.listTitle}
                         feeDates={{
                             beforeDate: formValues.beforeDate,
                             afterDate: formValues.afterDate
                         }}
+                        handleChangePage={handleChangePage}
+                        loading={loading}
+                        resetPageTrigger={resetPageTrigger}
+                        rowsPerPage={rowsPerPage}
+                        others={others}
                     />
                 </div>
+                {/* 
+                <div className='preview-list-container'>
+                    <GenerateListPopup
+                        dataByType={items}
+                        totalItems={totalItems}
+                        columnsByType={columnsByType["LostBooks"]}
+                        typeList={'LostBooks'}
+                        title={formValues.listTitle}
+                        handleChangePage={handleChangePage}
+                        loading={loading}
+                        resetPageTrigger={resetPageTrigger}
+                        rowsPerPage={rowsPerPage}
+                    />
+                </div> */}
             </div>
 
         </>
