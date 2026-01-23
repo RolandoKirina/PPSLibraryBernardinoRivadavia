@@ -487,59 +487,97 @@ export const getLostBooks = async ({ whereBooks, order, limit, offset }) => {
   }
 };
 
+export const getAllBooksOfAuthor = async (id, filters = {}) => {
+  const { limit, offset, filter } = filters;
 
-export const getAllBooksOfAuthor = async (id, filter) => {
-  const books = await Book.findAll({
-    attributes: ["BookId", "title", "codeInventory", "codeCDU", "codeLing", "codeClasification"],
+  const { rows: idRows, count } = await Book.findAndCountAll({
+    attributes: ["BookId"],
     include: [
       {
         model: BookAuthor,
-        as: 'BookAuthors',
-        attributes: ['bookAuthorId', 'position'],
+        as: "BookAuthors",
+        required: true,
+        attributes: [],
+        include: [
+          {
+            model: Authors,
+            as: "Author",
+            attributes: [],
+            where: { id }
+          }
+        ]
+      }
+    ],
+    limit,
+    offset,
+    distinct: true,
+    subQuery: false,
+    raw: true
+  });
+
+  const ids = idRows.map(r => r.BookId);
+
+  if (!ids.length) {
+    return { rows: [], count };
+  }
+
+  const books = await Book.findAll({
+    where: { BookId: ids },
+    attributes: [
+      "BookId",
+      "title",
+      "codeInventory",
+      "codeCDU",
+      "codeLing",
+      "codeClasification"
+    ],
+    include: [
+      {
+        model: BookAuthor,
+        as: "BookAuthors",
+        attributes: ["position"],
         required: true,
         include: [
           {
             model: Authors,
-            as: 'Author',
-            attributes: ['name'],
+            as: "Author",
+            attributes: ["name"],
             where: { id }
           }
         ]
       },
       {
         model: LoanBook,
-        as: 'BookLoans',
-        attributes: ['BookId', 'loanId'],
+        as: "BookLoans",
         required: false,
-        where: {
-          returnedDate: null
-        },
-        include: [{ model: Loan, as: 'Loan', attributes: ['id'] }]
+        attributes: ["returnedDate"],
+        where: { returnedDate: null }
       }
-    ]
+    ],
+    order: [["BookId", "ASC"]]
   });
 
-  const mappedBooks = books.map(book => {
-    const json = book.toJSON();
+  let rows = books.map(book => ({
+    BookId: book.BookId,
+    codeInventory: book.codeInventory || "",
+    title: book.title || "",
+    position: book.BookAuthors?.[0]?.position ?? "",
+    codeClasification: book.codeClasification || "",
+    codeCDU: book.codeCDU || "",
+    codeLing: book.codeLing || "",
+    isBorrowed: book.BookLoans?.length > 0
+  }));
 
-    return {
-      BookId: json.BookId || '',
-      codeInventory: json.codeInventory || '',
-      title: json.title || '',
-      position: json.BookAuthors?.[0]?.position ?? '', // puede ser null
-      codeClasification: json.codeClasification || '',
-      codeCDU: json.codeCDU || '',
-      codeLing: json.codeLing || '',
-      isBorrowed: json.BookLoans?.length > 0
-    };
-  });
-
-  if (filter === 'borrowed') {
-    return mappedBooks.filter(book => book.isBorrowed);
+  if (filter === "borrowed") {
+    rows = rows.filter(book => book.isBorrowed);
   }
 
-  return mappedBooks;
+  return {
+    rows,
+    count
+  };
 };
+
 
 export const getRanking = async (filters) => {
   const {

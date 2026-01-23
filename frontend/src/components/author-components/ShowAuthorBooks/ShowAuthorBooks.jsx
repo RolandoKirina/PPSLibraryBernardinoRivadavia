@@ -13,17 +13,15 @@ export default function ShowAuthorBooks({ authorSelected }) {
     typeName: '', // solo esto, sin materialType
   });
 
-
+  const [resetPageTrigger, setResetPageTrigger] = useState(0);
 
   // Cargar libros del autor seleccionado
   useEffect(() => {
     const fetchAllBooksFromAuthor = async () => {
-        console.log(authorSelected);
       const authorSelectedId = authorSelected.id;
       const booksFromAuthor = await getBooks(authorSelectedId);
-      console.log(booksFromAuthor);
-      setAuthorBooks(booksFromAuthor);
-      setFilteredBooks(booksFromAuthor);
+      setAuthorBooks(booksFromAuthor.rows);
+      setFilteredBooks(booksFromAuthor.rows);
     };
     fetchAllBooksFromAuthor();
   }, [authorSelected]);
@@ -74,6 +72,8 @@ export default function ShowAuthorBooks({ authorSelected }) {
     }
 
     setFilteredBooks(filtered);
+
+    setResetPageTrigger(prev => prev + 1);
   }, [filters, authorBooks]);
 
   const columns = [
@@ -119,7 +119,7 @@ export default function ShowAuthorBooks({ authorSelected }) {
 
       <div className='lend-books-container'>
         <h2 className='lend-books-title'>Libros a Prestar</h2>
-        <Table columns={columns} data={filteredBooks} />
+        <Table columns={columns} data={filteredBooks} totalItems={filteredBooks.length} resetPageTrigger={resetPageTrigger} />
       </div>
     </div>
   );

@@ -25,72 +25,119 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem, 
     const [selected, setSelected] = useState(null);
     const BASE_URL = "http://localhost:4000/api/v1";
     const [popupView, setPopupView] = useState('default');
+
+    const chunkSize = 100;
+    const rowsPerPage = 5;
+    const [offsetActual, setOffsetActual] = useState(0);
+    const [resetPageTrigger, setResetPageTrigger] = useState(0);
+
     const [authorData, setAuthorData] = useState({
         name: '',
         nationality: '',
         books: []
     });
     const [books, setBooks] = useState([]);
+
+    const [libraryBooks, setLibraryBooks] = useState([]);
+    const [authorBooksFetched, setAuthorBooksFetched] = useState([]);
+    const [totalLibraryBooks, setTotalLibraryBooks] = useState(0);
+
+    const [loadingBooks, setLoadingBooks] = useState(false);
+
+
     const [book, setBook] = useState({});
     const [allAuthorBooks, setAllAuthorBooks] = useState([]);
 
     //const [errorMessage, setErrorMessage] = useState("");
 
+    // useEffect(() => {
+    //     getBooks();
+
+    //     if (method === 'update' && authorSelected?.id) {
+    //         const fetchAllBooksFromAuthor = async () => {
+
+    //             const authorSelectedId = authorSelected.id;
+
+    //             const booksFromAuthor = await getBooks(authorSelectedId);
+
+    //             setAuthorData({
+    //                 name: authorSelected.name,
+    //                 nationality: authorSelected.nationality,
+    //                 books: booksFromAuthor
+    //             });
+
+
+    //         }
+
+    //         fetchAllBooksFromAuthor();
+
+    //     }
+
+    // }, []);
+
     useEffect(() => {
-        getBooks();
+        getLibraryBooks({ limit: chunkSize, offset: 0 });
 
         if (method === 'update' && authorSelected?.id) {
-            const fetchAllBooksFromAuthor = async () => {
+            getAuthorBooks(authorSelected.id, { limit: chunkSize, offset: 0 })
+                .then(rows => {
+                    setAuthorData({
+                        name: authorSelected.name,
+                        nationality: authorSelected.nationality,
+                        books: rows
+                    });
 
-                const authorSelectedId = authorSelected.id;
-
-                const booksFromAuthor = await getBooks(authorSelectedId);
-
-                setAuthorData({
-                    name: authorSelected.name,
-                    nationality: authorSelected.nationality,
-                    books: booksFromAuthor
+                    console.log(rows);
+                    setAllAuthorBooks(rows);
                 });
-
-
-            }
-
-            fetchAllBooksFromAuthor();
-
         }
-
     }, []);
 
-    const getBooks = async (authorSelectedId, filter = null) => {
-        try {
-            let url = authorSelectedId
-                ? `${BASE_URL}/books/withFields/author/${authorSelectedId}`
-                : `${BASE_URL}/books/withFields`;
+    const getLibraryBooks = async (filters = {}, append = false) => {
+        setLoadingBooks(true);
 
-            // Agregar query param para filtro si existe
-            if (filter) {
-                url += `?filter=${filter === 'Prestados' ? 'borrowed' : 'all'}`;
-            }
+        const queryParams = new URLSearchParams(filters).toString();
 
+        const res = await fetch(`${BASE_URL}/books/withFields?${queryParams}`);
+        const { rows, total } = await res.json();
 
-            const response = await fetch(url);
-            if (!response.ok) throw new Error("Error al obtener libros");
-            const data = await response.json();
+        setTotalLibraryBooks(total);
+        setLibraryBooks(prev => append ? [...prev, ...rows] : rows);
 
-            if (!authorSelectedId) {
-                setBooks(data); // libros generales
-            } else {
-                setAuthorData(prev => ({ ...prev, books: data })); // actualizar libros del autor
-            }
-
-            return data;
-        } catch (error) {
-            console.error(error);
-            return [];
-        }
+        setLoadingBooks(false);
+        return rows;
     };
 
+    const getAuthorBooks = async (authorId, filters = {}) => {
+        setLoadingBooks(true);
 
+        const queryParams = new URLSearchParams(filters).toString();
+
+        const res = await fetch(`${BASE_URL}/books/withFields/author/${authorId}?${queryParams}`);
+        const { rows } = await res.json();
+
+        setAuthorBooksFetched(rows);
+
+        setLoadingBooks(false);
+        return rows;
+    };
+
+    async function handleChangePage(page) {
+        const numberPage = Number(page);
+        const lastItemIndex = numberPage * rowsPerPage;
+
+        if (books.length < totalLibraryBooks && lastItemIndex > books.length) {
+            const newOffset = books.length;
+
+            await getLibraryBooks(
+                {
+                    limit: chunkSize,
+                    offset: newOffset
+                },
+                true
+            );
+        }
+    }
 
 
     function handleAuthorChange(e) {
@@ -105,37 +152,34 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem, 
     }
 
     function handleAddAuthorBook(positionData) {
-                // Validar que se ingresó algo
-                if (!positionData.position) return;
-        
-                const position = parseInt(positionData.position, 10);
-        
-                // Validar que sea un número válido
-                if (isNaN(position) || position < 1) {
-                    alert('La posición debe ser un número válido mayor a 0');
-                    return;
-                }
+        // Validar que se ingresó algo
+        if (!positionData.position) return;
 
-                setPositionPopup(false);
-        
-                setAuthorData(prev => {
-                    const exists = prev.books.some(b => b.BookId === book.BookId);
-                    if (exists) return prev;
-        
-                    const bookWithPosition = { ...book, position };
-        
-                    const newBooks = [...prev.books, bookWithPosition];
-                
-                    // actualizar copia original SOLO cuando se modifica realmente
-                    if (method === 'add') {
-                        setAllAuthorBooks(newBooks);
-                    }
-        
-                    return {
-                        ...prev,
-                        books: newBooks
-                    };
-                });
+        const position = parseInt(positionData.position, 10);
+
+        // Validar que sea un número válido
+        if (isNaN(position) || position < 1) {
+            alert('La posición debe ser un número válido mayor a 0');
+            return;
+        }
+
+        setPositionPopup(false);
+
+        setAuthorData(prev => {
+            const exists = prev.books.some(b => b.BookId === book.BookId);
+            if (exists) return prev;
+
+            const bookWithPosition = { ...book, position };
+
+            const newBooks = [...prev.books, bookWithPosition];
+
+            setAllAuthorBooks(newBooks);
+
+            return {
+                ...prev,
+                books: newBooks
+            };
+        });
     }
 
 
@@ -144,9 +188,7 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem, 
         setAuthorData(prev => {
             const filtered = prev.books.filter(b => b.BookId !== id);
 
-            if (method === 'add') {
-                setAllAuthorBooks(filtered);
-            }
+            setAllAuthorBooks(filtered);
 
             return {
                 ...prev,
@@ -160,29 +202,18 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem, 
         const nextValue = seeAllButton === 'Prestados' ? 'Todos' : 'Prestados';
         setSeeAllButton(nextValue);
 
+        if (nextValue === 'Prestados') {
+            const filtered = allAuthorBooks.filter(b => b.isBorrowed === true);
 
-        if (method === 'add') {
-
-            if (nextValue === 'Prestados') {
-                const filtered = allAuthorBooks.filter(b => b.isBorrowed === true);
-                setAuthorData(prev => ({
-                    ...prev,
-                    books: filtered
-                }));
-            } else {
-
-                setAuthorData(prev => ({
-                    ...prev,
-                    books: allAuthorBooks
-                }));
-            }
-
-            return;
-        }
-
-
-        if (authorSelected?.id) {
-            getBooks(authorSelected.id, nextValue);
+            setAuthorData(prev => ({
+                ...prev,
+                books: filtered
+            }));
+        } else {
+            setAuthorData(prev => ({
+                ...prev,
+                books: allAuthorBooks
+            }));
         }
     }
 
@@ -341,14 +372,14 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem, 
                                 </div>
 
                             </div>
-                            
-                                 {errorMessage && (
-                                    <p className="error-message">{errorMessage}</p>
-                                )}
+
+                            {errorMessage && (
+                                <p className="error-message">{errorMessage}</p>
+                            )}
                             <div className='author-books-title'>
                                 <h3>Libros de este autor</h3>
                             </div>
-                            <Table columns={mainAuthorBooksColumns} data={authorData.books}>
+                            <Table columns={mainAuthorBooksColumns} data={authorData.books} totalItems={authorData.books.length}>
                                 <div className='main-author-btns'>
                                     {auth.role === roles.admin && (
                                         <>
@@ -380,17 +411,13 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem, 
                             <div className='author-books-title'>
                                 <h3>Libros cargados en la biblioteca</h3>
                             </div>
-                            <Table columns={bookshelfBooksColumns} data={books} />
+                            <Table columns={bookshelfBooksColumns} data={libraryBooks} totalItems={totalLibraryBooks} handleChangePage={handleChangePage} loading={loadingBooks} resetPageTrigger={resetPageTrigger} />
                         </div>
                         <div className='author-books'>
                             <div className='author-books-title'>
                                 <h3>Libros de este autor</h3>
                             </div>
-                            {method === 'update' ? (
-                                <Table columns={authorBooksColumns} data={authorData.books} />
-                            ) : (
-                                <Table columns={authorBooksColumns} data={authorData.books} />
-                            )}
+                            <Table columns={authorBooksColumns} data={authorData.books} totalItems={authorData.books.length} />
                         </div>
 
                     </>
