@@ -57,6 +57,7 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
 
 
   const createItem = async (newItem) => {
+    console.log(newItem);
     const res = await fetch(`${baseUrl}/${entityName}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

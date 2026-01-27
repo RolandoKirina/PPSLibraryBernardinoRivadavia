@@ -16,10 +16,12 @@ const BookTypeGroup = sequelize.define("BookTypeGroup",
         BookTypeGroupListId: {
             type: DataTypes.INTEGER,
             field: "IdGrupo",   
+            allowNull: false,
         },
         bookTypeId: {
             type: DataTypes.INTEGER,
             field: "IdTipoLibro",   
+            allowNull: false,
         }
     },
     {

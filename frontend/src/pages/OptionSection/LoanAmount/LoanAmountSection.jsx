@@ -37,14 +37,16 @@ export default function LoanAmountSection() {
     } = useEntityManagerAPI("book-type-groups-list");
 
 
-    const {
-        items: bookTypes,
-        getItems: getBookTypes,
-        // getItem: getGroupItem,
-        deleteItem: deleteBookType,
-        createItem: createBookType,
-        updateItem: updateBookType
-    } = useEntityManagerAPI("book-types");
+    // const {
+    //     items: bookTypes,
+    //     loading: bookTypesLoading,
+    //     totalItems: bookTypesTotalItems,
+    //     getItems: getBookTypes,
+    //     // getItem: getGroupItem,
+    //     deleteItem: deleteBookType,
+    //     createItem: createBookType,
+    //     updateItem: updateBookType
+    // } = useEntityManagerAPI("book-types");
 
     //const [bookTypes, setBookTypes] = useState([]);
 
@@ -64,10 +66,9 @@ export default function LoanAmountSection() {
         const numberPage = Number(page);
         const lastItemIndex = numberPage * rowsPerPage;
 
-        if (lastItemIndex > items.length) {
-            const newOffset = items.length;
+        if (lastItemIndex > groupItems.length) {
+            const newOffset = groupItems.length;
             await getGroupItem({ ...filters, limit: chunkSize, offset: newOffset }, true);
-            getBookTypes();
             setOffsetActual(newOffset);
         }
     }
@@ -79,6 +80,31 @@ export default function LoanAmountSection() {
     //     }
     // }, [groupItems]);
 
+    async function handleAddNewGroup(data) {
+        try {
+            await createItem(data);
+
+            await getGroupItem({ ...filters, limit: chunkSize, offset: 0 });
+
+            setAddPopup(false);
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function handleUpdateGroup(data) {
+        try {
+            await updateItem(selected.bookTypeGroupListId, data);
+
+            await getGroupItem({ ...filters, limit: chunkSize, offset: 0 });
+
+            setEditPopup(false);
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
 
     const loanMaterialsPopups = [
         {
@@ -98,18 +124,18 @@ export default function LoanAmountSection() {
         {
             key: 'editPopup',
             title: 'Editar Grupo de tipo de material',
-            className: 'add-material-group-background',
-            content: <AddMaterialGroup method={'update'} createItem={createItem} updateGroupItem={updateItem} getItems={getGroupItem} items={bookTypes} itemSelected={selected} closePopup={() => setEditPopup(false)} />,
+            className: 'loans-background',
+            content: <AddMaterialGroup method={'update'} createGroupItem={handleUpdateGroup} getItems={getGroupItem} groupSelected={selected} closePopup={() => setEditPopup(false)} />,
             close: () => setEditPopup(false),
             condition: editPopup
         },
         {
             key: 'addPopup',
             title: 'Agregar Grupo de tipo de material',
-            className: 'add-material-group-background',
+            className: 'loans-background',
             content:
                 <>
-                    <AddMaterialGroup method={'add'} createGroupItem={createItem} updateGroupItem={updateItem} getItems={getGroupItem} items={bookTypes} closePopup={() => setAddPopup(false)} />
+                    <AddMaterialGroup method={'add'} createGroupItem={handleAddNewGroup} getItems={getGroupItem} closePopup={() => setAddPopup(false)} />
                     {/* <AddMaterialGroup method={'add'} createItem={createItem} updateItem={updateItem} getItemGroup={getGroupItem} getMaterialItem={getMaterialItem} items={materialsItems} />  */}
                 </>,
             close: () => setAddPopup(false),

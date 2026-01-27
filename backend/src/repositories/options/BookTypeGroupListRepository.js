@@ -61,7 +61,7 @@ export const getOne = async (id) => {
 };
 
 export const create = async (data) => {
-    if (!data.group.trim() || !data.maxAmount.trim()) {
+    if (!data.group.trim() || Number(data.amount) <= 0) {
         throw new ValidationError("Los campos grupo y cantidad no pueden estar vacíos");
     }
 
@@ -70,16 +70,16 @@ export const create = async (data) => {
     try {
         const groupData = {
             group: data.group,
-            maxAmount: data.maxAmount
+            maxAmount: data.amount
         };
 
         const newBookTypeGroupList = await BookTypeGroupList.create(groupData, { transaction });
 
         const newBookTypeGroupListId = newBookTypeGroupList.dataValues.bookTypeGroupListId;
 
-        const bookTypeGroups = data.bookTypes.map(bookTypeId => ({
+        const bookTypeGroups = data.normalizedBookTypes.map(bookType => ({
             BookTypeGroupListId: newBookTypeGroupListId,
-            bookTypeId: bookTypeId
+            bookTypeId: bookType.bookTypeId
         }))
 
         await Promise.all(
@@ -106,7 +106,7 @@ export const update = async (id, updates) => {
         throw new ValidationError("El campo grupo no puede estar vacío");
     }
 
-    if (isNaN(updates.maxAmount) || updates.maxAmount <= 0) {
+    if (isNaN(updates.amount) || updates.amount <= 0) {
         throw new ValidationError("El campo cantidad debe ser un número válido");
     }
 
@@ -117,7 +117,7 @@ export const update = async (id, updates) => {
         await BookTypeGroupList.update(
             {
                 group: updates.group,
-                maxAmount: updates.maxAmount
+                maxAmount: updates.amount
             },
             {
                 where: { bookTypeGroupListId: id },
@@ -132,9 +132,9 @@ export const update = async (id, updates) => {
         });
 
         // 3) Insertar los nuevos BookTypes asociados
-        const newAssociations = updates.bookTypes.map(bookTypeId => ({
+        const newAssociations = updates.normalizedBookTypes.map(bookType => ({
             BookTypeGroupListId: id,
-            bookTypeId: bookTypeId
+            bookTypeId: bookType.bookTypeId
         }));
 
         await Promise.all(
