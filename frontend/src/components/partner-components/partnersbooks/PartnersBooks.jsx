@@ -33,7 +33,6 @@ export default function PartnersBooks() {
             if (values.dateTo) params.append("dateTo", values.dateTo);
 
             const url = `http://localhost:4000/api/v1/books/partners-books?${params.toString()}`;
-            console.log("URL generada:", url);
 
             const res = await fetch(url);
 

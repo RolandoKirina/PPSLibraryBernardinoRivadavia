@@ -32,8 +32,6 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
       const res = await fetch(`${baseUrl}/${entityName}${query}`);
       if (!res.ok) throw new Error("Error al obtener datos");
 
-      console.log(`${baseUrl}/${entityName}${query}`);
-
       const { rows, count, others } = await res.json();
 
       setTotalItems(count ?? 0);
@@ -57,7 +55,6 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
 
 
   const createItem = async (newItem) => {
-    console.log(newItem);
     const res = await fetch(`${baseUrl}/${entityName}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -131,7 +128,6 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
 
       const data = await res.json();
 
-      // opcional: actualizar el estado si querés mantener items sincronizados
       setItems(prev => {
         const exists = prev.find(item => item.id === id);
         if (exists) {

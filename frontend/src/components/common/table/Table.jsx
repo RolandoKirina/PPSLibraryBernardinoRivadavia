@@ -2,7 +2,7 @@ import Pagination from "../pagination/Pagination";
 import './Table.css';
 import { useState, useEffect } from "react";
 export const Table = ({ columns = [], data = [], children, popupLength, isPrintList, rowsPerPage = 5, totalItems, handleChangePage, loading, resetPageTrigger }) => {
-  console.log("totalitems: "+totalItems);
+
   const actionAccessors = ["add", "delete", "edit", "details", "return", "renewe", "choose", "materials"];
   const [currentPage, setCurrentPage] = useState(1);
   const indexOfLastRow = currentPage * rowsPerPage;
@@ -12,8 +12,6 @@ export const Table = ({ columns = [], data = [], children, popupLength, isPrintL
   useEffect(() => {
     setCurrentPage(1);
   }, [resetPageTrigger]);
-
-
 
   return (
     <div className="content-table">

@@ -1,7 +1,7 @@
 import GenericSection from '../../components/generic/GenericSection/GenericSection.jsx';
 import PartnerFilter from '../../components/filter/partner/PartnerFilter.jsx';
-import { useEffect, useState } from 'react';
 import DeleteIcon from '../../assets/img/delete-icon.svg';
+import { useEffect, useState } from 'react';
 import EditIcon from '../../assets/img/edit-icon.svg';
 import FormEditPartner from '../../components/partner-components/formeditpartner/FormEditPartner.jsx';
 import DetailsIcon from '../../assets/img/details-icon.svg';
@@ -27,20 +27,11 @@ export default function PartnerSection() {
   const [selectedItem, setSelectedItem] = useState(null);
   const [PopUpDeletePartner, setPopUpDelete] = useState(false);
   const [PopUpEdit, setPopupEdit] = useState(false);
-
   const [printListPopup, setPrintListPopup] = useState(false);
   const [PopUpBooksPartners, setPopUpBooksPartners] = useState(false);
-  const [DetailData, setDetailData] = useState(null);
   const [PopUpDetail, setPopUpDetail] = useState(false);
   const [PopUpAdd, setPopUpAdd] = useState(false);
-
-  const [formData, setFormData] = useState({
-    unpaidFees: "",
-    pendingBooks: "",
-    isActive: "all",
-  });
-
-
+  const [formData, setFormData] = useState({unpaidFees: "",pendingBooks: "",isActive: "all",});
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -79,7 +70,7 @@ export default function PartnerSection() {
   }
 
   const columns = [
-    { header: 'Numero de socio', accessor: 'id' },
+    { header: 'Numero de socio', accessor: 'partnerNumber' },
     { header: 'Nombre', accessor: 'name' },
     { header: 'Apellido', accessor: 'surname' },
     { header: 'Cuotas impagas', accessor: 'unpaidFees' },
@@ -123,7 +114,23 @@ export default function PartnerSection() {
           />
         </button>
       )
-    }
+    },  
+    {
+      header: 'Borrar',
+      accessor: 'delete',
+      className: "action-buttons",
+      render: (_, row) => (
+        <button className="button-table"
+          onClick={() => {
+
+            setSelectedItem(row);
+            setPopUpDelete(true);
+          }}>
+
+          <img src={DeleteIcon} alt="Borrar" />
+        </button>
+        )
+    },
   ];
 
   const partnersPopUp = [
@@ -169,8 +176,7 @@ export default function PartnerSection() {
       key: 'detailsPopup',
       title: 'Detalles del socio',
       className: '',
-
-      content: <ShowDetails data={selectedItem} detailsData={DetailPartner} isPopup={true} actions={true} />,
+      content: <ShowDetails data={selectedItem} detailsData={DetailPartner} isPopup={true} actions={true}/>,
       close: () => setPopUpDetail(false),
       condition: PopUpDetail
     },
