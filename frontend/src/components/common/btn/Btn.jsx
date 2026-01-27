@@ -14,9 +14,8 @@ export default function Btn({ type = 'button', text, icon, onClick, variant, dis
     login: "login-btn",
     register: "register-btn",
     logout: "btn-logout",
-    default: "my-button"
-
-
+    save: "btn-save",
+    default: "my-button",
   };
 
 

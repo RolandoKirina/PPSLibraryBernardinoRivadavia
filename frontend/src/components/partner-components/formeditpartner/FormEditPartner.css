@@ -46,6 +46,11 @@
   gap: 1em;
 }
 
+.row {
+    display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
 .checkbox-group .checkbox-size {
   margin-right: 0.3em;
   width: 0.7em;
@@ -71,15 +76,8 @@
 .btn-list-formeditpartner {
   display: flex;
   align-items: center;
-  /* margin: 1em 0em; */
-  /* margin-left: 8em; */
   width: 100%;
   justify-content: space-evenly;
-  /* gap: 1em; */
   margin: 1em 0;
 }
 
-/*empuja el ultimo btn a la derecha*/
-/* .btn-list-formeditpartner> *:last-child {
-  margin-left: auto;
-} */

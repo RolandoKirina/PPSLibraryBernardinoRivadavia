@@ -2,3 +2,13 @@
     text-decoration: none;
     color: var(--white);
 }
+.btn-save-container{
+    display: flex;
+    justify-content: center;
+    margin: 1em;
+}
+.btn-save{
+    background-color: var(--save);
+    color: var(--white);
+    border: 2px solid var(--save);
+}

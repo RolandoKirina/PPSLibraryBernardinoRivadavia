@@ -12,11 +12,11 @@ export default function ShowDetails({ data, isPopup, detailsData, titleText,acti
  const [pendingBooks,setPendingBooks] = useState([]);
 
   const normalizeFees = (fees) =>
-  fees.map(fee => ({
-    ...fee,
-    partnerName: fee.Partner?.name ?? '—',
-    partnerNumber: fee.Partner?.id ?? '—'
-  }));
+    fees.map(fee => ({
+      ...fee,
+      partnerName: fee.Partner?.name ?? '—',
+      partnerNumber: fee.Partner?.id ?? '—'
+    }));
   
 async function fetchUnpaidFees() {
   try {

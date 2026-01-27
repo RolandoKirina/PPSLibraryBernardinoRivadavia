@@ -121,7 +121,6 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
 
       const data = await res.json();
 
-      // opcional: actualizar el estado si querés mantener items sincronizados
       setItems(prev => {
         const exists = prev.find(item => item.id === id);
         if (exists) {
