@@ -7,7 +7,6 @@ import LoanBook from '../../models/loan/LoanBook.js';
 import sequelize from '../../configs/database.js';
 import * as BookAuthorRepository from '../author/BookAuthorRepository.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
-
 export const getAll = async (filters) => {
     const {
         whereAuthor,
@@ -16,20 +15,35 @@ export const getAll = async (filters) => {
         order,
     } = filters;
 
+    const count = await Authors.count({
+        where: Object.keys(whereAuthor).length ? whereAuthor : undefined
+    });
+
+    const authorIdsResult = await Authors.findAll({
+        attributes: ['id'],
+        where: Object.keys(whereAuthor).length ? whereAuthor : undefined,
+        order,
+        limit,
+        offset,
+        raw: true
+    });
+
+    const ids = authorIdsResult.map(a => a.id);
+
+    if (!ids.length) {
+        return {
+            rows: [],
+            count
+        };
+    }
 
     const authors = await Authors.findAll({
-        attributes: ['id', 'name', 'nationality'],
-
-        where: Object.keys(whereAuthor).length ? whereAuthor : undefined,
-        required: false,
-        subQuery: false,
-
+        where: { id: ids },
         include: [
             {
                 model: BookAuthor,
                 as: 'BookAuthors',
                 attributes: ['position'],
-
                 include: [
                     {
                         model: Book,
@@ -45,14 +59,13 @@ export const getAll = async (filters) => {
                             {
                                 model: LoanBook,
                                 as: 'BookLoans',
-                                attributes: [],   
+                                attributes: [],
                                 required: false,
-
                                 include: [
                                     {
                                         model: Loan,
                                         as: 'Loan',
-                                        attributes: [], 
+                                        attributes: [],
                                         required: false,
                                     }
                                 ]
@@ -62,46 +75,33 @@ export const getAll = async (filters) => {
                 ]
             }
         ],
-
-        limit,
-        offset,
         order
     });
 
-    // Convertir a objetos planos
     const authorsPlain = authors.map(a => a.get({ plain: true }));
 
-    // Calcular isBorrowed
     for (const author of authorsPlain) {
         for (const bookAuthor of author.BookAuthors) {
             const book = bookAuthor.Book;
-
             const isBorrowed =
                 book.BookLoans?.some(lb => lb.returnedDate === null) || false;
-
             book.isBorrowed = isBorrowed;
         }
     }
 
-    return authorsPlain;
+    return {
+        rows: authorsPlain,
+        count
+    };
 };
-
-
 
 export const getOne = async (id) => {
     return await Authors.findByPk(id);
 };
 
-// export const create = async (author) => {
-//     if (!author.name.trim() || !author.nationality.trim()) {
-//     throw new Error("Los campos Nombre y Nacionalidad no pueden estar vacíos");
-//     }
-//     return await Authors.create(author);
-// };
-
 export const create = async (author) => {
     if (!author.name.trim() || !author.nationality.trim()) {
-    throw new ValidationError("Los campos Nombre y Nacionalidad no pueden estar vacíos");
+        throw new ValidationError("Los campos Nombre y Nacionalidad no pueden estar vacíos");
     }
 
     const transaction = await sequelize.transaction();
@@ -131,12 +131,12 @@ export const create = async (author) => {
         await transaction.commit();
 
         return {
-        msg: "Author creado correctamente",
-        authorId: newAuthorId,
+            msg: "Author creado correctamente",
+            authorId: newAuthorId,
         };
 
     }
-    catch(err) {
+    catch (err) {
         await transaction.rollback();
         throw err;
     }
@@ -146,7 +146,7 @@ export const create = async (author) => {
 
 export const update = async (id, updates) => {
     if (!updates.name.trim() || !updates.nationality.trim()) {
-    throw new ValidationError("Los campos Nombre y Nacionalidad no pueden estar vacíos");
+        throw new ValidationError("Los campos Nombre y Nacionalidad no pueden estar vacíos");
     }
 
     const transaction = await sequelize.transaction();

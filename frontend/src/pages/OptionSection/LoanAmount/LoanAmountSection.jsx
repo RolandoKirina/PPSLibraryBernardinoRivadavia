@@ -13,13 +13,22 @@ import { useEffect } from 'react';
 import ShowMaterials from '../../../components/option-components/ShowMaterials';
 
 export default function LoanAmountSection() {
+    const chunkSize = 100;
+    const rowsPerPage = 5;
+    const [offsetActual, setOffsetActual] = useState(0);
+    const [resetPageTrigger, setResetPageTrigger] = useState(0);
+
+    const [filters, setFilters] = useState({});
+
     const [deletePopup, setDeletePopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
-    
+
     const [selected, setSelected] = useState(false);
     const {
         items: groupItems,
+        loading,
+        totalItems,
         getItems: getGroupItem,
         // getItem: getGroupItem,
         deleteItem,
@@ -28,21 +37,41 @@ export default function LoanAmountSection() {
     } = useEntityManagerAPI("book-type-groups-list");
 
 
-    const {
-        items: bookTypes,
-        getItems: getBookTypes,
-        // getItem: getGroupItem,
-        deleteItem: deleteBookType,
-        createItem: createBookType,
-        updateItem: updateBookType
-    } = useEntityManagerAPI("book-types");
+    // const {
+    //     items: bookTypes,
+    //     loading: bookTypesLoading,
+    //     totalItems: bookTypesTotalItems,
+    //     getItems: getBookTypes,
+    //     // getItem: getGroupItem,
+    //     deleteItem: deleteBookType,
+    //     createItem: createBookType,
+    //     updateItem: updateBookType
+    // } = useEntityManagerAPI("book-types");
 
     //const [bookTypes, setBookTypes] = useState([]);
 
     useEffect(() => {
-        getGroupItem(); // solo dispara la carga
-        getBookTypes();
-    }, []);
+        const delay = setTimeout(() => {
+            setOffsetActual(0);
+
+            setResetPageTrigger(prev => prev + 1);
+
+            getGroupItem({ ...filters, limit: chunkSize, offset: 0 });
+        }, 500);
+
+        return () => clearTimeout(delay);
+    }, [filters]);
+
+    async function handleChangePage(page) {
+        const numberPage = Number(page);
+        const lastItemIndex = numberPage * rowsPerPage;
+
+        if (lastItemIndex > groupItems.length) {
+            const newOffset = groupItems.length;
+            await getGroupItem({ ...filters, limit: chunkSize, offset: newOffset }, true);
+            setOffsetActual(newOffset);
+        }
+    }
 
     // useEffect(() => {
     //     if (groupItems.length > 0) {
@@ -51,6 +80,31 @@ export default function LoanAmountSection() {
     //     }
     // }, [groupItems]);
 
+    async function handleAddNewGroup(data) {
+        try {
+            await createItem(data);
+
+            await getGroupItem({ ...filters, limit: chunkSize, offset: 0 });
+
+            setAddPopup(false);
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function handleUpdateGroup(data) {
+        try {
+            await updateItem(selected.bookTypeGroupListId, data);
+
+            await getGroupItem({ ...filters, limit: chunkSize, offset: 0 });
+
+            setEditPopup(false);
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
 
     const loanMaterialsPopups = [
         {
@@ -70,18 +124,18 @@ export default function LoanAmountSection() {
         {
             key: 'editPopup',
             title: 'Editar Grupo de tipo de material',
-            className: 'add-material-group-background',
-            content: <AddMaterialGroup method={'update'} createItem={createItem} updateGroupItem={updateItem} getItems={getGroupItem} items={bookTypes} itemSelected={selected} closePopup={() => setEditPopup(false)} />,
+            className: 'loans-background',
+            content: <AddMaterialGroup method={'update'} createGroupItem={handleUpdateGroup} getItems={getGroupItem} groupSelected={selected} closePopup={() => setEditPopup(false)} />,
             close: () => setEditPopup(false),
             condition: editPopup
         },
         {
             key: 'addPopup',
             title: 'Agregar Grupo de tipo de material',
-            className: 'add-material-group-background',
+            className: 'loans-background',
             content:
                 <>
-                    <AddMaterialGroup method={'add'} createGroupItem={createItem} updateGroupItem={updateItem} getItems={getGroupItem} items={bookTypes} closePopup={() => setAddPopup(false)} />
+                    <AddMaterialGroup method={'add'} createGroupItem={handleAddNewGroup} getItems={getGroupItem} closePopup={() => setAddPopup(false)} />
                     {/* <AddMaterialGroup method={'add'} createItem={createItem} updateItem={updateItem} getItemGroup={getGroupItem} getMaterialItem={getMaterialItem} items={materialsItems} />  */}
                 </>,
             close: () => setAddPopup(false),
@@ -120,7 +174,7 @@ export default function LoanAmountSection() {
 
     return (
         <>
-            <GenericSection title={'Configurar grupos para cantidad maxima de prestamos'} columns={columns} data={groupItems} popups={loanMaterialsPopups} actions={
+            <GenericSection title={'Configurar grupos para cantidad maxima de prestamos'} columns={columns} data={groupItems} popups={loanMaterialsPopups} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger} actions={
                 <div className='loan-amount-group-buttons'>
                     <Btn variant='primary' className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg' />} />
                 </div>

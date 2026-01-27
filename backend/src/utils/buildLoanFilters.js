@@ -31,6 +31,9 @@ export const buildLoanFilters = (query) => {
   const whereBook = {};  //por titulo y codigo
   const whereEmployee = {};
 
+  console.log("limit: ",limit);
+  console.log("offset: ",offset);
+
 
   if (type && type !== 'all') whereLoanType.description = type;
   if (state && state !== 'all') {

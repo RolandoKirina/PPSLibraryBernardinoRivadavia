@@ -25,10 +25,18 @@ export default function EmployeeSection() {
     const [addPopup, setAddPopup] = useState(false);
     const [selected, setSelected] = useState(false);
     const [errorMessage, setErrorMessage] = useState(false);
+    const [filters, setFilters] = useState({});
+    const chunkSize = 100;
+    const rowsPerPage = 5;
+    const [offsetActual, setOffsetActual] = useState(0);
+    const [resetPageTrigger, setResetPageTrigger] = useState(0);
 
     const {
         items,
+        loading,
+        totalItems,
         getItems,
+
         // getItem: getGroupItem,
         deleteItem,
         createItem,
@@ -36,7 +44,15 @@ export default function EmployeeSection() {
     } = useEntityManagerAPI("employees");
 
     useEffect(() => {
-        getItems();
+        const delay = setTimeout(() => {
+            setOffsetActual(0);
+
+            setResetPageTrigger(prev => prev + 1);
+
+            getItems({ ...filters, limit: chunkSize, offset: 0 });
+        }, 500);
+
+        return () => clearTimeout(delay);
     }, []);
 
     async function handleAddItem(data) {
@@ -49,7 +65,7 @@ export default function EmployeeSection() {
 
             setErrorMessage(null);
         }
-        catch(error) {
+        catch (error) {
             setErrorMessage(error.message);
             console.error("Error al crear un empleado:", error);
         }
@@ -65,12 +81,22 @@ export default function EmployeeSection() {
 
             setErrorMessage(null);
         }
-        catch(error) {
+        catch (error) {
             setErrorMessage(error.message);
             console.error("Error al actualizar un empleado:", error);
         }
     }
 
+    async function handleChangePage(page) {
+        const numberPage = Number(page);
+        const lastItemIndex = numberPage * rowsPerPage;
+
+        if (lastItemIndex > items.length) {
+            const newOffset = items.length;
+            await getItems({ ...filters, limit: chunkSize, offset: newOffset }, true);
+            setOffsetActual(newOffset);
+        }
+    }
 
     const employeePopups = [
         {
@@ -159,7 +185,7 @@ export default function EmployeeSection() {
 
     return (
         <>
-            <GenericSection title={'Listado de empleados'} columns={columns} data={items} popups={employeePopups}
+            <GenericSection title={'Listado de empleados'} columns={columns} data={items} popups={employeePopups} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger}
                 actions={
                     <div className='listbtns'>
                         <Btn variant={'primary'} className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg' />} />,

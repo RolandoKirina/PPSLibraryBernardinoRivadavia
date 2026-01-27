@@ -11,6 +11,13 @@ import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
 import { useEffect } from 'react';
 
 export default function LoanMaterialSection() {
+    const chunkSize = 100;
+    const rowsPerPage = 5;
+    const [offsetActual, setOffsetActual] = useState(0);
+    const [resetPageTrigger, setResetPageTrigger] = useState(0);
+
+    const [filters, setFilters] = useState({});
+
     const [deletePopup, setDeletePopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
@@ -20,6 +27,8 @@ export default function LoanMaterialSection() {
 
     const {
         items,
+        loading,
+        totalItems,
         getItems,
         // getItem: getGroupItem,
         deleteItem,
@@ -37,7 +46,7 @@ export default function LoanMaterialSection() {
 
             setErrorMessage(null);
         }
-        catch(error) {
+        catch (error) {
             setErrorMessage(error.message);
             console.error("Error al crear un material de prestamo:", error);
         }
@@ -53,15 +62,34 @@ export default function LoanMaterialSection() {
 
             setErrorMessage(null);
         }
-        catch(error) {
+        catch (error) {
             setErrorMessage(error.message);
             console.error("Error al actualizar un material de prestamo:", error);
         }
     }
-
     useEffect(() => {
-        getItems();
-    }, []);
+        const delay = setTimeout(() => {
+            setOffsetActual(0);
+
+            setResetPageTrigger(prev => prev + 1);
+
+            getItems({ ...filters, limit: chunkSize, offset: 0 });
+        }, 500);
+
+        return () => clearTimeout(delay);
+    }, [filters]);
+
+
+    async function handleChangePage(page) {
+        const numberPage = Number(page);
+        const lastItemIndex = numberPage * rowsPerPage;
+
+        if (lastItemIndex > items.length) {
+            const newOffset = items.length;
+            await getItems({ ...filters, limit: chunkSize, offset: newOffset }, true);
+            setOffsetActual(newOffset);
+        }
+    }
 
     const loanMaterialsPopups = [
         {
@@ -133,7 +161,7 @@ export default function LoanMaterialSection() {
 
     return (
         <>
-            <GenericSection title={'Listado de material en préstamo'} columns={columns} data={items} popups={loanMaterialsPopups} actions={
+            <GenericSection title={'Listado de material en préstamo'} columns={columns} data={items} popups={loanMaterialsPopups}  totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger} actions={
                 <Btn variant={'primary'} className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg' />} />
             } />
         </>

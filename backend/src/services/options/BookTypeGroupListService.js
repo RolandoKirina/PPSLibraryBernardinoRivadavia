@@ -1,7 +1,7 @@
 import * as BookTypeGroupListRepository from '../../repositories/options/BookTypeGroupListRepository.js';
 
-export const getAllBookTypeGroupLists = async () => {
-    return await BookTypeGroupListRepository.getAll();
+export const getAllBookTypeGroupLists = async (filters) => {
+    return await BookTypeGroupListRepository.getAll(filters);
 };
 
 export const getBookTypeGroupList = async (id) => {

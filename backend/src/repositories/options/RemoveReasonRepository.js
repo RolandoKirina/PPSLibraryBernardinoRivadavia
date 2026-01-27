@@ -1,8 +1,16 @@
 import RemoveReason from '../../models/options/RemoveReason.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 
-export const getAll = async () => {
-    return await RemoveReason.findAll();
+export const getAll = async ({ limit, offset } = {}) => {
+  const { rows, count } = await RemoveReason.findAndCountAll({
+    limit,
+    offset
+  });
+
+  return {
+    rows,
+    count
+  };
 };
 
 export const getOne = async (id) => {

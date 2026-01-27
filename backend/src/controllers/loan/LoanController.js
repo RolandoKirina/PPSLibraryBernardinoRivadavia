@@ -20,7 +20,9 @@ export const getLoanPrintList = async (req, res) => {
     try {
         const { option } = req.params;
 
-        const loans = await LoanService.getLoanPrintList(option);
+        const queryOptions = buildLoanFilters(req.query);
+
+        const loans = await LoanService.getLoanPrintList(queryOptions, option);
 
         res.status(HTTP_STATUS.OK.code).send(loans);
     } catch (error) {

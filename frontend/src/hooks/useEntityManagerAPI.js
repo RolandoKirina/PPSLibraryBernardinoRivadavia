@@ -2,16 +2,15 @@ import { useState, useEffect } from "react";
 
 export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000/api/v1") => {
   const [items, setItems] = useState([]);
+  const [totalItems, setTotalItems] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [others, setOthers] = useState(null);
 
-
-
-  const getItems = async (filters = {}) => {
+  const getItems = async (filters = {}, append = false) => {
     setLoading(true);
     setError(null);
 
-    console.log(filters);
     const cleanFilters = Object.fromEntries(
       Object.entries(filters).filter(([key, value]) => {
         if (["type", "state"].includes(key)) return true;
@@ -33,12 +32,22 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
       const res = await fetch(`${baseUrl}/${entityName}${query}`);
       if (!res.ok) throw new Error("Error al obtener datos");
 
-      const data = await res.json();
-      setItems(Array.isArray(data) ? data : [data]);
+      console.log(`${baseUrl}/${entityName}${query}`);
 
-      return data;
+      const { rows, count, others } = await res.json();
+
+      setTotalItems(count ?? 0);
+
+      setItems(prev =>
+        append ? [...prev, ...(rows || [])] : (rows || [])
+      );
+
+      setOthers(others);
+      
+      return rows || [];
     } catch (err) {
       setError(err.message);
+      return [];
     } finally {
       setLoading(false);
     }
@@ -48,6 +57,7 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
 
 
   const createItem = async (newItem) => {
+    console.log(newItem);
     const res = await fetch(`${baseUrl}/${entityName}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -144,8 +154,10 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
 
   return {
     items,
+    totalItems,
     loading,
     error,
+    others,
     getItems,
     getItem,
     createItem,

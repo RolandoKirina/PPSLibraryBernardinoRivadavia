@@ -130,7 +130,8 @@ export const reneweDetails = [
     active: false,
     rows: [
       [
-        { label: 'Título', value: 'El principito', attribute: 'title' }
+        { label: 'Título', value: 'El principito', attribute: 'bookTitle' },
+        { label: 'Codigo de Libro', value: '-', attribute: 'bookCode' },
       ]
     ]
   },

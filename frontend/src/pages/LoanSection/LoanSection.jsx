@@ -17,13 +17,17 @@ import { editLoanformFields } from "../../data/forms/LoanForms";
 import { loanDetailsInfo } from '../../data/showdetails/LoanDetails';
 import PopUpDelete from '../../components/common/deletebtnComponent/PopUpDelete';
 import { useEffect } from "react";
-import { useEntityManager } from "../../hooks/useEntityManager";
 import { useAuth } from "../../auth/AuthContext";
 import { useEntityManagerAPI } from "../../hooks/useEntityManagerAPI";
 import LoanBooks from "../../components/loan-components/loanbooks/LoanBooks";
 
 export default function LoanSection({ openRenewes, pendientBooks }) {
-    //const { items: loanItems, getItem: getLoanItem, createItem: createLoanItem, updateItem: updateLoanItem, deleteItem: deleteLoanItem } = useEntityManager(mockLoans, 'loans');
+    const chunkSize = 100;
+    const rowsPerPage = 5;
+    const [offsetActual, setOffsetActual] = useState(0);
+    const [resetPageTrigger, setResetPageTrigger] = useState(0);
+
+
     const [selected, setSelected] = useState(null);
     const [deletePopup, setDeletePopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
@@ -42,6 +46,8 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
 
     const {
         items,
+        loading,
+        totalItems,
         getItems,
         deleteItem,
         createItem,
@@ -58,13 +64,26 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
 
     useEffect(() => {
         const delay = setTimeout(() => {
-            getItems(filters);
+            setOffsetActual(0);
+
+            setResetPageTrigger(prev => prev + 1);
+
+            getItems({ ...filters, limit: chunkSize, offset: 0 });
         }, 500);
 
         return () => clearTimeout(delay);
     }, [filters]);
 
+    async function handleChangePage(page) {
+        const numberPage = Number(page);
+        const lastItemIndex = numberPage * rowsPerPage;
 
+        if (lastItemIndex > items.length) {
+            const newOffset = items.length;
+            await getItems({ ...filters, limit: chunkSize, offset: newOffset }, true);
+            setOffsetActual(newOffset);
+        }
+    }
 
     async function handleAddItem(data) {
         try {
@@ -76,7 +95,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
 
             setErrorMessage(null);
         }
-        catch(error) {
+        catch (error) {
             setErrorMessage(error.message);
             console.error("Error al crear un Prestamo:", error);
         }
@@ -92,7 +111,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
 
             setErrorMessage(null);
         }
-        catch(error) {
+        catch (error) {
             setErrorMessage(error.message);
             console.error("Error al actualizar un Prestamo:", error);
         }
@@ -242,7 +261,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
         {
             key: 'returnsPopup',
             title: 'Devoluciones de libros',
-            className: '',
+            className: 'addPopup',
             content: <Return />,
             close: () => setReturnsPopup(false),
             condition: returnsPopup
@@ -267,7 +286,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
 
     return (
         <>
-            <GenericSection title={auth.role === 'admin' ? 'Listado de préstamos' : 'Listado de tus préstamos'} filters={<LoanFilter onFilterChange={setFilters} />} columns={columns} data={items} popups={loanPopups}
+            <GenericSection title={auth.role === 'admin' ? 'Listado de préstamos' : 'Listado de tus préstamos'} filters={<LoanFilter onFilterChange={setFilters} />} columns={columns} data={items} popups={loanPopups} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger}
                 actions={
                     <LoanButtons
                         displayLoanform={() => setAddPopup(true)}

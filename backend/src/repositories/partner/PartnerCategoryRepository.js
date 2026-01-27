@@ -1,8 +1,19 @@
 import PartnerCategory from '../../models/partner/PartnerCategory.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 
-export const getAll = async () => {
-    return await PartnerCategory.findAll();
+export const getAll = async (filters = {}) => {
+  const { limit, offset, order } = filters;
+
+  const { rows, count } = await PartnerCategory.findAndCountAll({
+    limit,
+    offset,
+    order
+  });
+
+  return {
+    rows,
+    count
+  };
 };
 
 export const getOne = async (id) => {

@@ -1,17 +1,10 @@
-import { Op } from "sequelize";
-
-export const buildEmployeeFilters = (query) => {
+export const buildLoanAmountFilters = (query) => {
   const {
-    code,
     limit,
     offset,
     orderBy,
     orderDir
   } = query;
-
-  const whereEmployee = {};
-
-  if (code) whereEmployee.code = code;
 
   const parsedLimit = limit ? Number(limit) : undefined;
   const parsedOffset = offset ? Number(offset) : undefined;
@@ -21,7 +14,6 @@ export const buildEmployeeFilters = (query) => {
     : undefined;
 
   return {
-    whereEmployee,
     limit: parsedLimit,
     offset: parsedOffset,
     order

@@ -1,187 +1,295 @@
-import { Table } from '../../common/table/Table';
-import './AddMaterialGroup.css';
-import { useState } from 'react';
-import ChooseIcon from '../../../assets/img/choose-icon.svg';
+import { useState, useEffect } from 'react';
+
+import BackviewBtn from '../../common/backviewbtn/BackviewBtn';
 import Btn from '../../common/btn/Btn';
 import SaveIcon from '../../../assets/img/save-icon.svg';
 import PopUp from '../../common/popup-table/PopUp';
 import ConfirmMessage from '../../common/confirmMessage/ConfirmMessage';
-import { useEffect } from 'react';
-import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
+import { Table } from '../../common/table/Table';
 
-export default function AddMaterialGroup({ method, createGroupItem, updateGroupItem, getItems, items, itemSelected, closePopup }) {
+import DeleteIcon from '../../../assets/img/delete-icon.svg';
+import AddBookIcon from '../../../assets/img/add-book-icon.svg';
 
-  const [selectedIds, setSelectedIds] = useState([]);
-  const [confirmSaveChanges, setConfirmSaveChangesPopup] = useState(false);
-  const [group, setGroup] = useState('');
-  const [amount, setAmount] = useState('');
-  const [errorMessage, setErrorMessage] = useState("");
-
+export default function AddMaterialGroup({
+  method,
+  createGroupItem,
+  groupSelected,
+  errorMessage
+}) {
   const BASE_URL = "http://localhost:4000/api/v1";
 
+  const chunkSize = 100;
+  const rowsPerPage = 5;
+
+  const isUpdate = method === 'update';
+
+  const [popupView, setPopupView] = useState('default');
+  const [confirmSavePopup, setConfirmSavePopup] = useState(false);
+
+  const [group, setGroup] = useState('');
+  const [amount, setAmount] = useState('');
+
+  const [bookTypes, setBookTypes] = useState([]);
+
+  const [libraryBookTypes, setLibraryBookTypes] = useState([]);
+  const [totalLibraryBookTypes, setTotalLibraryBookTypes] = useState(0);
+  const [loadingBookTypes, setLoadingBookTypes] = useState(false);
+
+  const [validateError, setValidateError] = useState('');
+
+  const [offsetActual, setOffsetActual] = useState(0);
+  const [resetPageTrigger, setResetPageTrigger] = useState(0);
+
+
   useEffect(() => {
-    if (method === 'update') {
-      const ids = itemSelected.BookTypeGroups.map(btGroup => btGroup.bookTypeId);
-      setSelectedIds(ids);
-      setGroup(itemSelected.group || '');
-      setAmount(itemSelected.maxAmount || '');
+    getLibraryBookTypes({ limit: chunkSize, offset: 0 });
+
+    if (isUpdate && groupSelected) {
+      setGroup(groupSelected.group ?? '');
+      setAmount(groupSelected.maxAmount ?? '');
+
+      setBookTypes(
+        groupSelected.BookTypeGroups?.map(btGroup => ({
+          BookTypeId: btGroup.bookTypeId,
+          typeName: btGroup.BookType?.typeName,
+          loanDays: btGroup.BookType?.loanDays
+        })) || []
+      );
     }
-  }, [method]);
+  }, [isUpdate, groupSelected]);
 
-  const {
-    items: bookTypeGroups,
-    getItems: getBookTypeGroups,
-    deleteItem: deleteBookTypeGroup,
-    createItem: createBookTypeGroup,
-    updateItem: updateBookTypeGroup
-  } = useEntityManagerAPI("book-type-groups");
 
-  async function handleAddItem() {
-    try {
-      if (selectedIds.length === 0) {
-      setErrorMessage("Debes elegir al menos un material de préstamo");
-      return;
-      }
+  const getLibraryBookTypes = async (filters = {}, append = false) => {
+    setLoadingBookTypes(true);
 
-      setErrorMessage(null); 
+    const queryParams = new URLSearchParams(filters).toString();
+    const res = await fetch(`${BASE_URL}/book-types?${queryParams}`);
+    const { rows, count } = await res.json();
 
-      const newGroup = await createGroupItem({
-        group,
-        maxAmount: amount,
-        bookTypes: selectedIds
-      });
+    setTotalLibraryBookTypes(count);
+    setLibraryBookTypes(prev => append ? [...prev, ...rows] : rows);
 
-      await getItems();
+    setLoadingBookTypes(false);
+  };
 
-      closePopup();
+  async function handleChangePage(page) {
+    const lastItemIndex = page * rowsPerPage;
 
-    } catch (error) {
-      setErrorMessage(error.message);
-      console.error("Error al crear grupo o materiales:", error);
-    }
-  }
-
-  async function updateBookTypesSelected(selectedIds) {
-    try {
-      const res = await fetch(`${BASE_URL}/book-type-groups/groupId/${itemSelected.bookTypeGroupListId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(selectedIds)
-      });
-      if (!res.ok) throw new Error("Error al actualizar");
-      
-      const updated = await res.json();
-      }
-    catch (error) {
-      console.error("Error al crear grupo o materiales:", error);
+    if (libraryBookTypes.length < totalLibraryBookTypes && lastItemIndex > libraryBookTypes.length) {
+      await getLibraryBookTypes(
+        { limit: chunkSize, offset: libraryBookTypes.length },
+        true
+      );
     }
   }
 
+  function handleAddBookType(bookType) {
+    const id = bookType.bookTypeId ?? bookType.BookTypeId;
 
-  async function handleUpdateItem() {
-    try {
-      if (selectedIds.length === 0) {
-      setErrorMessage("Debes elegir al menos un material de préstamo");
-      return;
-      }    
+    setBookTypes(prev => {
+      const exists = prev.some(
+        bt => (bt.bookTypeId ?? bt.BookTypeId) === id
+      );
+      if (exists) return prev;
 
-      setErrorMessage(null); 
+      setValidateError('');
 
-      const res = await updateGroupItem(itemSelected.bookTypeGroupListId, {
-        group: group,
-        maxAmount: amount,
-        bookTypes: selectedIds
-      })
-
-      await getItems();
-
-  //    console.log(selectedIds);
-
-//      await updateBookTypesSelected(selectedIds);
-      
-      closePopup();
-
-    } catch (error) {
-      setErrorMessage(error.message);
-      console.error("Error al crear grupo o materiales:", error);
-    }
-
+      return [
+        ...prev,
+        {
+          bookTypeId: id,
+          typeName: bookType.typeName,
+          loanDays: bookType.loanDays
+        }
+      ];
+    });
   }
 
 
-  const materialColumns = [
-    { header: 'Material', accessor: 'typeName' },
+  function handleDeleteBookType(bookType) {
+    const idToDelete = bookType.BookTypeId ?? bookType.bookTypeId;
+
+    setBookTypes(prev =>
+      prev.filter(bt =>
+        (bt.BookTypeId ?? bt.bookTypeId) !== idToDelete
+      )
+    );
+  }
+
+
+  function validateBeforeSave() {
+    if (!group || !amount) {
+      setValidateError('Debe completar el grupo y la cantidad.');
+      return false;
+    }
+
+    if (!bookTypes.length) {
+      setValidateError('Debe agregar al menos un tipo de material.');
+      return false;
+    }
+
+    setValidateError('');
+    return true;
+  }
+
+  function handleSave() {
+    if (!validateBeforeSave()) return;
+
+    const normalizedBookTypes = bookTypes
+      .map(bt => ({
+        bookTypeId: bt.bookTypeId ?? bt.BookTypeId,
+        loanDays: bt.loanDays
+      }))
+      .filter(bt => bt.bookTypeId); 
+
+      console.log(normalizedBookTypes);
+
+    createGroupItem({
+      group,
+      amount,
+      normalizedBookTypes
+    });
+
+    setConfirmSavePopup(false);
+  }
+
+  const libraryColumns = [
+    { header: 'Nombre', accessor: 'typeName' },
+    { header: 'Dias prestamo', accessor: 'loanDays' },
     {
-      header: 'Elegir',
-      accessor: 'choose',
+      header: 'Agregar',
+      accessor: 'add',
       render: (_, row) => (
         <button
-          key={`select-${row.bookTypeId}-${selectedIds.includes(row.bookTypeId)}`} // fuerza re-render si cambia
           type="button"
-          className={`button-table ${selectedIds.includes(row.bookTypeId) ? 'choosed' : ''}`}
-          onClick={() => {
-            setSelectedIds(prev => {
-              const updated = prev.includes(row.bookTypeId)
-                ? prev.filter(bookTypeId => bookTypeId !== row.bookTypeId)
-                : [...prev, row.bookTypeId];
-              return updated;
-            });
-          }}
+          className="button-table"
+          onClick={() => handleAddBookType(row)}
         >
-          <img src={ChooseIcon} alt="Elegir" />
+          <img src={AddBookIcon} alt="Agregar" />
+        </button>
+      )
+    }
+  ];
+
+  const selectedColumns = [
+    { header: 'Nombre', accessor: 'typeName' },
+    { header: 'Dias prestamo', accessor: 'loanDays' },
+    {
+      header: 'Borrar',
+      accessor: 'delete',
+      render: (_, row) => (
+        <button
+          type="button"
+          className="button-table"
+          onClick={() => handleDeleteBookType(row)}
+        >
+          <img src={DeleteIcon} alt="Borrar" />
         </button>
       )
     }
   ];
 
   return (
-    <>
-      <div className='add-material-container'>
-        <div className='main-author-books'>
-          <div className='add-loan-form-inputs add-material-inputs'>
-            <div className='add-loan-retire-date input'>
-              <label>Grupo <span className='required'>*</span></label>
-              <input type='text' value={group} onChange={(e) => setGroup(e.target.value)} />
+    <div className='add-loan-form-container'>
+      {popupView === 'default' && (
+        <div className='add-loan-form-content'>
+          <form>
+            <h2>Datos del grupo</h2>
+
+            <div className='add-loan-form-inputs'>
+              <div className='input'>
+                <label>Grupo *</label>
+                <input
+                  type="text"
+                  value={group}
+                  onChange={e => setGroup(e.target.value)}
+                />
+              </div>
+
+              <div className='input'>
+                <label>Cantidad *</label>
+                <input
+                  type="number"
+                  value={amount}
+                  onChange={e => setAmount(e.target.value)}
+                />
+              </div>
             </div>
-            <div className='add-loan-retire-date input'>
-              <label>Cantidad <span className='required'>*</span></label>
-              <input type='number' value={amount} onChange={(e) => setAmount(e.target.value)} />
+
+            <div className='lend-books-container'>
+              <h3>Tipos de material asociados</h3>
+
+              <Table
+                columns={selectedColumns}
+                data={bookTypes}
+                totalItems={bookTypes.length}
+              >
+                <div className='add-book-to-lend'>
+                  <Btn
+                    variant='primary'
+                    text='Agregar material'
+                    onClick={() => setPopupView('addBook')}
+                    icon={<img src={AddBookIcon} alt="add" />}
+                  />
+                </div>
+              </Table>
             </div>
-          </div>
-            {errorMessage && (
-                <p className="error-message">{errorMessage}</p>
-            )}
-          <div className='author-books-title'>
-            <h3>Tipo de material disponible <span className='required'>*</span></h3>
-          </div>
-          <div className='materials-group'>
-            <div className='group-table'>
-              <Table columns={materialColumns} data={items} />
-            </div>
-          </div>
-          <div className='save-changes-lend-books'>
-            <Btn variant={'primary'} text={'Guardar'} onClick={() => {
-              setConfirmSaveChangesPopup(true)
-            }} icon={<img src={SaveIcon} alt='saveIconButton' />} />
-          </div>
+
+            {validateError && <p className="error-text">{validateError}</p>}
+            {errorMessage && <p className="error-text">{errorMessage}</p>}
+
+            <Btn
+              type="button"
+              variant="primary"
+              text="Guardar"
+              icon={<img src={SaveIcon} alt="save" />}
+              onClick={() => setConfirmSavePopup(true)}
+            />
+          </form>
+
+          {confirmSavePopup && (
+            <PopUp title="Confirmar" onClick={() => setConfirmSavePopup(false)}>
+              <ConfirmMessage
+                text="¿Está seguro de guardar los cambios?"
+                closePopup={() => setConfirmSavePopup(false)}
+                onConfirm={() => {
+                  handleSave();
+                  setConfirmSavePopup(false);
+                }}
+              />
+            </PopUp>
+          )}
         </div>
-        {confirmSaveChanges && (
-          <PopUp title='Grupo de material' onClick={() => setConfirmSaveChangesPopup(false)}>
-            <ConfirmMessage text={'¿Está seguro de guardar el nuevo grupo?'} closePopup={() => setConfirmSaveChangesPopup(false)} onConfirm={() => {
-              if (method === 'add') {
-                handleAddItem();
-              }
-              else if (method === 'update') {
-                handleUpdateItem();
-              }
+      )}
 
-              setConfirmSaveChangesPopup(false);
-            }
-            } />
-          </PopUp>
-        )}
-      </div>
+      {popupView === 'addBook' && (
+        <>
+          <BackviewBtn menu="default" changeView={setPopupView} />
 
-    </>
+          <div className='author-books-container'>
+            <div className='library-books'>
+              <h3>Tipos de material disponibles</h3>
+              <Table
+                columns={libraryColumns}
+                data={libraryBookTypes}
+                totalItems={totalLibraryBookTypes}
+                loading={loadingBookTypes}
+                handleChangePage={handleChangePage}
+                resetPageTrigger={resetPageTrigger}
+              />
+            </div>
+
+            <div className='author-books'>
+              <h3>Seleccionados</h3>
+              <Table
+                columns={selectedColumns}
+                data={bookTypes}
+                totalItems={bookTypes.length}
+              />
+            </div>
+          </div>
+        </>
+      )}
+    </div>
   );
 }

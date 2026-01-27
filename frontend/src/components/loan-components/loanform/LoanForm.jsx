@@ -23,6 +23,11 @@ import PendingBooks from '../pendingBooks/PendingBooks.jsx';
 import PartnerMemo from '../partnermemo/PartnerMemo.jsx';
 
 export default function LoanForm({ method, createLoanItem, loanSelected, errorMessage }) {
+  const chunkSize = 100;
+  const rowsPerPage = 5;
+  const [offsetActual, setOffsetActual] = useState(0);
+  const [resetPageTrigger, setResetPageTrigger] = useState(0);
+
   const [popupView, setPopupView] = useState("default");
   const [confirmSaveChangesPopup, setConfirmSaveChangesPopup] = useState(false);
   const BASE_URL = "http://localhost:4000/api/v1";
@@ -51,54 +56,83 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
   const isUpdate = method === 'update';
 
   const partnerSource = isUpdate ? loanSelected : loanData;
-  const readerSource = isUpdate ? loanSelected : loanData;
 
-  // 🔹 Error unificado
   const [validateError, setValidateError] = useState('');
   const [selectedBook, setSelectedBook] = useState('');
 
-  const { data: employeeInfo, error: employeeError, loading: employeeLoading } = useEntityLookup(loanData.employeeCode, `${BASE_URL}/employees?code=`);
+  const { data: employeeInfo, error: employeeError, loading: employeeLoading } = useEntityLookup(loanData.employeeCode, `${BASE_URL}/employees/by-code/`);
 
   const [books, setBooks] = useState([]);
 
+  const [libraryBooks, setLibraryBooks] = useState([]);
+  const [loanBooksFetched, setLoanBooksFetched] = useState([]);
+  const [totalLibraryBooks, setTotalLibraryBooks] = useState(0);
+
+  const [loadingBooks, setLoadingBooks] = useState(false);
+
   useEffect(() => {
-    getBooks();
+    getLibraryBooks({ limit: chunkSize, offset: 0 });
 
     if (method === 'update' && loanSelected?.loanId) {
-      const fetchAllBooksFromLoan = async () => {
-        const loanSelectedId = loanSelected.loanId;
-        const booksFromLoan = await getBooks(loanSelectedId);
-        console.log(loanSelected);
+      getLoanBooks(loanSelected.loanId, { limit: chunkSize, offset: 0 })
+        .then(rows => {
         setLoanData({
           loanType: loanSelected.loanType || 'in_room',
           employeeCode: loanSelected.employeeCode || '',
           retiredDate: formatToInputDate(loanSelected.retiredDate),
           expectedDate: formatToInputDate(loanSelected.expectedDate),
-          books: booksFromLoan || []
+          books: rows
         });
-      };
-
-      fetchAllBooksFromLoan();
+        });
     }
   }, []);
 
-  const getBooks = async (loanSelectedId) => {
-    try {
-      let url = loanSelectedId
-        ? `${BASE_URL}/books/withFields/loan/${loanSelectedId}`
-        : `${BASE_URL}/books/withFields`;
 
-      const response = await fetch(url);
-      if (!response.ok) throw new Error("Error al obtener libros");
-      const data = await response.json();
+  const getLibraryBooks = async (filters = {}, append = false) => {
+    setLoadingBooks(true);
 
-      if (!loanSelectedId) setBooks(data);
-      return data;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
+    const queryParams = new URLSearchParams(filters).toString();
+
+    const res = await fetch(`${BASE_URL}/books/withFields?${queryParams}`);
+    const { rows, total } = await res.json();
+
+    setTotalLibraryBooks(total);
+    setLibraryBooks(prev => append ? [...prev, ...rows] : rows);
+
+    setLoadingBooks(false);
+    return rows;
   };
+
+  const getLoanBooks = async (loanId, filters = {}) => {
+    setLoadingBooks(true);
+
+    const queryParams = new URLSearchParams(filters).toString();
+
+    const res = await fetch(`${BASE_URL}/books/withFields/loan/${loanId}?${queryParams}`);
+    const { rows } = await res.json();
+
+    setLoanBooksFetched(rows);
+
+    setLoadingBooks(false);
+    return rows;
+  };
+
+  async function handleChangePage(page) {
+    const numberPage = Number(page);
+    const lastItemIndex = numberPage * rowsPerPage;
+
+    if (books.length < totalLibraryBooks && lastItemIndex > books.length) {
+      const newOffset = books.length;
+
+      await getLibraryBooks(
+        {
+          limit: chunkSize,
+          offset: newOffset
+        },
+        true
+      );
+    }
+  }
 
   function handleAddNewLoan() {
     if (validateError) return;
@@ -368,6 +402,7 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
   };
 
   const handleExtraData = (newData) => {
+    console.log(newData);
     setLoanData(prev => {
       const updated = { ...prev, ...newData };
       return updated;
@@ -441,7 +476,9 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
             <div className='lend-books-container'>
               <h2 className='lend-books-title'>Libros a Prestar</h2>
 
-              <Table columns={columns} data={loanData.books}>
+
+              <Table columns={lendBooksColumns} data={loanData.books} totalItems={loanData.books.length} handleChangePage={() => { console.log("work") }} loading={loadingBooks} resetPageTrigger={resetPageTrigger} >
+                
                 <div className='add-book-to-lend'>
                   <Btn
                     variant={'primary'}
@@ -513,13 +550,13 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
               <div className='author-books-title'>
                 <h3>Libros cargados en la biblioteca</h3>
               </div>
-              <Table columns={bookshelfBooksColumns} data={books} />
+              <Table columns={bookshelfBooksColumns} data={libraryBooks} totalItems={totalLibraryBooks} handleChangePage={handleChangePage} loading={loadingBooks} resetPageTrigger={resetPageTrigger} />
             </div>
             <div className='author-books'>
               <div className='author-books-title'>
-                <h3>Libros de este autor</h3>
+                <h3>Libros a prestar</h3>
               </div>
-              <Table columns={lendBooksColumns} data={loanData.books} />
+              <Table columns={lendBooksColumns} data={loanData.books} totalItems={loanData.books.length} handleChangePage={() => { console.log("work") }} loading={loadingBooks} resetPageTrigger={resetPageTrigger} />
             </div>
           </div>
           {addBookMessage && (

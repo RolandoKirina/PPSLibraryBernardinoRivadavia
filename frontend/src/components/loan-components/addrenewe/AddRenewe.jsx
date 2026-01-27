@@ -9,123 +9,97 @@ import ConfirmMessage from '../../../components/common/confirmMessage/ConfirmMes
 import BackviewBtn from '../../common/backviewbtn/BackviewBtn';
 import SaveIcon from '../../../assets/img/save-icon.svg';
 import { useAuth } from '../../../auth/AuthContext';
+import SearchPartner from '../searchpartner/SearchPartner';
+import UnpaidFees from '../unpaidfees/UnpaidFees';
+import PendingBooks from '../pendingBooks/PendingBooks';
+import PartnerMemo from '../partnermemo/PartnerMemo';
 
 export default function AddRenewe({ refreshItems, createReneweItem }) {
-  const [confirmPopup, setConfirmPopup] = useState(false);
-  const [popupView, setPopupView] = useState('default');
-  const BASE_URL = 'http://localhost:4000/api/v1';
   const { auth } = useAuth();
+  const BASE_URL = 'http://localhost:4000/api/v1';
+
+  const chunkSize = 100;
+  const rowsPerPage = 5;
+  const [offsetActual, setOffsetActual] = useState(0);
+  const [resetPageTrigger, setResetPageTrigger] = useState(0);
+
+  const [popupView, setPopupView] = useState('default');
+  const [confirmPopup, setConfirmPopup] = useState(false);
 
   const [reneweData, setReneweData] = useState({
     partnerNumber: '',
     partnerFullName: '',
-    reneweDate: '',
+    memoSearch: '',
+    reservationDate: '',
     expectedDate: '',
     books: []
   });
 
-  const [books, setBooks] = useState([]);
+  const [libraryBooks, setLibraryBooks] = useState([]);
+  const [totalLibraryBooks, setTotalLibraryBooks] = useState(0);
+  const [loadingBooks, setLoadingBooks] = useState(false);
   const [addBookMessage, setAddBookMessage] = useState('');
 
   useEffect(() => {
-    getBooks();
+    getLibraryBooks({ limit: chunkSize, offset: 0 });
   }, []);
 
-  const getBooks = async (reservationId) => {
-    try {
-      let url = reservationId
-        ? `${BASE_URL}/books/withFields/reservation/${reservationId}`
-        : `${BASE_URL}/books/withFields`;
+  const getLibraryBooks = async (filters = {}, append = false) => {
+    setLoadingBooks(true);
+    const queryParams = new URLSearchParams(filters).toString();
+    const res = await fetch(`${BASE_URL}/books/withFields?${queryParams}`);
+    const { rows, total } = await res.json();
 
-      const response = await fetch(url);
-      if (!response.ok) throw new Error('Error al obtener libros');
-      const data = await response.json();
-
-      if (!reservationId) setBooks(data);
-      return data;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
+    setTotalLibraryBooks(total);
+    setLibraryBooks(prev => append ? [...prev, ...rows] : rows);
+    setLoadingBooks(false);
   };
 
-  async function handleAddBook(book) {
-   /* const available = await verifyIfAvailable(book.BookId);
+  async function handleChangePage(page) {
+    const lastItemIndex = Number(page) * rowsPerPage;
+    if (libraryBooks.length < totalLibraryBooks && lastItemIndex > libraryBooks.length) {
+      await getLibraryBooks(
+        { limit: chunkSize, offset: libraryBooks.length },
+        true
+      );
+    }
+  }
 
-    if (!available) {
-      setAddBookMessage(`El libro "${book.title}" no está disponible para reservar.`);
-      return;
-    }*/
-
-    setReneweData((prev) => {
-      const exists = prev.books.some((b) => b.BookId === book.BookId);
-      if (exists) {
+  function handleAddBook(book) {
+    setReneweData(prev => {
+      if (prev.books.some(b => b.BookId === book.BookId)) {
         setAddBookMessage(`El libro "${book.title}" ya fue añadido.`);
         return prev;
       }
-
       setAddBookMessage('');
       return { ...prev, books: [...prev.books, book] };
     });
   }
 
-  // 🔹 Verificar si un libro ya está reservado o no
-  async function verifyIfAvailable(bookId) {
-    try {
-      const res = await fetch(`${BASE_URL}/reservations/repeated-book/${bookId}`);
-      if (!res.ok) throw new Error('Error al verificar libro');
-      const data = await res.json();
-      return data.available; // true o false
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
-  }
-
-  // 🔹 Eliminar libro de la reserva
   function handleDeleteBook(book) {
-    setReneweData((prev) => {
-      const updated = prev.books.filter((b) => b.BookId !== book.BookId);
-      return { ...prev, books: updated };
-    });
+    setReneweData(prev => ({
+      ...prev,
+      books: prev.books.filter(b => b.BookId !== book.BookId)
+    }));
   }
-
-  async function handleSaveChanges() {
-  if (!reneweData.partnerNumber) {
-    alert('Debe completar los datos del socio.');
-    return;
-  }
-
-  if (reneweData.books.length === 0) {
-    alert('Debe agregar al menos un libro a la reserva.');
-    return;
-  }
-
-  try {
-    await createReneweItem({
-      partnerNumber: reneweData.partnerNumber,
-      partnerFullName: reneweData.partnerFullName,
-      reservationDate: reneweData.reservationDate,
-      expectedDate: reneweData.expectedDate,
-      books: reneweData.books,
-    });
-
-    setConfirmPopup(false);
-
-    await refreshItems();
-  } catch (error) {
-    console.error("Error al guardar los cambios:", error);
-    alert("Ocurrió un error al guardar los cambios.");
-  }
-}
-
 
   function handleOnChange(e) {
     const { name, value } = e.target;
-    setReneweData((prev) => ({ ...prev, [name]: value }));
+    setReneweData(prev => ({ ...prev, [name]: value }));
   }
 
-  // 🔹 Columnas
+  function handleExtraData(data) {
+    setReneweData(prev => ({ ...prev, ...data }));
+  }
+
+  async function handleSaveChanges() {
+    if (!reneweData.partnerNumber || reneweData.books.length === 0) return;
+
+    await createReneweItem(reneweData);
+    setConfirmPopup(false);
+    await refreshItems();
+  }
+
   const bookshelfBooksColumns = [
     { header: 'Código', accessor: 'codeInventory' },
     { header: 'Título', accessor: 'title' },
@@ -141,7 +115,7 @@ export default function AddRenewe({ refreshItems, createReneweItem }) {
   ];
 
   const reneweBooksColumns = [
-    { header: 'Código del libro', accessor: 'codeInventory' },
+    { header: 'Código', accessor: 'codeInventory' },
     { header: 'Título', accessor: 'title' },
     {
       header: 'Borrar',
@@ -167,7 +141,6 @@ export default function AddRenewe({ refreshItems, createReneweItem }) {
       )
     }
   ];
-
   return (
     <div className='renewe-books-container'>
       {popupView === 'default' && (
@@ -178,14 +151,6 @@ export default function AddRenewe({ refreshItems, createReneweItem }) {
 
           <div className='add-loan-form-inputs'>
             <div className='add-loan-retire-date input'>
-              <label>Número de socio</label>
-              <input type='text' name='partnerNumber' value={reneweData.partnerNumber} onChange={handleOnChange} />
-            </div>
-            <div className='add-loan-retire-date input'>
-              <label>Apellido, Nombre</label>
-              <input type='text' name='partnerFullName' value={reneweData.partnerFullName} onChange={handleOnChange} />
-            </div>
-            <div className='add-loan-retire-date input'>
               <label>Fecha reserva</label>
               <input type='date' name='reservationDate' value={reneweData.reservationDate} onChange={handleOnChange} />
             </div>
@@ -193,13 +158,23 @@ export default function AddRenewe({ refreshItems, createReneweItem }) {
               <label>Fecha promesa</label>
               <input type='date' name='expectedDate' value={reneweData.expectedDate} onChange={handleOnChange} />
             </div>
+            <SearchPartner
+              method="create"
+              menu={setPopupView}
+              onDataChange={handleExtraData}
+              partnerData={{
+                partnerNumber: reneweData.partnerNumber,
+                partnerName: reneweData.partnerFullName,
+                memoSearch: reneweData.memoSearch
+              }}
+            />
           </div>
 
           <div className='renewe-books-title'>
             <h3>Libros vinculados a la reserva</h3>
           </div>
 
-          <Table columns={reneweBooksColumns} data={reneweData.books}>
+          <Table columns={reneweBooksColumns} data={reneweData.books} totalItems={reneweData.books.length}>
             <div className='main-renewe-btns'>
               <Btn variant={'primary'} className='primary-btn' onClick={() => setPopupView('addBook')} text='Administrar libros' />
             </div>
@@ -213,7 +188,7 @@ export default function AddRenewe({ refreshItems, createReneweItem }) {
 
           {popups.map(({ condition, title, content }, idx) =>
             condition ? (
-              <PopUp key={idx} title={title} onClick={() => 
+              <PopUp key={idx} title={title} onClick={() =>
                 setConfirmPopup(false)}>
                 {content}
               </PopUp>
@@ -229,14 +204,35 @@ export default function AddRenewe({ refreshItems, createReneweItem }) {
             <div className='renewe-books-title'>
               <h3>Libros cargados en la biblioteca</h3>
             </div>
-            <Table columns={bookshelfBooksColumns} data={books} />
+            <Table columns={bookshelfBooksColumns} data={libraryBooks} totalItems={totalLibraryBooks} handleChangePage={handleChangePage} loading={loadingBooks} resetPageTrigger={resetPageTrigger} />
           </div>
           <div className='renewe-books'>
             <div className='renewe-books-title'>
               <h3>Libros vinculados</h3>
             </div>
-            <Table columns={reneweBooksColumns} data={reneweData.books} />
+            <Table columns={reneweBooksColumns} data={reneweData.books} totalItems={reneweData.books.length} />
           </div>
+        </>
+      )}
+
+      {popupView === 'unpaidFees' && (
+        <>
+          <BackviewBtn menu={'default'} changeView={setPopupView} />
+          <UnpaidFees changeView={setPopupView} partnerNumber={reneweData.partnerNumber} />
+        </>
+      )}
+
+      {popupView === 'pendingBooks' && (
+        <>
+          <BackviewBtn menu={'default'} changeView={setPopupView} />
+          <PendingBooks changeView={setPopupView} partnerNumber={reneweData.partnerNumber} />
+        </>
+      )}
+
+      {popupView === 'partnerMemo' && (
+        <>
+          <BackviewBtn menu={'default'} changeView={setPopupView} />
+          <PartnerMemo changeView={setPopupView} partnerNumber={reneweData.partnerNumber} />
         </>
       )}
     </div>

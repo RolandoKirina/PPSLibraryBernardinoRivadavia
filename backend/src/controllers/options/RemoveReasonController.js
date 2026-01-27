@@ -1,10 +1,12 @@
 import * as RemoveReasonService from '../../services/options/RemoveReasonService.js';
 import { HTTP_STATUS } from '../../https/httpsStatus.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
+import { buildRemoveReasonFilters } from '../../utils/buildRemovePartnerFilters.js';
 
 export const getAllRemoveReasons = async (req, res) => {
     try {
-        const result = await RemoveReasonService.getAllRemoveReasons();
+        const queryOptions = buildRemoveReasonFilters(req.query); 
+        const result = await RemoveReasonService.getAllRemoveReasons(queryOptions);
         res.status(HTTP_STATUS.OK.code).send(result);
     } catch (error) {
         console.error(error);

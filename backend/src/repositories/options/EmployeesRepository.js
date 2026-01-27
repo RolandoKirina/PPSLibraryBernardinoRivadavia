@@ -1,37 +1,43 @@
 import Employees from '../../models/options/Employees.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 
-export const getAll = async (filters) => {
-    const {
-        whereEmployee
-    } = filters;
+export const getAll = async (filters = {}) => {
+    const { whereEmployee, limit, offset, order } = filters;
 
-    return await Employees.findAll(
-        { 
-            where: whereEmployee
-        }
-    );
+    const { rows, count } = await Employees.findAndCountAll({
+        where: Object.keys(whereEmployee || {}).length ? whereEmployee : undefined,
+        limit,
+        offset,
+        order
+    });
+
+    return {
+        rows,
+        count
+    };
 };
+
 
 export const getOne = async (id) => {
     return await Employees.findByPk(id);
 };
 
-export const getOneByCode = async (code) => {
-  try {
-    const employee = await Employees.findOne({
-      where: { code },
-    });
+export const getOneByCode = async (filters, code) => {
+    console.log(code);
+    try {
+        const employee = await Employees.findOne({
+            where: { code },
+        });
 
-    if (!employee) {
-      throw new ValidationError(`El empleado con código "${code}" no existe`);
+        if (!employee) {
+            throw new ValidationError(`El empleado con código "${code}" no existe`);
+        }
+
+        return employee.dataValues;
+
+    } catch (err) {
+        throw err;
     }
-
-    return employee.dataValues;
-
-  } catch (err) {
-    throw err;
-  }
 };
 
 
@@ -54,14 +60,14 @@ export const update = async (id, updates) => {
     return await Employees.findByPk(id);
 };
 
-export const remove = async (id) =>{
+export const remove = async (id) => {
     const employees = await Employees.findByPk(id);
 
-      if (!employees) {
+    if (!employees) {
         return null;
-      }
+    }
     await employees.destroy();
-  
+
     return {
         msg: "employees deleted successfully",
         data: employees

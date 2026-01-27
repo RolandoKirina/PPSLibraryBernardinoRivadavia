@@ -7,9 +7,8 @@ import * as EmployeesRepository from '../../repositories/options/EmployeesReposi
 import * as ReaderBookRepository from '../../repositories/reader/ReaderBookRepository.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 import { formatDate } from '../../utils/date/formatDate.js';
-
 export const getAll = async (filters) => {
-   const {
+  const {
     whereReader,
     whereReaderBook,
     whereBook,
@@ -19,15 +18,76 @@ export const getAll = async (filters) => {
     order
   } = filters;
 
+  const count = await ReaderBook.count({
+    where: whereReaderBook,
+    include: [
+      {
+        model: Reader,
+        as: 'Reader',
+        where: whereReader,
+        attributes: []
+      },
+      {
+        model: Book,
+        as: 'Book',
+        where: whereBook,
+        attributes: []
+      },
+      {
+        model: Employees,
+        as: 'Employee',
+        where: whereEmployee,
+        attributes: []
+      }
+    ]
+  });
+
+  const readerBookIds = await ReaderBook.findAll({
+    attributes: ['ReaderBookId'],
+    where: whereReaderBook,
+    include: [
+      {
+        model: Reader,
+        as: 'Reader',
+        attributes: [],
+        where: whereReader
+      },
+      {
+        model: Book,
+        as: 'Book',
+        attributes: [],
+        where: whereBook
+      },
+      {
+        model: Employees,
+        as: 'Employee',
+        attributes: [],
+        where: whereEmployee
+      }
+    ],
+    limit,
+    offset,
+    order,
+    raw: true
+  });
+
+  const ids = readerBookIds.map(rb => rb.ReaderBookId);
+
+  if (!ids.length) {
+    return {
+      rows: [],
+      count
+    };
+  }
+
   const readers = await Reader.findAll({
-    where: whereReader,                   // 🔹 Filtros del Reader
+    where: whereReader,
     attributes: ['dni', 'name'],
-    subQuery: false,
     include: [
       {
         model: ReaderBook,
         as: 'ReaderBooks',
-        where: whereReaderBook,           // 🔹 Filtros del ReaderBook
+        where: { ReaderBookId: ids },
         attributes: [
           'employeeId',
           'returnedDate',
@@ -42,52 +102,46 @@ export const getAll = async (filters) => {
           {
             model: Book,
             as: 'Book',
-            attributes: ['codeInventory', 'title'],
-            where: whereBook              // 🔹 Filtros del Book (ahora vacío pero preparado)
+            attributes: ['codeInventory', 'title']
           },
           {
             model: Employees,
             as: 'Employee',
-            attributes: ['id', 'name', 'code'],
-            where: whereEmployee          // 🔹 Filtros del empleado (vacío ahora)
+            attributes: ['id', 'name', 'code']
           }
         ]
       }
     ],
-    limit,
-    offset,
     order
   });
 
-  const flatReaders = readers.flatMap(reader =>
-    reader.ReaderBooks.map(rb => {
-      const book = rb.Book;
-      const employee = rb.Employee;
-
-      return {
-        dni: reader.dni,
-        name: reader.name,
-        bookCode: book?.codeInventory ?? '',
-        bookTitle: book?.title ?? '',
-        retiredDate: formatDate(rb.retiredDate),                
-        retiredHour: rb.retiredHour ?? '',   
-        returnedDate: formatDate(rb.returnedDate),             
-        returnedHour: rb.returnedHour ?? '',
-        employee: employee?.name ?? '',
-        id: rb.ReaderBookId 
-      };
-    })
+  const rows = readers.flatMap(reader =>
+    reader.ReaderBooks.map(rb => ({
+      dni: reader.dni,
+      name: reader.name,
+      bookCode: rb.Book?.codeInventory ?? '',
+      bookTitle: rb.Book?.title ?? '',
+      retiredDate: formatDate(rb.retiredDate),
+      retiredHour: rb.retiredHour ?? '',
+      returnedDate: formatDate(rb.returnedDate),
+      returnedHour: rb.returnedHour ?? '',
+      employee: rb.Employee?.name ?? '',
+      id: rb.ReaderBookId
+    }))
   );
 
-  return flatReaders;
-
-
+  return {
+    rows,
+    count
+  };
 };
+
 
 export const getOne = async (id) => {
   return await Reader.findByPk(id);
 };
 export const create = async (data) => {
+
   if (!data.books || data.books.length === 0) {
     throw new ValidationError("No se puede crear un lector sin libros");
   }
@@ -111,11 +165,11 @@ export const create = async (data) => {
   const transaction = await sequelize.transaction();
 
   try {
-    const employee = await EmployeesRepository.getOneByCode(data.employeeCode);
+    const employee = await EmployeesRepository.getOneByCode(null, data.employeeCode);
     if (!employee) {
       throw new ValidationError("Empleado no existe");
     }
-    
+
     let existingReader = await getOne(data.readerDNI);
 
     let reader = existingReader;

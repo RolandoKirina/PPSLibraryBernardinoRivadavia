@@ -1,10 +1,12 @@
 import * as BookTypeService from "../../services/options/BookTypeService.js";
 import { HTTP_STATUS } from "../../https/httpsStatus.js";
 import { ValidationError } from "../../utils/errors/ValidationError.js";
+import { buildBookTypeFilters } from "../../utils/buildBookTypeFilters.js";
 
 export const getAllBookTypes = async (req, res) => {
     try {
-        const bookTypes = await BookTypeService.getAllBookTypes();
+        const queryOptions = buildBookTypeFilters(req.query);
+        const bookTypes = await BookTypeService.getAllBookTypes(queryOptions);
         res.json(bookTypes); 
     } catch (e) {
         console.error(e);

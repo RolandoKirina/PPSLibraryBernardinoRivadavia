@@ -15,8 +15,6 @@ export const getAllAuthors = async (req, res) => {
     }
 };
 
-
-
 export const getAuthor = async (req, res) => {
     try {
         const { id } = req.params;

@@ -20,11 +20,18 @@ import roles from '../../../auth/roles';
 //import { pendingbooks } from "../../../data/mocks/pendingbooks.js";
 import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI.js';
 import { useEffect } from 'react';
+import PartnerMemo from '../partnermemo/PartnerMemo.jsx';
+import PendingBooks from '../pendingBooks/PendingBooks.jsx';
 
 export default function Return() {
     //cuando se usan los inputs de partner se filtran las devoluciones y se pueden renovar, devolver o devolver todos
 
     const { auth } = useAuth();
+
+    const chunkSize = 100;
+    const rowsPerPage = 5;
+    const [offsetActual, setOffsetActual] = useState(0);
+    const [resetPageTrigger, setResetPageTrigger] = useState(0);
 
     const [confirmReturnPopup, setConfirmReturnPopup] = useState(false);
     const [confirmRenewePopup, setConfirmRenewePopup] = useState(false);
@@ -46,6 +53,8 @@ export default function Return() {
 
     const {
         items,
+        loading,
+        totalItems,
         getItems,
         deleteItem,
         updateItem
@@ -53,11 +62,26 @@ export default function Return() {
 
     useEffect(() => {
         const delay = setTimeout(() => {
-            getItems(filters);
+            setOffsetActual(0);
+
+            setResetPageTrigger(prev => prev + 1);
+
+            getItems({ ...filters, limit: chunkSize, offset: 0 });
         }, 500);
 
         return () => clearTimeout(delay);
     }, [filters]);
+
+    async function handleChangePage(page) {
+        const numberPage = Number(page);
+        const lastItemIndex = numberPage * rowsPerPage;
+
+        if (items.length < totalItems && lastItemIndex > items.length) {
+            const newOffset = items.length;
+            await getItems({ ...filters, limit: chunkSize, offset: newOffset }, true);
+            setOffsetActual(newOffset);
+        }
+    }
 
     const returnBooksPopups = [
         {
@@ -115,7 +139,21 @@ export default function Return() {
     if (auth.role === roles.admin) {
         columnsReturnForm = [
             { header: 'Código del libro', accessor: 'bookCode' },
-            { header: 'Título', accessor: 'bookTitle' }
+            { header: 'Título', accessor: 'bookTitle' },
+            { header: 'Numero Socio', accessor: 'partnerNumber' },
+            { header: 'Renovaciones', accessor: 'renewes' },
+            {
+                header: 'Detalles',
+                accessor: 'details',
+                render: (_, row) => (
+                    <button type='button' className="button-table" onClick={() => {
+                        setPopupView('details')
+                        setSelected(row)
+                    }}>
+                        <img src={DetailsIcon} alt="Detalles" />
+                    </button>
+                )
+            }
         ];
     }
     else if (auth.role === roles.user) {
@@ -157,6 +195,8 @@ export default function Return() {
             console.log("devolucion actualizado con datos externos:", updated);
             return updated;
         });
+
+
     };
 
     return (
@@ -179,7 +219,10 @@ export default function Return() {
                             <div className='lend-books-container'>
                                 <h2 className='lend-books-title'>Libros Prestados</h2>
 
-                                <Table columns={columnsReturnForm} data={items} />
+                                <Table columns={columnsReturnForm} data={items} totalItems={totalItems}
+                                    handleChangePage={handleChangePage}
+                                    loading={loading}
+                                    resetPageTrigger={resetPageTrigger} />
 
                                 {returnBooksPopups.map(({ condition, title, className, content, close, variant }, idx) => (
                                     condition && (
@@ -204,13 +247,21 @@ export default function Return() {
                 {popupView === 'unpaidFees' && (
                     <>
                         <BackviewBtn menu={'default'} changeView={setPopupView} />
-                        <UnpaidFees changeView={setPopupView} />
+                        <UnpaidFees changeView={setPopupView} partnerNumber={partnerData.partnerNumber} />
                     </>
                 )}
+
                 {popupView === 'pendingBooks' && (
                     <>
-                        <Table columns={columnsPendingBooks} data={pendingbooks}></Table>
                         <BackviewBtn menu={'default'} changeView={setPopupView} />
+                        <PendingBooks changeView={setPopupView} partnerNumber={partnerData.partnerNumber} />
+                    </>
+                )}
+
+                {popupView === 'partnerMemo' && (
+                    <>
+                        <BackviewBtn menu={'default'} changeView={setPopupView} />
+                        <PartnerMemo changeView={setPopupView} partnerNumber={partnerData.partnerNumber} />
                     </>
                 )}
 
