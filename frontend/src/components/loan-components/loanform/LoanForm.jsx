@@ -76,13 +76,13 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
     if (method === 'update' && loanSelected?.loanId) {
       getLoanBooks(loanSelected.loanId, { limit: chunkSize, offset: 0 })
         .then(rows => {
-        setLoanData({
-          loanType: loanSelected.loanType || 'in_room',
-          employeeCode: loanSelected.employeeCode || '',
-          retiredDate: formatToInputDate(loanSelected.retiredDate),
-          expectedDate: formatToInputDate(loanSelected.expectedDate),
-          books: rows
-        });
+          setLoanData({
+            loanType: loanSelected.loanType || 'in_room',
+            employeeCode: loanSelected.employeeCode || '',
+            retiredDate: formatToInputDate(loanSelected.retiredDate),
+            expectedDate: formatToInputDate(loanSelected.expectedDate),
+            books: rows
+          });
         });
     }
   }, []);
@@ -152,14 +152,39 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
 
   function handleEditLoan() {
     if (validateError) return;
+
+    console.log(loanData.books);
+
+    const normalizedBooks = loanData.books.map(b => {
+      const returned =
+        b.returned === true || b.returned === "Si" || b.returned === "Sí";
+
+      return {
+        BookId: b.BookId,
+        loanId: loanData.loanId,
+        renewes: b.renewes || 0,
+        BookCode: b.codeInventory,
+        returned,
+        returnedDate: returned
+          ? (
+            b.returnedDate instanceof Date
+              ? b.returnedDate.toISOString()
+              : null
+          )
+          : null
+      };
+    });
+
     const updatedLoan = {
       employeeCode: loanData.employeeCode,
       retiredDate: loanData.retiredDate,
       expectedDate: loanData.expectedDate,
-      books: loanData.books
+      books: normalizedBooks
     };
+
     createLoanItem(updatedLoan);
   }
+
 
   async function handleAddBook(book) {
     const res = await verifyIfExists(book.BookId);
@@ -222,9 +247,11 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
     return true;
   };
 
+  const nowISO = () => new Date().toISOString();
+  const nowText = () => new Date().toLocaleDateString("es-AR");
+
 
   async function returnLoanBook(loanBook) {
-
     const { BookId } = loanBook;
 
     setLoanData(prev => ({
@@ -232,21 +259,16 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
       books: prev.books.map(b => {
         if (b.BookId !== BookId) return b;
 
-        const now = new Date();
-        const formattedDate = now.toLocaleDateString();
-
         return {
           ...b,
-          returned: "Sí",             // antes era "No"
-          returnedDate: now,          // guardamos la fecha real (si la usás)
-          returnDateText: formattedDate, // tu campo correcto
+          returned: true,
+          returnedDate: nowISO(),
+          returnDateText: nowText(),
         };
       }),
     }));
   }
-
   async function reneweLoanBook(loanBook) {
-
     const { BookId } = loanBook;
 
     setLoanData(prev => ({
@@ -255,32 +277,33 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
         b.BookId === BookId
           ? {
             ...b,
-            renewes: (b.renewes || 0) + 1,
+            renewes: (b.renewes || 0) + 1
           }
           : b
       ),
     }));
   }
 
+
   function returnAllLoanBooks() {
+    const iso = nowISO();
+    const text = nowText();
+
     setLoanData(prev => ({
       ...prev,
       books: prev.books.map(b => {
-
-        if (b.returnedDate) return b;
-
-        const now = new Date();
-        const formattedDate = now.toLocaleDateString();
+        if (b.returned) return b;
 
         return {
           ...b,
-          returned: "Sí",
-          returnedDate: now,
-          returnDateText: formattedDate
+          returned: true,
+          returnedDate: iso,
+          returnDateText: text,
         };
-      })
+      }),
     }));
   }
+
 
 
   const bookshelfBooksColumns = [
@@ -302,24 +325,22 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
     { header: 'Título', accessor: 'title' },
     ...(method === 'update'
       ? [
-        { header: 'Devuelto', accessor: 'returned' },
         { header: 'Fecha Devolución', accessor: 'returnDateText' },
         { header: 'Renovado', accessor: 'renewes' },
         {
           header: 'Devolver',
           accessor: 'return',
           render: (_, row) => (
-            row.returnedDate
+            row.returned
               ? <span className="status-text">Ya devuelto</span>
               : (
                 <button
-                  type='button'
+                  type="button"
                   className="button-table"
                   onClick={() => {
                     setConfirmReturnPopup(true);
                     setSelectedBook(row);
                     returnLoanBook(row);
-                    console.log(row)
                   }}
                 >
                   <img src={ReturnIcon} alt="Devolver" />
@@ -331,24 +352,23 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
           header: 'Renovar',
           accessor: 'renewe',
           render: (_, row) => (
-            row.returnedDate
+            row.returned
               ? <span className="status-text">No disponible</span>
               : (
                 <button
-                  type='button'
+                  type="button"
                   className="button-table"
                   onClick={() => {
                     setConfirmRenewePopup(true);
                     setSelectedBook(row);
                     reneweLoanBook(row);
-                    console.log(row)
-
                   }}
                 >
                   <img src={ReneweIcon} alt="Renovar" />
                 </button>
               )
           )
+
         }
 
       ]
@@ -477,8 +497,8 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
               <h2 className='lend-books-title'>Libros a Prestar</h2>
 
 
-              <Table columns={lendBooksColumns} data={loanData.books} totalItems={loanData.books.length} handleChangePage={() => { console.log("work") }} loading={loadingBooks} resetPageTrigger={resetPageTrigger} >
-                
+              <Table columns={columns} data={loanData.books} totalItems={loanData.books.length} handleChangePage={() => { console.log("work") }} loading={loadingBooks} resetPageTrigger={resetPageTrigger} >
+
                 <div className='add-book-to-lend'>
                   <Btn
                     variant={'primary'}

@@ -89,7 +89,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
         try {
             await createItem(data);
 
-            await getItems();
+            await getItems({ ...filters, limit: chunkSize, offset: 0 });
 
             setAddPopup(false);
 
@@ -105,7 +105,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
         try {
             await updateItem(selected.loanId, data);
 
-            await getItems();
+            await getItems({ ...filters, limit: chunkSize, offset: 0 });
 
             setEditPopup(false);
 
