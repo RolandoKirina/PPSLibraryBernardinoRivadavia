@@ -87,7 +87,7 @@ export default function LoginSection() {
                                 <Btn
                                     type="submit"
                                     variant={'primary'}
-                                    text={'Registrarse'}
+                                    text={'Ingresar'}
 
                                 />
 

@@ -5,14 +5,34 @@ import SaveIcon from "../../../assets/img/save-icon.svg";
 import Accordion from "../../generic/accordion/Accordion.jsx";
 import { useState, useEffect } from "react";
 import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
+import { useParams } from "react-router-dom";
+
 import "./FormEditPartner.css";
 
-export default function FormAddPartner() {
+export default function FormEditPartner({selectedPartner}) {
   const entityManagerApi = useEntityManagerAPI("partners");
 
   const [activeAccordion, setActiveAccordion] = useState(null);
   const [maritalStatuses, setMaritalStatuses] = useState([]);
   const [reasonOfWithdrawal, setReasonOfWithdrawal] = useState([]);
+  const [existingPartner, setExistingPartner] = useState(null);
+
+  const id = selectedPartner?.id;
+
+  useEffect(() => {
+    const fetchPartner = async () => {
+      const data = await entityManagerApi.getItem(id);
+      setExistingPartner(data);
+      setFormValues(data); 
+    };
+    fetchPartner();
+  }, [id]);
+
+  useEffect(() => {
+      fetchMaritalStatuses();
+      fetchReasonWithdrawal();
+  }, []);
+
 
   const [formValues, setFormValues] = useState({
     name: "",
@@ -42,10 +62,7 @@ export default function FormAddPartner() {
     registrationDate: "",
   });
 
-  useEffect(() => {
-    fetchMaritalStatuses();
-    fetchReasonWithdrawal();
-  }, []);
+
 
   const fetchMaritalStatuses = async () => {
     const res = await fetch("http://localhost:4000/api/v1/marital-statuses");
@@ -69,18 +86,29 @@ export default function FormAddPartner() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+
+    if (!existingPartner) {
+      return;
+    }
     try {
-      await entityManagerApi.createItem({
-        ...formValues,
-        documentType: Number(formValues.documentType),
-        maritalstatus: Number(formValues.maritalstatus),
-        category: Number(formValues.category),
-        locality: Number(formValues.locality),
-        idState: formValues.idState ? Number(formValues.idState) : null,
-        reasonOfWithdrawal: formValues.reasonOfWithdrawal
-          ? Number(formValues.reasonOfWithdrawal)
-          : null,
-      });
+     await entityManagerApi.updateItem(id, {
+      ...existingPartner,
+      ...formValues,
+
+      documentType: Number(formValues.documentType || existingPartner.documentType),
+      maritalstatus: Number(formValues.maritalstatus || existingPartner.maritalstatus),
+      reasonOfWithdrawal: Number(formValues.reasonOfWithdrawal || existingPartner.reasonOfWithdrawal),
+
+      birthDate:
+        formValues.birthDate ||
+        existingPartner.birthDate ||
+        null,
+
+      resignationdate:
+        formValues.resignationdate ||
+        existingPartner.resignationdate ||
+        null,
+    });
 
       alert("Socio editado correctamente");
     } catch (err) {
@@ -98,21 +126,21 @@ export default function FormAddPartner() {
           <div className="row">
             <div className="form-details">
                 <label htmlFor="name" className="title-name">Nombre <span className='required'>*</span></label>
-                <input name="name" placeholder="Nombre" onChange={handleChange} />
+                <input name="name" placeholder="Nombre" onChange={handleChange}   value={formValues.name || ""}/>
             </div>
 
             <div className="form-details" >
               <label htmlFor="surname">Apellido <span className='required'>*</span></label>
-              <input name="surname" placeholder="Apellido" onChange={handleChange} />
-            </div>
+              <input name="surname" placeholder="Apellido" onChange={handleChange} value={formValues.surname || ""} />
+            </div> 
 
             <div className="form-details">
               <label htmlFor="dateofbirthday">Fecha de nacimiento <span className='required'>*</span></label>
-              <input type="date" name="birthDate" onChange={handleChange} />
+              <input type="date" name="birthDate" onChange={handleChange}  value={formValues.birthDate || ""} />
             </div>
             <div className="form-details">
                 <label htmlFor="documentType">Tipo de documento <span className='required'>*</span></label>
-                <select name="documentType" onChange={handleChange}>
+                <select name="documentType" onChange={handleChange}  value={formValues.documentType || ""}>
                     <option value="">Tipo documento</option>
                     <option value="1">DNI</option>
                     <option value="2">LE</option>
@@ -123,27 +151,27 @@ export default function FormAddPartner() {
 
       <div className="form-details">
          <label htmlFor="documentNumber">Numero de documento <span className='required'>*</span></label>
-         <input name="documentNumber" placeholder="Documento" onChange={handleChange} />
+         <input name="documentNumber" placeholder="Documento" onChange={handleChange}  value={formValues.documentNumber || ""} />
       </div>
       <div className="form-details" >
         <label htmlFor="profession">Profesion</label>
-        <input name="profession" placeholder="Profesión" onChange={handleChange} />
+        <input name="profession" placeholder="Profesión" onChange={handleChange} value={formValues.profession || ""} />
 
       </div>
       <div className="form-details">
         <label htmlFor="presentedBy">Presentado por <span className='required'>*</span></label>
-        <input name="presentedBy" placeholder="Presentado por" onChange={handleChange} />
+        <input name="presentedBy" placeholder="Presentado por" onChange={handleChange} value={formValues.presentedBy || ""} />
 
       </div>
       <div className="form-details">
         <label htmlFor="nationality">Nacionalidad </label>
-        <input name="nationality" placeholder="Nacionalidad" onChange={handleChange} />
+        <input name="nationality" placeholder="Nacionalidad" onChange={handleChange} value={formValues.presentedBy || ""} />
 
       </div>
       <div className="form-details">        
         
         <label htmlFor="maritalstatus">Estado civil </label>
-        <select name="maritalstatus" onChange={handleChange}>
+        <select name="maritalstatus" onChange={handleChange} value={formValues.maritalstatus || ""}>
                   <option value="">Estado civil</option>
                   {maritalStatuses.map(m => (
                     <option key={m.id} value={m.id}>{m.statusName}</option>
@@ -155,7 +183,7 @@ export default function FormAddPartner() {
         
         <label htmlFor="category">Categoria <span className='required'>*</span></label>
 
-                <select name="category" onChange={handleChange}>
+                <select name="category" onChange={handleChange}  value={formValues.category || ""}>
                             <option value="">Categoría</option>
                             <option value="1">Regular</option>
                             <option value="2">Honorario</option>
@@ -173,20 +201,20 @@ export default function FormAddPartner() {
           <div className="row">
             <div className="form-details">        
                 <label htmlFor="address">Direccion particular <span className='required'>*</span></label>
-                <input name="address" placeholder="Dirección" onChange={handleChange} />
+                <input name="address" placeholder="Dirección" onChange={handleChange} value={formValues.address || ""} />
             </div>
             <div className="form-details">
                 <label htmlFor="phone">Teléfono <span className='required'>*</span></label>
-                <input name="phone" placeholder="Teléfono" onChange={handleChange} />
+                <input name="phone" placeholder="Teléfono" onChange={handleChange}  value={formValues.phone || ""}  />
 
             </div>
             <div className="form-details">
                   <label htmlFor="postalcode">Código postal </label>
-                  <input name="postalcode" placeholder="Código postal" onChange={handleChange} />
+                  <input name="postalcode" placeholder="Código postal" onChange={handleChange} value={formValues.postalcode || ""}   />
             </div>
             <div className="form-details">
                 <label htmlFor="locality">Localidad </label>
-                <select name="locality" onChange={handleChange}>
+                <select name="locality" onChange={handleChange} value={formValues.locality || ""}  >
                   <option value="">Localidad</option>
                   <option value="1">Tandil</option>
                 </select>
@@ -201,21 +229,21 @@ export default function FormAddPartner() {
           <div className="row">
                     <div className="form-details">
                       <label htmlFor="workplace">Lugar laboral</label>
-                      <input name="workplace" placeholder="Lugar de trabajo" onChange={handleChange} />
+                      <input name="workplace" placeholder="Lugar de trabajo" onChange={handleChange} value={formValues.workplace || ""} />
                     </div>
                     <div className="form-details">          
                       <label htmlFor="workAddress">Dirección laboral</label>
-                      <input name="workAddress" placeholder="Dirección laboral" onChange={handleChange} />
+                      <input name="workAddress" placeholder="Dirección laboral" onChange={handleChange} value={formValues.workAddress || ""} />
                     </div>
                     <div className="form-details">
                       <label htmlFor="workPhone">Teléfono laboral</label>
-                      <input name="workPhone" placeholder="Teléfono laboral" onChange={handleChange} />
+                      <input name="workPhone" placeholder="Teléfono laboral" onChange={handleChange} value={formValues.workPhone || ""} />
 
                     </div>
                     <div className="form-details">                      
                       
                         <label htmlFor="workPostalCode">Código postal laboral</label>
-                        <input name="workPostalCode" placeholder="CP laboral" onChange={handleChange} />
+                        <input name="workPostalCode" placeholder="CP laboral" onChange={handleChange} value={formValues.workPhone || ""}  />
                     </div>
           </div>  
           
@@ -225,11 +253,11 @@ export default function FormAddPartner() {
           <div className="row">
                   <div className="form-details">
                     <label htmlFor="collectionAddress">Dirección de cobro</label>
-                    <input name="collectionAddress" placeholder="Dirección de cobro" onChange={handleChange} />
+                    <input name="collectionAddress" placeholder="Dirección de cobro" onChange={handleChange}  value={formValues.collectionAddress || ""}/>
                   </div>
                   <div className="form-details">
                       <label htmlFor="collectiontime">Hora preferida de cobro</label>
-                      <input type="time" name="collectiontime" onChange={handleChange} />
+                      <input type="time" name="collectiontime" onChange={handleChange}  value={formValues.collectiontime || ""} />
                   </div>
             </div>
         </Accordion>
@@ -237,16 +265,16 @@ export default function FormAddPartner() {
         <Accordion title="Estado del socio" isActive={activeAccordion === "state"} onToggle={() => handleToggle("state")}>
           <div className="row">
                     <div className="form-details">
-                        <label htmlFor="resignationdate">Dirección de cobro</label>
-                        <input type="date" name="resignationdate" onChange={handleChange} />
+                        <label htmlFor="resignationdate">Fecha de baja</label>
+                        <input type="date" name="resignationdate" onChange={handleChange}  value={formValues.resignationdate || ""}/>
                     </div>
                     <div className="form-details">
                         <label htmlFor="observations">Observaciones</label>
-                        <input name="observations" placeholder="Observaciones" onChange={handleChange} />
+                        <input name="observations" placeholder="Observaciones" onChange={handleChange}   value={formValues.observations || ""} />
                     </div>
                     <div className="form-details">
                         <label htmlFor="idState">Estado</label>
-                                <select name="idState" onChange={handleChange}>
+                                <select name="idState" onChange={handleChange}  value={formValues.idState || ""}>
                                   <option value="">Estado</option>
                                   <option value="1">Activo</option>
                                   <option value="2">Baja</option>
@@ -254,7 +282,7 @@ export default function FormAddPartner() {
                     </div>
                     <div className="form-details">
                       <label htmlFor="reasonOfWithdrawal">Motivo de baja</label>
-                      <select name="reasonOfWithdrawal" onChange={handleChange}>
+                      <select name="reasonOfWithdrawal" onChange={handleChange}  value={formValues.reasonOfWithdrawal || ""} >
                         <option value="">Motivo de baja</option>
                         {reasonOfWithdrawal.map(r => (
                           <option key={r.idReason} value={r.idReason}>{r.reason}</option>

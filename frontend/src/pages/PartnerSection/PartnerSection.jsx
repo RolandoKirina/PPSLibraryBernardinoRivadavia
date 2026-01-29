@@ -3,7 +3,6 @@ import PartnerFilter from '../../components/filter/partner/PartnerFilter.jsx';
 import DeleteIcon from '../../assets/img/delete-icon.svg';
 import { useEffect, useState } from 'react';
 import EditIcon from '../../assets/img/edit-icon.svg';
-import FormEditPartner from '../../components/partner-components/formeditpartner/FormEditPartner.jsx';
 import DetailsIcon from '../../assets/img/details-icon.svg';
 import PlusIcon from '../../assets/img/plus-icon.svg';
 import PopUpDelete from '../../components/common/deletebtnComponent/PopUpDelete.jsx';
@@ -16,6 +15,7 @@ import PrintPartnerPopup from '../../components/partner-components/printpartnerp
 import PartnersBooks from '../../components/partner-components/partnersbooks/PartnersBooks.jsx';
 import ReaderIcon from '../../assets/img/reader.svg';
 import FormAddPartner from '../../components/partner-components/formaddpartner/FormAddPartner.jsx';
+import FormEditPartner from '../../components/partner-components/formeditpartner/FormEditPartner.jsx';
 import { useEntityManagerAPI } from '../../hooks/useEntityManagerAPI.js';
 export default function PartnerSection() {
   const chunkSize = 100;
@@ -157,7 +157,7 @@ export default function PartnerSection() {
       key: 'editPopup',
       title: 'Editar socio',
       className: 'popup-container add-edit-partner-size',
-      content: <FormEditPartner selectedPartner={selectedItem} />,
+      content: <FormEditPartner selectedPartner={selectedItem}  />,
       close: () => {
         getItems();
         setPopupEdit(false);
