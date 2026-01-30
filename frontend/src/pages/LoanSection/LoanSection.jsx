@@ -223,7 +223,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
         {
             key: 'editPopup',
             title: 'Editar préstamo',
-            className: '',
+            className: 'loans-background',
             content: <LoanForm method="update" createLoanItem={handleUpdateItem} loanSelected={selected} errorMessage={errorMessage} />,
             close: () => {
                 setEditPopup(false)

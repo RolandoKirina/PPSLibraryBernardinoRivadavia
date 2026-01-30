@@ -5,7 +5,7 @@ import printIcon from '../../../assets/img/print-icon.svg';
 import { titlesByType } from '../../../data/generatedlist/generatedList';
 
 export default function GenerateListPopup({ dataByType, totalItems, columnsByType, typeList, title, feeDates, handleChangePage, loading, resetPageTrigger, rowsPerPage, others }) {
-    console.log(dataByType);
+
     return (
         <>
             <div className='generate-list-container'>

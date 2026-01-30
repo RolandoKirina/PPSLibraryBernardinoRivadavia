@@ -196,7 +196,7 @@ export default function AuthorSection() {
         {
             key: 'booksPopup',
             title: 'Libros del autor',
-            className: '',
+            className: 'author-books-list-background',
             content: <ShowAuthorBooks authorSelected={selected} />,
             close: () => setBooksPopup(false),
             condition: booksPopup

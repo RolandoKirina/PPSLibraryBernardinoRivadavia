@@ -320,7 +320,7 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem, 
         },
         {
             key: 'positionPopup',
-            title: 'Elegir posición del libro',
+            title: 'Agregar libro a Autor',
             className: '',
             content: <GenericForm fields={addBookPositionFields} onSubmit={(positionData) => handleAddAuthorBook(positionData)} title={'Añadir posición de libro'} />,
             close: () => setPositionPopup(false),

@@ -69,3 +69,20 @@
 .loan-form-input-group h4 {
   margin-bottom: 0;
 }
+
+.loan-form-checkbox-group label {
+  margin-top: 0.5em;
+}
+
+.loan-form-checkbox-group input {
+  width: 5em;
+}
+
+.loan-form-checkbox-group .partner-name-loan-filter input {
+  width: 100%;
+}
+
+.loan-form-checkbox-group .partner-name-loan-filter label { 
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}

@@ -117,7 +117,7 @@ export default function ShowAuthorBooks({ authorSelected }) {
 
       </div>
 
-      <div className='lend-books-container'>
+      <div className='lend-books-container show-book-authors-list-size'>
         <h2 className='lend-books-title'>Libros a Prestar</h2>
         <Table columns={columns} data={filteredBooks} totalItems={filteredBooks.length} resetPageTrigger={resetPageTrigger} />
       </div>

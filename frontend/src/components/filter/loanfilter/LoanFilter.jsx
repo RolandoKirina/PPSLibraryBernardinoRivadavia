@@ -89,14 +89,20 @@ export default function LoanFilter({ onFilterChange }) {
           </div>
 
           {auth.role === roles.admin && (
-            <div className="loan-form-checkbox-group">
+            <div className="loan-form-checkbox-group partner-checkbox-group">
               <h4>Socio</h4>
-              <label>Nombre</label>
-              <input name="partnerName" value={formData.partnerName} onChange={handleChange} />
-              <label>
-                <input type="checkbox" name="onlyActiveMembers" checked={formData.onlyActiveMembers} onChange={handleChange} />
-                Solo los activos
-              </label>
+              <div className='active-partners-checkbox-group'>
+                <label>
+                  <input type="checkbox" name="onlyActiveMembers" checked={formData.onlyActiveMembers} onChange={handleChange} />
+                  Solo los activos
+                </label>
+              </div>
+              <div className='partner-name-loan-filter'>
+                <label>Nombre</label>
+                <input className='' name="partnerName" value={formData.partnerName} onChange={handleChange} />
+              </div>
+
+
             </div>
           )}
 

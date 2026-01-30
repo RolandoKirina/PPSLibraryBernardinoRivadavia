@@ -241,9 +241,9 @@ export default function ReaderSection() {
                 columns={columns}
                 data={items}
                 popups={readerPopups}
-                rowsPerPage={rowsPerPage}                 
-                totalItems={totalItems}                  
-                handleChangePage={handleChangePage}      
+                rowsPerPage={rowsPerPage}
+                totalItems={totalItems}
+                handleChangePage={handleChangePage}
                 loading={loading}
                 filters={
                     <ReaderFilter
@@ -251,7 +251,10 @@ export default function ReaderSection() {
                     />
                 }
                 actions={
-                    <Btn text={'Agregar'} onClick={() => setAddPopup(true)} variant={'primary'} />
+                    <div className='reader-add-btn'>
+                        <Btn text={'Agregar'} onClick={() => setAddPopup(true)} variant={'primary'} />
+                    </div>
+
                 }
             />
         </>

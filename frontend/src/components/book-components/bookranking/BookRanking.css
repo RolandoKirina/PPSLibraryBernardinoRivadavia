@@ -111,3 +111,10 @@
 .ranking-books-size{
     width: 50em;
 }
+
+.book-ranking-container .preview-list-container {
+  width: 100%;
+  background-color: var(--white);
+  overflow-y: auto;
+  padding: 1em;
+}
