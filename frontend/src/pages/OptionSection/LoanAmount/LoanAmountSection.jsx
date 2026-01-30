@@ -66,19 +66,12 @@ export default function LoanAmountSection() {
         const numberPage = Number(page);
         const lastItemIndex = numberPage * rowsPerPage;
 
-        if (lastItemIndex > groupItems.length) {
+        if (groupItems.length < totalItems && lastItemIndex > groupItems.length) {
             const newOffset = groupItems.length;
             await getGroupItem({ ...filters, limit: chunkSize, offset: newOffset }, true);
             setOffsetActual(newOffset);
         }
     }
-
-    // useEffect(() => {
-    //     if (groupItems.length > 0) {
-    //         const allBookTypes = getAllBookTypes(groupItems);
-    //         setBookTypes(allBookTypes);
-    //     }
-    // }, [groupItems]);
 
     async function handleAddNewGroup(data) {
         try {

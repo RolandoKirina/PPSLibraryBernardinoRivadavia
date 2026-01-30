@@ -69,9 +69,8 @@ export default function AuthorSection() {
         const numberPage = Number(page);
         const lastItemIndex = numberPage * rowsPerPage;
 
-        // Si necesitamos traer más items
-        if (lastItemIndex > items.length) {
-            const newOffset = items.length; // desde donde ya terminé de cargar
+        if (items.length < totalItems && lastItemIndex > items.length) {
+            const newOffset = items.length;
             await getItems({ ...filters, limit: chunkSize, offset: newOffset }, true);
             setOffsetActual(newOffset);
         }

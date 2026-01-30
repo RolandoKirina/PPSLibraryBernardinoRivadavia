@@ -84,6 +84,8 @@ const BookSection = () => {
     const numberPage = Number(page);
     const lastItemIndex = numberPage * rowsPerPage;
 
+    console.log("lastItemIndex: ", lastItemIndex);
+    console.log("items.length: ", items.length);
     if (items.length < totalItems && lastItemIndex > items.length) {
       const newOffset = items.length;
       await getItems({ ...formData, limit: chunkSize, offset: newOffset }, true);
@@ -280,8 +282,8 @@ const BookSection = () => {
         columns={columns}
         data={items}
         popups={booksPopUp}
-        totalItems={totalItems} 
-        handleChangePage={handleChangePage} 
+        totalItems={totalItems}
+        handleChangePage={handleChangePage}
         loading={loading}
         resetPageTrigger={resetPageTrigger}
         actions={

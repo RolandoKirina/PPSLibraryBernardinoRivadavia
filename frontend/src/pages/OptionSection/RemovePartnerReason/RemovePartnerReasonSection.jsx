@@ -57,7 +57,7 @@ export default function RemovePartnerReasonSection({ chooseMode }) {
         const numberPage = Number(page);
         const lastItemIndex = numberPage * rowsPerPage;
 
-        if (lastItemIndex > items.length) {
+        if (items.length < totalItems && lastItemIndex > items.length) {
             const newOffset = items.length;
             await getItems({ ...filters, limit: chunkSize, offset: newOffset }, true);
             setOffsetActual(newOffset);
