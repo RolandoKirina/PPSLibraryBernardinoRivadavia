@@ -68,7 +68,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
 
             setResetPageTrigger(prev => prev + 1);
 
-            getItems({ ...filters, limit: chunkSize, offset: 0 });
+            getItems({ ...filters, sortBy: 'id',direction: 'asc', limit: chunkSize, offset: 0 });
         }, 500);
 
         return () => clearTimeout(delay);
@@ -89,7 +89,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
         try {
             await createItem(data);
 
-            await getItems({ ...filters, limit: chunkSize, offset: 0 });
+            await getItems({ ...filters, sortBy: 'id',direction: 'asc', limit: chunkSize, offset: 0 });
 
             setAddPopup(false);
 

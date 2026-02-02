@@ -1,4 +1,5 @@
 import { Op } from "sequelize";
+import Reader from "../models/reader/reader.js";
 
 export const buildReaderFilters = (query) => {
   const {
@@ -13,8 +14,8 @@ export const buildReaderFilters = (query) => {
     offset,
     sortBy,
     direction,
-    bookTitle,      // <-- Nuevo filtro
-    isbn,           // <-- Opcional, si querés usarlo
+    bookTitle,
+    isbn,
   } = query;
 
   const whereReader = {};
@@ -22,9 +23,6 @@ export const buildReaderFilters = (query) => {
   const whereBook = {};
   const whereEmployee = {};
 
-  // -----------------------------
-  //  FILTRO NOMBRE & DNI (READER)
-  // -----------------------------
   if (name?.trim()) {
     whereReader.name = { [Op.iLike]: `%${name.trim()}%` };
   }
@@ -33,9 +31,6 @@ export const buildReaderFilters = (query) => {
     whereReader.dni = dni;
   }
 
-  // -----------------------------
-  //  FILTRO ESTADO DEL PRÉSTAMO
-  // -----------------------------
   if (state && state !== "all") {
     if (state === "returned") {
       whereReaderBook.returnedDate = { [Op.ne]: null };
@@ -44,9 +39,6 @@ export const buildReaderFilters = (query) => {
     }
   }
 
-  // -----------------------------
-  //  FECHA DE RETIRO
-  // -----------------------------
   const normalize = (date) =>
     new Date(date).toISOString().split("T")[0];
 
@@ -63,9 +55,6 @@ export const buildReaderFilters = (query) => {
     };
   }
 
-  // -----------------------------
-  //  FECHA DE DEVOLUCIÓN
-  // -----------------------------
   if (returnStartDate) {
     whereReaderBook.returnedDate = {
       [Op.gte]: normalize(returnStartDate)
@@ -79,9 +68,6 @@ export const buildReaderFilters = (query) => {
     };
   }
 
-  // -----------------------------
-  //  FILTRO POR LIBRO
-  // -----------------------------
   if (bookTitle?.trim()) {
     whereBook.title = { [Op.iLike]: `%${bookTitle.trim()}%` };
   }
@@ -90,14 +76,11 @@ export const buildReaderFilters = (query) => {
     whereBook.isbn = { [Op.iLike]: `%${isbn.trim()}%` }; // o igualdad exacta si lo preferís
   }
 
-  // -----------------------------
-  // PAGINACIÓN + ORDEN
-  // -----------------------------
   const parsedLimit = parseInt(limit);
   const parsedOffset = parseInt(offset);
 
   const order = sortBy
-    ? [[sortBy, direction === "asc" ? "ASC" : "DESC"]]
+    ? [[sortBy, direction === 'asc' ? 'ASC' : 'DESC']]
     : undefined;
 
   return {

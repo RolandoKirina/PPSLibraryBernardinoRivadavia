@@ -26,6 +26,7 @@ export default function LoanFilter({ onFilterChange }) {
     onlyActiveMembers: false,
     bookTitle: '',
     bookCode: '',
+    employeeCode: '',
   });
 
 
@@ -55,6 +56,18 @@ export default function LoanFilter({ onFilterChange }) {
           <div className="loan-filter-title">
             <h3>Filtro de préstamos</h3>
           </div>
+
+          {auth.role === roles.admin && (
+            <div className="loan-form-checkbox-group partner-checkbox-group">
+              <h4>Empleado</h4>
+              <div className='partner-name-loan-filter'>
+                <label>Codigo</label>
+                <input className='' name="employeeCode" value={formData.employeeCode} onChange={handleChange} />
+              </div>
+
+
+            </div>
+          )}
 
           <div className="loan-form-checkbox-group">
             <h4>Estado de préstamo</h4>

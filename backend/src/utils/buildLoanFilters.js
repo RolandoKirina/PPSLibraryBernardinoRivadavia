@@ -2,7 +2,7 @@ import { Op } from "sequelize";
 
 export const buildLoanFilters = (query) => {
   const {
-    type, 
+    type,
     state,
     materialType,
     selectedMaterial,
@@ -17,11 +17,11 @@ export const buildLoanFilters = (query) => {
     bookCode,
     limit,
     offset,
-    sortBy, 
+    sortBy,
     direction,
-    employeeName
+    employeeCode
   } = query;
-  
+
   // Filtros principales
   const whereLoan = {}; //por fecha de retiro
   const whereLoanType = {}; //por tipo de prestamos
@@ -30,10 +30,6 @@ export const buildLoanFilters = (query) => {
   const wherePartner = {}; //por partnerName
   const whereBook = {};  //por titulo y codigo
   const whereEmployee = {};
-
-  console.log("limit: ",limit);
-  console.log("offset: ",offset);
-
 
   if (type && type !== 'all') whereLoanType.description = type;
   if (state && state !== 'all') {
@@ -53,30 +49,30 @@ export const buildLoanFilters = (query) => {
   const normalizeDate = (date) => new Date(date).toISOString().split('T')[0];
 
   if (startDate) {
-  whereLoan.retiredDate = {
-    [Op.gte]: normalizeDate(startDate)
-  };
-}
+    whereLoan.retiredDate = {
+      [Op.gte]: normalizeDate(startDate)
+    };
+  }
 
-if (endDate) {
-  whereLoan.retiredDate = {
-    ...(whereLoan.retiredDate || {}),
-    [Op.lte]: normalizeDate(endDate)
-  };
-}
+  if (endDate) {
+    whereLoan.retiredDate = {
+      ...(whereLoan.retiredDate || {}),
+      [Op.lte]: normalizeDate(endDate)
+    };
+  }
 
   if (returnStartDate) {
-  whereLoanBook.returnedDate = {
-    [Op.gte]: normalizeDate(returnStartDate)
-  };
-}
+    whereLoanBook.returnedDate = {
+      [Op.gte]: normalizeDate(returnStartDate)
+    };
+  }
 
-if (returnEndDate) {
-  whereLoanBook.returnedDate = {
-    ...(whereLoanBook.returnedDate || {}),
-    [Op.lte]: normalizeDate(returnEndDate)
-  };
-}
+  if (returnEndDate) {
+    whereLoanBook.returnedDate = {
+      ...(whereLoanBook.returnedDate || {}),
+      [Op.lte]: normalizeDate(returnEndDate)
+    };
+  }
 
   if (partnerName && partnerName.trim() !== '') {
     wherePartner.name = { [Op.iLike]: `%${partnerName.trim()}%` };
@@ -95,7 +91,9 @@ if (returnEndDate) {
   if (bookTitle) whereBook.title = { [Op.iLike]: `%${bookTitle}%` };
   if (bookCode) whereBook.codeInventory = bookCode;
 
-  if (employeeName) whereEmployee.name = { [Op.iLike]: `%${employeeName}%` };
+  if (employeeCode !== undefined && employeeCode !== null && employeeCode !== "") {
+    whereEmployee.code = employeeCode;
+  }
 
   const parsedLimit = parseInt(limit);
   const parsedOffset = parseInt(offset);
@@ -121,48 +119,46 @@ if (returnEndDate) {
 
 
 export const buildReturnFilters = (query) => {
-    const {
-        partnerNumber,
-        partnerName,
-        partnerSurname,
-        memo,
-        limit,
-        offset,
-        sortBy,
-        direction
-    } = query;
+  const {
+    partnerNumber,
+    partnerName,
+    partnerSurname,
+    memo,
+    limit,
+    offset,
+    sortBy,
+    direction
+  } = query;
 
-    const wherePartner = {};
+  const wherePartner = {};
 
-    if (partnerName?.trim()) {
-        wherePartner.name = { [Op.iLike]: `%${partnerName.trim()}%` };
-    }
+  if (partnerName?.trim()) {
+    wherePartner.name = { [Op.iLike]: `%${partnerName.trim()}%` };
+  }
 
-    if (partnerSurname?.trim()) {
-        wherePartner.surname = { [Op.iLike]: `%${partnerSurname.trim()}%` };
-    }
+  if (partnerSurname?.trim()) {
+    wherePartner.surname = { [Op.iLike]: `%${partnerSurname.trim()}%` };
+  }
 
-    if (partnerNumber) {
-        wherePartner.id = partnerNumber; // o usar Op.iLike si es string
-    }
+  if (partnerNumber) {
+    wherePartner.id = partnerNumber; // o usar Op.iLike si es string
+  }
 
-    if (memo?.trim()) {
-        wherePartner.memo = { [Op.iLike]: `%${memo.trim()}%` };
-    }
+  if (memo?.trim()) {
+    wherePartner.memo = { [Op.iLike]: `%${memo.trim()}%` };
+  }
 
-    console.log(wherePartner);
+  const parsedLimit = parseInt(limit);
+  const parsedOffset = parseInt(offset);
 
-    const parsedLimit = parseInt(limit);
-    const parsedOffset = parseInt(offset);
+  const order = sortBy
+    ? [[sortBy, direction === 'asc' ? 'ASC' : 'DESC']]
+    : undefined;
 
-    const order = sortBy
-        ? [[sortBy, direction === 'asc' ? 'ASC' : 'DESC']]
-        : undefined;
-
-    return {
-        wherePartner,
-        order,
-        limit: isNaN(parsedLimit) ? 20 : parsedLimit,
-        offset: isNaN(parsedOffset) ? 0 : parsedOffset
-    };
+  return {
+    wherePartner,
+    order,
+    limit: isNaN(parsedLimit) ? 20 : parsedLimit,
+    offset: isNaN(parsedOffset) ? 0 : parsedOffset
+  };
 };

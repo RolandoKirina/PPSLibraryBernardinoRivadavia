@@ -13,65 +13,56 @@ export const getAll = async (filters) => {
     whereReaderBook,
     whereBook,
     whereEmployee,
+    order,
     limit,
-    offset,
-    order
+    offset
   } = filters;
 
-  const count = await ReaderBook.count({
-    where: whereReaderBook,
+  const count = await Reader.count({
+    distinct: true,
+    col: 'DNI',
+    where: Object.keys(whereReader).length ? whereReader : undefined,
     include: [
       {
-        model: Reader,
-        as: 'Reader',
-        where: whereReader,
-        attributes: []
-      },
-      {
-        model: Book,
-        as: 'Book',
-        where: whereBook,
-        attributes: []
-      },
-      {
-        model: Employees,
-        as: 'Employee',
-        where: whereEmployee,
-        attributes: []
+        model: ReaderBook,
+        as: 'ReaderBooks',
+        required: true,
+        where: Object.keys(whereReaderBook).length ? whereReaderBook : undefined,
+        include: [
+          {
+            model: Book,
+            as: 'Book',
+            where: Object.keys(whereBook).length ? whereBook : undefined
+          },
+          {
+            model: Employees,
+            as: 'Employee',
+            where: Object.keys(whereEmployee).length ? whereEmployee : undefined,
+            required: Object.keys(whereEmployee).length > 0
+          }
+        ]
       }
     ]
   });
 
-  const readerBookIds = await ReaderBook.findAll({
-    attributes: ['ReaderBookId'],
-    where: whereReaderBook,
+  const readerIds = await Reader.findAll({
+    attributes: ['dni', 'name'],
+    where: Object.keys(whereReader).length ? whereReader : undefined,
     include: [
       {
-        model: Reader,
-        as: 'Reader',
-        attributes: [],
-        where: whereReader
-      },
-      {
-        model: Book,
-        as: 'Book',
-        attributes: [],
-        where: whereBook
-      },
-      {
-        model: Employees,
-        as: 'Employee',
-        attributes: [],
-        where: whereEmployee
+        model: ReaderBook,
+        as: 'ReaderBooks',
+        required: true,
+        where: Object.keys(whereReaderBook).length ? whereReaderBook : undefined
       }
     ],
+    order,
     limit,
     offset,
-    order,
     raw: true
   });
 
-  const ids = readerBookIds.map(rb => rb.ReaderBookId);
+  const ids = readerIds.map(r => r.dni);
 
   if (!ids.length) {
     return {
@@ -81,33 +72,34 @@ export const getAll = async (filters) => {
   }
 
   const readers = await Reader.findAll({
-    where: whereReader,
+    where: { dni: ids },
     attributes: ['dni', 'name'],
     include: [
       {
         model: ReaderBook,
         as: 'ReaderBooks',
-        where: { ReaderBookId: ids },
+        required: true,
+        where: Object.keys(whereReaderBook).length ? whereReaderBook : undefined,
         attributes: [
-          'employeeId',
-          'returnedDate',
+          'ReaderBookId',
           'retiredDate',
-          'returnedHour',
+          'returnedDate',
           'retiredHour',
-          'BookId',
-          'readerDNI',
-          'ReaderBookId'
+          'returnedHour'
         ],
         include: [
           {
             model: Book,
             as: 'Book',
-            attributes: ['codeInventory', 'title']
+            attributes: ['codeInventory', 'title'],
+            where: Object.keys(whereBook).length ? whereBook : undefined
           },
           {
             model: Employees,
             as: 'Employee',
-            attributes: ['id', 'name', 'code']
+            attributes: ['id', 'name', 'code'],
+            where: Object.keys(whereEmployee).length ? whereEmployee : undefined,
+            required: Object.keys(whereEmployee).length > 0
           }
         ]
       }
@@ -126,6 +118,7 @@ export const getAll = async (filters) => {
       returnedDate: formatDate(rb.returnedDate),
       returnedHour: rb.returnedHour ?? '',
       employee: rb.Employee?.name ?? '',
+      employeeCode: rb.Employee?.code ?? '',
       id: rb.ReaderBookId
     }))
   );

@@ -56,7 +56,7 @@ export default function LoanAmountSection() {
 
             setResetPageTrigger(prev => prev + 1);
 
-            getGroupItem({ ...filters, limit: chunkSize, offset: 0 });
+            getGroupItem({ ...filters, sortBy: 'group', direction: 'asc', limit: chunkSize, offset: 0 });
         }, 500);
 
         return () => clearTimeout(delay);
@@ -68,7 +68,7 @@ export default function LoanAmountSection() {
 
         if (groupItems.length < totalItems && lastItemIndex > groupItems.length) {
             const newOffset = groupItems.length;
-            await getGroupItem({ ...filters, limit: chunkSize, offset: newOffset }, true);
+            await getGroupItem({ ...filters, sortBy: 'group', direction: 'asc', limit: chunkSize, offset: newOffset }, true);
             setOffsetActual(newOffset);
         }
     }

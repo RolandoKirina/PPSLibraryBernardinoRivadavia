@@ -28,7 +28,7 @@ export const getUnpaidFeesByPartner = async (id) => {
 };
 
 export const getAll = async (filters = {}) => {
-  const { wherePartner, limit, offset } = filters;
+  const { wherePartner, limit, offset, order } = filters;
 
   const query = {};
 
@@ -43,7 +43,11 @@ export const getAll = async (filters = {}) => {
   if (Number.isInteger(offset)) {
     query.offset = offset;
   }
-  
+
+  if (Array.isArray(order) && order.length) {
+    query.order = order;
+  }
+
   const { rows, count } = await Partner.findAndCountAll(query);
 
   return {

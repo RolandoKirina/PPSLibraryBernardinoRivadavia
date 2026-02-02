@@ -4,7 +4,9 @@ export const buildPartnerFilters = (query) => {
     isActive,
     pendingBooks,
     limit,
-    offset
+    offset,
+    sortBy,
+    direction,
   } = query;
 
   const wherePartner = {};
@@ -24,7 +26,12 @@ export const buildPartnerFilters = (query) => {
   const parsedLimit = Number(limit);
   const parsedOffset = Number(offset);
 
+  const order = sortBy
+    ? [[sortBy, direction === 'asc' ? 'ASC' : 'DESC']]
+    : undefined;
+
   return {
+    order,
     wherePartner,
     limit: Number.isNaN(parsedLimit) ? 20 : parsedLimit,
     offset: Number.isNaN(parsedOffset) ? 0 : parsedOffset

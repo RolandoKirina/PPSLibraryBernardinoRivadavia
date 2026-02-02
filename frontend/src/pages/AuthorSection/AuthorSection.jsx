@@ -58,7 +58,7 @@ export default function AuthorSection() {
                 Object.entries(filters).filter(([_, v]) => v !== "" && v !== null && v !== undefined)
             );
 
-            getItems({ ...activeFilters, limit: chunkSize, offset: 0 });
+            getItems({ ...activeFilters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
         }, 300);
         console.log(totalItems);
         return () => clearTimeout(delay);
@@ -71,7 +71,7 @@ export default function AuthorSection() {
 
         if (items.length < totalItems && lastItemIndex > items.length) {
             const newOffset = items.length;
-            await getItems({ ...filters, limit: chunkSize, offset: newOffset }, true);
+            await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: newOffset }, true);
             setOffsetActual(newOffset);
         }
 

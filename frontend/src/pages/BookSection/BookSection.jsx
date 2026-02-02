@@ -72,6 +72,7 @@ const BookSection = () => {
 
       getItems({
         ...activeFilters,
+        sortBy: 'title', direction: 'asc', 
         limit: chunkSize,
         offset: 0
       });
@@ -88,7 +89,7 @@ const BookSection = () => {
     console.log("items.length: ", items.length);
     if (items.length < totalItems && lastItemIndex > items.length) {
       const newOffset = items.length;
-      await getItems({ ...formData, limit: chunkSize, offset: newOffset }, true);
+      await getItems({ ...formData, sortBy: 'title', direction: 'asc', limit: chunkSize, offset: newOffset }, true);
       setOffsetActual(newOffset);
     }
   }

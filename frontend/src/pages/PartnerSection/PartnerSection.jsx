@@ -31,7 +31,7 @@ export default function PartnerSection() {
   const [PopUpBooksPartners, setPopUpBooksPartners] = useState(false);
   const [PopUpDetail, setPopUpDetail] = useState(false);
   const [PopUpAdd, setPopUpAdd] = useState(false);
-  const [formData, setFormData] = useState({unpaidFees: "",pendingBooks: "",isActive: "all",});
+  const [formData, setFormData] = useState({ unpaidFees: "", pendingBooks: "", isActive: "all", });
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -44,6 +44,8 @@ export default function PartnerSection() {
 
       getItems({
         ...activeFilters,
+        sortBy: 'id', 
+        direction: 'asc',
         limit: chunkSize,
         offset: 0
       });
@@ -64,7 +66,7 @@ export default function PartnerSection() {
 
     if (items.length < totalItems && lastItemIndex > items.length) {
       const newOffset = items.length;
-      await getItems({ ...formData, limit: chunkSize, offset: newOffset }, true);
+      await getItems({ ...formData, sortBy: 'id', direction: 'asc', limit: chunkSize, offset: newOffset }, true);
       setOffsetActual(newOffset);
     }
   }
@@ -114,7 +116,7 @@ export default function PartnerSection() {
           />
         </button>
       )
-    },  
+    },
     {
       header: 'Borrar',
       accessor: 'delete',
@@ -129,7 +131,7 @@ export default function PartnerSection() {
 
           <img src={DeleteIcon} alt="Borrar" />
         </button>
-        )
+      )
     },
   ];
 
@@ -176,7 +178,7 @@ export default function PartnerSection() {
       key: 'detailsPopup',
       title: 'Detalles del socio',
       className: '',
-      content: <ShowDetails data={selectedItem} detailsData={DetailPartner} isPopup={true} actions={true}/>,
+      content: <ShowDetails data={selectedItem} detailsData={DetailPartner} isPopup={true} actions={true} />,
       close: () => setPopUpDetail(false),
       condition: PopUpDetail
     },

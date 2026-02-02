@@ -2,15 +2,15 @@ export const buildLoanAmountFilters = (query) => {
   const {
     limit,
     offset,
-    orderBy,
-    orderDir
+    sortBy,
+    direction
   } = query;
 
   const parsedLimit = limit ? Number(limit) : undefined;
   const parsedOffset = offset ? Number(offset) : undefined;
-
-  const order = orderBy
-    ? [[orderBy, orderDir?.toUpperCase() === "DESC" ? "DESC" : "ASC"]]
+  
+  const order = sortBy
+    ? [[sortBy, direction === 'asc' ? 'ASC' : 'DESC']]
     : undefined;
 
   return {
