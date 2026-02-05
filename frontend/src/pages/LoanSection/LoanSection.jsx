@@ -105,7 +105,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
         try {
             await updateItem(selected.loanId, data);
 
-            await getItems({ ...filters, limit: chunkSize, offset: 0 });
+            await getItems({ ...filters, sortBy: 'id',direction: 'asc', limit: chunkSize, offset: 0 });
 
             setEditPopup(false);
 

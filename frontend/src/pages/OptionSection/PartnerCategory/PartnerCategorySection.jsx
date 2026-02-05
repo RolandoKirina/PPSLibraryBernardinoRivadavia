@@ -42,7 +42,7 @@ export default function PartnerCategorySection() {
         try {
             await createItem(data);
 
-            await getItems();
+            await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setAddPopup(false);
 
@@ -58,7 +58,7 @@ export default function PartnerCategorySection() {
         try {
             await updateItem(selected.idCategory, data);
 
-            await getItems();
+            await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setEditPopup(false);
 
@@ -141,7 +141,6 @@ export default function PartnerCategorySection() {
             accessor: 'delete',
             render: (_, row) => (
                 <button className="button-table" onClick={() => {
-                    console.log(row);
                     setDeletePopup(true)
                     setSelected(row)
                 }}>

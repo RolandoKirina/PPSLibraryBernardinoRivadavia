@@ -370,6 +370,7 @@ export default function FormAddBook({ getItems }) {
                                                 <span>{author.name}</span>
                                                 <button
                                                     className="add-button"
+                                                    type="button"
                                                     onClick={() => {
                                                         if (!authorsSelected.some(a => a.id === author.id)) {
                                                             setAuthorsSelected([...authorsSelected, author]);

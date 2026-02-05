@@ -40,7 +40,7 @@ export default function LoanMaterialSection() {
         try {
             await createItem(data);
 
-            await getItems();
+            await getItems({ ...filters,  sortBy: 'typeName', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setAddPopup(false);
 
@@ -56,7 +56,7 @@ export default function LoanMaterialSection() {
         try {
             await updateItem(selected.bookTypeId, data);
 
-            await getItems();
+            await getItems({ ...filters,  sortBy: 'typeName', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setEditPopup(false);
 

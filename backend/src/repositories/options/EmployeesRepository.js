@@ -23,7 +23,6 @@ export const getOne = async (id) => {
 };
 
 export const getOneByCode = async (filters, code) => {
-    console.log(code);
     try {
         const employee = await Employees.findOne({
             where: { code },

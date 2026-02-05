@@ -59,7 +59,7 @@ export default function EmployeeSection() {
         try {
             await createItem(data);
 
-            await getItems();
+            await getItems({ ...filters, sortBy: 'code', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setAddPopup(false);
 
@@ -75,7 +75,7 @@ export default function EmployeeSection() {
         try {
             await updateItem(selected.id, data);
 
-            await getItems();
+            await getItems({ ...filters, sortBy: 'code', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setEditPopup(false);
 

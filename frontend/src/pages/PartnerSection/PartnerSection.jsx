@@ -31,6 +31,7 @@ export default function PartnerSection() {
   const [PopUpBooksPartners, setPopUpBooksPartners] = useState(false);
   const [PopUpDetail, setPopUpDetail] = useState(false);
   const [PopUpAdd, setPopUpAdd] = useState(false);
+  const [filters, setFilters] = useState({});
   const [formData, setFormData] = useState({ unpaidFees: "", pendingBooks: "", isActive: "all", });
 
   useEffect(() => {
@@ -39,12 +40,14 @@ export default function PartnerSection() {
         Object.entries(formData).filter(([_, v]) => v !== "")
       );
 
+      setFilters(activeFilters);
+
       setOffsetActual(0);
       setResetPageTrigger(prev => prev + 1);
 
       getItems({
         ...activeFilters,
-        sortBy: 'id', 
+        sortBy: 'id',
         direction: 'asc',
         limit: chunkSize,
         offset: 0
@@ -161,7 +164,13 @@ export default function PartnerSection() {
       className: 'popup-container add-edit-partner-size',
       content: <FormEditPartner selectedPartner={selectedItem} />,
       close: () => {
-        getItems();
+        getItems({
+          ...filters,
+          sortBy: 'id',
+          direction: 'asc',
+          limit: chunkSize,
+          offset: 0
+        });
         setPopupEdit(false);
       },
       condition: PopUpEdit
@@ -171,7 +180,16 @@ export default function PartnerSection() {
       title: 'Agregar Socio',
       className: 'popup-container add-edit-partner-size',
       content: <FormAddPartner />,
-      close: () => setPopUpAdd(false),
+      close: () => {
+        getItems({
+          ...filters,
+          sortBy: 'id',
+          direction: 'asc',
+          limit: chunkSize,
+          offset: 0
+        });
+        setPopUpAdd(false)
+      },
       condition: PopUpAdd
     },
     {

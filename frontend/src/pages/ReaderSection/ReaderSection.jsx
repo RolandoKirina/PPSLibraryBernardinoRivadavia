@@ -72,7 +72,7 @@ export default function ReaderSection() {
         try {
             await createItem(data);
 
-            await getItems();
+            await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setAddPopup(false);
 
@@ -88,7 +88,7 @@ export default function ReaderSection() {
         try {
             await updateItem(selected.id, data);
 
-            await getItems();
+            await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setEditPopup(false);
 
@@ -110,7 +110,7 @@ export default function ReaderSection() {
                     title="Lector"
                     onConfirm={() => deleteReaderBook(selected.id)}
                     closePopup={() => setDeletePopup(false)}
-                    refresh={() => getItems()}
+                    refresh={() => getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 })}
                 />,
             close: () => setDeletePopup(false),
             condition: deletePopup,

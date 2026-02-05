@@ -111,7 +111,7 @@ export default function AuthorSection() {
 
             await createItem(author);
 
-            await getItems();
+            await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setAddPopup(false);
         }
@@ -131,7 +131,7 @@ export default function AuthorSection() {
                 books: data.books
             });
 
-            await getItems();
+            await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setEditPopup(false);
         }

@@ -40,6 +40,7 @@ const BookSection = () => {
   const [PopUpBooksPartners, setPopUpBooksPartners] = useState(false);
   const [PopUpLostBooks, setPopUpLostBooks] = useState(false);
   const [error, setError] = useState(null);
+  const [filters, setFilters] = useState({});
   const BASE_URL = "http://localhost:4000/api/v1/books";
 
   const { items, loading, totalItems, getItems, getItem, createItem, updateItem, deleteItem } =
@@ -67,6 +68,8 @@ const BookSection = () => {
         Object.entries(formData).filter(([_, v]) => v !== "")
       );
 
+      setFilters(activeFilters);
+
       setOffsetActual(0);
       setResetPageTrigger(prev => prev + 1);
 
@@ -85,8 +88,6 @@ const BookSection = () => {
     const numberPage = Number(page);
     const lastItemIndex = numberPage * rowsPerPage;
 
-    console.log("lastItemIndex: ", lastItemIndex);
-    console.log("items.length: ", items.length);
     if (items.length < totalItems && lastItemIndex > items.length) {
       const newOffset = items.length;
       await getItems({ ...formData, sortBy: 'title', direction: 'asc', limit: chunkSize, offset: newOffset }, true);
@@ -170,7 +171,12 @@ const BookSection = () => {
           title="Libro"
           onConfirm={() => deleteItem(selectedId)}
           closePopup={() => setPopUpDelete(false)}
-          refresh={() => getItems()}
+          refresh={() => getItems({
+        ...filters,
+        sortBy: 'title', direction: 'asc', 
+        limit: chunkSize,
+        offset: 0
+      })}
         />
       ),
       close: () => setPopUpDelete(false),
@@ -180,7 +186,12 @@ const BookSection = () => {
       key: 'editPopup',
       title: 'Editar Libro',
       className: 'popup-container-book-form editsize',
-      content: <FormEditBook selectedBook={selectedItem} getItems={getItems} />,
+      content: <FormEditBook selectedBook={selectedItem} getItems={() => getItems({
+        ...filters,
+        sortBy: 'title', direction: 'asc', 
+        limit: chunkSize,
+        offset: 0
+      })} />,
       close: () => setPopupEdit(false),
       condition: PopUpEdit
     },
@@ -188,7 +199,12 @@ const BookSection = () => {
       key: 'AddPopup',
       title: 'Agregar Libro',
       className: 'popup-container-book-form editsize',
-      content: <FormAddBook getItems={getItems} />,
+      content: <FormAddBook getItems={() => getItems({
+        ...filters,
+        sortBy: 'title', direction: 'asc', 
+        limit: chunkSize,
+        offset: 0
+      })} />,
       close: () => setPopupAdd(false),
       condition: PopUpAdd
     },

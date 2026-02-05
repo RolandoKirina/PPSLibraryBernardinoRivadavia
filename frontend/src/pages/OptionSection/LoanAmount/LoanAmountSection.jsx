@@ -77,7 +77,7 @@ export default function LoanAmountSection() {
         try {
             await createItem(data);
 
-            await getGroupItem({ ...filters, limit: chunkSize, offset: 0 });
+            await getGroupItem({ ...filters, sortBy: 'group', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setAddPopup(false);
         }
@@ -90,7 +90,7 @@ export default function LoanAmountSection() {
         try {
             await updateItem(selected.bookTypeGroupListId, data);
 
-            await getGroupItem({ ...filters, limit: chunkSize, offset: 0 });
+            await getGroupItem({ ...filters, sortBy: 'group', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setEditPopup(false);
         }

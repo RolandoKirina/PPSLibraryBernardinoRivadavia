@@ -19,7 +19,6 @@ export const getAll = async (filters) => {
   } = filters;
 
   const count = await Reader.count({
-    distinct: true,
     col: 'DNI',
     where: Object.keys(whereReader).length ? whereReader : undefined,
     include: [

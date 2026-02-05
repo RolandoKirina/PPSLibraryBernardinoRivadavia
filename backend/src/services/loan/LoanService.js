@@ -44,6 +44,7 @@ export const getLoan = async (id) => {
 }
 
 export const createLoan = async (data) => {
+  console.log(data);
     
    if (!data.books || data.books.length === 0) {
       throw new ValidationError("No se puede crear un préstamo sin libros");
@@ -68,7 +69,8 @@ export const createLoan = async (data) => {
         throw new ValidationError(`No existe un tipo de préstamo con la descripción "retired"`);
       }
 
-      const employee = await EmployeesRepository.getOneByCode(data.employeeCode);
+      const employee = await EmployeesRepository.getOneByCode(null, data.employeeCode);
+
       if (!employee) {
         throw new ValidationError("Empleado no existe");
       }
