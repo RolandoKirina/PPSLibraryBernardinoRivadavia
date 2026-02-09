@@ -78,9 +78,9 @@ export default function PartnerSection() {
 
     {
       header: 'Estado',
-      accessor: 'isActive',
+      accessor: 'idState',
       render: (_, row) => {
-        const value = row.isActive;
+        const value = row.idState;
         if (value === 1 || value === true) return 'Activo';
         if (value === 2 || value === false || value === 0) return 'Inactivo';
         return `Valor desconocido: ${value}`;
@@ -168,7 +168,16 @@ export default function PartnerSection() {
       key: 'AddPopup',
       title: 'Agregar Socio',
       className: 'popup-container add-edit-partner-size',
-      content: <FormAddPartner />,
+      content: <FormAddPartner
+                onPartnerCreated={() => {
+                  getItems({
+                    ...formData,
+                    limit: chunkSize,
+                    offset: 0
+                  });
+                  setPopUpAdd(false);
+                }}
+       />,
       close: () => setPopUpAdd(false),
       condition: PopUpAdd
     },

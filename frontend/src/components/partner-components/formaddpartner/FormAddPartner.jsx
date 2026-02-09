@@ -5,7 +5,7 @@ import { useState } from "react";
 import "../formeditpartner/FormEditPartner.css";
 import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
 
-export default function FormAddPartner() {
+export default function FormAddPartner( { onPartnerCreated } ) {
   const [activeAccordion, setActiveAccordion] = useState(null);
   const entityManagerApi = useEntityManagerAPI("partners");
 
@@ -28,9 +28,19 @@ export default function FormAddPartner() {
     LocalityId: "",
     homePostalCode: "",
     collectionAddress: "",
-    preferredTime: ""
+    preferredTime: "",
+    workplace: "",
+    workAddress: "",
+    workPhone: "",
+    workPostalCode: "",
+    idState: 1
   });
 
+
+  const formatPreferredTime = (value) => {
+  if (!value) return null;
+  return value.replace("T", " ");
+}; 
   const handleToggle = (id) => {
     setActiveAccordion((prev) => (prev === id ? null : id));
   };
@@ -46,7 +56,6 @@ export default function FormAddPartner() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("FORM VALUES:", formValues);
 
     const payload = {
       name: formValues.name || null,
@@ -65,15 +74,24 @@ export default function FormAddPartner() {
       profession: formValues.profession || null,
       presentedBy: formValues.presentedBy || null,
       collectionAddress: formValues.collectionAddress || null,
-      preferredTime: formValues.preferredTime || null,
-      isActive:1,
+      preferredTime: formatPreferredTime(formValues.preferredTime),
+      idState:1,
       unpaidFees:0,
       pendingBooks:0,
+      workplace: formValues.workplace || null,
+      workAddress: formValues.workAddress || null,
+      workPhone: formValues.workPhone || null,
+      workPostalCode: formValues.workPostalCode || null,
     };
 
     try {
-      await entityManagerApi.createItem(payload);
-      alert("Socio creado correctamente");
+      console.log(payload.idState)
+       await entityManagerApi.createItem(payload);
+  
+        if (onPartnerCreated) {
+            onPartnerCreated(); 
+        }
+        
     } catch (error) {
       console.error("ERROR:", error);
       alert("Error al crear socio");
@@ -128,11 +146,7 @@ export default function FormAddPartner() {
                 </div>
 
 
-          <div className="form-details" >
-            <label htmlFor="profession">Profesión <span className='required'>*</span></label>
-            <input name="profession" value={formValues.profession} onChange={handleChange} placeholder="Profesión" />
-
-          </div>
+         
           <div className="form-details" >
                               <label htmlFor="presentedby">Presentado por <span className='required'>*</span></label>
             <input name="presentedBy" value={formValues.presentedBy} onChange={handleChange} placeholder="Presentado por" />
@@ -173,9 +187,6 @@ export default function FormAddPartner() {
 
         </div>
          
-            
-
-
        
         </Accordion>
 
@@ -190,10 +201,11 @@ export default function FormAddPartner() {
                 <label htmlFor="homePhone">Telefono personal <span className='required'>*</span></label>
                 <input name="homePhone" value={formValues.homePhone} onChange={handleChange} placeholder="Teléfono" />
             </div>
+        
             </div>
             <div className="row">
                 <div className="form-details" >
-                              <label htmlFor="homePhone">Localidad <span className='required'>*</span></label>
+                              <label htmlFor="LocalityId">Localidad <span className='required'>*</span></label>
                               <select name="LocalityId" value={formValues.LocalityId} onChange={handleChange}>
                               <option value="">Localidad</option>
                               <option value="1">Tandil</option>
@@ -212,6 +224,41 @@ export default function FormAddPartner() {
         
         </Accordion>
 
+
+        <Accordion title="Trabajo" isActive={activeAccordion === "work"} onToggle={() => handleToggle("work")}>
+            
+        <div className="row">
+                    <div className="form-details" >
+                      <label htmlFor="profession">Profesión <span className='required'>*</span></label>
+                      <input name="profession" value={formValues.profession} onChange={handleChange} placeholder="Profesión" />
+                    </div>
+          
+                    <div className="form-details">
+                      <label htmlFor="workplace">Lugar laboral</label>
+                      <input name="workplace" placeholder="Lugar de trabajo" onChange={handleChange} value={formValues.workplace || ""} />
+                    </div>
+                   
+                    <div className="form-details">          
+                      <label htmlFor="workAddress">Dirección laboral</label>
+                      <input name="workAddress" placeholder="Dirección laboral" onChange={handleChange} value={formValues.workAddress || ""} />
+                    </div>
+                    <div className="form-details">
+                      <label htmlFor="workPhone">Teléfono laboral</label>
+                      <input name="workPhone" placeholder="Teléfono laboral" onChange={handleChange} value={formValues.workPhone || ""} />
+
+                    </div>
+                    <div className="form-details">                      
+                      
+                        <label htmlFor="workPostalCode">Código postal laboral</label>
+                        <input name="workPostalCode" placeholder="CP laboral" onChange={handleChange} value={formValues.workPostalCode || ""}  />
+                    </div>
+          </div>  
+
+         
+        
+        </Accordion>
+
+
         <Accordion title="Cobro" isActive={activeAccordion === "collection"} onToggle={() => handleToggle("collection")}>
           <div className="row">
           <div  className="form-details" >
@@ -220,11 +267,11 @@ export default function FormAddPartner() {
             <input name="collectionAddress" value={formValues.collectionAddress} onChange={handleChange} placeholder="Dirección de cobro" />
 
           </div>
-          <div  className="form-details" >
-            <label htmlFor="preferredTime">Hora preferida</label>
-            <input type="datetime-local" name="preferredTime" value={formValues.preferredTime} onChange={handleChange} />
+             <div className="form-details">
+                      <label htmlFor="collectiontime">Hora preferida de cobro</label>
+                      <input type="time" name="collectiontime" onChange={handleChange}  value={formValues.collectiontime || ""} />
+                  </div>
 
-          </div>
           </div>
          
         </Accordion>
