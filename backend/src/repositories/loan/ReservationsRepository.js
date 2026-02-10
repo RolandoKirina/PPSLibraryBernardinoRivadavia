@@ -5,6 +5,7 @@ import * as EmployeesRepository from '../../repositories/options/EmployeesReposi
 import * as PartnerRepository from '../../repositories/partner/PartnerRepository.js';
 import * as BookReservationsRepository from '../../repositories/loan/BookReservationsRepository.js';
 import { formatDate } from '../../utils/date/formatDate.js';
+import { ValidationError } from '../../utils/errors/ValidationError.js';
 
 export const getAll = async (filters = {}) => {
   const {
@@ -127,19 +128,24 @@ export const getOne = async (id) => {
 };
 
 export const create = async (reservation) => {
-  ;
 
   if (!reservation.books || reservation.books.length === 0) {
-    throw new Error("No se puede crear un préstamo sin libros");
+    throw new ValidationError("No se puede crear un préstamo sin libros");
   }
 
   const transaction = await sequelize.transaction();
 
   try {
     const partner = await PartnerRepository.getOneByPartnerNumber(reservation.partnerNumber);
+
     if (!partner) {
-      throw new Error("Socio no existe");
+      throw new ValidationError("Socio no existe");
     }
+
+    
+  // if(bookAlreadyReserved(reservation)) {
+  //   throw new ValidationError("No se puede reservar libros que no han sido devueltos aún por el socio de numero: "+reservation.partnerNumber);
+  // }
 
     const reservationData = {
       partnerId: partner.id,
@@ -150,8 +156,6 @@ export const create = async (reservation) => {
     };
 
     const newReservation = await Reservations.create(reservationData, { transaction });
-    console.log(newReservation.id);
-    console.log(reservation.books);
 
     const reservationBooks = reservation.books.map(book => ({
       BookId: book.BookId,
@@ -178,13 +182,21 @@ export const create = async (reservation) => {
 
 // A diferencia de patch, los updates deben tener todos los campos de la entidad
 export const update = async (id, updates) => {
-  console.log(id);
-  console.log(updates);
-  await Reservations.update(updates, {
-    where: { id: id }
-  });
+  try {
+    if (!updates || Object.keys(updates).length === 0) {
+      throw new ValidationError("Debes ingresar una fecha de reserva y promesa");
+    }
 
-  return await Reservations.findByPk(id);
+    await Reservations.update(updates, {
+      where: { id: id }
+    });
+
+    return await Reservations.findByPk(id);
+  }
+  catch (err) {
+    throw err;
+  }
+
 };
 
 export const remove = async (id) => {
@@ -201,3 +213,13 @@ export const remove = async (id) => {
   }
 }
 
+async function bookAlreadyReserved(reservation) {
+  const reservations = await Reservations.findAll(
+    {
+      where: {
+        partnerNumber: reservation.partnerNumber,
+
+      }
+    }
+  )
+}

@@ -44,36 +44,8 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem, 
 
     const [loadingBooks, setLoadingBooks] = useState(false);
 
-
     const [book, setBook] = useState({});
     const [allAuthorBooks, setAllAuthorBooks] = useState([]);
-
-    //const [errorMessage, setErrorMessage] = useState("");
-
-    // useEffect(() => {
-    //     getBooks();
-
-    //     if (method === 'update' && authorSelected?.id) {
-    //         const fetchAllBooksFromAuthor = async () => {
-
-    //             const authorSelectedId = authorSelected.id;
-
-    //             const booksFromAuthor = await getBooks(authorSelectedId);
-
-    //             setAuthorData({
-    //                 name: authorSelected.name,
-    //                 nationality: authorSelected.nationality,
-    //                 books: booksFromAuthor
-    //             });
-
-
-    //         }
-
-    //         fetchAllBooksFromAuthor();
-
-    //     }
-
-    // }, []);
 
     useEffect(() => {
         getLibraryBooks({ limit: chunkSize, offset: 0 });

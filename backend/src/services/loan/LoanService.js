@@ -44,7 +44,6 @@ export const getLoan = async (id) => {
 }
 
 export const createLoan = async (data) => {
-  console.log(data);
     
    if (!data.books || data.books.length === 0) {
       throw new ValidationError("No se puede crear un préstamo sin libros");

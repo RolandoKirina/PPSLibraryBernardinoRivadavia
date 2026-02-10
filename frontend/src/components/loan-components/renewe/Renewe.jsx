@@ -37,7 +37,6 @@ export default function Renewe() {
     const [offsetActual, setOffsetActual] = useState(0);
     const [resetPageTrigger, setResetPageTrigger] = useState(0);
 
-
     const {
         items,
         totalItems,
@@ -48,17 +47,25 @@ export default function Renewe() {
         deleteItem
     } = useEntityManagerAPI('reservations');
 
+    const [errorMessage, setErrorMessage] = useState(null);
+
     useEffect(() => {
+        setErrorMessage(null);
+
         const delay = setTimeout(() => {
             setOffsetActual(0);
 
             setResetPageTrigger(prev => prev + 1);
 
-            getItems({ ...filters, limit: chunkSize, offset: 0 });
+            getItems({ ...filters, sortBy: 'partnerNumber', direction: 'asc', limit: chunkSize, offset: 0 });
         }, 500);
 
         return () => clearTimeout(delay);
     }, [filters]);
+
+    useEffect(() => {
+        setErrorMessage(null);
+    }, [popupView]);
 
     async function refreshItems() {
         console.log("Iniciando refresh...");
@@ -77,13 +84,54 @@ export default function Renewe() {
         }
     }
 
+    async function handleAddItem(data) {
+        try {
+            const validatedError = validateData(data);
+
+            if (validatedError) {
+                setErrorMessage(validatedError);
+                return;
+            }
+
+            await createReneweItem(data);
+
+            await getItems({ ...filters, sortBy: 'partnerNumber', direction: 'asc', limit: chunkSize, offset: 0 });
+
+            setErrorMessage(null);
+
+            setPopupView('default');
+        }
+        catch (error) {
+            setErrorMessage(error.message);
+            console.error("Error al crear una Reserva:", error);
+        }
+    }
+
+
+
+    function validateData(data) {
+
+        if (data.books.length === 0) {
+            return "La reserva debe tener al menos un libro";
+        }
+
+        if (!data.expectedDate || !data.reservationDate) {
+            return "La reserva debe tener una fecha de reserva y de promesa";
+        }
+
+        if (!data.partnerNumber) {
+            return "La reserva debe un numero de socio";
+        }
+
+        return null;
+    }
+
     async function handleChangePage(page) {
         const numberPage = Number(page);
         const lastItemIndex = numberPage * rowsPerPage;
 
         if (items.length < totalItems && lastItemIndex > items.length) {
             const newOffset = items.length;
-            console.log("newooffset: "+newOffset);
 
             await getItems({ ...filters, limit: chunkSize, offset: newOffset });
         }
@@ -291,7 +339,7 @@ export default function Renewe() {
                 {popupView === 'addRenewe' && (
                     <>
                         <BackviewBtn menu={'default'} changeView={setPopupView} />
-                        <AddRenewe refreshItems={() => refreshItems()} method={'add'} createReneweItem={createReneweItem} />
+                        <AddRenewe refreshItems={() => refreshItems()} method={'add'} createReneweItem={handleAddItem} errorMessage={errorMessage} />
                     </>
                 )}
                 {popupView === 'editForm' && (
@@ -314,10 +362,11 @@ export default function Renewe() {
                                     setPopupView('default');
                                 } catch (error) {
                                     console.error("Error al actualizar la reserva:", error);
-                                    alert("No se pudo actualizar la reserva.");
+                                    setErrorMessage(error.message);
                                 }
                             }}
                             title={'Editar reserva'}
+                            error={errorMessage}
                             className={'renewe-edit-form-size'}
                         />
 

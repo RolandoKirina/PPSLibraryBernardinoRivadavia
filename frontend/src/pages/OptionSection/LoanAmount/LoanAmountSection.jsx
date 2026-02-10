@@ -30,25 +30,10 @@ export default function LoanAmountSection() {
         loading,
         totalItems,
         getItems: getGroupItem,
-        // getItem: getGroupItem,
         deleteItem,
         createItem,
         updateItem
     } = useEntityManagerAPI("book-type-groups-list");
-
-
-    // const {
-    //     items: bookTypes,
-    //     loading: bookTypesLoading,
-    //     totalItems: bookTypesTotalItems,
-    //     getItems: getBookTypes,
-    //     // getItem: getGroupItem,
-    //     deleteItem: deleteBookType,
-    //     createItem: createBookType,
-    //     updateItem: updateBookType
-    // } = useEntityManagerAPI("book-types");
-
-    //const [bookTypes, setBookTypes] = useState([]);
 
     useEffect(() => {
         const delay = setTimeout(() => {

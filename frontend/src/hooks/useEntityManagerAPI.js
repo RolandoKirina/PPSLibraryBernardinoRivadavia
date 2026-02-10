@@ -87,12 +87,6 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
     }
 
     if (!res.ok) {
-      console.log(data.msg);
-      console.log(data.msg);
-      console.log(data.msg);
-      console.log(data.msg);
-      console.log(data.msg);
-      console.log(data.msg);
       const errorMsg =
         data?.msg ||
         data?.message ||

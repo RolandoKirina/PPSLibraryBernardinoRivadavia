@@ -239,7 +239,6 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
 
     if (!loanData.books || loanData.books.length === 0) {
       setValidateError('Debe agregar al menos un libro antes de guardar el préstamo.');
-      console.log(validateError);
       return false;
     }
 
@@ -497,7 +496,7 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
               <h2 className='lend-books-title'>Libros a Prestar</h2>
 
 
-              <Table columns={columns} data={loanData.books} totalItems={loanData.books.length} handleChangePage={() => { console.log("work") }} loading={loadingBooks} resetPageTrigger={resetPageTrigger} >
+              <Table columns={columns} data={loanData.books} totalItems={loanData.books.length} loading={loadingBooks} resetPageTrigger={resetPageTrigger} >
 
                 <div className='add-book-to-lend'>
                   <Btn
@@ -576,7 +575,7 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
               <div className='author-books-title'>
                 <h3>Libros a prestar</h3>
               </div>
-              <Table columns={lendBooksColumns} data={loanData.books} totalItems={loanData.books.length} handleChangePage={() => { console.log("work") }} loading={loadingBooks} resetPageTrigger={resetPageTrigger} />
+              <Table columns={lendBooksColumns} data={loanData.books} totalItems={loanData.books.length} loading={loadingBooks} resetPageTrigger={resetPageTrigger} />
             </div>
           </div>
           {addBookMessage && (
