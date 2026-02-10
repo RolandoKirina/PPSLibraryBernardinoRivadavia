@@ -9,7 +9,7 @@ export default function FormAddPartner( { onPartnerCreated } ) {
   const [activeAccordion, setActiveAccordion] = useState(null);
   const entityManagerApi = useEntityManagerAPI("partners");
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toLocaleDateString("en-CA");
 
   const [formValues, setFormValues] = useState({
     name: "",
@@ -36,6 +36,22 @@ export default function FormAddPartner( { onPartnerCreated } ) {
     idState: 1
   });
 
+const requiredFields = [
+  "name",
+  "surname",
+  "birthDate",
+  "documentType",
+  "documentNumber",
+  "MaritalStatusId",
+  "idCategory",
+  "nationality",
+  "homeAddress",
+  "homePhone",
+  "LocalityId",
+  "homePostalCode",
+  "profession",
+  "collectionAddress"
+];
 
   const formatPreferredTime = (value) => {
   if (!value) return null;
@@ -55,6 +71,16 @@ export default function FormAddPartner( { onPartnerCreated } ) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+
+
+     const missingFields = requiredFields.filter(
+          field => !formValues[field]
+    ) ;
+    if (missingFields.length > 0) {
+      alert("Completá los campos obligatorios");
+    return;
+  }
 
 
     const payload = {
@@ -107,21 +133,21 @@ export default function FormAddPartner( { onPartnerCreated } ) {
             <div className="row">
                   <div className="form-details">
                     <label htmlFor="name" className="title-name">Nombre <span className='required'>*</span></label>
-                    <input name="name" value={formValues.name} onChange={handleChange} placeholder="Nombre" />
+                    <input name="name" value={formValues.name} onChange={handleChange} placeholder="Nombre" required />
                   </div>
 
                   <div className="form-details">
                     <label htmlFor="surname">Apellido <span className='required'>*</span></label>
-                    <input name="surname" value={formValues.surname} onChange={handleChange} placeholder="Apellido" />
+                    <input name="surname" value={formValues.surname} onChange={handleChange} placeholder="Apellido" required />
                   </div>
 
                   <div className="form-details">
                       <label htmlFor="dateofbirthday">Fecha de nacimiento <span className='required'>*</span></label>
-                      <input type="date" name="birthDate" value={formValues.birthDate} onChange={handleChange} />
+                      <input type="date" name="birthDate" value={formValues.birthDate} onChange={handleChange} required />
                           </div>
               <div className="form-details">
                 <label htmlFor="documentType">Tipo de documento <span className='required'>*</span></label>
-                <select name="documentType" value={formValues.documentType} onChange={handleChange}>
+                <select name="documentType" value={formValues.documentType} onChange={handleChange} required>
                   <option value="">Tipo documento</option>
                   <option value="1">DNI</option>
                   <option value="2">LE</option>
@@ -132,7 +158,7 @@ export default function FormAddPartner( { onPartnerCreated } ) {
 
               <div className="form-details">
               <label htmlFor="documentNumber">Numero de documento <span className='required'>*</span></label>
-              <input name="documentNumber" value={formValues.documentNumber} onChange={handleChange} placeholder="Documento" />
+              <input name="documentNumber" value={formValues.documentNumber} onChange={handleChange} placeholder="Documento" required />
               </div>
             
                 <div className="form-details">
@@ -142,6 +168,7 @@ export default function FormAddPartner( { onPartnerCreated } ) {
                       name="registrationDate"
                       value={formValues.registrationDate}
                       readOnly
+                      
                     />
                 </div>
 
@@ -149,14 +176,14 @@ export default function FormAddPartner( { onPartnerCreated } ) {
          
           <div className="form-details" >
                               <label htmlFor="presentedby">Presentado por <span className='required'>*</span></label>
-            <input name="presentedBy" value={formValues.presentedBy} onChange={handleChange} placeholder="Presentado por" />
+            <input name="presentedBy" value={formValues.presentedBy} onChange={handleChange} placeholder="Presentado por" required />
 
           </div>
 
 
              <div className="form-details" >
                               <label htmlFor="maritalstatus">Estado civil <span className='required'>*</span></label>
-            <select name="MaritalStatusId" value={formValues.MaritalStatusId} onChange={handleChange}>
+              <select name="MaritalStatusId" value={formValues.MaritalStatusId} onChange={handleChange} >
                       <option value="">Estado civil</option>
                       <option value="1">Soltero</option>
                       <option value="2">Casado</option>
@@ -169,7 +196,7 @@ export default function FormAddPartner( { onPartnerCreated } ) {
 
           <div className="form-details">
                           <label htmlFor="category">Categoría <span className='required'>*</span></label>
-                  <select name="idCategory" value={formValues.idCategory} onChange={handleChange}>
+                  <select name="idCategory" value={formValues.idCategory} onChange={handleChange} required>
                     <option value="">Categoría</option>
                     <option value="1">Regular</option>
                     <option value="2">Honorario</option>
@@ -182,7 +209,7 @@ export default function FormAddPartner( { onPartnerCreated } ) {
 
           <div className="form-details">
                     <label htmlFor="nacionality">Nacionalidad <span className='required'>*</span></label>
-                    <input name="nationality" value={formValues.nationality} onChange={handleChange} placeholder="Nacionalidad" />
+                    <input name="nationality"  value={formValues.nationality} onChange={handleChange} placeholder="Nacionalidad"  />
           </div>
 
         </div>
@@ -195,18 +222,18 @@ export default function FormAddPartner( { onPartnerCreated } ) {
             <div className="row">
               <div className="form-details" >
                 <label htmlFor="homeAddress">Direccion <span className='required'>*</span></label>
-                <input name="homeAddress" value={formValues.homeAddress} onChange={handleChange} placeholder="Dirección" />
+                <input name="homeAddress" value={formValues.homeAddress} onChange={handleChange} placeholder="Dirección" required/>
             </div>
             <div className="form-details" >
                 <label htmlFor="homePhone">Telefono personal <span className='required'>*</span></label>
-                <input name="homePhone" value={formValues.homePhone} onChange={handleChange} placeholder="Teléfono" />
+                <input name="homePhone" value={formValues.homePhone} onChange={handleChange} placeholder="Teléfono" required />
             </div>
         
             </div>
             <div className="row">
                 <div className="form-details" >
                               <label htmlFor="LocalityId">Localidad <span className='required'>*</span></label>
-                              <select name="LocalityId" value={formValues.LocalityId} onChange={handleChange}>
+                              <select name="LocalityId" value={formValues.LocalityId} onChange={handleChange} >
                               <option value="">Localidad</option>
                               <option value="1">Tandil</option>
                             </select>
@@ -230,7 +257,7 @@ export default function FormAddPartner( { onPartnerCreated } ) {
         <div className="row">
                     <div className="form-details" >
                       <label htmlFor="profession">Profesión <span className='required'>*</span></label>
-                      <input name="profession" value={formValues.profession} onChange={handleChange} placeholder="Profesión" />
+                      <input name="profession" value={formValues.profession} onChange={handleChange} placeholder="Profesión"  />
                     </div>
           
                     <div className="form-details">
@@ -247,8 +274,7 @@ export default function FormAddPartner( { onPartnerCreated } ) {
                       <input name="workPhone" placeholder="Teléfono laboral" onChange={handleChange} value={formValues.workPhone || ""} />
 
                     </div>
-                    <div className="form-details">                      
-                      
+                    <div className="form-details">                        
                         <label htmlFor="workPostalCode">Código postal laboral</label>
                         <input name="workPostalCode" placeholder="CP laboral" onChange={handleChange} value={formValues.workPostalCode || ""}  />
                     </div>
@@ -264,12 +290,12 @@ export default function FormAddPartner( { onPartnerCreated } ) {
           <div  className="form-details" >
             <label htmlFor="collectionAddress">Direccion de cobro <span className='required'>*</span></label>
 
-            <input name="collectionAddress" value={formValues.collectionAddress} onChange={handleChange} placeholder="Dirección de cobro" />
+            <input name="collectionAddress" value={formValues.collectionAddress} onChange={handleChange} placeholder="Dirección de cobro"  required/>
 
           </div>
              <div className="form-details">
-                      <label htmlFor="collectiontime">Hora preferida de cobro</label>
-                      <input type="time" name="collectiontime" onChange={handleChange}  value={formValues.collectiontime || ""} />
+                      <label htmlFor="collectiontime">Hora preferida de cobro</label> 
+                      <input type="time" name="collectiontime" onChange={handleChange}  value={formValues.collectiontime || ""} required/>
                   </div>
 
           </div>
