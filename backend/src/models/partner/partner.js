@@ -25,34 +25,44 @@ const Partner = sequelize.define("Partner", {
     idState: {
         type: DataTypes.SMALLINT,
         field: "IdEstado",
+        allowNull: false
+
     },
     idReason: {
         type: DataTypes.INTEGER,
-        field: "Motivo_Baj"
+        field: "Motivo_Baj",
+        
     },
     surname: {
         type: DataTypes.STRING(25),
-        field: "apellido"
+        field: "apellido",
+        allowNull: false
     },
     name: {
         type: DataTypes.STRING(25),
-        field: "nombre"
+        field: "nombre",
+        allowNull: false
     },
     birthDate: {
         type: DataTypes.DATEONLY,
-        field: "fecha_nac"
+        field: "fecha_nac",
+        allowNull: false
+
     },
     documentType: {
       type: DataTypes.SMALLINT,
-      field: "tipo_docum"
+      field: "tipo_docum",
+      allowNull: false
     },
     documentNumber: {
         type: DataTypes.STRING(10),
-        field: "nro_docum"
+        field: "nro_docum",
+        allowNull: false
     },
     MaritalStatusId: {
         type: DataTypes.SMALLINT,
-        field: "est_civil"
+        field: "est_civil",
+        allowNull: false
     },
     nationality: {
         type: DataTypes.STRING(15),
@@ -60,19 +70,24 @@ const Partner = sequelize.define("Partner", {
     },
     homeAddress: {
         type: DataTypes.STRING(100),
-        field: "dir_part"
+        field: "dir_part",
+        allowNull: false
+
     },
     homePhone: {
         type: DataTypes.STRING(20),
-        field: "tel_part"
+        field: "tel_part",
+        allowNull: false
     },
     homePostalCode: {
         type: DataTypes.STRING(10),
-        field: "cp_part"
+        field: "cp_part",
+        allowNull: false
     },
     profession: {
         type: DataTypes.STRING(50),
-        field: "profesion"
+        field: "profesion",
+        allowNull: false
     },
     workplace: {
         type: DataTypes.STRING(100),
@@ -100,15 +115,12 @@ const Partner = sequelize.define("Partner", {
     },
     collectionAddress: {
         type: DataTypes.STRING(100),
-        field: "dir_cobro"
+        field: "dir_cobro",
+        allowNull: false
     },
     preferredTime: {
         type: DataTypes.STRING(20),
-        field: "horapref"
-    },
-    isActive: {
-        type: DataTypes.SMALLINT, 
-        field: "est_socio"
+        field: "horapref",
     },
     withdrawalDate: {
         type: DataTypes.DATEONLY,
@@ -124,11 +136,11 @@ const Partner = sequelize.define("Partner", {
     },
     unpaidFees: {
         type: DataTypes.INTEGER,
-        field: "CuotasImpagas"
+        field: "CuotasImpagas",
     },
     pendingBooks: {
         type: DataTypes.INTEGER,
-        field: "LibrosPendientes"
+        field: "LibrosPendientes",
     },
     resignationDate: {
         type: DataTypes.DATEONLY,
