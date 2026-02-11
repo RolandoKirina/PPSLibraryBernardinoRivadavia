@@ -17,7 +17,6 @@ export default function Listing({ type }) {
   const [offsetActual, setOffsetActual] = useState(0);
   const [resetPageTrigger, setResetPageTrigger] = useState(0);
 
-  // 🔹 Fetch principal (igual a useEntityManagerAPI)
   const getItems = async ({ limit, offset }, append = false) => {
     try {
       setLoading(true);
@@ -48,7 +47,6 @@ export default function Listing({ type }) {
     }
   };
 
-  // 🔹 Carga inicial / cambio de tipo
   useEffect(() => {
     setOffsetActual(0);
     setResetPageTrigger(prev => prev + 1);
@@ -57,7 +55,6 @@ export default function Listing({ type }) {
     getItems({ limit: chunkSize, offset: 0 });
   }, [type]);
 
-  // 🔹 Paginación (idéntica a LoanSection)
   async function handleChangePage(page) {
     const numberPage = Number(page);
     const lastItemIndex = numberPage * rowsPerPage;

@@ -4,6 +4,10 @@ export const getAllReaders = async (queryOptions) => {
     return await ReaderRepository.getAll(queryOptions);
 };
 
+export const returnReaderBook = async (id, data) => {
+    return await ReaderRepository.returnReaderBook(id, data);
+};
+
 export const getReader = async (id) => {
     return await ReaderRepository.getOne(id);
 };

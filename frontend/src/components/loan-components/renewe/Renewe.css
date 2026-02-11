@@ -7,6 +7,10 @@
     background-color: var(--primary-dark-2);
 }
 
+.renewe-container p {
+    color: var(--white);
+}
+
 .renewe-container .content-table {
     margin-bottom: 1em;
 }
@@ -101,3 +105,5 @@
 .renewe-table-size .content-table .add-renew-btn {
     width: 100%;
 }
+
+

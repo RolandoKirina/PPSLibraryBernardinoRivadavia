@@ -227,10 +227,15 @@ export const getAllPendingBooks = async (partnerNumber, filters = {}) => {
 
 
 
-export const getAllWithFields = async ({ limit, offset }) => {
+export const getAllWithFields = async (filters) => {
+  const { whereBookTitle, limit, offset } = filters;
+
 
   const { rows: ids, count } = await Book.findAndCountAll({
     attributes: ['BookId'],
+    where: {
+      ...whereBookTitle
+    },
     limit,
     offset,
     distinct: true
@@ -247,7 +252,8 @@ export const getAllWithFields = async ({ limit, offset }) => {
 
   const books = await Book.findAll({
     where: {
-      BookId: bookIds
+      BookId: bookIds,
+      ...whereBookTitle
     },
     attributes: [
       "BookId",

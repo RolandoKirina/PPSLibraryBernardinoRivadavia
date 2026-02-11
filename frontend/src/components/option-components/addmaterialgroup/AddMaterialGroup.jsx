@@ -41,6 +41,7 @@ export default function AddMaterialGroup({
   const [offsetActual, setOffsetActual] = useState(0);
   const [resetPageTrigger, setResetPageTrigger] = useState(0);
 
+  const [nameSearch, setNameSearch] = useState('');
 
   useEffect(() => {
     getLibraryBookTypes({ limit: chunkSize, offset: 0 });
@@ -59,6 +60,9 @@ export default function AddMaterialGroup({
     }
   }, [isUpdate, groupSelected]);
 
+  useEffect(() => {
+    getLibraryBookTypes({ name: nameSearch, limit: chunkSize, offset: 0 }, false);
+  }, [nameSearch]);
 
   const getLibraryBookTypes = async (filters = {}, append = false) => {
     setLoadingBookTypes(true);
@@ -278,6 +282,14 @@ export default function AddMaterialGroup({
               <div className='author-books-title'>
                 <h3>Tipos de material disponibles</h3>
               </div>
+
+              <input
+                type='text'
+                name='searchName'
+                value={nameSearch}
+                onChange={(e) => setNameSearch(e.target.value)}
+                placeholder="Buscar tipo de material..."
+              />
 
               <Table
                 columns={libraryColumns}
