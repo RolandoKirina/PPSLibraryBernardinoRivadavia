@@ -7,24 +7,86 @@ import { AuthContext } from '../../auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 export default function RegisterSection() {
-
+  const BASE_URL = "http://localhost:4000/api/v1/users";
 
   const navigate = useNavigate();
+
   const { auth, login } = useContext(AuthContext);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    repeatPassword: '',
+  });
+
+  const [errorMessage, setErrorMessage] = useState('');
+  const [sucessMessage, setSucessMessage] = useState('');
 
   if (auth.isAuthenticated) {
     navigate('/options');
     return null;
   }
 
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: value
+    }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    login({ name, role: 'reader' });
 
+    setErrorMessage('');
+
+    if (formData.password !== formData.repeatPassword) {
+      setErrorMessage('Las contraseñas deben coincidir');
+      return;
+    }
+
+    if (!formData.name || !formData.email || !formData.password) {
+      setErrorMessage('Debes completar todos los campos');
+      return;
+    }
+
+    createUser();
   };
+
+  async function createUser() {
+
+    try {
+      const newUser = {
+        fullName: formData.name,
+        email: formData.email,
+        password: formData.password
+      }
+
+      const res = await fetch(`${BASE_URL}/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newUser)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.msg || "Error al crear");
+      }
+
+      setSucessMessage('Usuario creado correctamente!');
+
+      setTimeout(() => {
+        navigate('/login');
+      }, [1000])
+    }
+    catch (error) {
+      console.error('Error creating User: ' + error);
+      setErrorMessage(error.msg);
+    }
+
+  }
 
   return (
     <>
@@ -42,29 +104,63 @@ export default function RegisterSection() {
                 <div className='register-inputs'>
                   <div className="input">
                     <label htmlFor="name">Nombre completo</label>
-                    <input id="name" type="text" placeholder="Nombre completo"
-                      onChange={(e) => setName(e.target.value)} />
+                    <input
+                      id="name"
+                      type="text"
+                      placeholder="Nombre completo"
+                      value={formData.name}
+                      onChange={handleChange}
+                    />
                   </div>
 
                   <div className="input">
                     <label htmlFor="email">Correo electrónico</label>
-                    <input id="email" type="email" placeholder="Correo electrónico"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)} />
+                    <input
+                      id="email"
+                      type="email"
+                      placeholder="Correo electrónico"
+                      value={formData.email}
+                      onChange={handleChange}
+                    />
                   </div>
 
                   <div className="input">
                     <label htmlFor="password">Contraseña</label>
-                    <input id="password" type="password" placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)} />
+                    <input
+                      id="password"
+                      type="password"
+                      placeholder="Contraseña"
+                      value={formData.password}
+                      onChange={handleChange}
+                    />
                   </div>
+
+                  <div className="input">
+                    <label htmlFor="repeat-password">Repetir Contraseña</label>
+                    <input
+                      id="repeatPassword"
+                      type="password"
+                      placeholder="Repetir Contraseña"
+                      value={formData.repeatPassword}
+                      onChange={handleChange}
+                    />
+                  </div>
+
                 </div>
 
                 <Btn
                   type="submit"
                   variant={'primary'}
                   text={'Registrarse'}
-
                 />
+
+                {errorMessage && (
+                  <p className='error-message'>{errorMessage}</p>
+                )}
+
+                {sucessMessage && (
+                  <p className='sucess-message'>{sucessMessage}</p>
+                )}
 
                 <div className='already-account-msg'>
                   <Link to='/login'>
@@ -78,5 +174,4 @@ export default function RegisterSection() {
       </GenericSection>
     </>
   );
-
 }

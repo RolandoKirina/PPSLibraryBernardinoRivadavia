@@ -24,3 +24,13 @@ export const remove = async (id) => {
     await role.destroy();
     return { msg: "Role deleted successfully", data: role };
 };
+
+export const getRoleByName = async (name) => {
+    return await Role.findOne(
+        {
+            where: {
+                name
+            }
+        }
+    );
+};

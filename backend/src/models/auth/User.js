@@ -9,9 +9,9 @@ const User = sequelize.define("Users",
             type: DataTypes.INTEGER,
             field: 'id'
         },
-        username: {
+        fullName: {
             type: DataTypes.STRING(100),
-            field: 'NombreUsuario',
+            field: 'NombreCompleto',
             allowNull: false
         },
         email: {
