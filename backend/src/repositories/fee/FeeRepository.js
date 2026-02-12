@@ -3,7 +3,7 @@ import Partner from "../../models/partner/Partner.js";
 import { Op } from "sequelize";
 
 export const getAll = async (filters = {}, listType = '') => {
-  const { wherePartner, whereFees, limit, offset } = filters;
+  const { wherePartner, whereFees, limit, offset, order } = filters;
 
   if (listType === 'TypeOneFees') {
     return getAllFeesTypeOne(filters);
@@ -45,7 +45,7 @@ export const getAll = async (filters = {}, listType = '') => {
   const fees = await Fees.findAll({
     where: { id: ids },
     include: baseInclude,
-    order: [['id', 'ASC']]
+    order
   });
 
   const count = await Fees.count({

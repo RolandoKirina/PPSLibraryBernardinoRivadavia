@@ -18,33 +18,33 @@ export default function ShowDetails({ data, isPopup, detailsData, titleText,acti
       partnerNumber: fee.Partner?.id ?? '—'
     }));
   
-async function fetchUnpaidFees() {
-  try {
+  async function fetchUnpaidFees() {
+    try {
 
-    const res = await fetch(`http://localhost:4000/api/v1/fees/partners/${data.id}/unpaid-fees`);
-    
-    const json = await res.json();
-    console.log(json)
-    setUnpaidFees(json);
-    setPopupView("unpaidfees");
+      const res = await fetch(`http://localhost:4000/api/v1/fees/partners/${data.id}/unpaid-fees`);
+      
+      const json = await res.json();
+      console.log(json)
+      setUnpaidFees(normalizeFees(json.rows));
+      setPopupView("unpaidfees");
 
-  } catch (error) {
-    console.error("Error al cargar cuotas impagas", error);
-  } 
-}
-
-async function fetchPendingBooks() {
-  try {
-    
-    const res = await fetch(`http://localhost:4000/api/v1/books/pendingBooks/${data.id}`);
-    const json = await res.json();
-    setPendingBooks(json);
-    setPopupView("pendingbooks");
-
-  } catch (error) {
-    console.error("Error al cargar cuotas impagas", error);
+    } catch (error) {
+      console.error("Error al cargar cuotas impagas", error);
+    } 
   }
-}
+
+  async function fetchPendingBooks() {
+    try {
+      const res = await fetch(`http://localhost:4000/api/v1/books/pendingBooks/${data.id}`);
+      const json = await res.json();
+      setPendingBooks(json);
+      setPopupView("pendingbooks");
+
+    } catch (error) {
+      console.error("Error al cargar cuotas impagas", error);
+    }
+  }
+
    const columnsPendingBooks = [
      { header: 'Código de libro', accessor: 'bookCode' },
      { header: 'Título', accessor: 'title' },
@@ -61,12 +61,12 @@ async function fetchPendingBooks() {
 
     switch (popupView) {
           case "unpaidfees":
-        return (
-          <div >
-            <UnpaidFees data={unpaidFees} />
-            <BackviewBtn menu="default" changeView={setPopupView} />
-          </div>
-        );
+          return (
+            <div >
+              <UnpaidFees unpaidFees={unpaidFees} />
+              <BackviewBtn menu="default" changeView={setPopupView} />
+            </div>
+          );
 
          case "pendingbooks":
             return (

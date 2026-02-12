@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import './AddMaterialGroup.css';
 
 import BackviewBtn from '../../common/backviewbtn/BackviewBtn';
 import Btn from '../../common/btn/Btn';
@@ -140,9 +141,9 @@ export default function AddMaterialGroup({
         bookTypeId: bt.bookTypeId ?? bt.BookTypeId,
         loanDays: bt.loanDays
       }))
-      .filter(bt => bt.bookTypeId); 
+      .filter(bt => bt.bookTypeId);
 
-      console.log(normalizedBookTypes);
+    console.log(normalizedBookTypes);
 
     createGroupItem({
       group,
@@ -194,7 +195,9 @@ export default function AddMaterialGroup({
       {popupView === 'default' && (
         <div className='add-loan-form-content'>
           <form>
-            <h2>Datos del grupo</h2>
+            <div className='type-loan-title'>
+              <h2>Datos del grupo</h2>
+            </div>
 
             <div className='add-loan-form-inputs'>
               <div className='input'>
@@ -217,7 +220,8 @@ export default function AddMaterialGroup({
             </div>
 
             <div className='lend-books-container'>
-              <h3>Tipos de material asociados</h3>
+              <h2 className='lend-books-title'>Tipos de material asociados</h2>
+
 
               <Table
                 columns={selectedColumns}
@@ -238,13 +242,16 @@ export default function AddMaterialGroup({
             {validateError && <p className="error-text">{validateError}</p>}
             {errorMessage && <p className="error-text">{errorMessage}</p>}
 
-            <Btn
-              type="button"
-              variant="primary"
-              text="Guardar"
-              icon={<img src={SaveIcon} alt="save" />}
-              onClick={() => setConfirmSavePopup(true)}
-            />
+            <div className='add-material-btn-save'>
+              <Btn
+                type="button"
+                variant="primary"
+                text="Guardar"
+                icon={<img src={SaveIcon} alt="save" />}
+                onClick={() => setConfirmSavePopup(true)}
+              />
+            </div>
+
           </form>
 
           {confirmSavePopup && (
@@ -268,7 +275,10 @@ export default function AddMaterialGroup({
 
           <div className='author-books-container'>
             <div className='library-books'>
-              <h3>Tipos de material disponibles</h3>
+              <div className='author-books-title'>
+                <h3>Tipos de material disponibles</h3>
+              </div>
+
               <Table
                 columns={libraryColumns}
                 data={libraryBookTypes}
@@ -280,7 +290,10 @@ export default function AddMaterialGroup({
             </div>
 
             <div className='author-books'>
-              <h3>Seleccionados</h3>
+              <div className='author-books-title'>
+                <h3>Seleccionados</h3>
+              </div>
+
               <Table
                 columns={selectedColumns}
                 data={bookTypes}

@@ -15,7 +15,9 @@ export const buildBookFilters = (query) => {
     numberEdition,
     bookTitle,
     limit,
-    offset
+    offset,
+    sortBy,
+    direction,
   } = query;
 
   const whereAuthor = {};
@@ -63,6 +65,10 @@ export const buildBookFilters = (query) => {
   const parsedLimit = parseInt(limit);
   const parsedOffset = parseInt(offset);
 
+  const order = sortBy
+    ? [[sortBy, direction === 'asc' ? 'ASC' : 'DESC']]
+    : undefined;
+
   return {
     whereAuthor,
     whereCodeInventory,
@@ -72,7 +78,8 @@ export const buildBookFilters = (query) => {
     whereYearEdition,
     whereNumberEdition,
     limit: isNaN(parsedLimit) ? 40 : parsedLimit,
-    offset: isNaN(parsedOffset) ? 0 : parsedOffset
+    offset: isNaN(parsedOffset) ? 0 : parsedOffset,
+    order
   };
 }
 

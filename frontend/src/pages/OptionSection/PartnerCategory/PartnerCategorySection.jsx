@@ -42,7 +42,7 @@ export default function PartnerCategorySection() {
         try {
             await createItem(data);
 
-            await getItems();
+            await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setAddPopup(false);
 
@@ -58,7 +58,7 @@ export default function PartnerCategorySection() {
         try {
             await updateItem(selected.idCategory, data);
 
-            await getItems();
+            await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setEditPopup(false);
 
@@ -76,7 +76,7 @@ export default function PartnerCategorySection() {
 
             setResetPageTrigger(prev => prev + 1);
 
-            getItems({ ...filters, limit: chunkSize, offset: 0 });
+            getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
         }, 500);
 
         return () => clearTimeout(delay);
@@ -86,9 +86,9 @@ export default function PartnerCategorySection() {
         const numberPage = Number(page);
         const lastItemIndex = numberPage * rowsPerPage;
 
-        if (lastItemIndex > items.length) {
+        if (items.length < totalItems && lastItemIndex > items.length) {
             const newOffset = items.length;
-            await getItems({ ...filters, limit: chunkSize, offset: newOffset }, true);
+            await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: newOffset }, true);
             setOffsetActual(newOffset);
         }
     }
@@ -141,7 +141,6 @@ export default function PartnerCategorySection() {
             accessor: 'delete',
             render: (_, row) => (
                 <button className="button-table" onClick={() => {
-                    console.log(row);
                     setDeletePopup(true)
                     setSelected(row)
                 }}>

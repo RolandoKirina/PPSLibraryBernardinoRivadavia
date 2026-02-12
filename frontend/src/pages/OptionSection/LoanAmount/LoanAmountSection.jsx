@@ -30,25 +30,10 @@ export default function LoanAmountSection() {
         loading,
         totalItems,
         getItems: getGroupItem,
-        // getItem: getGroupItem,
         deleteItem,
         createItem,
         updateItem
     } = useEntityManagerAPI("book-type-groups-list");
-
-
-    // const {
-    //     items: bookTypes,
-    //     loading: bookTypesLoading,
-    //     totalItems: bookTypesTotalItems,
-    //     getItems: getBookTypes,
-    //     // getItem: getGroupItem,
-    //     deleteItem: deleteBookType,
-    //     createItem: createBookType,
-    //     updateItem: updateBookType
-    // } = useEntityManagerAPI("book-types");
-
-    //const [bookTypes, setBookTypes] = useState([]);
 
     useEffect(() => {
         const delay = setTimeout(() => {
@@ -56,7 +41,7 @@ export default function LoanAmountSection() {
 
             setResetPageTrigger(prev => prev + 1);
 
-            getGroupItem({ ...filters, limit: chunkSize, offset: 0 });
+            getGroupItem({ ...filters, sortBy: 'group', direction: 'asc', limit: chunkSize, offset: 0 });
         }, 500);
 
         return () => clearTimeout(delay);
@@ -66,25 +51,18 @@ export default function LoanAmountSection() {
         const numberPage = Number(page);
         const lastItemIndex = numberPage * rowsPerPage;
 
-        if (lastItemIndex > groupItems.length) {
+        if (groupItems.length < totalItems && lastItemIndex > groupItems.length) {
             const newOffset = groupItems.length;
-            await getGroupItem({ ...filters, limit: chunkSize, offset: newOffset }, true);
+            await getGroupItem({ ...filters, sortBy: 'group', direction: 'asc', limit: chunkSize, offset: newOffset }, true);
             setOffsetActual(newOffset);
         }
     }
-
-    // useEffect(() => {
-    //     if (groupItems.length > 0) {
-    //         const allBookTypes = getAllBookTypes(groupItems);
-    //         setBookTypes(allBookTypes);
-    //     }
-    // }, [groupItems]);
 
     async function handleAddNewGroup(data) {
         try {
             await createItem(data);
 
-            await getGroupItem({ ...filters, limit: chunkSize, offset: 0 });
+            await getGroupItem({ ...filters, sortBy: 'group', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setAddPopup(false);
         }
@@ -97,7 +75,7 @@ export default function LoanAmountSection() {
         try {
             await updateItem(selected.bookTypeGroupListId, data);
 
-            await getGroupItem({ ...filters, limit: chunkSize, offset: 0 });
+            await getGroupItem({ ...filters, sortBy: 'group', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setEditPopup(false);
         }

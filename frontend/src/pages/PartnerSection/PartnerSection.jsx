@@ -31,7 +31,8 @@ export default function PartnerSection() {
   const [PopUpBooksPartners, setPopUpBooksPartners] = useState(false);
   const [PopUpDetail, setPopUpDetail] = useState(false);
   const [PopUpAdd, setPopUpAdd] = useState(false);
-  const [formData, setFormData] = useState({unpaidFees: "",pendingBooks: "",isActive: "all",});
+  const [filters, setFilters] = useState({});
+  const [formData, setFormData] = useState({ unpaidFees: "", pendingBooks: "", isActive: "all", });
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -39,11 +40,15 @@ export default function PartnerSection() {
         Object.entries(formData).filter(([_, v]) => v !== "")
       );
 
+      setFilters(activeFilters);
+
       setOffsetActual(0);
       setResetPageTrigger(prev => prev + 1);
 
       getItems({
         ...activeFilters,
+        sortBy: 'id',
+        direction: 'asc',
         limit: chunkSize,
         offset: 0
       });
@@ -62,9 +67,9 @@ export default function PartnerSection() {
     const numberPage = Number(page);
     const lastItemIndex = numberPage * rowsPerPage;
 
-    if (lastItemIndex > items.length) {
+    if (items.length < totalItems && lastItemIndex > items.length) {
       const newOffset = items.length;
-      await getItems({ ...formData, limit: chunkSize, offset: newOffset }, true);
+      await getItems({ ...formData, sortBy: 'id', direction: 'asc', limit: chunkSize, offset: newOffset }, true);
       setOffsetActual(newOffset);
     }
   }
@@ -114,7 +119,7 @@ export default function PartnerSection() {
           />
         </button>
       )
-    },  
+    },
     {
       header: 'Borrar',
       accessor: 'delete',
@@ -129,7 +134,7 @@ export default function PartnerSection() {
 
           <img src={DeleteIcon} alt="Borrar" />
         </button>
-        )
+      )
     },
   ];
 
@@ -159,7 +164,13 @@ export default function PartnerSection() {
       className: 'popup-container add-edit-partner-size',
       content: <FormEditPartner selectedPartner={selectedItem}  />,
       close: () => {
-        getItems();
+        getItems({
+          ...filters,
+          sortBy: 'id',
+          direction: 'asc',
+          limit: chunkSize,
+          offset: 0
+        });
         setPopupEdit(false);
       },
       condition: PopUpEdit
@@ -168,24 +179,24 @@ export default function PartnerSection() {
       key: 'AddPopup',
       title: 'Agregar Socio',
       className: 'popup-container add-edit-partner-size',
-      content: <FormAddPartner
-                onPartnerCreated={() => {
-                  getItems({
-                    ...formData,
-                    limit: chunkSize,
-                    offset: 0
-                  });
-                  setPopUpAdd(false);
-                }}
-       />,
-      close: () => setPopUpAdd(false),
+      content: <FormAddPartner />,
+      close: () => {
+        getItems({
+          ...filters,
+          sortBy: 'id',
+          direction: 'asc',
+          limit: chunkSize,
+          offset: 0
+        });
+        setPopUpAdd(false)
+      },
       condition: PopUpAdd
     },
     {
       key: 'detailsPopup',
       title: 'Detalles del socio',
       className: '',
-      content: <ShowDetails data={selectedItem} detailsData={DetailPartner} isPopup={true} actions={true}/>,
+      content: <ShowDetails data={selectedItem} detailsData={DetailPartner} isPopup={true} actions={true} />,
       close: () => setPopUpDetail(false),
       condition: PopUpDetail
     },

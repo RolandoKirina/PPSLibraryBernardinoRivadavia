@@ -6,14 +6,14 @@ import * as BookTypeGroupRepository from '../../repositories/options/BookTypeGro
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 
 export const getAll = async (filters = {}) => {
-    const { limit, offset, where } = filters;
+    const { limit, offset, where, order } = filters;
 
     const { rows: idsResult, count } = await BookTypeGroupList.findAndCountAll({
         where,
         attributes: ['bookTypeGroupListId'],
         limit,
         offset,
-        order: [['bookTypeGroupListId', 'ASC']],
+        order,
         distinct: true,
         col: 'bookTypeGroupListId'
     });
@@ -46,7 +46,7 @@ export const getAll = async (filters = {}) => {
                 ]
             }
         ],
-        order: [['bookTypeGroupListId', 'ASC']]
+        order
     });
 
     return {

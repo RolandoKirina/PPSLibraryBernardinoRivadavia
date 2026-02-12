@@ -24,7 +24,9 @@ export const generateUnpaidFees = async (body) => {
     const [year, month, day] = month_and_year.split("-").map(Number);
 
     const generatedFees = [];
-    const partners = await getAll();
+    const data = await getAll();
+
+    const partners = data.rows;
 
     for (const partner of partners) {
         const existingFee = await FeeRepository.findOne({

@@ -47,7 +47,7 @@ export default function RemovePartnerReasonSection({ chooseMode }) {
 
             setResetPageTrigger(prev => prev + 1);
 
-            getItems({ ...filters, limit: chunkSize, offset: 0 });
+            getItems({ ...filters, sortBy: 'reason', direction: 'asc', limit: chunkSize, offset: 0 });
         }, 500);
 
         return () => clearTimeout(delay);
@@ -57,9 +57,9 @@ export default function RemovePartnerReasonSection({ chooseMode }) {
         const numberPage = Number(page);
         const lastItemIndex = numberPage * rowsPerPage;
 
-        if (lastItemIndex > items.length) {
+        if (items.length < totalItems && lastItemIndex > items.length) {
             const newOffset = items.length;
-            await getItems({ ...filters, limit: chunkSize, offset: newOffset }, true);
+            await getItems({ ...filters, sortBy: 'reason', direction: 'asc', limit: chunkSize, offset: newOffset }, true);
             setOffsetActual(newOffset);
         }
     }
@@ -68,7 +68,7 @@ export default function RemovePartnerReasonSection({ chooseMode }) {
         try {
             await createItem(data);
 
-            await getItems();
+            await getItems({ ...filters, sortBy: 'reason', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setAddPopup(false);
 
@@ -84,7 +84,7 @@ export default function RemovePartnerReasonSection({ chooseMode }) {
         try {
             await updateItem(selected.id, data);
 
-            await getItems();
+            await getItems({ ...filters, sortBy: 'reason', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setEditPopup(false);
 

@@ -68,7 +68,8 @@ export const createLoan = async (data) => {
         throw new ValidationError(`No existe un tipo de préstamo con la descripción "retired"`);
       }
 
-      const employee = await EmployeesRepository.getOneByCode(data.employeeCode);
+      const employee = await EmployeesRepository.getOneByCode(null, data.employeeCode);
+
       if (!employee) {
         throw new ValidationError("Empleado no existe");
       }

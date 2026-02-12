@@ -49,7 +49,7 @@ export default function EmployeeSection() {
 
             setResetPageTrigger(prev => prev + 1);
 
-            getItems({ ...filters, limit: chunkSize, offset: 0 });
+            getItems({ ...filters, sortBy: 'code', direction: 'asc', limit: chunkSize, offset: 0 });
         }, 500);
 
         return () => clearTimeout(delay);
@@ -59,7 +59,7 @@ export default function EmployeeSection() {
         try {
             await createItem(data);
 
-            await getItems();
+            await getItems({ ...filters, sortBy: 'code', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setAddPopup(false);
 
@@ -75,7 +75,7 @@ export default function EmployeeSection() {
         try {
             await updateItem(selected.id, data);
 
-            await getItems();
+            await getItems({ ...filters, sortBy: 'code', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setEditPopup(false);
 
@@ -91,9 +91,9 @@ export default function EmployeeSection() {
         const numberPage = Number(page);
         const lastItemIndex = numberPage * rowsPerPage;
 
-        if (lastItemIndex > items.length) {
+        if (items.length < totalItems && lastItemIndex > items.length) {
             const newOffset = items.length;
-            await getItems({ ...filters, limit: chunkSize, offset: newOffset }, true);
+            await getItems({ ...filters, sortBy: 'code', direction: 'asc', limit: chunkSize, offset: newOffset }, true);
             setOffsetActual(newOffset);
         }
     }

@@ -10,7 +10,9 @@ export const buildFeeFilters = (query) => {
     beforeDate,
     afterDate,
     limit,
-    offset
+    offset,
+    sortBy,
+    direction,
   } = query;
 
   const whereFees = {};
@@ -67,11 +69,16 @@ export const buildFeeFilters = (query) => {
   const parsedLimit = limit ? Number(limit) : undefined;
   const parsedOffset = offset ? Number(offset) : undefined;
 
+  const order = sortBy
+    ? [[sortBy, direction === 'asc' ? 'ASC' : 'DESC']]
+    : undefined;
+
   return {
     wherePartner,
     whereFees,
     limit: parsedLimit,
-    offset: parsedOffset
+    offset: parsedOffset,
+    order
   };
 };
 

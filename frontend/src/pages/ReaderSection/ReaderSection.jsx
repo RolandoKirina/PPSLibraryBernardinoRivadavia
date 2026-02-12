@@ -51,7 +51,7 @@ export default function ReaderSection() {
 
             setResetPageTrigger(prev => prev + 1);
 
-            getItems({ ...filters, limit: chunkSize, offset: 0 });
+            getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
         }, 500);
 
         return () => clearTimeout(delay);
@@ -63,7 +63,7 @@ export default function ReaderSection() {
 
         if (items.length < totalItems && lastItemIndex > items.length) {
             const newOffset = items.length;
-            await getItems({ ...filters, limit: chunkSize, offset: newOffset }, true);
+            await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: newOffset }, true);
             setOffsetActual(newOffset);
         }
     }
@@ -72,7 +72,7 @@ export default function ReaderSection() {
         try {
             await createItem(data);
 
-            await getItems();
+            await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setAddPopup(false);
 
@@ -88,7 +88,7 @@ export default function ReaderSection() {
         try {
             await updateItem(selected.id, data);
 
-            await getItems();
+            await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setEditPopup(false);
 
@@ -110,7 +110,7 @@ export default function ReaderSection() {
                     title="Lector"
                     onConfirm={() => deleteReaderBook(selected.id)}
                     closePopup={() => setDeletePopup(false)}
-                    refresh={() => getItems()}
+                    refresh={() => getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 })}
                 />,
             close: () => setDeletePopup(false),
             condition: deletePopup,
@@ -241,9 +241,9 @@ export default function ReaderSection() {
                 columns={columns}
                 data={items}
                 popups={readerPopups}
-                rowsPerPage={rowsPerPage}                 
-                totalItems={totalItems}                  
-                handleChangePage={handleChangePage}      
+                rowsPerPage={rowsPerPage}
+                totalItems={totalItems}
+                handleChangePage={handleChangePage}
                 loading={loading}
                 filters={
                     <ReaderFilter
@@ -251,7 +251,10 @@ export default function ReaderSection() {
                     />
                 }
                 actions={
-                    <Btn text={'Agregar'} onClick={() => setAddPopup(true)} variant={'primary'} />
+                    <div className='reader-add-btn'>
+                        <Btn text={'Agregar'} onClick={() => setAddPopup(true)} variant={'primary'} />
+                    </div>
+
                 }
             />
         </>

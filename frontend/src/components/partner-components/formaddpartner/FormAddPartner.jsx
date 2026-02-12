@@ -71,9 +71,6 @@ const requiredFields = [
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-
-
      const missingFields = requiredFields.filter(
           field => !formValues[field]
     ) ;
@@ -81,7 +78,6 @@ const requiredFields = [
       alert("Completá los campos obligatorios");
     return;
   }
-
 
     const payload = {
       name: formValues.name || null,
@@ -171,8 +167,6 @@ const requiredFields = [
                       
                     />
                 </div>
-
-
          
           <div className="form-details" >
                               <label htmlFor="presentedby">Presentado por <span className='required'>*</span></label>
@@ -192,8 +186,6 @@ const requiredFields = [
                     </select>
           </div>
          
-
-
           <div className="form-details">
                           <label htmlFor="category">Categoría <span className='required'>*</span></label>
                   <select name="idCategory" value={formValues.idCategory} onChange={handleChange} required>
@@ -204,8 +196,6 @@ const requiredFields = [
                     <option value="4">Socio</option>
                   </select>
           </div>
-
-
 
           <div className="form-details">
                     <label htmlFor="nacionality">Nacionalidad <span className='required'>*</span></label>
@@ -296,7 +286,7 @@ const requiredFields = [
              <div className="form-details">
                       <label htmlFor="collectiontime">Hora preferida de cobro</label> 
                       <input type="time" name="collectiontime" onChange={handleChange}  value={formValues.collectiontime || ""} required/>
-                  </div>
+              </div>
 
           </div>
          

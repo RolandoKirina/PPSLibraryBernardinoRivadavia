@@ -14,7 +14,7 @@ import UnpaidFees from '../unpaidfees/UnpaidFees';
 import PendingBooks from '../pendingBooks/PendingBooks';
 import PartnerMemo from '../partnermemo/PartnerMemo';
 
-export default function AddRenewe({ refreshItems, createReneweItem }) {
+export default function AddRenewe({ refreshItems, createReneweItem, errorMessage }) {
   const { auth } = useAuth();
   const BASE_URL = 'http://localhost:4000/api/v1';
 
@@ -93,11 +93,11 @@ export default function AddRenewe({ refreshItems, createReneweItem }) {
   }
 
   async function handleSaveChanges() {
-    if (!reneweData.partnerNumber || reneweData.books.length === 0) return;
+    // if (!reneweData.partnerNumber || reneweData.books.length === 0) return;
 
     await createReneweItem(reneweData);
     setConfirmPopup(false);
-    await refreshItems();
+    // await refreshItems();
   }
 
   const bookshelfBooksColumns = [
@@ -168,7 +168,10 @@ export default function AddRenewe({ refreshItems, createReneweItem }) {
                 memoSearch: reneweData.memoSearch
               }}
             />
+
           </div>
+
+          <div className='reader-error'>{errorMessage && <p className="">{errorMessage}</p>}</div>
 
           <div className='renewe-books-title'>
             <h3>Libros vinculados a la reserva</h3>

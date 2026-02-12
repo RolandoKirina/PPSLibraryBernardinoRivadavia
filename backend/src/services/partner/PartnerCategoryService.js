@@ -1,7 +1,7 @@
 import * as PartnerCategoryRepository from '../../repositories/partner/PartnerCategoryRepository.js';
 
-export const getAllPartnerCategories = async () => {
-    return await PartnerCategoryRepository.getAll();
+export const getAllPartnerCategories = async (filters) => {
+    return await PartnerCategoryRepository.getAll(filters);
 };
 
 export const getPartnerCategory = async (id) => {

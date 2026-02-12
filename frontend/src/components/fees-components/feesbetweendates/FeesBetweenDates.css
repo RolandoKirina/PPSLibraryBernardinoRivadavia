@@ -88,8 +88,8 @@
   margin: 1em 0;
 }
 
-.preview-list-container {
-  width: auto;
+.fees-between-dates-container .preview-list-container {
+  width: 100%;
   background-color: var(--white);
   overflow-y: auto;
   padding: 1em;

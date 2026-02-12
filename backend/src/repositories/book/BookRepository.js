@@ -293,7 +293,7 @@ export const getAllBooksOfLoan = async (id, filters = {}) => {
   const { limit, offset } = filters;
 
   const { rows: idRows, count } = await Book.findAndCountAll({
-    attributes: ["BookId"],
+    attributes: ["BookId", 'codeInventory'],
     include: [
       {
         model: LoanBook,
@@ -336,7 +336,7 @@ export const getAllBooksOfLoan = async (id, filters = {}) => {
       {
         model: LoanBook,
         as: "BookLoans",
-        attributes: ["reneweAmount", "returnedDate"],
+        attributes: ["reneweAmount", "returnedDate", "returned"],
         required: true,
         include: [
           {
@@ -369,7 +369,7 @@ export const getAllBooksOfLoan = async (id, filters = {}) => {
     loanId: book.BookLoans?.[0]?.Loan?.id ?? null,
     renewes: book.BookLoans?.[0]?.reneweAmount ?? 0,
     returnedDate: formatDate(book.BookLoans?.[0]?.returnedDate),
-    returned: book.BookLoans?.[0]?.returnedDate ? "Si" : "No",
+    returned: book.BookLoans?.[0]?.returned,
     returnDateText: book.BookLoans?.[0]?.returnedDate ?? "Sin fecha"
   }));
 

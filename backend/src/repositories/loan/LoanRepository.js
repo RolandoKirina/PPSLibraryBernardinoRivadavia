@@ -563,7 +563,7 @@ export const create = async (loanData, transaction = null) => {
 
 
 export const update = async (id, updates) => {
-  console.log("updates ", updates);
+
   if (!updates.books || updates.books.length === 0) {
     throw new ValidationError("No se puede actualizar el préstamo sin libros");
   }
@@ -612,7 +612,7 @@ export const update = async (id, updates) => {
     const newLoanBooks = updates.books.map((book) => ({
       BookId: book.BookId,
       loanId: id,
-      bookCode: book.codeInventory,
+      bookCode: book.BookCode,
       expectedDate: updates.expectedDate,
       reneweAmount: book.renewes || 0,
       returned: book.returned === "Sí" || book.returned === true,

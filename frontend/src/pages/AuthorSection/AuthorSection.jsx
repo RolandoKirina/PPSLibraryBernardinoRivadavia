@@ -58,7 +58,7 @@ export default function AuthorSection() {
                 Object.entries(filters).filter(([_, v]) => v !== "" && v !== null && v !== undefined)
             );
 
-            getItems({ ...activeFilters, limit: chunkSize, offset: 0 });
+            getItems({ ...activeFilters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
         }, 300);
         console.log(totalItems);
         return () => clearTimeout(delay);
@@ -69,10 +69,9 @@ export default function AuthorSection() {
         const numberPage = Number(page);
         const lastItemIndex = numberPage * rowsPerPage;
 
-        // Si necesitamos traer más items
-        if (lastItemIndex > items.length) {
-            const newOffset = items.length; // desde donde ya terminé de cargar
-            await getItems({ ...filters, limit: chunkSize, offset: newOffset }, true);
+        if (items.length < totalItems && lastItemIndex > items.length) {
+            const newOffset = items.length;
+            await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: newOffset }, true);
             setOffsetActual(newOffset);
         }
 
@@ -112,7 +111,7 @@ export default function AuthorSection() {
 
             await createItem(author);
 
-            await getItems();
+            await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setAddPopup(false);
         }
@@ -132,7 +131,7 @@ export default function AuthorSection() {
                 books: data.books
             });
 
-            await getItems();
+            await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setEditPopup(false);
         }
@@ -196,7 +195,7 @@ export default function AuthorSection() {
         {
             key: 'booksPopup',
             title: 'Libros del autor',
-            className: '',
+            className: 'author-books-list-background',
             content: <ShowAuthorBooks authorSelected={selected} />,
             close: () => setBooksPopup(false),
             condition: booksPopup

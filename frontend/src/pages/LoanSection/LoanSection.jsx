@@ -68,7 +68,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
 
             setResetPageTrigger(prev => prev + 1);
 
-            getItems({ ...filters, limit: chunkSize, offset: 0 });
+            getItems({ ...filters, sortBy: 'id',direction: 'asc', limit: chunkSize, offset: 0 });
         }, 500);
 
         return () => clearTimeout(delay);
@@ -78,7 +78,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
         const numberPage = Number(page);
         const lastItemIndex = numberPage * rowsPerPage;
 
-        if (lastItemIndex > items.length) {
+        if (items.length < totalItems && lastItemIndex > items.length) {
             const newOffset = items.length;
             await getItems({ ...filters, limit: chunkSize, offset: newOffset }, true);
             setOffsetActual(newOffset);
@@ -89,7 +89,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
         try {
             await createItem(data);
 
-            await getItems();
+            await getItems({ ...filters, sortBy: 'id',direction: 'asc', limit: chunkSize, offset: 0 });
 
             setAddPopup(false);
 
@@ -105,7 +105,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
         try {
             await updateItem(selected.loanId, data);
 
-            await getItems();
+            await getItems({ ...filters, sortBy: 'id',direction: 'asc', limit: chunkSize, offset: 0 });
 
             setEditPopup(false);
 
@@ -223,7 +223,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
         {
             key: 'editPopup',
             title: 'Editar préstamo',
-            className: '',
+            className: 'loans-background',
             content: <LoanForm method="update" createLoanItem={handleUpdateItem} loanSelected={selected} errorMessage={errorMessage} />,
             close: () => {
                 setEditPopup(false)

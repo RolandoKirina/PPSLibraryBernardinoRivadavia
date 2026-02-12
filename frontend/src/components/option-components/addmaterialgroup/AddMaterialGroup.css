@@ -45,3 +45,11 @@
 .add-material-container .input:has(> input:focus)>label {
     color: var(--secondary-light-2);
 }
+
+.add-material-btn-save {
+    margin-bottom: 1em;
+}
+
+.lend-books-container p, .author-books p, .library-books p {
+    color: var(--white);
+}
