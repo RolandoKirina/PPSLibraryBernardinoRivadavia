@@ -71,6 +71,7 @@
     position: relative; /* no absolute */
     width: 100%;
     overflow: visible;  /* aseguramos que se expanda */
+    
   }
 
   .no-print {

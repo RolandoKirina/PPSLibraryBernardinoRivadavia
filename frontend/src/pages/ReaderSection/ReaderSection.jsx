@@ -16,6 +16,8 @@ import { loanDetailsInfo } from '../../data/showdetails/LoanDetails';
 import GenericForm from '../../components/generic/GenericForm/GenericForm';
 import { readerFields } from '../../data/forms/LoanForms';
 import ReaderFilter from '../../components/filter/readerfilter/ReaderFilter';
+import ConfirmMessage from '../../components/common/confirmMessage/ConfirmMessage';
+import ReturnIcon from '../../assets/img/return-icon.svg';
 
 export default function ReaderSection() {
     const [filters, setFilters] = useState({});
@@ -23,6 +25,7 @@ export default function ReaderSection() {
     const [deletePopup, setDeletePopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
     const [editPopup, setEditPopup] = useState(false);
+    const [returnPopup, setReturnPopup] = useState(false);
     const [detailsPopup, setDetailsPopup] = useState(false);
     const [booksPopup, setBooksPopup] = useState(false);
 
@@ -31,6 +34,8 @@ export default function ReaderSection() {
     const [offsetActual, setOffsetActual] = useState(0);
     const [resetPageTrigger, setResetPageTrigger] = useState(0);
     const [errorMessage, setErrorMessage] = useState(false);
+
+    const baseUrl = "http://localhost:4000/api/v1/readers"
 
     const {
         items,
@@ -100,6 +105,38 @@ export default function ReaderSection() {
         }
     }
 
+    async function returnReaderBook() {
+        try {
+            const readerBookId = selected.id;
+
+            const now = new Date();
+
+            const updates = {
+                returnedDate: now.toISOString().split("T")[0],
+                returnedHour: now.toTimeString().split(" ")[0]
+            };
+
+            const res = await fetch(`${baseUrl}/return-book/${readerBookId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(updates)
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.msg || "Error al devolver el libro del Lector");
+            }
+
+            await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
+
+            setReturnPopup(false);
+        }
+        catch (error) {
+            console.error("Error al devolver el libro de un Lector:", error);
+        }
+    }
+
     const readerPopups = [
         {
             key: 'deletePopup',
@@ -126,6 +163,22 @@ export default function ReaderSection() {
             condition: editPopup
         },
         {
+            key: 'returnPopup',
+            title: 'Devolver libro de ector',
+            className: '',
+            //content: <LoanForm method="update" createLoanItem={handleUpdateItem} loanSelected={selected} />,
+            content:
+                <ConfirmMessage
+                    text={'¿Está seguro de devolver el libro del lector?'}
+                    closePopup={() => setReturnPopup(false)}
+                    onConfirm={() => {
+                        returnReaderBook();
+                    }}
+                />,
+            close: () => setReturnPopup(false),
+            condition: returnPopup
+        },
+        {
             key: 'addPopup',
             title: 'Agregar lector',
             className: 'loans-background',
@@ -136,14 +189,6 @@ export default function ReaderSection() {
             },
             condition: addPopup
         },
-        // {
-        //     key: 'editPopup',
-        //     title: 'Editar préstamo',
-        //     className: '',
-        //     content: <GenericForm fields={} onSubmit={(data) => updateItem(selected.dni, selected)}/>,
-        //     close: () => setEditPopup(false),
-        //     condition: editPopup
-        // },
         {
             key: 'detailsPopup',
             title: 'Detalles del préstamo',
@@ -152,38 +197,6 @@ export default function ReaderSection() {
             close: () => setDetailsPopup(false),
             condition: detailsPopup
         },
-        // {
-        //     key: 'booksPopup',
-        //     title: 'Libros del préstamo',
-        //     className: '',
-        //     content: <LoanBooks loanSelected={selected} />,
-        //     close: () => setBooksPopup(false),
-        //     condition: booksPopup
-        // },
-        // {
-        //     key: 'returnsPopup',
-        //     title: 'Devoluciones de libros',
-        //     className: '',
-        //     content: <Return />,
-        //     close: () => setReturnsPopup(false),
-        //     condition: returnsPopup
-        // },
-        // {
-        //     key: 'listingsPopup',
-        //     title: 'Imprimir listados',
-        //     className: 'loan-listings-size',
-        //     content: <LoanListings />,
-        //     close: () => setListingsPopup(false),
-        //     condition: listingsPopup
-        // },
-        // {
-        //     key: 'renewePopup',
-        //     title: 'Listado de reservas',
-        //     className: 'loan-renews-size',
-        //     content: <Renewe isPopup={true} />,
-        //     close: () => setRenewePopup(false),
-        //     condition: renewePopup
-        // }
     ];
 
 
@@ -212,9 +225,21 @@ export default function ReaderSection() {
                 <button className="button-table" onClick={() => {
                     setEditPopup(true)
                     setSelected(row)
-                    console.log(row)
                 }}>
                     <img src={EditIcon} alt="Editar" />
+                </button>
+            )
+        },
+        {
+            header: 'Devolver',
+            accessor: 'return',
+            className: "action-buttons",
+            render: (_, row) => (
+                <button className="button-table" onClick={() => {
+                    setReturnPopup(true)
+                    setSelected(row)
+                }}>
+                    <img src={ReturnIcon} alt="Editar" />
                 </button>
             )
         },

@@ -52,6 +52,9 @@ export default function ReaderForm({ method, createReaderItem, loanSelected, err
   const [loadingBooks, setLoadingBooks] = useState(false);
   const [resetPageTrigger, setResetPageTrigger] = useState(0);
 
+  const [bookTitleSearch, setBookTitleSearch] = useState('');
+
+
   useEffect(() => {
     fetchLibraryBooks({ limit: chunkSize, offset: 0 });
 
@@ -67,6 +70,10 @@ export default function ReaderForm({ method, createReaderItem, loanSelected, err
       });
     }
   }, []);
+
+  useEffect(() => {
+    fetchLibraryBooks({ bookTitle: bookTitleSearch, limit: chunkSize, offset: 0 }, false);
+  }, [bookTitleSearch]);
 
   const fetchLibraryBooks = async (filters = {}, append = false) => {
     setLoadingBooks(true);
@@ -184,8 +191,58 @@ export default function ReaderForm({ method, createReaderItem, loanSelected, err
       )
     }
   ];
+  const columns = [
+    { header: 'Código del libro', accessor: 'codeInventory' },
+    { header: 'Título', accessor: 'title' },
+    ...(method === 'update'
+      ? [
+        { header: 'Devuelto', accessor: 'returned' },
+        { header: 'Fecha Devolución', accessor: 'returnDateText' },
+        { header: 'Renovado', accessor: 'renewes' },
+        {
+          header: 'Devolver',
+          accessor: 'return',
+          render: (_, row) =>
+            row.returnedDate ? (
+              <span className="status-text">Ya devuelto</span>
+            ) : (
+              <button
+                type="button"
+                className="button-table"
+                onClick={() => {
+                  setConfirmReturnPopup(true);
+                  setSelectedBook(row);
+                  returnLoanBook(row);
+                }}
+              >
+                <img src={ReturnIcon} alt="Devolver" />
+              </button>
+            ),
+        },
+        {
+          header: 'Renovar',
+          accessor: 'renewe',
+          render: (_, row) =>
+            row.returnedDate ? (
+              <span className="status-text">No disponible</span>
+            ) : (
+              <button
+                type="button"
+                className="button-table"
+                onClick={() => {
+                  setConfirmRenewePopup(true);
+                  setSelectedBook(row);
+                  reneweLoanBook(row);
+                }}
+              >
+                <img src={ReneweIcon} alt="Renovar" />
+              </button>
+            ),
+        },
+      ]
+      : []),
+  ];
 
-  const columns = [{ header: 'Código del libro', accessor: 'codeInventory' }, { header: 'Título', accessor: 'title' }, ...(method === 'update' ? [{ header: 'Devuelto', accessor: 'returned' }, { header: 'Fecha Devolución', accessor: 'returnDateText' }, { header: 'Renovado', accessor: 'renewes' }, { header: 'Devolver', accessor: 'return', render: (_, row) => (row.returnedDate ? <span className="status-text">Ya devuelto</span> : (<button type='button' className="button-table" onClick={() => { setConfirmReturnPopup(true); setSelectedBook(row); returnLoanBook(row); }} > <img src={ReturnIcon} alt="Devolver" /> </button>)) }, { header: 'Renovar', accessor: 'renewe', render: (_, row) => (row.returnedDate ? <span className="status-text">No disponible</span> : (<button type='button' className="button-table" onClick={() => { setConfirmRenewePopup(true); setSelectedBook(row); reneweLoanBook(row); }} > <img src={ReneweIcon} alt="Renovar" /> </button>)) }] : [])];
 
   return (
     <div className='add-loan-form-container'>
@@ -331,6 +388,13 @@ export default function ReaderForm({ method, createReaderItem, loanSelected, err
               <div className='author-books-title'>
                 <h3>Libros cargados en la biblioteca</h3>
               </div>
+              <input
+                type='text'
+                name='searchBookTitle'
+                value={bookTitleSearch}
+                onChange={(e) => setBookTitleSearch(e.target.value)}
+                placeholder="Buscar libro..."
+              />
               <Table columns={bookshelfBooksColumns} data={libraryBooks} totalItems={totalLibraryBooks} handleChangePage={handleChangePage} loading={loadingBooks} resetPageTrigger={resetPageTrigger} />
             </div>
             <div className='author-books'>

@@ -14,6 +14,18 @@ export const getAllReaders = async (req, res) => {
     }
 };
 
+export const returnReaderBook = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const data = req.body;
+        const result = await ReaderService.returnReaderBook(id, data);
+        res.status(HTTP_STATUS.OK.code).send(result);
+    } catch (error) {
+        console.error(error);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+    }
+};
+
 export const getReader = async (req, res) => {
     try {
         const { id } = req.params;
@@ -73,7 +85,7 @@ export const updateReader = async (req, res) => {
                 .status(HTTP_STATUS.BAD_REQUEST.code)
                 .json({ msg: error.message });
         }
-        
+
         return res
             .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
             .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });

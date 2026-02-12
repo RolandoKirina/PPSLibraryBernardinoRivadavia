@@ -70,6 +70,8 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
 
   const [loadingBooks, setLoadingBooks] = useState(false);
 
+  const [bookTitleSearch, setBookTitleSearch] = useState('');
+
   useEffect(() => {
     getLibraryBooks({ limit: chunkSize, offset: 0 });
 
@@ -87,6 +89,10 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
     }
   }, []);
 
+  useEffect(() => {
+    getLibraryBooks({bookTitle: bookTitleSearch, limit: chunkSize, offset: 0}, false);
+  }, [bookTitleSearch]);
+
 
   const getLibraryBooks = async (filters = {}, append = false) => {
     setLoadingBooks(true);
@@ -94,6 +100,8 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
     const queryParams = new URLSearchParams(filters).toString();
 
     const res = await fetch(`${BASE_URL}/books/withFields?${queryParams}`);
+
+    console.log(`${BASE_URL}/books/withFields?${queryParams}`);
     const { rows, total } = await res.json();
 
     setTotalLibraryBooks(total);
@@ -569,6 +577,13 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
               <div className='author-books-title'>
                 <h3>Libros cargados en la biblioteca</h3>
               </div>
+              <input
+                type='text'
+                name='searchBookTitle'
+                value={bookTitleSearch}
+                onChange={(e) => setBookTitleSearch(e.target.value)}
+                placeholder="Buscar libro..."
+              />
               <Table columns={bookshelfBooksColumns} data={libraryBooks} totalItems={totalLibraryBooks} handleChangePage={handleChangePage} loading={loadingBooks} resetPageTrigger={resetPageTrigger} />
             </div>
             <div className='author-books'>

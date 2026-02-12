@@ -7,6 +7,7 @@ import * as EmployeesRepository from '../../repositories/options/EmployeesReposi
 import * as ReaderBookRepository from '../../repositories/reader/ReaderBookRepository.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 import { formatDate } from '../../utils/date/formatDate.js';
+
 export const getAll = async (filters) => {
   const {
     whereReader,
@@ -224,5 +225,13 @@ export const remove = async (id) => {
   return {
     msg: "Reader deleted successfully",
     data: reader
+  };
+};
+
+export const returnReaderBook = async (id, data) => {
+  await ReaderBook.update(data, { where: { ReaderBookId: id } });
+  return {
+    msg: "ReaderBook returned successfully",
+    data: id,
   };
 };

@@ -7,6 +7,7 @@ const router = express.Router();
 router.get("/", ReaderController.getAllReaders);
 router.get("/:id", validateIdParam("id"), ReaderController.getReader);
 router.post("/", ReaderController.createReader);
+router.put("/return-book/:id", validateIdParam("id"), ReaderController.returnReaderBook);
 router.put("/:id", validateIdParam("id"), ReaderController.updateReader);
 router.delete("/:id", validateIdParam("id"), ReaderController.deleteReader);
 

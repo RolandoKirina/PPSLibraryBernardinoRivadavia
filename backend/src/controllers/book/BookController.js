@@ -22,9 +22,10 @@ export const getAllBooks = async (req, res) => {
 
 export const getAllBooksWithFields = async (req, res) => {
     try {
-        const limit = req.query.limit ? Number(req.query.limit) : undefined;
-        const offset = req.query.offset ? Number(req.query.offset) : undefined;
-        const books = await BookService.getAllBooksWithFields({ limit, offset });
+
+        const queryOptions = buildBookFilters(req.query);
+
+        const books = await BookService.getAllBooksWithFields(queryOptions);
 
         res.status(HTTP_STATUS.OK.code).send(books);
 
@@ -58,8 +59,8 @@ export const getAllBooksOfAuthor = async (req, res) => {
         const offset = req.query.offset ? Number(req.query.offset) : undefined;
         const { id } = req.params;
         const { filter } = req.query;
-        
-        const filters = {...filter, limit, offset};
+
+        const filters = { ...filter, limit, offset };
 
         const books = await BookService.getAllBooksOfAuthor(id, filters);
 
