@@ -45,6 +45,10 @@ import ReaderBook from './reader/ReaderBook.js';
 import reasonForWithDrawal from './partner/reasonForWithdrawal.js';
 import typeDocument from './partner/TypeDocument.js';
 
+import User from './auth/User.js';
+import Role from './auth/Role.js';
+import UserRole from './auth/UserRole.js';
+
 // Construir objeto de modelos con nombres tal cual están definidos
 const models = {
 
@@ -74,7 +78,10 @@ const models = {
   Reader,
   ReaderBook,
   reasonForWithDrawal,
-  typeDocument
+  typeDocument,
+  User,
+  Role,
+  UserRole
 };
 
 // Aplicar todas las relaciones
@@ -108,5 +115,8 @@ export {
   statePartner,
   Reader,
   reasonForWithDrawal,
-  typeDocument
+  typeDocument,
+  User,
+  Role,
+  UserRole
 };

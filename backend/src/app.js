@@ -43,6 +43,12 @@ import RemoveReasonRoutes from "./routes/v1/options/RemoveReasonRoutes.js";
 import ReaderRoutes from './routes/v1/reader/ReaderRouter.js';
 import ReaderBookRoutes from './routes/v1/reader/ReaderBookRoutes.js';
 
+// auth
+
+import UserRoutes from './routes/v1/auth/UserRoutes.js';
+import RoleRoutes from './routes/v1/auth/RoleRoutes.js';
+import UserRoleRoutes from './routes/v1/auth/UserRoleRoutes.js';
+
 
 import cors from "cors";
 
@@ -88,5 +94,10 @@ app.use("/api/v1/book-type-groups", BookTypeGroupRoutes);
 app.use("/api/v1/book-types", BookTypeRoutes);
 app.use("/api/v1/employees", EmployeesRoutes);
 app.use("/api/v1/remove-reasons", RemoveReasonRoutes);
+
+app.use("/api/v1/users", UserRoutes);
+app.use("/api/v1/roles", RoleRoutes);
+app.use("/api/v1/user-roles", UserRoleRoutes);
+
 
 export default app;

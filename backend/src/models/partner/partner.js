@@ -1,12 +1,18 @@
 import sequelize from '../../configs/database.js';
 import { DataTypes } from "sequelize";
 
-const Partner = sequelize.define("Partner", {   
+const Partner = sequelize.define("Partner", {
     id: {
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER,
         field: "id"
+    },
+    idUser: {
+        type: DataTypes.INTEGER,
+        field: "idUsuario",
+        unique: true,
+        allowNull: true
     },
     partnerNumber: {
         type: DataTypes.INTEGER,
@@ -43,8 +49,8 @@ const Partner = sequelize.define("Partner", {
         field: "fecha_nac"
     },
     documentType: {
-      type: DataTypes.SMALLINT,
-      field: "tipo_docum"
+        type: DataTypes.SMALLINT,
+        field: "tipo_docum"
     },
     documentNumber: {
         type: DataTypes.STRING(10),
@@ -107,7 +113,7 @@ const Partner = sequelize.define("Partner", {
         field: "horapref"
     },
     isActive: {
-        type: DataTypes.SMALLINT, 
+        type: DataTypes.SMALLINT,
         field: "est_socio"
     },
     withdrawalDate: {
@@ -135,11 +141,11 @@ const Partner = sequelize.define("Partner", {
         field: "FechaRenuncia"
     }
 },
-{
-    underscored: true,
-    tableName: "socio",
-    timestamps: false,
-    logging: true
-});
+    {
+        underscored: true,
+        tableName: "socio",
+        timestamps: false,
+        logging: true
+    });
 
 export default Partner;
