@@ -88,10 +88,21 @@ export const createFee = async (req, res) => {
         }
         const newFee = await FeeService.createFee(fee);
         res.status(HTTP_STATUS.CREATED.code).json(newFee);
-    } catch (e) {
-        console.error(e);
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+    } 
+    
+    catch (error) {
+
+        if (error instanceof ValidationError) {
+            return res
+                .status(HTTP_STATUS.BAD_REQUEST.code)
+                .json({ msg: error.message });
+        }
+
+        return res
+            .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
+            .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
+    
 };
 
 export const updateFee = async (req, res) => {
@@ -103,24 +114,17 @@ export const updateFee = async (req, res) => {
         }
         const newFee = await FeeService.updateFee(id, updates);
         res.status(HTTP_STATUS.OK.code).json(newFee);
-    } catch (e) {
-        console.error(e);
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
-    }
-};
+    }     
+    catch (error) {
 
-export const deleteFee = async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        const deleted = await FeeService.deleteFee(id);
-        if (!deleted) {
-            return res.status(HTTP_STATUS.NOT_FOUND.code).json({ msg: "Fee not found" });
+        if (error instanceof ValidationError) {
+            return res
+                .status(HTTP_STATUS.BAD_REQUEST.code)
+                .json({ msg: error.message });
         }
 
-        return res.status(HTTP_STATUS.OK.code).json(deleted);
-    } catch (e) {
-        console.error(e);
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+        return res
+            .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
+            .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
 };

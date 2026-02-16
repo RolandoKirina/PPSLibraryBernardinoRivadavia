@@ -46,14 +46,6 @@ export const addnewFeesForm = [
       label: 'Monto',
       name: 'amount',
       type: 'number'
-    }
-  ],
-
-  [
-    {
-      label: 'Fecha de Pago',
-      name: 'date_of_paid',
-      type: 'date'
     },
     {
       label: 'Observación',

@@ -8,7 +8,8 @@ import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
 export default function FormAddPartner( { onPartnerCreated } ) {
   const [activeAccordion, setActiveAccordion] = useState(null);
   const entityManagerApi = useEntityManagerAPI("partners");
-
+  const [error,setError] = useState("");
+  const[success,setSuccess]=useState("");
   const today = new Date().toLocaleDateString("en-CA");
 
   const [formValues, setFormValues] = useState({
@@ -36,27 +37,45 @@ export default function FormAddPartner( { onPartnerCreated } ) {
     idState: 1
   });
 
-const requiredFields = [
-  "name",
-  "surname",
-  "birthDate",
-  "documentType",
-  "documentNumber",
-  "MaritalStatusId",
-  "idCategory",
-  "nationality",
-  "homeAddress",
-  "homePhone",
-  "LocalityId",
-  "homePostalCode",
-  "profession",
-  "collectionAddress"
-];
+  const requiredFields = [
+    "name",
+    "surname",
+    "birthDate",
+    "documentType",
+    "documentNumber",
+    "MaritalStatusId",
+    "idCategory",
+    "nationality",
+    "homeAddress",
+    "homePhone",
+    "LocalityId",
+    "homePostalCode",
+    "profession",
+    "collectionAddress"
+  ];
+
+
+  const fieldLabels = {
+    name: "Nombre",
+    surname: "Apellido",
+    birthDate: "Fecha de nacimiento",
+    documentType: "Tipo de documento",
+    documentNumber: "Número de documento",
+    MaritalStatusId: "Estado civil",
+    idCategory: "Categoría",
+    nationality: "Nacionalidad",
+    homeAddress: "Dirección",
+    homePhone: "Teléfono",
+    LocalityId: "Localidad",
+    homePostalCode: "Código postal",
+    profession: "Profesión",
+    collectionAddress: "Dirección de cobro"
+};
 
   const formatPreferredTime = (value) => {
-  if (!value) return null;
-  return value.replace("T", " ");
-}; 
+    if (!value) return null;
+    return value.replace("T", " ");
+  }; 
   const handleToggle = (id) => {
     setActiveAccordion((prev) => (prev === id ? null : id));
   };
@@ -69,54 +88,67 @@ const requiredFields = [
     }));
   };
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
-     const missingFields = requiredFields.filter(
-          field => !formValues[field]
-    ) ;
+
+    
+    setError("");
+    setSuccess("");
+    const missingFields = requiredFields.filter(
+      field =>
+        formValues[field] === "" ||
+        formValues[field] === null ||
+        formValues[field] === undefined
+    );
+
     if (missingFields.length > 0) {
-      alert("Completá los campos obligatorios");
+      const missingLabels = missingFields.map(
+        field => fieldLabels[field] || field
+    );
+
+      setError("Faltan completar" +missingLabels.join(" "));
+
     return;
   }
-
-    const payload = {
-      name: formValues.name || null,
-      surname: formValues.surname || null,
-      birthDate: formValues.birthDate || null,
-      registrationDate: formValues.registrationDate || null,
-      documentType: formValues.documentType || null,
-      documentNumber: formValues.documentNumber || null,
-      MaritalStatusId: formValues.MaritalStatusId || null,
-      idCategory: formValues.idCategory || null,
-      LocalityId: formValues.LocalityId || null,
-      nationality: formValues.nationality || null,
-      homeAddress: formValues.homeAddress || null,
-      homePhone: formValues.homePhone || null,
-      homePostalCode: formValues.homePostalCode || null,
-      profession: formValues.profession || null,
-      presentedBy: formValues.presentedBy || null,
-      collectionAddress: formValues.collectionAddress || null,
-      preferredTime: formatPreferredTime(formValues.preferredTime),
-      idState:1,
-      unpaidFees:0,
-      pendingBooks:0,
-      workplace: formValues.workplace || null,
-      workAddress: formValues.workAddress || null,
-      workPhone: formValues.workPhone || null,
-      workPostalCode: formValues.workPostalCode || null,
-    };
+  const payload = {
+    name: formValues.name || null,
+    surname: formValues.surname || null,
+    birthDate: formValues.birthDate || null,
+    registrationDate: formValues.registrationDate || null,
+    documentType: formValues.documentType || null,
+    documentNumber: formValues.documentNumber || null,
+    MaritalStatusId: formValues.MaritalStatusId || null,
+    idCategory: formValues.idCategory || null,
+    LocalityId: formValues.LocalityId || null,
+    nationality: formValues.nationality || null,
+    homeAddress: formValues.homeAddress || null,
+    homePhone: formValues.homePhone || null,
+    homePostalCode: formValues.homePostalCode || null,
+    profession: formValues.profession || null,
+    presentedBy: formValues.presentedBy || null,
+    collectionAddress: formValues.collectionAddress || null,
+    preferredTime: formatPreferredTime(formValues.preferredTime),
+    idState:1,
+    unpaidFees:0,
+    pendingBooks:0,
+    workplace: formValues.workplace || null,
+    workAddress: formValues.workAddress || null,
+    workPhone: formValues.workPhone || null,
+    workPostalCode: formValues.workPostalCode || null,
+  };
 
     try {
-      console.log(payload.idState)
-       await entityManagerApi.createItem(payload);
-  
+        await entityManagerApi.createItem(payload);
+        setSuccess("Socio creado correctamente");
+
         if (onPartnerCreated) {
-            onPartnerCreated(); 
+            setTimeout(() => {
+              onPartnerCreated?.();
+            }, 3000);
         }
         
     } catch (error) {
-      console.error("ERROR:", error);
-      alert("Error al crear socio");
+      setError("Error al crear socio");
     }
   };
 
@@ -129,17 +161,17 @@ const requiredFields = [
             <div className="row">
                   <div className="form-details">
                     <label htmlFor="name" className="title-name">Nombre <span className='required'>*</span></label>
-                    <input name="name" value={formValues.name} onChange={handleChange} placeholder="Nombre" required />
+                    <input name="name" value={formValues.name} onChange={handleChange} placeholder="Nombre"  />
                   </div>
 
                   <div className="form-details">
                     <label htmlFor="surname">Apellido <span className='required'>*</span></label>
-                    <input name="surname" value={formValues.surname} onChange={handleChange} placeholder="Apellido" required />
+                    <input name="surname" value={formValues.surname} onChange={handleChange} placeholder="Apellido"  />
                   </div>
 
                   <div className="form-details">
                       <label htmlFor="dateofbirthday">Fecha de nacimiento <span className='required'>*</span></label>
-                      <input type="date" name="birthDate" value={formValues.birthDate} onChange={handleChange} required />
+                      <input type="date" name="birthDate" value={formValues.birthDate} onChange={handleChange}  />
                           </div>
               <div className="form-details">
                 <label htmlFor="documentType">Tipo de documento <span className='required'>*</span></label>
@@ -198,13 +230,12 @@ const requiredFields = [
           </div>
 
           <div className="form-details">
-                    <label htmlFor="nacionality">Nacionalidad <span className='required'>*</span></label>
+                    <label htmlFor="nacionality">Nacionalidad </label>
                     <input name="nationality"  value={formValues.nationality} onChange={handleChange} placeholder="Nacionalidad"  />
           </div>
 
         </div>
          
-       
         </Accordion>
 
         <Accordion title="Contacto" isActive={activeAccordion === "contact"} onToggle={() => handleToggle("contact")}>
@@ -284,25 +315,38 @@ const requiredFields = [
 
           </div>
              <div className="form-details">
-                      <label htmlFor="collectiontime">Hora preferida de cobro</label> 
-                      <input type="time" name="collectiontime" onChange={handleChange}  value={formValues.collectiontime || ""} required/>
+                      <label htmlFor="preferredTime">Hora preferida de cobro</label> 
+                      <input type="time" name="preferredTime" onChange={handleChange}  value={formValues.preferredTime || ""} required/>
               </div>
 
           </div>
          
         </Accordion>
+<div className="message-center">
+  {error && (
+    <div >
+      {error.split("\n").map((line, i) => (
+        <div key={i}> <p className="error-text"> {line}</p></div>
+      ))}
+    </div>
+  )}
+
+  {success && (
+    <div>
+      <p className="success-text">{success}</p>
+    </div>
+  )}
+</div>
 
 
-<div className="btn-save-container">
-       <Btn
+  <div className="btn-save-container">
+        <Btn
           text="Guardar socio"
           type="submit"
           icon={<img src={SaveIcon} alt="Guardar" />}
           variant="save"
         />        
-
-
-</div>
+  </div>
  
       </form>
     </div>

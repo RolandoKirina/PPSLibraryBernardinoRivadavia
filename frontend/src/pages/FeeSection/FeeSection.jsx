@@ -212,7 +212,7 @@ export const FeeSection = () => {
       title: 'Borrar Cuota',
       className: 'delete-size-popup',
       content: <PopUpDelete
-        title={"item"}
+        title={"Cuotas"}
         onConfirm={() => deleteItem(selectedId)}
         closePopup={() => setPopUpDelete(false)}
         refresh={() => getItems()} />,

@@ -11,7 +11,7 @@ const [success, setSuccess] = useState(null);
   const handleConfirm = async () => {
     try {
     await onConfirm(); 
-    setSuccess("✅ Libro eliminado correctamente."); 
+    setSuccess( title + " eliminado correctamente."); 
     refresh(); 
     setError(null); 
         

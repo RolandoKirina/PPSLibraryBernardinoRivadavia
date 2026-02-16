@@ -152,7 +152,6 @@ export const getBook = async (req, res) => {
 
 export const duplicateBook = async (req, res) => {
     try {
-        //lo que viene en el json del body de la solicitud http
         const book = req.body;
 
         if (!book) {
@@ -183,10 +182,18 @@ export const createBook = async (req, res) => {
         const newBook = await BookService.createBook(book);
         res.status(HTTP_STATUS.CREATED.code).json(newBook);
     }
-    catch (e) {
-        console.error(e);
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+       
+    catch (error) {
 
+        if (error instanceof ValidationError) {
+            return res
+                .status(HTTP_STATUS.BAD_REQUEST.code)
+                .json({ msg: error.message });
+        }
+
+        return res
+            .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
+            .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
 }
 
@@ -201,10 +208,18 @@ export const updateBook = async (req, res) => {
         const newBook = await BookService.updateBook(id, updates);
         res.status(HTTP_STATUS.OK.code).json(newBook);
     }
-    catch (e) {
-        console.error(e);
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+       
+    catch (error) {
 
+        if (error instanceof ValidationError) {
+            return res
+                .status(HTTP_STATUS.BAD_REQUEST.code)
+                .json({ msg: error.message });
+        }
+
+        return res
+            .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
+            .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
 }
 
@@ -223,6 +238,5 @@ export const deleteBook = async (req, res) => {
     catch (e) {
         console.error(e);
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
-
     }
 }

@@ -301,17 +301,3 @@ export const update = async (id, fee) => {
   }
   return await Fees.findByPk(id);
 };
-
-export const remove = async (id) => {
-  const fee = await Fees.findByPk(id);
-
-  if (!fee) {
-    return null;
-  }
-  await fee.destroy();
-
-  return {
-    msg: "Fee deleted successfully",
-    data: fee
-  };
-};

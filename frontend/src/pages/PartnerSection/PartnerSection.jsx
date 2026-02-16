@@ -45,6 +45,9 @@ export default function PartnerSection() {
       setOffsetActual(0);
       setResetPageTrigger(prev => prev + 1);
 
+
+      console.log("FILTROS QUE VAN AL BACK:", filters);
+
       getItems({
         ...activeFilters,
         sortBy: 'id',
@@ -56,11 +59,19 @@ export default function PartnerSection() {
 
     return () => clearTimeout(delay);
   }, [formData]);
+  
 
   const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    const updated = { ...formData, [name]: value };
-    setFormData(updated);
+      const { name, value } = e.target;
+
+      let parsedValue = value;
+
+      if (["idState", "unpaidFees", "pendingBooks"].includes(name)) {
+        parsedValue = value === "" ? "" : Number(value);
+      }
+
+      const updated = { ...formData, [name]: parsedValue };
+      setFormData(updated);
   };
 
   async function handleChangePage(page) {
@@ -179,7 +190,18 @@ export default function PartnerSection() {
       key: 'AddPopup',
       title: 'Agregar Socio',
       className: 'popup-container add-edit-partner-size',
-      content: <FormAddPartner />,
+      content:   <FormAddPartner
+          onPartnerCreated={() => {
+            getItems({
+              ...filters,
+              sortBy: 'id',
+              direction: 'asc',
+              limit: chunkSize,
+              offset: 0
+            });
+            setPopUpAdd(false);
+          }}
+        />,
       close: () => {
         getItems({
           ...filters,

@@ -81,3 +81,14 @@
   margin: 1em 0;
 }
 
+.message-center{
+  margin-top: 1em;
+  display: flex;
+  justify-content: center;
+}
+.error-text{
+  color: var(--error);
+}
+.success-text{
+  color: var(--sucess);
+}

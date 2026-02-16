@@ -1,7 +1,7 @@
 export const buildPartnerFilters = (query) => {
   const {
     unpaidFees,
-    isActive,
+    idState,
     pendingBooks,
     limit,
     offset,
@@ -15,8 +15,8 @@ export const buildPartnerFilters = (query) => {
     wherePartner.unpaidFees = Number(unpaidFees);
   }
 
-  if (isActive && isActive !== 'all') {
-    wherePartner.isActive = Number(isActive);
+  if (idState && idState !== '0') {
+    wherePartner.idState = Number(idState);
   }
 
   if (pendingBooks !== undefined) {

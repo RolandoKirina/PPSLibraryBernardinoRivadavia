@@ -126,10 +126,3 @@ export const updateFee = async (id, data) => {
     return updatedFee;
 };
 
-export const deleteFee = async (id) => {
-    const deletedFee = await FeeRepository.remove(id);
-    if (!deletedFee) {
-        throw new Error("Fee not found or already deleted");
-    }
-    return deletedFee;
-};

@@ -1,6 +1,11 @@
+import { useEffect } from "react";
 import "./PartnerFilter.css"
 
 export default function PartnerFilter({ formData, onChange }) {
+
+
+console.log(formData)
+
   return (
     <aside className="filter-aside">
       <div className="filter-form">
@@ -10,11 +15,11 @@ export default function PartnerFilter({ formData, onChange }) {
           <div className="form-input-group">
             <h4>Estado del socio</h4>
             <select
-              name="isActive"
-              value={formData.isActive}
+              name="idState"
+              value={formData.idState}
               onChange={onChange}
             >
-              <option value="all">Todos</option>
+              <option value="0">Todos</option>
               <option value="1">Activos</option>
               <option value="2">Inactivos</option>
             </select>
