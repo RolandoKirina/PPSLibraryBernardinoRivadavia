@@ -1,40 +1,71 @@
-import { createContext, useState, useContext } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react';
+import { jwtDecode } from "jwt-decode";
 
 export const AuthContext = createContext();
 
 //creo un hook para no tener que hacer usecontext(authcontext) siempre
 export const useAuth = () => useContext(AuthContext);
 
-export const AuthProvider = ({children}) => {
-
+export const AuthProvider = ({ children }) => {
 
   const [auth, setAuth] = useState({
-        isAuthenticated: false,
-        role: "admin",
-        name: null,
-        
-  });
-
-
-  const login = (userData) => setAuth(
-    {isAuthenticated:true,
-    ...userData,
-  });
-
-
-   const logout = () => setAuth({
     isAuthenticated: false,
-    role: "admin",
+    token: null,
+    userId: null,
     name: null,
+    role: null
   });
 
+  const login = (token) => {
+    localStorage.setItem("token", token);
+    const decoded = jwtDecode(token);
 
-    return (
-        
-         /*Envuelve a todos los componentes hijos ({children}), dándoles acceso a ese contexto.*/
-    <AuthContext.Provider value={{ auth, login, logout}}>
+    setAuth({
+      isAuthenticated: true,
+      token,
+      userId: decoded.userId,
+      name: decoded.fullName,
+      role: decoded.role
+    })
+  }
 
-       
+  const logout = () => {
+    localStorage.removeItem("token");
+    setAuth({
+      isAuthenticated: false,
+      token: null,
+      userId: null,
+      name: null,
+      role: null
+    })
+  }
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decoded = jwtDecode(token);
+
+      const now = Date.now() / 1000;
+
+      if(decoded.exp < now) {
+        logout();
+      }
+      
+      setAuth({
+        isAuthenticated: true,
+        token,
+        userId: decoded.userId,
+        name: decoded.fullName,
+        role: decoded.role
+      })
+
+    }
+  }, []);
+
+  return (
+
+    /*Envuelve a todos los componentes hijos ({children}), dándoles acceso a ese contexto.*/
+    <AuthContext.Provider value={{ auth, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -2,6 +2,8 @@ import "./ShowAuthorBooks.css";
 import { useState, useEffect } from 'react';
 import { Table } from '../../common/table/Table';
 import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
+import roles from "../../../auth/roles";
+import { useAuth } from "../../../auth/AuthContext";
 
 export default function ShowAuthorBooks({ authorSelected }) {
   const BASE_URL = "http://localhost:4000/api/v1";
@@ -12,6 +14,8 @@ export default function ShowAuthorBooks({ authorSelected }) {
     bookCode: '',
     typeName: '', // solo esto, sin materialType
   });
+
+  const { auth } = useAuth();
 
   const [resetPageTrigger, setResetPageTrigger] = useState(0);
 
@@ -76,10 +80,19 @@ export default function ShowAuthorBooks({ authorSelected }) {
     setResetPageTrigger(prev => prev + 1);
   }, [filters, authorBooks]);
 
-  const columns = [
-    { header: 'Código del libro', accessor: 'codeInventory' },
-    { header: 'Título', accessor: 'title' },
-  ];
+  let columns = [];
+
+  if (auth.role === roles.admin) {
+    columns = [
+      { header: 'Código del libro', accessor: 'codeInventory' },
+      { header: 'Título', accessor: 'title' },
+    ];
+  }
+  else {
+    columns = [
+      { header: 'Código del libro', accessor: 'codeInventory' },
+    ]
+  }
 
   return (
     <div className='loan-books-container'>
@@ -100,17 +113,17 @@ export default function ShowAuthorBooks({ authorSelected }) {
                   placeholder="Buscar por título..."
                 />
               </div>
-              <div>
-                <label>Código</label>
-                <input
-                  name="bookCode"
-                  value={filters.bookCode}
-                  onChange={handleChange}
-                  placeholder="Buscar por código..."
-                />
-              </div>
-
-
+              {auth.role === roles.admin && (
+                <div>
+                  <label>Código</label>
+                  <input
+                    name="bookCode"
+                    value={filters.bookCode}
+                    onChange={handleChange}
+                    placeholder="Buscar por código..."
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -118,7 +131,7 @@ export default function ShowAuthorBooks({ authorSelected }) {
       </div>
 
       <div className='lend-books-container show-book-authors-list-size'>
-        <h2 className='lend-books-title'>Libros a Prestar</h2>
+        <h2 className='lend-books-title'>Libros</h2>
         <Table columns={columns} data={filteredBooks} totalItems={filteredBooks.length} resetPageTrigger={resetPageTrigger} />
       </div>
     </div>

@@ -200,6 +200,7 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem, 
 
     if (auth.role === roles.admin) {
         mainAuthorBooksColumns = [
+            { header: 'Código del libro', accessor: 'codeInventory' },
             { header: 'Título', accessor: 'title' },
             { header: 'Posición', accessor: 'position' },
             { header: 'Codclass', accessor: 'codeClasification' },
@@ -207,14 +208,9 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem, 
             { header: 'CodLing', accessor: 'codeLing' }
         ];
     }
-    else if ((auth.role === roles.user) || (auth.role === roles.reader)) {
+    else {
         mainAuthorBooksColumns = [
-            { header: 'Código del libro', accessor: 'codeInventory' },
             { header: 'Título', accessor: 'title' },
-            { header: 'Posición', accessor: 'position' },
-            { header: 'Codclass', accessor: 'codeClasification' },
-            { header: 'Codrcdu', accessor: 'codeCDU' },
-            { header: 'CodLing', accessor: 'codeLing' }
         ];
     }
 

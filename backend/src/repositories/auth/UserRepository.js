@@ -30,7 +30,7 @@ export const getAll = async () => {
             userId: plainUser.id,
             fullname: plainUser.fullname,  
             email: plainUser.email,
-            roles: plainUser.UserRoles.map(ur => ur.Role.name) 
+            role: plainUser.UserRoles[0]?.Role?.name
         };
     });
 };

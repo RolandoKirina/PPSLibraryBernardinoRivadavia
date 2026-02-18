@@ -26,10 +26,10 @@ export const createUser = async (user) => {
 
     const hashedPassword = await bcrypt.hash(user.password, salt);
 
-    let defaultRole = await RoleRepository.getRoleByName('usuario');
+    let defaultRole = await RoleRepository.getRoleByName('Usuario');
 
     if (!defaultRole) {
-        defaultRole = await RoleRepository.create({ name: 'usuario', description: 'usuario de la biblioteca rivadavia' });
+        defaultRole = await RoleRepository.create({ name: 'Usuario', description: 'Usuario de la biblioteca rivadavia' });
     }
 
     const role = await RoleRepository.getRoleByName(user.role);

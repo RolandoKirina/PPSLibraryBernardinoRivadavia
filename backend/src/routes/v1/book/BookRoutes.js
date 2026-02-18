@@ -1,6 +1,7 @@
 import express from "express";
 import * as BookController from "../../../controllers/book/BookController.js";
 import validateIdParam from "../../../middlewares/ValidateId.js";
+import { authenticate } from "../../../middlewares/authenticate.js";
 
 
 const router = express.Router();

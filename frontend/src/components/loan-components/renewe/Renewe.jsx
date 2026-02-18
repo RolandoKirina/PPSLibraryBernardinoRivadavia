@@ -229,17 +229,6 @@ export default function Renewe() {
 
                             <div className='renewe-input'>
                                 <div className='input'>
-                                    <label>Código libro</label>
-                                    <input
-                                        type='text'
-                                        value={filters.bookCode || ''}
-                                        onChange={(e) =>
-                                            setFilters((prev) => ({ ...prev, bookCode: e.target.value }))
-                                        }
-                                    />
-                                </div>
-
-                                <div className='input'>
                                     <label>Título libro</label>
                                     <input
                                         type='text'
@@ -249,64 +238,86 @@ export default function Renewe() {
                                         }
                                     />
                                 </div>
+                                
+                                {auth.role === roles.admin && (
+                                    <>
+
+                                        <div className='input'>
+                                            <label>Código libro</label>
+                                            <input
+                                                type='text'
+                                                value={filters.bookCode || ''}
+                                                onChange={(e) =>
+                                                    setFilters((prev) => ({ ...prev, bookCode: e.target.value }))
+                                                }
+                                            />
+                                        </div>
+                                    </>
+                                )}
+
+
                             </div>
 
-                            <div className='renewe-input'>
-                                <div className='input'>
-                                    <label>Fecha prevista – Mayor a</label>
-                                    <input
-                                        type='date'
-                                        value={filters.expectedStartDate || ''}
-                                        onChange={(e) =>
-                                            setFilters((prev) => ({ ...prev, expectedStartDate: e.target.value }))
-                                        }
-                                    />
-                                </div>
+                            {auth.role === roles.admin && (
+                                <>
+                                    <div className='renewe-input'>
+                                        <div className='input'>
+                                            <label>Fecha prevista – Mayor a</label>
+                                            <input
+                                                type='date'
+                                                value={filters.expectedStartDate || ''}
+                                                onChange={(e) =>
+                                                    setFilters((prev) => ({ ...prev, expectedStartDate: e.target.value }))
+                                                }
+                                            />
+                                        </div>
 
-                                <div className='input'>
-                                    <label>Fecha prevista – Menor a</label>
-                                    <input
-                                        type='date'
-                                        value={filters.expectedEndDate || ''}
-                                        onChange={(e) =>
-                                            setFilters((prev) => ({ ...prev, expectedEndDate: e.target.value }))
-                                        }
-                                    />
-                                </div>
+                                        <div className='input'>
+                                            <label>Fecha prevista – Menor a</label>
+                                            <input
+                                                type='date'
+                                                value={filters.expectedEndDate || ''}
+                                                onChange={(e) =>
+                                                    setFilters((prev) => ({ ...prev, expectedEndDate: e.target.value }))
+                                                }
+                                            />
+                                        </div>
 
-                                <div className='input'>
-                                    <label>Fecha reserva – Mayor a</label>
-                                    <input
-                                        type='date'
-                                        value={filters.reservationStartDate || ''}
-                                        onChange={(e) =>
-                                            setFilters((prev) => ({ ...prev, reservationStartDate: e.target.value }))
-                                        }
-                                    />
-                                </div>
+                                        <div className='input'>
+                                            <label>Fecha reserva – Mayor a</label>
+                                            <input
+                                                type='date'
+                                                value={filters.reservationStartDate || ''}
+                                                onChange={(e) =>
+                                                    setFilters((prev) => ({ ...prev, reservationStartDate: e.target.value }))
+                                                }
+                                            />
+                                        </div>
 
-                                <div className='input'>
-                                    <label>Fecha reserva – Menor a</label>
-                                    <input
-                                        type='date'
-                                        value={filters.reservationEndDate || ''}
-                                        onChange={(e) =>
-                                            setFilters((prev) => ({ ...prev, reservationEndDate: e.target.value }))
-                                        }
-                                    />
-                                </div>
+                                        <div className='input'>
+                                            <label>Fecha reserva – Menor a</label>
+                                            <input
+                                                type='date'
+                                                value={filters.reservationEndDate || ''}
+                                                onChange={(e) =>
+                                                    setFilters((prev) => ({ ...prev, reservationEndDate: e.target.value }))
+                                                }
+                                            />
+                                        </div>
 
-                                <div className='input'>
-                                    <label>Numero de Socio</label>
-                                    <input
-                                        type='text'
-                                        value={filters.partnerNumber || ''}
-                                        onChange={(e) =>
-                                            setFilters((prev) => ({ ...prev, partnerNumber: e.target.value }))
-                                        }
-                                    />
-                                </div>
-                            </div>
+                                        <div className='input'>
+                                            <label>Numero de Socio</label>
+                                            <input
+                                                type='text'
+                                                value={filters.partnerNumber || ''}
+                                                onChange={(e) =>
+                                                    setFilters((prev) => ({ ...prev, partnerNumber: e.target.value }))
+                                                }
+                                            />
+                                        </div>
+                                    </div>
+                                </>
+                            )}
 
                         </div>
 
@@ -321,7 +332,6 @@ export default function Renewe() {
                                         <Btn variant={'primary'} text={'Nueva reserva'} onClick={() => setPopupView('addRenewe')} icon={<img src={PlusIcon} alt={PlusIcon} />} />
                                     </div>
                                 )}
-
                             </Table>
                         </div>
 

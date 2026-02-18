@@ -23,12 +23,12 @@ import LostBooks from '../../components/book-components/lostbooks/LostBooks.jsx'
 import BookRanking from '../../components/book-components/bookranking/BookRanking.jsx';
 import { useAuth } from '../../auth/AuthContext';
 import roles from '../../auth/roles';
+
 const BookSection = () => {
   const chunkSize = 100;
   const rowsPerPage = 5;
   const [offsetActual, setOffsetActual] = useState(0);
   const [resetPageTrigger, setResetPageTrigger] = useState(0);
-  const { auth } = useAuth();
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
   const [PopUpEdit, setPopupEdit] = useState(false);
@@ -45,6 +45,8 @@ const BookSection = () => {
 
   const { items, loading, totalItems, getItems, getItem, createItem, updateItem, deleteItem } =
     useEntityManagerAPI("books");
+
+  const { auth } = useAuth();
 
   const [formData, setFormData] = useState({
     author: "",
@@ -75,7 +77,7 @@ const BookSection = () => {
 
       getItems({
         ...activeFilters,
-        sortBy: 'title', direction: 'asc', 
+        sortBy: 'title', direction: 'asc',
         limit: chunkSize,
         offset: 0
       });
@@ -152,13 +154,10 @@ const BookSection = () => {
     ];
 
   }
-
-  else if ((auth.role === roles.user || auth.role === roles.reader)) {
-
+  else {
     columns = [
       { header: 'Título', accessor: 'title' },
-      { header: 'Código de inventario', accessor: 'codeInventory' },
-      { header: 'Codigo de CDU', accessor: 'codeCDU' }];
+    ];
   }
 
   const booksPopUp = [
@@ -172,11 +171,11 @@ const BookSection = () => {
           onConfirm={() => deleteItem(selectedId)}
           closePopup={() => setPopUpDelete(false)}
           refresh={() => getItems({
-        ...filters,
-        sortBy: 'title', direction: 'asc', 
-        limit: chunkSize,
-        offset: 0
-      })}
+            ...filters,
+            sortBy: 'title', direction: 'asc',
+            limit: chunkSize,
+            offset: 0
+          })}
         />
       ),
       close: () => setPopUpDelete(false),
@@ -188,7 +187,7 @@ const BookSection = () => {
       className: 'popup-container-book-form editsize',
       content: <FormEditBook selectedBook={selectedItem} getItems={() => getItems({
         ...filters,
-        sortBy: 'title', direction: 'asc', 
+        sortBy: 'title', direction: 'asc',
         limit: chunkSize,
         offset: 0
       })} />,
@@ -201,7 +200,7 @@ const BookSection = () => {
       className: 'popup-container-book-form editsize',
       content: <FormAddBook getItems={() => getItems({
         ...filters,
-        sortBy: 'title', direction: 'asc', 
+        sortBy: 'title', direction: 'asc',
         limit: chunkSize,
         offset: 0
       })} />,

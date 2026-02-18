@@ -6,13 +6,16 @@ import Sidebar from '../sidebar/Sidebar.jsx';
 import Btn from '../btn/Btn.jsx';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../../auth/AuthContext.jsx';
+import { useNavigate } from 'react-router-dom';
 
 export default function Header() {
   const [open, setOpen] = useState(false);
 
   const { auth, logout } = useAuth();
 
-  
+  const navigate = useNavigate();
+
+
   const toggleMenu = () => {
     setOpen(!open);
   };
@@ -59,11 +62,14 @@ export default function Header() {
             ) : (
               <div className='header-msg'>
                 <h3>
-                  Bienvenido {' '}
-                  <span className="header-name">{auth.name}</span>
+                  Bienvenido {auth.name}
+                  <span className="header-name"></span>
                 </h3>
-               <Btn variant="logout" text="Cerrar sesión" onClick={logout} />
-               </div>
+                <Btn variant="logout" text="Cerrar sesión" onClick={() => {
+                  logout();
+                  navigate('/');
+                }} />
+              </div>
             )}
           </div>
         </div>

@@ -1,8 +1,8 @@
 
  export const roles =  {
-    admin: "admin",
-    user: "user",
-    reader:"reader"
+    admin: "Bibliotecario",
+    user: "Usuario",
+    partner: "Socio"
 }
 
 export default roles;

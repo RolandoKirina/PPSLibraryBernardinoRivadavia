@@ -250,20 +250,21 @@ export default function AuthorSection() {
             }
         ];
     }
-    else if ((auth.role === roles.user || auth.role === roles.reader)) {
+    else {
         columns = [
             { header: 'Nombre', accessor: 'name' },
             { header: 'Nacionalidad', accessor: 'nationality' },
             {
                 header: 'Ver libros',
-                accessor: 'edit',
+                accessor: 'books',
                 className: "action-buttons",
                 render: (_, row) => (
                     <button className="button-table" onClick={() => {
-                        setEditPopup(true)
-                        setSelected(row);
+                        setSelected(row)
+                        setBooksPopup(true)
+                        // getLoanDetails(row)
                     }}>
-                        <img src={BookIcon} alt="Libros" />
+                        <img src={BookIcon} alt="Detalles" />
                     </button>
                 )
             }

@@ -64,7 +64,7 @@ export default function LoginSection() {
 
             const data = await res.json();
 
-            console.log(data); //trae el token
+           // console.log(data); //trae el token
 
             if (!res.ok) {
                 throw new Error(data.msg || "Error al ingresar");
@@ -72,9 +72,11 @@ export default function LoginSection() {
 
             setSucessMessage('Usuario logueado correctamente!');
 
-            // setTimeout(() => {
-            //     navigate('/');
-            // }, [1000])
+            login(data);
+
+             setTimeout(() => {
+                 navigate('/');
+             }, [1000])
         }
         catch (error) {
             console.error('Error logging User: ' + error);

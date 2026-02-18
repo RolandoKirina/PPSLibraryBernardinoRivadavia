@@ -26,6 +26,10 @@ export const remove = async (id) => {
 };
 
 export const getRoleByName = async (name) => {
+    if(!name) {
+        return null;
+    }
+    
     return await Role.findOne(
         {
             where: {

@@ -101,7 +101,6 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
 
     const res = await fetch(`${BASE_URL}/books/withFields?${queryParams}`);
 
-    console.log(`${BASE_URL}/books/withFields?${queryParams}`);
     const { rows, total } = await res.json();
 
     setTotalLibraryBooks(total);

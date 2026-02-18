@@ -29,9 +29,11 @@ export const getUser = async (req, res) => {
 export const createUser = async (req, res) => {
     try {
         const user = req.body;
+
         if (!user) {
             return res.status(HTTP_STATUS.BAD_REQUEST.code).json({ msg: HTTP_STATUS.BAD_REQUEST.msg });
         }
+        
         const newUser = await UserService.createUser(user);
         res.status(HTTP_STATUS.CREATED.code).json(newUser);
     } catch (error) {
@@ -130,6 +132,6 @@ export const loginUser = async (req, res) => {
 
 export const generateToken = (userData) => {
     return jwt.sign({ userId: userData.userId, fullName: userData.fullName, role: userData.role}, process.env.JWT_SECRET, {
-        expiresIn: '1hr'
+        expiresIn: '5hr'
     })
 }

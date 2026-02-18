@@ -46,6 +46,11 @@ export const create = async (data) => {
         throw new ValidationError("El campo Nombre completo no puede estar vacío");
     }
 
+    // const employee = {
+    //     ...data,
+    //     code: 
+    // }
+
 
     return await Employees.create(data);
 };

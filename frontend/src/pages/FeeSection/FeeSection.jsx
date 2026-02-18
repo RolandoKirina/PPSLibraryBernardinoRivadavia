@@ -14,6 +14,8 @@ import { editnewFeesForm, addnewFeesForm } from '../../data/forms/FeesForms.js';
 import FeesBetweenDates from '../../components/fees-components/feesbetweendates/FeesBetweenDates.jsx';
 import PopUpDelete from '../../components/common/deletebtnComponent/PopUpDelete.jsx';
 import EditFees from '../../components/fees-components/formEditFee/EditFees.jsx';
+import { useAuth } from '../../auth/AuthContext.jsx';
+import { roles } from '../../auth/roles.js';
 
 
 export const FeeSection = () => {
@@ -21,6 +23,8 @@ export const FeeSection = () => {
   const rowsPerPage = 5;
   const [offsetActual, setOffsetActual] = useState(0);
   const [resetPageTrigger, setResetPageTrigger] = useState(0);
+
+  const { auth } = useAuth();
 
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
@@ -70,8 +74,8 @@ export const FeeSection = () => {
 
       getItems({
         ...activeFilters,
-        sortBy: 'id', 
-        direction: 'asc', 
+        sortBy: 'id',
+        direction: 'asc',
         limit: chunkSize,
         offset: 0
       });
@@ -139,72 +143,91 @@ export const FeeSection = () => {
     }
   }
 
+  let columns = [];
 
-  const columns = [
-    { header: 'Numero de cuota', accessor: 'feeid' },
-    { header: 'Nombre de socio', accessor: 'name' },
-    { header: 'valor', accessor: 'amount' },
-    { header: 'Numero de socio', accessor: 'partnerNumber' },
-    {
-      header: "Fecha de pago",
-      accessor: 'date_of_paid',
-      render: (value) => formatDate(value)
-    },
-    {
-      header: 'Pagada',
-      accessor: 'paid',
-      render: (value) => value ? '✅ Paga' : '❌ Impaga',
-    },
-    {
-      header: 'Borrar',
-      accessor: 'delete',
-      className: "action-buttons",
-      render: (_, row) => (
-        <button className="button-table"
-          onClick={() => {
-            setSelectedId(row.feeid);
-            setPopUpDelete(true)
-
-          }}>
-
-          <img src={DeleteIcon} alt="Borrar" />
-        </button>
-      )
-    },
-    {
-      header: 'Editar',
-      accessor: 'edit',
-      className: "action-buttons",
-      render: (_, row) => (
-        <button className="button-table"
-          onClick={() => {
-            () =>
-              console.log(row)
-            setPopupEdit(true)
-            setSelectedItem(row)
-          }}
-
-        >
-          <img src={EditIcon} alt="Editar" />
-        </button>
-      )
-    },
-    {
-      header: 'Ver detalle',
-      accessor: 'details',
-      className: "action-buttons",
-      render: (_, row) => (
-        <button className="button-table">
-          <img src={DetailsIcon} alt="Detalles"
+  if (auth.role === roles.admin) {
+    [
+      { header: 'Numero de cuota', accessor: 'feeid' },
+      { header: 'Nombre de socio', accessor: 'name' },
+      { header: 'valor', accessor: 'amount' },
+      { header: 'Numero de socio', accessor: 'partnerNumber' },
+      {
+        header: "Fecha de pago",
+        accessor: 'date_of_paid',
+        render: (value) => formatDate(value)
+      },
+      {
+        header: 'Pagada',
+        accessor: 'paid',
+        render: (value) => value ? '✅ Paga' : '❌ Impaga',
+      },
+      {
+        header: 'Borrar',
+        accessor: 'delete',
+        className: "action-buttons",
+        render: (_, row) => (
+          <button className="button-table"
             onClick={() => {
+              setSelectedId(row.feeid);
+              setPopUpDelete(true)
+
+            }}>
+
+            <img src={DeleteIcon} alt="Borrar" />
+          </button>
+        )
+      },
+      {
+        header: 'Editar',
+        accessor: 'edit',
+        className: "action-buttons",
+        render: (_, row) => (
+          <button className="button-table"
+            onClick={() => {
+              () =>
+                console.log(row)
+              setPopupEdit(true)
               setSelectedItem(row)
-              setPopUpDetail(true)
             }}
-          />
-        </button>
-      )
-    }
-  ];
+
+          >
+            <img src={EditIcon} alt="Editar" />
+          </button>
+        )
+      },
+      {
+        header: 'Ver detalle',
+        accessor: 'details',
+        className: "action-buttons",
+        render: (_, row) => (
+          <button className="button-table">
+            <img src={DetailsIcon} alt="Detalles"
+              onClick={() => {
+                setSelectedItem(row)
+                setPopUpDetail(true)
+              }}
+            />
+          </button>
+        )
+      }
+    ];
+  }
+  else if (auth.role === roles.partner) {
+    columns = [
+      { header: 'Numero de cuota', accessor: 'feeid' },
+      { header: 'valor', accessor: 'amount' },
+      {
+        header: "Fecha de pago",
+        accessor: 'date_of_paid',
+        render: (value) => formatDate(value)
+      },
+      {
+        header: 'Pagada',
+        accessor: 'paid',
+        render: (value) => value ? '✅ Paga' : '❌ Impaga',
+      },
+    ];
+  }
 
   const feesPopUp = [
     {
@@ -257,21 +280,30 @@ export const FeeSection = () => {
     }
   ]
 
+  let adminFeeActions = null;
+  let title = 'Listado de tus cuotas';
+
+  if (auth.role === roles.admin) {
+    title = 'Listado de cuotas';
+
+    adminFeeActions = <div className='fees-actions'>
+      <Btn text="Agregar cuota" variant="primary" onClick={() => setPopupAdd(true)}></Btn>
+      <Btn text="Cuotas entre fechas" variant="primary" onClick={() => setPopUpFeesBetweenDates(true)}></Btn>
+      <Btn text="Modificaciones en cuotas" variant="primary" onClick={() => alert("realizar")}></Btn>
+
+    </div>;
+  }
+
   return (
     <>
-      <GenericSection title="Listado de cuotas"  totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger} filters={
+      <GenericSection title={title} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger} filters={
         <FeeFilter formData={formData ||
           { partnerWithUnpaidFees: false, name: "", surname: "", PaymentDate: "" }}
           onChange={handleFilterChange} />}
 
         columns={columns} data={items} popups={feesPopUp}
         actions={
-          <div className='fees-actions'>
-            <Btn text="Agregar cuota" variant="primary" onClick={() => setPopupAdd(true)}></Btn>
-            <Btn text="Cuotas entre fechas" variant="primary" onClick={() => setPopUpFeesBetweenDates(true)}></Btn>
-            <Btn text="Modificaciones en cuotas" variant="primary" onClick={() => alert("realizar")}></Btn>
-
-          </div>
+          adminFeeActions
         }
 
       ></GenericSection>

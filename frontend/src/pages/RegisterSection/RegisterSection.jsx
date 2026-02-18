@@ -14,7 +14,7 @@ export default function RegisterSection() {
   const { auth, login } = useContext(AuthContext);
 
   const [formData, setFormData] = useState({
-    name: '',
+    fullName: '',
     email: '',
     password: '',
     repeatPassword: '',
@@ -46,7 +46,7 @@ export default function RegisterSection() {
       return;
     }
 
-    if (!formData.name || !formData.email || !formData.password) {
+    if (!formData.fullName || !formData.email || !formData.password) {
       setErrorMessage('Debes completar todos los campos');
       return;
     }
@@ -58,7 +58,7 @@ export default function RegisterSection() {
 
     try {
       const newUser = {
-        fullName: formData.name,
+        fullName: formData.fullName,
         email: formData.email,
         password: formData.password
       }
@@ -103,12 +103,12 @@ export default function RegisterSection() {
               <form onSubmit={handleSubmit}>
                 <div className='register-inputs'>
                   <div className="input">
-                    <label htmlFor="name">Nombre completo</label>
+                    <label htmlFor="fullName">Nombre completo</label>
                     <input
-                      id="name"
+                      id="fullName"
                       type="text"
                       placeholder="Nombre completo"
-                      value={formData.name}
+                      value={formData.fullName}
                       onChange={handleChange}
                     />
                   </div>
