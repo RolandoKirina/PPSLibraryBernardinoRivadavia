@@ -1,16 +1,17 @@
 import express from "express";
 import * as UserRoleController from "../../../controllers/auth/UserRoleController.js";
 import validateIdParam from "../../../middlewares/ValidateId.js";
+import { authorizeRoles } from "../../../middlewares/authorizeRoles.js";
 
 const router = express.Router();
 
-router.get("/", UserRoleController.getAllUserRoles);
-router.get("/:id", validateIdParam("UserRole id"), UserRoleController.getUserRole);
+router.get("/", authorizeRoles(['admin']), UserRoleController.getAllUserRoles);
+router.get("/:id", authorizeRoles(['admin']), validateIdParam("id"), UserRoleController.getUserRole);
 
-router.post("/", UserRoleController.createUserRole);
+router.post("/", authorizeRoles(['admin']), UserRoleController.createUserRole);
 
-router.put("/:id", validateIdParam("UserRole id"), UserRoleController.updateUserRole);
+router.put("/:id", authorizeRoles(['admin']), validateIdParam("id"), UserRoleController.updateUserRole);
 
-router.delete("/:id", validateIdParam("UserRole id"), UserRoleController.deleteUserRole);
+router.delete("/:id", authorizeRoles(['admin']), validateIdParam("id"), UserRoleController.deleteUserRole);
 
 export default router;

@@ -1,13 +1,14 @@
 import express from "express";
 import * as LocalityController from "../../../controllers/partner/LocalityController.js";
 import validateIdParam from "../../../middlewares/ValidateId.js";
+import { authorizeRoles } from '../../../middlewares/authorizeRoles.js';
 
 const router = express.Router();
 
-router.get("/", LocalityController.getAllLocalities);
-router.get("/:id", validateIdParam("Locality id"), LocalityController.getLocality);
-router.post("/", LocalityController.createLocality);
-router.put("/:id", validateIdParam("Locality id"), LocalityController.updateLocality);
-router.delete("/:id", validateIdParam("Locality id"), LocalityController.deleteLocality);
+router.get("/", authorizeRoles(['admin']), LocalityController.getAllLocalities);
+router.get("/:id", authorizeRoles(['admin']), validateIdParam("Locality id"), LocalityController.getLocality);
+router.post("/", authorizeRoles(['admin']), LocalityController.createLocality);
+router.put("/:id", authorizeRoles(['admin']), validateIdParam("Locality id"), LocalityController.updateLocality);
+router.delete("/:id", authorizeRoles(['admin']), validateIdParam("Locality id"), LocalityController.deleteLocality);
 
 export default router;
