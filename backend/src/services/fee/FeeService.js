@@ -24,35 +24,52 @@ export const generateUnpaidFees = async (body) => {
     const [year, month, day] = month_and_year.split("-").map(Number);
 
     const generatedFees = [];
-    const data = await getAll();
-
+    const data = await getAll({idState:1});
+    console.log(data)
     const partners = data.rows;
 
+    if (!month_and_year) {
+        throw new Error("El campo mes y año es obligatorio");
+    }
+
+    if (amount === undefined || amount === null || amount === "") {
+        throw new Error("El monto es obligatorio");
+    }
+
+    console.log(partners)
     for (const partner of partners) {
+        console.log(partner)
         const existingFee = await FeeRepository.findOne({
             idPartner: partner.id,
             month,
             year
         });
 
-        if (existingFee) continue;
 
-        const newFee = await FeeRepository.create({
-            idPartner: partner.id,
-            month,
-            year,
-            amount: amount ?? 0,
-            observation: observation ?? "",
-            paid: false,
-            date_of_paid: date_of_paid
-        });
 
-        generatedFees.push(newFee);
+           if (existingFee) {
+            console.log("YA TENÍA CUOTA:", partner.name);
+            continue;
+           }
+           else{
+                console.log("SE CREA CUOTA PARA:", partner.name);
+                const newFee = await FeeRepository.create({
+                idPartner: partner.id,
+                month,
+                year,
+                amount: amount ?? 0,
+                observation: observation ?? "",
+                paid: false,
+                date_of_paid: date_of_paid
+                });
+
+            generatedFees.push(newFee);
+        }
     }
 
-    if (generatedFees.length === 0) {
+    /*if (generatedFees.length === 0) {
         throw new Error(`Ya existen cuotas generadas para el mes ${month} y año ${year}`);
-    }
+    }*/
 
     return {
         message: "Cuotas generadas correctamente",
@@ -66,9 +83,7 @@ export const getFee = async (id) => {
     return await FeeRepository.getById(id);
 };
 
-export const createFee = async (fee) => {
-    return await FeeRepository.create(fee);
-};
+
 
 export const getQuantityPaidFees = async (partnerNumber) => {
     return await FeeRepository.getQuantityPaidFees(partnerNumber);

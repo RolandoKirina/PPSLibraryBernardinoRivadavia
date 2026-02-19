@@ -33,24 +33,26 @@ export const editnewFeesForm = [
   ]
 ];
 
-
-
 export const addnewFeesForm = [
   [
     {
       label: 'Mes y año',
       name: 'month_and_year',
-      type: 'date'
+      type: 'date',
+      required: true
     },
     {
       label: 'Monto',
       name: 'amount',
-      type: 'number'
+      type: 'number',
+      required: true
     },
     {
       label: 'Observación',
       name: 'observation',
-      type: 'text'
+      type: 'text',
+      required: true
+
     }
   ]
 ];

@@ -3,9 +3,6 @@ import "./PartnerFilter.css"
 
 export default function PartnerFilter({ formData, onChange }) {
 
-
-console.log(formData)
-
   return (
     <aside className="filter-aside">
       <div className="filter-form">

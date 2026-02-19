@@ -8,7 +8,5 @@ router.post("/generate-unpaid-fees", FeeController.generateUnpaidFees);
 router.get("/paid-count", FeeController.getPaidFeeCountByPartner);
 router.get("/", FeeController.getAllFees);
 router.get("/:id", validateIdParam("id"), FeeController.getFee);
-router.post("/", FeeController.createFee);
 router.put("/:id", validateIdParam("id"), FeeController.updateFee);
-router.delete("/:id", validateIdParam("id"), FeeController.deleteFee);
 export default router;

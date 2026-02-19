@@ -11,23 +11,30 @@ const Fees = sequelize.define("Fees",
     },
     month: {
         type: DataTypes.INTEGER,
-        field: "Mes"
+        field: "Mes",
+        allowNull: false
+    
     },
     year: {
         type: DataTypes.INTEGER,
-        field: "Anio"
+        field: "Anio",
+        allowNull: false
     },
     amount: {
         type: DataTypes.DECIMAL(10, 2),
-        field: "Monto"
+        field: "Monto",
+        allowNull: false
     },
     idPartner: {
         type: DataTypes.INTEGER,
-        field: "IdSocio"
+        field: "IdSocio",        
+        allowNull: false
+
     },
     paid: {
         type: DataTypes.BOOLEAN,
-        field: "Paga"
+        field: "Paga",
+        allowNull: false
     },
     observation: {
         type: DataTypes.TEXT,
