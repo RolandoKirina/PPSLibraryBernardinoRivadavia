@@ -23,7 +23,9 @@ import Signs from "../src/models/book/Signs.js";
 import LastGeneration from "../src/models/fee/LastGeneration.js";
 import Fees from "../src/models/fee/fee.js";
 import LoanBook from "../src/models/loan/LoanBook.js";
-
+import BookAuthor from "../src/models/author/BookAuthor.js";
+import BookReservations from "../src/models/loan/BookReservations.js";
+import BookTypeGroup from "../src/models/options/BookTypeGroup.js";
 
 async function migrateAll() {
     try {
@@ -34,19 +36,19 @@ async function migrateAll() {
         const reader = new MDBReader(buffer);
 
         await sequelize.transaction(async (t) => {
-
             /*
             =========================
             IMPORTAR AUTORES
             =========================
             */
+
             const authorTable = reader.getTable("Autores");
             const authorRows = authorTable.getData();
 
             console.log(`Importando ${authorRows.length} autores...`);
 
             const transformedAuthors = authorRows.map(row => ({
-                id: row.Id,
+                legacyAuthorCode: row.Id,
                 name: row.Nombre,
                 nationality: row.Nacionalidad || null
             }));
@@ -62,8 +64,23 @@ async function migrateAll() {
                 transaction: t
             });
 
-            console.log("Autores importados correctamente.");
 
+            // 🔎 Crear mapa legacy → nuevo ID
+            const authorsForMap = await Authors.findAll({
+                attributes: ["id", "legacyAuthorCode"],
+                transaction: t
+            });
+
+            const authorLegacyToNewId = {};
+
+            authorsForMap.forEach(a => {
+                authorLegacyToNewId[String(a.legacyAuthorCode)] = a.id;
+            });
+
+            console.log("Mapa autores (5 ejemplos):");
+            console.log(Object.entries(authorLegacyToNewId).slice(0, 5));
+
+            console.log("Autores importados correctamente.");
             /*
             =========================
             IMPORTAR TIPO-LIBROS
@@ -76,7 +93,7 @@ async function migrateAll() {
             console.log(`Importando ${rows.length} tipos de libro...`);
 
             const transformed = rows.map(row => ({
-                bookTypeId: row.Id,
+                legacyBookTypeId: row.Id,
                 typeName: row.TipoLibro || null,
                 loanDays: row.DiasPrestamo || null
             }));
@@ -92,43 +109,73 @@ async function migrateAll() {
                 transaction: t
             });
 
+            const bookTypesForMap = await BookType.findAll({
+                attributes: ["bookTypeId", "legacyBookTypeId"],
+                transaction: t
+            });
+
+            console.log(bookTypesForMap);
+
+            const legacyBookTypeToNewId = {};
+            bookTypesForMap.forEach(bt => {
+                legacyBookTypeToNewId[bt.legacyBookTypeId] = bt.bookTypeId;
+            });
+
+            console.log("Mapa legacyBookType → nuevo bookTypeId (5 ejemplos):");
+            console.log(Object.entries(legacyBookTypeToNewId).slice(0, 5));
+
             console.log("Tipos de libro importados correctamente.");
 
             /*
-            =========================
-            IMPORTAR LIBROS
-            =========================
-            */
+   =========================
+   IMPORTAR LIBROS
+   =========================
+   */
             const bookTable = reader.getTable("Libros");
             const bookRows = bookTable.getData();
 
             console.log(`Importando ${bookRows.length} libros...`);
 
-            const transformedBooks = bookRows.map(row => ({
-                //BookId: row.Id || null, //  no es row.id. Postgres lo genera solo
-                codeInventory: row.Codigo || null,
-                codeCDU: row.Cod_rcdu || null,
-                title: row.Titulo || null,
-                editorial: row.Editorial || null,
-                numberEdition: row.Nro_edic || null,
-                yearEdition: row.Anio_edic || null,
-                translator: row.Traductor || null,
-                codeClasification: row.Cod_clas || null,
-                numberOfCopies: row.Cant_ejemplar || null,
-                notes: row.Notas || null,
-                type: row.Tipo || null,
-                codeLing: row.Cod_Ling || null,
-                codeSignature: row.Autores || null,
-                idSupplier: row.IdProveedor || null,
-                invoiceNumber: row.NumFactura || null,
-                dateOfBuy: row.FechaCompra || null,
-                lossDate: row.FechaPerdida || null,
-                lostPartnerNumber: row.NumSocioPerdida || null,
-                lost: row.Perdido ?? false,
-                ubication: row.Ubicacion || null,
-                pages: row.Paginas || null
-            }));
+            // 🔹 1. Transformar libros y mapear Tipo a bookTypeId
+            const transformedBooks = bookRows.map(row => {
+                const newBookTypeId = legacyBookTypeToNewId[row.Tipo] ?? null;
 
+                if (!newBookTypeId) {
+                    console.warn(`⚠ No se encontró bookTypeId para libro ${row.Titulo} (legacy Tipo: ${row.Tipo})`);
+                }
+
+                return {
+                    codeInventory: row.Codigo || null,
+                    codeCDU: row.Cod_rcdu || null,
+                    title: row.Titulo || null,
+                    editorial: row.Editorial || null,
+                    numberEdition: row.Nro_edic || null,
+                    yearEdition: row.Anio_edic || null,
+                    translator: row.Traductor || null,
+                    codeClasification: row.Cod_clas || null,
+                    numberOfCopies: row.Cant_ejemplar || null,
+                    notes: row.Notas || null,
+                    type: newBookTypeId,  // <- acá ya mapeás al bookTypeId real
+                    codeLing: row.Cod_Ling || null,
+                    codeSignature: row.Autores || null,
+                    idSupplier: row.IdProveedor || null,
+                    invoiceNumber: row.NumFactura || null,
+                    dateOfBuy: row.FechaCompra || null,
+                    lossDate: row.FechaPerdida || null,
+                    lostPartnerNumber: row.NumSocioPerdida || null,
+                    lost: row.Perdido ?? false,
+                    ubication: row.Ubicacion || null,
+                    pages: row.Paginas || null
+                };
+            });
+
+            // 🔹 2. Filtrar libros sin tipo válido
+            const filteredBooks = transformedBooks.filter(b => b.type !== null);
+
+            console.log(`Libros válidos: ${filteredBooks.length}`);
+            console.log(`Libros descartados (sin tipo válido): ${transformedBooks.length - filteredBooks.length}`);
+
+            // 🔹 3. Limpiar tabla y bulk insert
             await Book.destroy({
                 truncate: true,
                 restartIdentity: true,
@@ -136,18 +183,18 @@ async function migrateAll() {
                 transaction: t
             });
 
-            await Book.bulkCreate(transformedBooks, {
+            await Book.bulkCreate(filteredBooks, {
                 transaction: t,
                 validate: false
             });
 
+            // 🔹 4. Mapear código legacy → nuevo ID
             const booksForMap = await Book.findAll({
                 attributes: ["BookId", "codeInventory"],
                 transaction: t
             });
 
             const bookLegacyToNewId = {};
-
             booksForMap.forEach(b => {
                 bookLegacyToNewId[String(b.codeInventory).trim()] = b.BookId;
             });
@@ -499,7 +546,6 @@ async function migrateAll() {
                 transaction: t,
                 validate: false
             });
-
 
             /*
             =========================
@@ -1061,7 +1107,7 @@ async function migrateAll() {
             // 1. Transformar datos
             // ---------------------------
             const transformedBookTypeGroups = bookTypeGroupRows.map(row => ({
-                bookTypeGroupListId: row.Id ?? null,   // si querés respetar IDs legacy
+                legacyId: row.Id ?? null,
                 group: row.Grupo || null,
                 maxAmount: row.CantMaxima ?? 0
             }));
@@ -1389,9 +1435,212 @@ async function migrateAll() {
                 validate: false
             });
 
-
-
             console.log("PrestamoLibro importado correctamente.");
+
+            /*
+            =========================
+            IMPORTAR AUTORLIBRO
+            =========================
+            */
+
+            const bookAuthorTable = reader.getTable("AutorLibro");
+            const bookAuthorRows = bookAuthorTable.getData();
+
+            console.log(`Importando ${bookAuthorRows.length} registros de AutorLibro...`);
+
+            const transformedBookAuthors = bookAuthorRows.map(row => {
+
+                const legacyBookCode = String(row.CodLibro).trim();
+                const legacyAuthor = Number(row.CodAutor);  // el código legacy
+                const newAuthorId = authorLegacyToNewId[legacyAuthor]; // si tuviste que mapear autores nuevos
+
+                const newBookId = bookLegacyToNewId[legacyBookCode];
+
+                if (!newBookId) console.warn(`⚠ Libro no encontrado: ${legacyBookCode}`);
+                if (!newAuthorId) console.warn(`⚠ Autor no encontrado: ${legacyAuthor}`);
+
+                return {
+                    BookId: newBookId ?? null,
+                    authorCode: newAuthorId ?? null,   // vincula con Author.id
+                    legacyAuthorCode: legacyAuthor,    // conserva el código antiguo
+                    position: row.Posicion ?? null
+                };
+            });
+
+
+            // =======================================
+            // 🔎 FILTRAR inválidos
+            // =======================================
+
+            const filteredBookAuthors = transformedBookAuthors.filter(ba =>
+                ba.BookId !== null && ba.authorCode !== null
+            );
+
+            console.log(`Registros válidos: ${filteredBookAuthors.length}`);
+            console.log(`Registros descartados: ${transformedBookAuthors.length - filteredBookAuthors.length}`);
+
+
+            // =======================================
+            // 🧹 Limpiar tabla
+            // =======================================
+
+            await BookAuthor.destroy({
+                truncate: true,
+                restartIdentity: true,
+                cascade: true,
+                transaction: t
+            });
+
+
+            // =======================================
+            // 💾 Insertar
+            // =======================================
+
+            await BookAuthor.bulkCreate(filteredBookAuthors, {
+                transaction: t,
+                validate: false
+            });
+
+            console.log("AutorLibro importado correctamente.");
+
+
+            /*
+            =========================
+            IMPORTAR RESERVAS LIBRO
+            =========================
+            */
+
+            const bookReservationsTable = reader.getTable("ReservasLibro");
+            const bookReservationsRows = bookReservationsTable.getData();
+
+            console.log(`Importando ${bookReservationsRows.length} registros de ReservasLibro...`);
+
+            // 🔹 Mapear legacy → nuevos IDs
+            const transformedBookReservations = bookReservationsRows.map(row => {
+
+                const legacyBookCode = String(row.CodLibro).trim();
+                const legacyReservationId = Number(row.IdReserva);
+
+                const newBookId = bookLegacyToNewId[legacyBookCode];
+                const newReservationId = reservationLegacyToNewId[legacyReservationId]; // si creaste este mapa
+
+                if (!newBookId) {
+                    console.warn(`⚠ Libro no encontrado para legacy CodLibro: ${legacyBookCode}`);
+                }
+
+                if (!newReservationId) {
+                    console.warn(`⚠ Reserva no encontrada para legacy IdReserva: ${legacyReservationId}`);
+                }
+
+                return {
+                    BookId: newBookId ?? null,              // ID real del libro
+                    reservationId: newReservationId ?? null, // ID real de la reserva
+                    bookCode: legacyBookCode,               // opcional para referencia legacy
+                    bookTitle: row.TituloLibro || null
+                };
+            });
+
+            // 🔹 Filtrar registros válidos
+            const filteredBookReservations = transformedBookReservations.filter(
+                br => br.BookId !== null && br.reservationId !== null
+            );
+
+            console.log(`Registros válidos: ${filteredBookReservations.length}`);
+            console.log(`Registros descartados: ${transformedBookReservations.length - filteredBookReservations.length}`);
+
+            // 🔹 Limpiar tabla antes de insertar
+            await BookReservations.destroy({
+                truncate: true,
+                restartIdentity: true,
+                cascade: true,
+                transaction: t
+            });
+
+            // 🔹 Insertar solo registros válidos
+            await BookReservations.bulkCreate(filteredBookReservations, {
+                transaction: t,
+                validate: false
+            });
+
+            console.log("ReservasLibro importadas correctamente.");
+
+            /*
+            =========================
+            IMPORTAR TIPO-LIBRO GRUPO
+            =========================
+            */
+
+            const tipoLibroGrupoTable = reader.getTable("TipoLibroGrupo");
+            const tipoLibroGrupoRows = tipoLibroGrupoTable.getData();
+
+            console.log(`Importando ${tipoLibroGrupoRows.length} registros de TipoLibroGrupo...`);
+
+            // 🔹 1. Obtener mapa legacyBookTypeId → nuevo bookTypeId
+            const bookTypesList = await BookType.findAll({
+                attributes: ["bookTypeId", "legacyBookTypeId"],
+                transaction: t
+            });
+
+            const bookTypeLegacyMap = {};
+            bookTypesList.forEach(bt => {
+                bookTypeLegacyMap[bt.legacyBookTypeId] = bt.bookTypeId;
+            });
+
+            // 🔹 2. Obtener mapa legacyBookTypeGroupId → nuevo BookTypeGroupListId
+            const bookTypeGroupsList = await BookTypeGroupList.findAll({
+                attributes: ["bookTypeGroupListId", "legacyId"],
+                transaction: t
+            });
+
+            const bookTypeGroupLegacyMap = {};
+            bookTypeGroupsList.forEach(g => {
+                bookTypeGroupLegacyMap[g.legacyId] = g.bookTypeGroupListId;
+            });
+
+            console.log("Mapa legacyBookTypeGroup → nuevo BookTypeGroupListId (5 ejemplos):");
+            console.log(Object.entries(bookTypeGroupLegacyMap).slice(0, 5));
+
+            // 🔹 3. Transformar datos legacy a nuevos IDs
+            const transformedGroups = tipoLibroGrupoRows.map(row => {
+                const newBookTypeId = bookTypeLegacyMap[row.IdTipoLibro] ?? null;
+                const newBookTypeGroupListId = bookTypeGroupLegacyMap[row.IdGrupo] ?? null;
+
+                if (!newBookTypeId) {
+                    console.warn(`⚠ No se encontró bookTypeId para legacy IdTipoLibro: ${row.IdTipoLibro}`);
+                }
+                if (!newBookTypeGroupListId) {
+                    console.warn(`⚠ No se encontró BookTypeGroupListId para legacy IdGrupo: ${row.IdGrupo}`);
+                }
+
+                return {
+                    BookTypeGroupListId: newBookTypeGroupListId,
+                    bookTypeId: newBookTypeId
+                };
+            });
+
+            // 🔹 4. Filtrar registros inválidos (sin bookTypeId o BookTypeGroupListId)
+            const filteredGroups = transformedGroups.filter(
+                g => g.bookTypeId !== null && g.BookTypeGroupListId !== null
+            );
+
+            console.log(`Registros válidos: ${filteredGroups.length}`);
+            console.log(`Registros descartados: ${transformedGroups.length - filteredGroups.length}`);
+
+            // 🔹 5. Limpiar tabla
+            await BookTypeGroup.destroy({
+                truncate: true,
+                restartIdentity: true,
+                cascade: true,
+                transaction: t
+            });
+
+            // 🔹 6. Insertar datos
+            await BookTypeGroup.bulkCreate(filteredGroups, {
+                transaction: t,
+                validate: false
+            });
+
+            console.log("TipoLibroGrupo importado correctamente.");
         });
 
 

@@ -147,7 +147,7 @@ export const FeeSection = () => {
   let columns = [];
 
   if (auth.role === roles.admin) {
-    [
+    columns = [
       { header: 'Numero de cuota', accessor: 'feeid' },
       { header: 'Nombre de socio', accessor: 'name' },
       { header: 'valor', accessor: 'amount' },

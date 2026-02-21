@@ -3,13 +3,18 @@
 import sequelize from "../../configs/database.js";
 import { DataTypes } from "sequelize";
 
-const BookTypeGroupList = sequelize.define("BookTypeGroupList", 
+const BookTypeGroupList = sequelize.define("BookTypeGroupList",
     {
         bookTypeGroupListId: {
             autoIncrement: true,
             primaryKey: true,
             type: DataTypes.INTEGER,
             field: "Id"
+        },
+        legacyId: {
+            type: DataTypes.INTEGER,
+            field: "legacyId",
+            allowNull: true
         },
         group: {
             type: DataTypes.STRING(50),
