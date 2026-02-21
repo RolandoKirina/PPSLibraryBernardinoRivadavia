@@ -109,7 +109,6 @@ export default function FormAddBook({ getItems }) {
 
         try {
             const createdBook = await entityManagerApi.createItem(newItem);
-            console.log("Libro creado:", createdBook);
 
             if (authorsSelected.length > 0) {
                 for (const author of authorsSelected) {

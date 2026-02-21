@@ -79,20 +79,31 @@ export default function ReaderForm({ method, createReaderItem, loanSelected, err
     setLoadingBooks(true);
 
     const queryParams = new URLSearchParams(filters).toString();
-    const res = await fetch(`${BASE_URL}/books/withFields?${queryParams}`);
+    const res = await fetch(`${BASE_URL}/books/withFields?${queryParams}`, {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${auth.token}`
+      }
+    });
     const { rows, total } = await res.json();
 
     setTotalLibraryBooks(total);
-    console.log(total);
+
     setLibraryBooks(prev => (append ? [...prev, ...rows] : rows));
-    console.log(libraryBooks);
 
     setLoadingBooks(false);
     return rows;
   };
 
   const fetchLoanBooks = async (loanId) => {
-    const res = await fetch(`${BASE_URL}/books/withFields/loan/${loanId}`);
+    const res = await fetch(`${BASE_URL}/books/withFields/loan/${loanId}`, {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${auth.token}`
+      }
+    });
     const { rows } = await res.json();
     return rows;
   };
@@ -136,7 +147,13 @@ export default function ReaderForm({ method, createReaderItem, loanSelected, err
   }
 
   async function verifyIfExists(bookId) {
-    const res = await fetch(`${BASE_URL}/reader-books/repeated-book/${bookId}`);
+    const res = await fetch(`${BASE_URL}/reader-books/repeated-book/${bookId}`, {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${auth.token}`
+      }
+    });
     return res.ok ? res.json() : { available: false };
   }
 

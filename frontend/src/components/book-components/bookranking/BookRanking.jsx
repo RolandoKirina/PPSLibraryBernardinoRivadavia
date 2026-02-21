@@ -3,10 +3,11 @@ import Btn from '../../common/btn/Btn';
 import { useEffect, useState } from 'react';
 import GenerateListPopup from '../../common/generatelistpopup/GenerateListPopup';
 import { columnsByType } from '../../../data/generatedlist/generatedList';
+import { useAuth } from '../../../auth/AuthContext';
 
 export default function BookRanking() {
     const BASE_URL = "http://localhost:4000/api/v1";
-
+    const { auth } = useAuth();
     const chunkSize = 100;
     const rowsPerPage = 35;
 
@@ -57,7 +58,13 @@ export default function BookRanking() {
 
             const url = `${BASE_URL}/books/ranking?${params.toString()}`;
 
-            const res = await fetch(url);
+            const res = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${auth.token}`
+                }
+            });
 
             if (!res.ok) {
                 const errorData = await res.json().catch(() => ({ msg: "Error del servidor" }));

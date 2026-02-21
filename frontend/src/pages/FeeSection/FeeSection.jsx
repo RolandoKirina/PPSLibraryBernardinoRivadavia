@@ -122,7 +122,8 @@ export const FeeSection = () => {
       const res = await fetch("http://localhost:4000/api/v1/fees/generate-unpaid-fees", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${auth.token}`
         },
         body: JSON.stringify(data)
       });

@@ -48,12 +48,24 @@ export default function FormAddPartner() {
   }, []);
 
   const fetchMaritalStatuses = async () => {
-    const res = await fetch("http://localhost:4000/api/v1/marital-statuses");
+    const res = await fetch("http://localhost:4000/api/v1/marital-statuses", {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${auth.token}`
+      }
+    });
     setMaritalStatuses(await res.json());
   };
 
   const fetchReasonWithdrawal = async () => {
-    const res = await fetch("http://localhost:4000/api/v1/reason-for-withdrawal");
+    const res = await fetch("http://localhost:4000/api/v1/reason-for-withdrawal", {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${auth.token}`
+      }
+    });
     setReasonOfWithdrawal(await res.json());
   };
 
@@ -94,11 +106,11 @@ export default function FormAddPartner() {
       <form onSubmit={handleSubmit}>
 
         <Accordion title="Datos personales" isActive={activeAccordion === "personal"} onToggle={() => handleToggle("personal")}>
-          
+
           <div className="row">
             <div className="form-details">
-                <label htmlFor="name" className="title-name">Nombre <span className='required'>*</span></label>
-                <input name="name" placeholder="Nombre" onChange={handleChange} />
+              <label htmlFor="name" className="title-name">Nombre <span className='required'>*</span></label>
+              <input name="name" placeholder="Nombre" onChange={handleChange} />
             </div>
 
             <div className="form-details" >
@@ -111,169 +123,169 @@ export default function FormAddPartner() {
               <input type="date" name="birthDate" onChange={handleChange} />
             </div>
             <div className="form-details">
-                <label htmlFor="documentType">Tipo de documento <span className='required'>*</span></label>
-                <select name="documentType" onChange={handleChange}>
-                    <option value="">Tipo documento</option>
-                    <option value="1">DNI</option>
-                    <option value="2">LE</option>
-                    <option value="3">LC</option>
-                    <option value="4">Pasaporte</option>
-                  </select>
+              <label htmlFor="documentType">Tipo de documento <span className='required'>*</span></label>
+              <select name="documentType" onChange={handleChange}>
+                <option value="">Tipo documento</option>
+                <option value="1">DNI</option>
+                <option value="2">LE</option>
+                <option value="3">LC</option>
+                <option value="4">Pasaporte</option>
+              </select>
             </div>
 
-      <div className="form-details">
-         <label htmlFor="documentNumber">Numero de documento <span className='required'>*</span></label>
-         <input name="documentNumber" placeholder="Documento" onChange={handleChange} />
-      </div>
-      <div className="form-details" >
-        <label htmlFor="profession">Profesion</label>
-        <input name="profession" placeholder="Profesión" onChange={handleChange} />
+            <div className="form-details">
+              <label htmlFor="documentNumber">Numero de documento <span className='required'>*</span></label>
+              <input name="documentNumber" placeholder="Documento" onChange={handleChange} />
+            </div>
+            <div className="form-details" >
+              <label htmlFor="profession">Profesion</label>
+              <input name="profession" placeholder="Profesión" onChange={handleChange} />
 
-      </div>
-      <div className="form-details">
-        <label htmlFor="presentedBy">Presentado por <span className='required'>*</span></label>
-        <input name="presentedBy" placeholder="Presentado por" onChange={handleChange} />
+            </div>
+            <div className="form-details">
+              <label htmlFor="presentedBy">Presentado por <span className='required'>*</span></label>
+              <input name="presentedBy" placeholder="Presentado por" onChange={handleChange} />
 
-      </div>
-      <div className="form-details">
-        <label htmlFor="nationality">Nacionalidad </label>
-        <input name="nationality" placeholder="Nacionalidad" onChange={handleChange} />
+            </div>
+            <div className="form-details">
+              <label htmlFor="nationality">Nacionalidad </label>
+              <input name="nationality" placeholder="Nacionalidad" onChange={handleChange} />
 
-      </div>
-      <div className="form-details">        
-        
-        <label htmlFor="maritalstatus">Estado civil </label>
-        <select name="maritalstatus" onChange={handleChange}>
-                  <option value="">Estado civil</option>
-                  {maritalStatuses.map(m => (
-                    <option key={m.id} value={m.id}>{m.statusName}</option>
-                  ))}
-                </select>
-      </div>
-        
-      <div className="form-details">        
-        
-        <label htmlFor="category">Categoria <span className='required'>*</span></label>
+            </div>
+            <div className="form-details">
 
-                <select name="category" onChange={handleChange}>
-                            <option value="">Categoría</option>
-                            <option value="1">Regular</option>
-                            <option value="2">Honorario</option>
-                            <option value="3">Protector</option>
-                            <option value="4">Socio</option>
-                </select>
-      </div>
-              
-</div>
+              <label htmlFor="maritalstatus">Estado civil </label>
+              <select name="maritalstatus" onChange={handleChange}>
+                <option value="">Estado civil</option>
+                {maritalStatuses.map(m => (
+                  <option key={m.id} value={m.id}>{m.statusName}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-details">
+
+              <label htmlFor="category">Categoria <span className='required'>*</span></label>
+
+              <select name="category" onChange={handleChange}>
+                <option value="">Categoría</option>
+                <option value="1">Regular</option>
+                <option value="2">Honorario</option>
+                <option value="3">Protector</option>
+                <option value="4">Socio</option>
+              </select>
+            </div>
+
+          </div>
         </Accordion>
 
-      
+
         <Accordion title="Contacto" isActive={activeAccordion === "contact"} onToggle={() => handleToggle("contact")}>
-         
+
           <div className="row">
-            <div className="form-details">        
-                <label htmlFor="address">Direccion particular <span className='required'>*</span></label>
-                <input name="address" placeholder="Dirección" onChange={handleChange} />
+            <div className="form-details">
+              <label htmlFor="address">Direccion particular <span className='required'>*</span></label>
+              <input name="address" placeholder="Dirección" onChange={handleChange} />
             </div>
             <div className="form-details">
-                <label htmlFor="phone">Teléfono <span className='required'>*</span></label>
-                <input name="phone" placeholder="Teléfono" onChange={handleChange} />
+              <label htmlFor="phone">Teléfono <span className='required'>*</span></label>
+              <input name="phone" placeholder="Teléfono" onChange={handleChange} />
 
             </div>
             <div className="form-details">
-                  <label htmlFor="postalcode">Código postal </label>
-                  <input name="postalcode" placeholder="Código postal" onChange={handleChange} />
+              <label htmlFor="postalcode">Código postal </label>
+              <input name="postalcode" placeholder="Código postal" onChange={handleChange} />
             </div>
             <div className="form-details">
-                <label htmlFor="locality">Localidad </label>
-                <select name="locality" onChange={handleChange}>
-                  <option value="">Localidad</option>
-                  <option value="1">Tandil</option>
-                </select>
-            </div>  
+              <label htmlFor="locality">Localidad </label>
+              <select name="locality" onChange={handleChange}>
+                <option value="">Localidad</option>
+                <option value="1">Tandil</option>
+              </select>
+            </div>
           </div>
 
 
-        
+
         </Accordion>
 
         <Accordion title="Trabajo" isActive={activeAccordion === "work"} onToggle={() => handleToggle("work")}>
           <div className="row">
-                    <div className="form-details">
-                      <label htmlFor="workplace">Lugar laboral</label>
-                      <input name="workplace" placeholder="Lugar de trabajo" onChange={handleChange} />
-                    </div>
-                    <div className="form-details">          
-                      <label htmlFor="workAddress">Dirección laboral</label>
-                      <input name="workAddress" placeholder="Dirección laboral" onChange={handleChange} />
-                    </div>
-                    <div className="form-details">
-                      <label htmlFor="workPhone">Teléfono laboral</label>
-                      <input name="workPhone" placeholder="Teléfono laboral" onChange={handleChange} />
+            <div className="form-details">
+              <label htmlFor="workplace">Lugar laboral</label>
+              <input name="workplace" placeholder="Lugar de trabajo" onChange={handleChange} />
+            </div>
+            <div className="form-details">
+              <label htmlFor="workAddress">Dirección laboral</label>
+              <input name="workAddress" placeholder="Dirección laboral" onChange={handleChange} />
+            </div>
+            <div className="form-details">
+              <label htmlFor="workPhone">Teléfono laboral</label>
+              <input name="workPhone" placeholder="Teléfono laboral" onChange={handleChange} />
 
-                    </div>
-                    <div className="form-details">                      
-                      
-                        <label htmlFor="workPostalCode">Código postal laboral</label>
-                        <input name="workPostalCode" placeholder="CP laboral" onChange={handleChange} />
-                    </div>
-          </div>  
-          
+            </div>
+            <div className="form-details">
+
+              <label htmlFor="workPostalCode">Código postal laboral</label>
+              <input name="workPostalCode" placeholder="CP laboral" onChange={handleChange} />
+            </div>
+          </div>
+
         </Accordion>
 
         <Accordion title="Cobro" isActive={activeAccordion === "collection"} onToggle={() => handleToggle("collection")}>
           <div className="row">
-                  <div className="form-details">
-                    <label htmlFor="collectionAddress">Dirección de cobro</label>
-                    <input name="collectionAddress" placeholder="Dirección de cobro" onChange={handleChange} />
-                  </div>
-                  <div className="form-details">
-                      <label htmlFor="collectiontime">Hora preferida de cobro</label>
-                      <input type="time" name="collectiontime" onChange={handleChange} />
-                  </div>
+            <div className="form-details">
+              <label htmlFor="collectionAddress">Dirección de cobro</label>
+              <input name="collectionAddress" placeholder="Dirección de cobro" onChange={handleChange} />
             </div>
+            <div className="form-details">
+              <label htmlFor="collectiontime">Hora preferida de cobro</label>
+              <input type="time" name="collectiontime" onChange={handleChange} />
+            </div>
+          </div>
         </Accordion>
 
         <Accordion title="Estado del socio" isActive={activeAccordion === "state"} onToggle={() => handleToggle("state")}>
           <div className="row">
-                    <div className="form-details">
-                        <label htmlFor="resignationdate">Dirección de cobro</label>
-                        <input type="date" name="resignationdate" onChange={handleChange} />
-                    </div>
-                    <div className="form-details">
-                        <label htmlFor="observations">Observaciones</label>
-                        <input name="observations" placeholder="Observaciones" onChange={handleChange} />
-                    </div>
-                    <div className="form-details">
-                        <label htmlFor="idState">Estado</label>
-                                <select name="idState" onChange={handleChange}>
-                                  <option value="">Estado</option>
-                                  <option value="1">Activo</option>
-                                  <option value="2">Baja</option>
-                                </select>
-                    </div>
-                    <div className="form-details">
-                      <label htmlFor="reasonOfWithdrawal">Motivo de baja</label>
-                      <select name="reasonOfWithdrawal" onChange={handleChange}>
-                        <option value="">Motivo de baja</option>
-                        {reasonOfWithdrawal.map(r => (
-                          <option key={r.idReason} value={r.idReason}>{r.reason}</option>
-                        ))}
-                      </select>
-                    </div>
+            <div className="form-details">
+              <label htmlFor="resignationdate">Dirección de cobro</label>
+              <input type="date" name="resignationdate" onChange={handleChange} />
+            </div>
+            <div className="form-details">
+              <label htmlFor="observations">Observaciones</label>
+              <input name="observations" placeholder="Observaciones" onChange={handleChange} />
+            </div>
+            <div className="form-details">
+              <label htmlFor="idState">Estado</label>
+              <select name="idState" onChange={handleChange}>
+                <option value="">Estado</option>
+                <option value="1">Activo</option>
+                <option value="2">Baja</option>
+              </select>
+            </div>
+            <div className="form-details">
+              <label htmlFor="reasonOfWithdrawal">Motivo de baja</label>
+              <select name="reasonOfWithdrawal" onChange={handleChange}>
+                <option value="">Motivo de baja</option>
+                {reasonOfWithdrawal.map(r => (
+                  <option key={r.idReason} value={r.idReason}>{r.reason}</option>
+                ))}
+              </select>
+            </div>
           </div>
 
-          
-         
-          
+
+
+
         </Accordion>
-                
-                
-          <div className="btn-save-container">
-                <Btn text="Guardar socio"  type="submit" icon={<img src={SaveIcon} alt="Guardar" />} variant="save"/>        
 
-          </div>
-        
+
+        <div className="btn-save-container">
+          <Btn text="Guardar socio" type="submit" icon={<img src={SaveIcon} alt="Guardar" />} variant="save" />
+
+        </div>
+
       </form>
     </div>
   );

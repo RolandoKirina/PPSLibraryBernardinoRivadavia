@@ -37,7 +37,13 @@ export default function ShowAuthorBooks({ authorSelected }) {
         ? `${BASE_URL}/books/withFields/author/${authorSelectedId}`
         : `${BASE_URL}/books/withFields`;
 
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${auth.token}`
+        }
+      });
       if (!response.ok) throw new Error("Error al obtener libros");
       return await response.json();
     } catch (error) {

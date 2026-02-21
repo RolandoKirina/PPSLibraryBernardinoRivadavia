@@ -262,6 +262,7 @@ const BookSection = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + auth.token,
         },
         body: JSON.stringify({
           codeInventory: data.codeInventory,
@@ -277,7 +278,7 @@ const BookSection = () => {
       const result = await response.json();
       console.log('Libro duplicado:', result);
 
-      await getItems();
+      await getItems({ ...formData, sortBy: 'title', direction: 'asc', limit: chunkSize, offset: newOffset }, true);
 
       return result;
 

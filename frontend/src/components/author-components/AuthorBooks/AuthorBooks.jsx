@@ -76,7 +76,13 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem, 
 
         const queryParams = new URLSearchParams(filters).toString();
 
-        const res = await fetch(`${BASE_URL}/books/withFields?${queryParams}`);
+        const res = await fetch(`${BASE_URL}/books/withFields?${queryParams}`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${auth.token}`
+            }
+        });
         const { rows, total } = await res.json();
 
         setTotalLibraryBooks(total);
@@ -91,7 +97,13 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem, 
 
         const queryParams = new URLSearchParams(filters).toString();
 
-        const res = await fetch(`${BASE_URL}/books/withFields/author/${authorId}?${queryParams}`);
+        const res = await fetch(`${BASE_URL}/books/withFields/author/${authorId}?${queryParams}`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${auth.token}`
+            }
+        });
         const { rows } = await res.json();
 
         setAuthorBooksFetched(rows);

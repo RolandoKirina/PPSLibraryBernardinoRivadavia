@@ -147,7 +147,8 @@ export default function AuthorSection() {
             const response = await fetch(`${BASE_URL}/book-authors/deleteAllOfAuthor/${id}`, {
                 method: 'DELETE',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    "Authorization": `Bearer ${auth.token}`
                 }
             });
 

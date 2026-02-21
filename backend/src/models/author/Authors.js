@@ -17,7 +17,6 @@ const Authors = sequelize.define("Authors",
         nationality: {
             type: DataTypes.STRING(50),
             field: 'Nacionalidad',
-            allowNull: false
         }
     },
     {

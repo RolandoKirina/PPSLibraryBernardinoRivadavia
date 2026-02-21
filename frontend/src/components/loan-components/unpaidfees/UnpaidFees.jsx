@@ -1,10 +1,13 @@
 import './UnpaidFees.css';
 import { Table } from '../../common/table/Table';
 import { useState, useEffect } from 'react';
+import { useAuth } from '../../../auth/AuthContext';
 
 export default function UnpaidFees({ partnerNumber }) {
   const chunkSize = 100;
   const rowsPerPage = 5;
+
+  const { auth } = useAuth();
 
   const [unpaidFees, setUnpaidFees] = useState([]);
   const [totalItems, setTotalItems] = useState(0);
@@ -20,7 +23,14 @@ export default function UnpaidFees({ partnerNumber }) {
 
     try {
       const res = await fetch(
-        `http://localhost:4000/api/v1/fees/partners/${partnerNumber}/unpaid-fees?limit=${limit}&offset=${offset}`
+        `http://localhost:4000/api/v1/fees/partners/${partnerNumber}/unpaid-fees?limit=${limit}&offset=${offset}`,
+        {
+          method: 'GET',
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${auth.token}`
+          }
+        }
       );
 
       if (!res.ok) {

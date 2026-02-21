@@ -90,7 +90,7 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
   }, []);
 
   useEffect(() => {
-    getLibraryBooks({bookTitle: bookTitleSearch, limit: chunkSize, offset: 0}, false);
+    getLibraryBooks({ bookTitle: bookTitleSearch, limit: chunkSize, offset: 0 }, false);
   }, [bookTitleSearch]);
 
 
@@ -99,7 +99,13 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
 
     const queryParams = new URLSearchParams(filters).toString();
 
-    const res = await fetch(`${BASE_URL}/books/withFields?${queryParams}`);
+    const res = await fetch(`${BASE_URL}/books/withFields?${queryParams}`, {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${auth.token}`
+      }
+    });
 
     const { rows, total } = await res.json();
 
@@ -115,7 +121,14 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
 
     const queryParams = new URLSearchParams(filters).toString();
 
-    const res = await fetch(`${BASE_URL}/books/withFields/loan/${loanId}?${queryParams}`);
+    const res = await fetch(`${BASE_URL}/books/withFields/loan/${loanId}?${queryParams}`, {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${auth.token}`
+      }
+    });
+
     const { rows } = await res.json();
 
     setLoanBooksFetched(rows);
@@ -217,7 +230,13 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
 
   async function verifyIfExists(bookId) {
     try {
-      const res = await fetch(`${BASE_URL}/loan-books/repeated-book/${bookId}`);
+      const res = await fetch(`${BASE_URL}/loan-books/repeated-book/${bookId}`, {
+        method: 'GET',
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${auth.token}`
+        }
+      });
       if (!res.ok) throw new Error("Error al obtener datos");
       const data = await res.json();
       return data;

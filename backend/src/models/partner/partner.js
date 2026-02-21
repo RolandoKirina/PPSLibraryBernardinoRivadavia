@@ -26,7 +26,8 @@ const Partner = sequelize.define("Partner", {
 
     LocalityId: {
         type: DataTypes.INTEGER,
-        field: "IdLocal_part"
+        field: "IdLocal_part",
+        allowNull: true
     },
     idState: {
         type: DataTypes.SMALLINT,
@@ -34,7 +35,8 @@ const Partner = sequelize.define("Partner", {
     },
     idReason: {
         type: DataTypes.INTEGER,
-        field: "Motivo_Baj"
+        field: "Motivo_Baj",
+        allowNull: true
     },
     surname: {
         type: DataTypes.STRING(25),
@@ -121,7 +123,7 @@ const Partner = sequelize.define("Partner", {
         field: "fecha_baja"
     },
     observations: {
-        type: DataTypes.STRING(255),
+        type: DataTypes.TEXT,
         field: "Observaciones"
     },
     workLocationId: {

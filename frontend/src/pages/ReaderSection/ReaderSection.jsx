@@ -118,7 +118,10 @@ export default function ReaderSection() {
 
             const res = await fetch(`${baseUrl}/return-book/${readerBookId}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${auth.token}`
+                },
                 body: JSON.stringify(updates)
             });
 
