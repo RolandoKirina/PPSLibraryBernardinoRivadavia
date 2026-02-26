@@ -1,16 +1,36 @@
 import './PrintPartnerPopup.css';
 import Btn from '../../common/btn/Btn';
 //import { mockPartnersCategory } from '../../../data/mocks/partnersCategory';
-import { useEntityManager } from '../../../hooks/useEntityManager';
 //import { mockRemovePartnerReason } from '../../../data/mocks/removePartnerReason';
 import { useState } from 'react';
 import { listOptions, sortOptions, dataByType, columnsByType } from '../../../data/generatedlist/generatedList';
 import GenerateListPopup from '../../common/generatelistpopup/GenerateListPopup';
+import { useEffect } from 'react';
 
-export default function PrintPartnerPopup() {
-    //const { items: partnerCategories } = useEntityManager(mockPartnersCategory, 'partnerCategories');
-    //const { items: removePartnerReasons } = useEntityManager(mockRemovePartnerReason, 'removePartnerReason');
+export default function PrintPartnerPopup({categoriespartner, statespartner}) {
+
+    const [removePartnerReasons,setRemovePartnerReason] = useState([]);
+    const [employees,setEmployees] = useState([]);
     const [formValues, setFormValues] = useState({});
+
+    useEffect(() => {
+        async function loadApis(){
+            try {
+                const [reasonwithdrawal, resEmployees] = await Promise.all([
+                    fetch("http://localhost:4000/api/v1/reason-for-withdrawal"),
+                    fetch("http://localhost:4000/api/v1/employees")
+                ]); 
+                const resWithdrawal = await reasonwithdrawal.json();
+                const resEmployeesJson = await resEmployees.json();
+                setRemovePartnerReason(resWithdrawal);
+                setEmployees(resEmployeesJson);
+            }
+            catch(e){
+                console.log(e);
+            }
+        }
+      loadApis();
+    }, []);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -40,7 +60,6 @@ export default function PrintPartnerPopup() {
                     <div className='partner-list-content'>
                         <div className='partner-list-filters'>
                             <form onSubmit={handleSubmit}>
-                                {/* Datos del socio */}
                                 <div className='partner-list-filter-option'>
                                     <div className='partner-list-filter-title'>
                                         <h3>Datos del socio</h3>
@@ -49,15 +68,11 @@ export default function PrintPartnerPopup() {
 
                                         <div className='input'>
                                             <label htmlFor='category'>Categoría</label>
-                                            <label className='exclude'>
-                                                <input type="checkbox" name="excludeCategory" />
-                                                Excluir
-                                            </label>
                                             <select id="category" name='category'>
                                                 <option value=''>Elegir</option>
-                                                {partnerCategories.map((category, index) => (
-                                                    <option key={index} value={category.category}>
-                                                        {category.category}
+                                                {categoriespartner?.map((category, index) => (
+                                                    <option key={index} value={category.idCategory}>
+                                                        {category.name}
                                                     </option>
                                                 ))}
                                             </select>
@@ -65,70 +80,62 @@ export default function PrintPartnerPopup() {
 
                                         <div className="input">
                                             <label htmlFor="status">Estado</label>
-                                            <label className='exclude'>
-                                                <input type="checkbox" name="excludeStatus" />
-                                                Excluir
-                                            </label>
+
                                             <select id="status" name='status'>
-                                                <option value=''>Elegir</option>
-                                                <option value="active">Activo</option>
-                                                <option value="inactive">De baja</option>
+                                                <option value=''>Estado</option>
+                                                {statespartner?.map((state,index) => (
+                                                    <option key={index} value={state.idState}>
+                                                        {state.status}
+                                                    </option>
+                                                ))}
                                             </select>
                                         </div>
 
-                                        <div className="input birthDate-checkbox">
-                                            <label htmlFor="birthDate">Fecha de nacimiento</label>
-                                            <label className='exclude'>
-                                                <input type="checkbox" name="excludeBirthDate" />
-                                                Excluir
-                                            </label>
-                                            <div>
-                                                <label className='exclude'>
-                                                    <input type="checkbox" name="afterBirth" />
-                                                    Mayor a:
-                                                </label>
-                                                <label className='exclude'>
-                                                    <input type="checkbox" name="beforeBirth" />
-                                                    Menor a:
-                                                </label>
-                                            </div>
-                                            <input id="birthDate" name="birthDate" type="date" />
-                                        </div>
+                                      <div className="input birthDate-range">
+                                            <label>Fecha de nacimiento</label>
 
-                                        <div className="input registration-resignation">
+                                            <div className="date-range">
+                                                <div>
+                                                <label htmlFor="birthDateFrom">Desde</label>
+                                                <input
+                                                    id="birthDateFrom"
+                                                    name="birthDateFrom"
+                                                    type="date"
+                                                />
+                                                </div>
+
+                                                <div>
+                                                <label htmlFor="birthDateTo">Hasta</label>
+                                                <input
+                                                    id="birthDateTo"
+                                                    name="birthDateTo"
+                                                    type="date"
+                                                />
+                                                </div>
+                                            </div>
+                                    </div>
+                                    <div className="input registration-resignation">
                                             <label>Fecha de ingreso</label>
-                                            <label className='exclude'>
-                                                <input type="checkbox" name="excludeRegistration" />
-                                                Excluir
-                                            </label>
                                             <div>
-                                                <span>Entre: </span>
+                                                <label htmlFor="registrationStart">Desde</label>
                                                 <input id="registrationStart" name="registrationStart" type="date" />
-                                                <span>y</span>
+                                                <label htmlFor="registrationEnd">Desde</label>
                                                 <input id="registrationEnd" name="registrationEnd" type="date" />
                                             </div>
                                         </div>
 
                                         <div className="input registration-resignation">
                                             <label>Fecha de renuncia</label>
-                                            <label className='exclude'>
-                                                <input type="checkbox" name="excludeResignation" />
-                                                Excluir
-                                            </label>
                                             <div>
-                                                <span>Entre: </span>
+                                                <label htmlFor="resignationStart">Desde:</label> 
                                                 <input id="resignationStart" name="resignationStart" type="date" />
-                                                <span>y</span>
+                                                <label htmlFor="resignationEnd">Hasta:</label> 
                                                 <input id="resignationEnd" name="resignationEnd" type="date" />
                                             </div>
                                         </div>
 
                                         <div className="input">
-                                            <label htmlFor="removeReason">Motivo de baja</label>
-                                            <label className='exclude'>
-                                                <input type="checkbox" name="excludeRemoveReason" />
-                                                Excluir
-                                            </label>
+                                            <label htmlFor="removeReason">Motivo de baja</label> 
                                             <select id="removeReason" name='removeReason'>
                                                 <option value=''>Elegir</option>
                                                 {removePartnerReasons.map((removeReason, index) => (
@@ -141,25 +148,19 @@ export default function PrintPartnerPopup() {
 
                                         <div className="input">
                                             <label htmlFor="presentedBy">Presentado por:</label>
-                                            <label className='exclude'>
-                                                <input type="checkbox" name="excludePresentedBy" />
-                                                Excluir
-                                            </label>
                                             <input id="presentedBy" name="presentedBy" type="text" placeholder="Nombre" />
                                         </div>
-
 
                                     </div>
                                 </div>
 
-                                {/* Actividad */}
                                 <div className='partner-list-filter-option'>
                                     <div className='partner-list-filter-title'>
                                         <h3>Actividad en la biblioteca</h3>
                                     </div>
                                     <div className='filter-options'>
                                         <div className="input">
-                                            <label htmlFor="cduCode">CDU de libros retirados por el socio</label>
+                                            <label htmlFor="cduCode">CDU de libros retirados por los socio</label>
                                             <div>
                                                 <input id="cduCodeMin" name="cduCodeMin" type="number" />
                                                 <input id="cduCodeMax" name="cduCodeMax" type="number" />
@@ -167,23 +168,19 @@ export default function PrintPartnerPopup() {
                                         </div>
                                         <div className="input">
                                             <label htmlFor="borrowedBooks">Cantidad de libros retirados</label>
-                                            <label className='exclude'>
-                                                <input type="checkbox" name="excludeBorrowedBooks" />
-                                                Excluir
-                                            </label>
+                                           
                                             <div>
-                                                <span>Más de: </span>
+                                                <label htmlFor="borrowedBooksMin">Más de</label>
                                                 <input type="number" id="borrowedBooksMin" name="borrowedBooksMin" />
                                             </div>
                                             <div>
-                                                <span>Y menos de: </span>
+                                                <label htmlFor="borrowedBooksMax">Y menos de:</label>
                                                 <input type="number" id="borrowedBooksMax" name="borrowedBooksMax" />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Estado de la cuenta */}
                                 <div className='partner-list-filter-option'>
                                     <div className='partner-list-filter-title'>
                                         <h3>Estado de la cuenta</h3>
@@ -191,23 +188,18 @@ export default function PrintPartnerPopup() {
                                     <div className='filter-options'>
                                         <div className="input">
                                             <label htmlFor="unpaidQuotes">Cuotas impagas</label>
-                                            <label className='exclude'>
-                                                <input type="checkbox" name="excludeUnpaidQuotes" />
-                                                Excluir
-                                            </label>
                                             <div>
-                                                <span>Más de: </span>
+                                                <label htmlFor="unpaidQuotesMin">Minimo </label>
                                                 <input type="number" id="unpaidQuotesMin" name="unpaidQuotesMin" />
                                             </div>
                                             <div>
-                                                <span>Y menos de: </span>
+                                                <label htmlFor="unpaidQuotesMax">Maximo</label>
                                                 <input type="number" id="unpaidQuotesMax" name="unpaidQuotesMax" />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Opciones de listado */}
                                 <div className='partner-list-filter-option'>
                                     <div className='partner-list-filter-title'>
                                         <h3>Opciones de listado</h3>

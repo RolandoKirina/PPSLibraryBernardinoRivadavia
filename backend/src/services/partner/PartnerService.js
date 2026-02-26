@@ -1,5 +1,10 @@
 import * as PartnerRepository from '../../repositories/partner/PartnerRepository.js';
 
+export const printList = async (filters) => {
+    const partners = await PartnerRepository.printList(filters);
+    return partners;
+};
+
 export const getAllPartners = async (filters) => {
     const partners = await PartnerRepository.getAll(filters);
     return partners;

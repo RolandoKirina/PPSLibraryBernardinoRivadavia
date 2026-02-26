@@ -1,6 +1,19 @@
 import * as PartnerService from '../../services/partner/PartnerService.js';
 import { HTTP_STATUS } from '../../https/httpsStatus.js';
-import { buildPartnerFilters } from "../../utils/buildPartnerFilters.js";
+import { buildPartnerFilters, buildListPartnerFilters } from "../../utils/buildPartnerFilters.js";
+
+export const printList = async(req,res) =>{
+    try{
+        const queryOptions = buildListPartnerFilters(req.query);
+        const result = await PartnerService.printList(queryOptions);
+        res.status(HTTP_STATUS.OK.code).send(partners);
+        return result;
+    }
+    catch (e) {
+        console.error(error);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+    }
+}
 
 export const getAllPartners = async (req, res) => {
     try {

@@ -32,7 +32,36 @@ export default function PartnerSection() {
   const [PopUpDetail, setPopUpDetail] = useState(false);
   const [PopUpAdd, setPopUpAdd] = useState(false);
   const [filters, setFilters] = useState({});
+  const [states, setStates] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [maritalStatuses, setMaritalStatuses] = useState([]);
+
   const [formData, setFormData] = useState({ unpaidFees: "", pendingBooks: "", isActive: "all", });
+
+  useEffect(() => {
+  async function loadCatalogs() {
+    try {
+      const [catRes, stateRes, maritalRes] = await Promise.all([
+        fetch("http://localhost:4000/api/v1/partner-categories"),
+        fetch("http://localhost:4000/api/v1/state-partners"),
+        fetch("http://localhost:4000/api/v1/marital-statuses"),
+      ]);
+
+      const catJson = await catRes.json();
+      const stateJson = await stateRes.json();
+      const maritalJson = await maritalRes.json();
+
+      setCategories(catJson.rows);
+      setStates(stateJson);
+      setMaritalStatuses(maritalJson);
+
+    } catch (err) {
+      console.error("Error cargando catálogos", err);
+    }
+  }
+
+  loadCatalogs();
+}, []);
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -44,7 +73,6 @@ export default function PartnerSection() {
 
       setOffsetActual(0);
       setResetPageTrigger(prev => prev + 1);
-
 
       console.log("FILTROS QUE VAN AL BACK:", filters);
 
@@ -218,7 +246,15 @@ export default function PartnerSection() {
       key: 'detailsPopup',
       title: 'Detalles del socio',
       className: '',
-      content: <ShowDetails data={selectedItem} detailsData={DetailPartner} isPopup={true} actions={true} />,
+      content: (
+      <ShowDetails data={selectedItem} detailsData={DetailPartner} 
+      catalogs={{
+  categories: categories || [],
+  states: states || [],
+  maritalStatuses: maritalStatuses || []
+}}
+      />
+),
       close: () => setPopUpDetail(false),
       condition: PopUpDetail
     },
@@ -226,7 +262,7 @@ export default function PartnerSection() {
       key: 'printListPopup',
       title: 'Imprimir listado de socios',
       className: 'print-partners-size',
-      content: <PrintPartnerPopup />,
+      content: <PrintPartnerPopup categoriespartner={categories} statespartner={states}/>,
       close: () => setPrintListPopup(false),
       condition: printListPopup
     },

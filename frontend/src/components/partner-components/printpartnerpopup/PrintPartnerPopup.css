@@ -2,9 +2,10 @@
     width: 100%;
     display: flex;
     max-height: 75vh;
-    /* Ajustá según el diseño */
     overflow-y: auto;
+      overflow-x: hidden;
     position: relative;
+    background-color: var(--white);
 }
 
 .partner-list-container {
@@ -75,9 +76,7 @@
     overflow-y: auto;
 }
 
-.partner-list-filter-option .filter-options .input select option {
-    border-radius: 0.8em;
-}
+
 
 .partner-list-filter-option .filter-options .input:has(> select:focus)>label {
     color: var(--secondary-light-2);
@@ -106,7 +105,6 @@
 
 .registration-resignation div span {
     margin: 0 1em;
-
 }
 
 .registration-resignation div span:first-child {
@@ -145,8 +143,6 @@
 .listTitleInput {
     width: 100%;
 }
-
-
 
 
 .preview-list-container {

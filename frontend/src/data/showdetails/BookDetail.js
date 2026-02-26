@@ -1,6 +1,4 @@
 
-
-
 export const BookDetail = [
   {
     id: 1,
@@ -39,7 +37,13 @@ export const BookDetail = [
     active: false,
     rows: [
       [
-        { label: 'Tipo', value: 'información', attribute: 'type' },
+        { label: 'Tipo', value: 'información', attribute: 'type',    
+              options:{
+              1:"Soltero",
+              2:"Casado",
+              3:"Divorciado",
+              4:"Viudo"
+          } },
         { label: 'CDU', value: 'información', attribute: 'codeCDU' },
         { label: 'COD_RCDU', value: 'información', attribute: 'codCDU' }
       ]

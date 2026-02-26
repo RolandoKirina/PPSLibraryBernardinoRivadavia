@@ -108,11 +108,7 @@ export const buildFilterRanking = (query) => {
 
   const whereRetiredDate = {};
 
-  // ⭐ Parsea formato DD/MM/YYYY (Argentina)
-  const parseArgDate = (str) => {
-    const [day, month, year] = str.split("/").map(Number);
-    return new Date(year, month - 1, day);
-  };
+
   const toStartOfDay = (str) => {
     const d = new Date(`${str}T00:00:00`);
     return d;

@@ -45,8 +45,6 @@ export const generateUnpaidFees = async (body) => {
             year
         });
 
-
-
            if (existingFee) {
             console.log("YA TENÍA CUOTA:", partner.name);
             continue;

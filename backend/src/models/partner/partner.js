@@ -72,7 +72,6 @@ const Partner = sequelize.define("Partner", {
         type: DataTypes.STRING(100),
         field: "dir_part",
         allowNull: false
-
     },
     homePhone: {
         type: DataTypes.STRING(20),

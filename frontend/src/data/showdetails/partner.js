@@ -1,5 +1,3 @@
-
-
 export const DetailPartner = [
   {
     id: 1,
@@ -19,8 +17,10 @@ export const DetailPartner = [
         { label: "Número de documento", value: "información", attribute: "documentNumber" },
       ],
       [
-        { label: "Estado civil", value: "información", attribute: "MaritalStatusId" },
+        { label: "Estado civil", value: "información", attribute: "MaritalStatusId", catalog: "maritalStatuses",  
+        },
         { label: "Nacionalidad", value: "información", attribute: "nationality" },
+        
       ],
       [
         { label: "Profesión", value: "información", attribute: "profession" },
@@ -30,6 +30,8 @@ export const DetailPartner = [
         { label: "Fecha de registro", value: "información", attribute: "registrationDate" },
         { label: "Observaciones", value: "información", attribute: "observations" },
       ],
+            [        {label: "Localidad", value: "información", attribute: "locality"}]
+
     ]
   },
   {
@@ -55,7 +57,6 @@ export const DetailPartner = [
       ],
       [
         { label: "Horario preferido", value: "información", attribute: "preferredTime" },
-        { label: "Cobrador asignado", value: "información", attribute: "collector" },
       ]
     ]
   },
@@ -64,8 +65,8 @@ export const DetailPartner = [
     title: "Estado de la cuenta",
     active: false,
     rows: [
-       [ { label: "Estado", value: "información", attribute: "isActive" },
-        { label: "Categoría", value: "información", attribute: "idCategory" },
+       [ { label: "Estado", value: "información", attribute: "idState", catalog: "states"},
+        { label: "Categoría", value: "información", attribute: "idCategory",  catalog: "categories"},
       ],
       [
         { label: "Libros pendientes", value: "información", attribute: "pendingBooks" },
@@ -75,7 +76,6 @@ export const DetailPartner = [
       [ 
         { label: "Motivo de baja", value: "información", attribute: "idReason" },
         { label: "Fecha de baja", value: "información", attribute: "resignationDate" },
-      
       ],
       [  
         { label: "Observaciones", value: "información", attribute: "observations" },

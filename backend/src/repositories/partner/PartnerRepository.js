@@ -1,6 +1,34 @@
 import Partner from '../../models/partner/Partner.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 
+export const printList = async(id) =>{
+  const { wherePartner, limit, offset, order } = filters;
+
+  const query = {};
+
+  if (wherePartner && Object.keys(wherePartner).length) {
+    query.where = wherePartner;
+  }
+
+  if (Number.isInteger(limit)) {
+    query.limit = limit;
+  }
+
+  if (Number.isInteger(offset)) {
+    query.offset = offset;
+  }
+
+  if (Array.isArray(order) && order.length) {
+    query.order = order;
+  }
+
+  const { rows, count } = await Partner.findAndCountAll(query);
+
+  return {
+    rows,
+    count
+  };
+}
 export const getUnpaidFeesByPartner = async (id) => {
   try {
     const partner = await Partner.findByPk(id, {

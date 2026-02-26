@@ -5,9 +5,9 @@ import validateIdParam from "../../../middlewares/ValidateId.js";
 const router = express.Router();
 
 router.get("/", StatePartnerController.getAllStatePartners);
-router.get("/:id", validateIdParam("StatePartner id"), StatePartnerController.getStatePartner);
+router.get("/:id", validateIdParam("id"), StatePartnerController.getStatePartner);
 router.post("/", StatePartnerController.createStatePartner);
-router.put("/:id", validateIdParam("StatePartner id"), StatePartnerController.updateStatePartner);
-router.delete("/:id", validateIdParam("StatePartner id"), StatePartnerController.deleteStatePartner);
+router.put("/:id", validateIdParam("id"), StatePartnerController.updateStatePartner);
+router.delete("/:id", validateIdParam("id"), StatePartnerController.deleteStatePartner);
 
 export default router;

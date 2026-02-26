@@ -4,7 +4,7 @@
     align-items: center;
     justify-content: flex-start;
     margin: 0 1em 0 1em;
-        max-height: 85vh;
+    max-height: 85vh;
     /* Ajustá según el diseño */
     overflow-y: auto;
 }
@@ -21,7 +21,6 @@
     color: black;
     display: flex;
     flex-direction: column;
-    width: 98%;
 }
 
 .generate-list-container .fees-info span {
@@ -34,7 +33,6 @@
 }
 
 .generate-list-title {
-    width: 98%;
     margin-left: 1em;
     padding-bottom: 0;
 }

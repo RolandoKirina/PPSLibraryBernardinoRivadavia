@@ -1,20 +1,55 @@
 import Btn from "../../../components/common/btn/Btn.jsx";
 import SaveIcon from "../../../assets/img/save-icon.svg";
 import Accordion from "../../generic/accordion/Accordion.jsx";
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import "../formeditpartner/FormEditPartner.css";
 import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
 
-export default function FormAddPartner({ onPartnerCreated }) {
+export default function FormAddPartner({ onPartnerCreated,employees }) {
   const [activeAccordion, setActiveAccordion] = useState(null);
   const entityManagerApi = useEntityManagerAPI("partners");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const today = new Date().toLocaleDateString("en-CA");
   const [loading, setLoading] = useState(false);
-  
+  const [categories, setCategories] = useState([]);
+  const [states, setStates] = useState([]);
+  const [maritalStatuses, setMaritalStatuses] = useState([]);
+  const [localities, setLocalities] = useState([]);
+
   // La referencia es clave para bloquear el hilo de ejecución instantáneamente
   const submittingRef = useRef(false);
+  
+  const maritalstatus = "http://localhost:4000/api/v1/marital-statuses";
+  const statepartners = "http://localhost:4000/api/v1/state-partners";
+  const partnerCategory = "http://localhost:4000/api/v1/partner-categories"  
+  const locality  = "http://localhost:4000/api/v1/localities";
+  useEffect(() => {
+    async function loadOptions() {
+      try {
+        const [catRes, stateRes, maritalRes, localityres] = await Promise.all([
+          fetch(partnerCategory),
+          fetch(statepartners),
+          fetch(maritalstatus),
+          fetch(locality)
+        ]);
+
+        const catJson = await catRes.json();
+        const stateJson = await stateRes.json();
+        const maritalJson = await maritalRes.json();
+        const localityJson = await localityres.json();
+        setCategories(catJson.rows);
+        setStates(stateJson.rows);
+        setMaritalStatuses(maritalJson);
+        setLocalities(localityJson);
+        console.log(maritalStatuses)
+      } catch (err) {
+        console.error("Error cargando opciones", err);
+      }
+    }
+
+    loadOptions();
+  }, []);
 
   const [formValues, setFormValues] = useState({
     name: "",
@@ -124,7 +159,6 @@ export default function FormAddPartner({ onPartnerCreated }) {
       }
     } catch (err) {
       setError("Error al crear socio. Intente nuevamente.");
-      // Liberamos el bloqueo solo en caso de error de red/servidor
       submittingRef.current = false;
       setLoading(false);
     }
@@ -166,33 +200,40 @@ export default function FormAddPartner({ onPartnerCreated }) {
               <label>Fecha de registro</label>
               <input type="date" name="registrationDate" value={formValues.registrationDate} readOnly />
             </div>
-            <div className="form-details" >
-              <label>Presentado por <span className='required'>*</span></label>
-              <input name="presentedBy" value={formValues.presentedBy} onChange={handleChange} placeholder="Presentado por" />
-            </div>
-            <div className="form-details" >
-              <label>Estado civil <span className='required'>*</span></label>
-              <select name="MaritalStatusId" value={formValues.MaritalStatusId} onChange={handleChange} >
-                <option value="">Estado civil</option>
-                <option value="1">Soltero</option>
-                <option value="2">Casado</option>
-                <option value="3">Divorciado</option>
-                <option value="4">Viudo</option>
-              </select>
-            </div>
+            
+         <div className="form-details">
+            <label>Estado civil <span className='required'>*</span></label>
+            <select
+              name="MaritalStatusId"
+              value={formValues.MaritalStatusId}
+              onChange={handleChange}
+            >
+              <option value="">Estado civil</option>
+              {maritalStatuses?.map(ms => (
+                <option key={ms.id} value={ms.id}> {}
+                  {ms.statusName} {}
+                </option>
+              ))}
+            </select>
+          </div>
             <div className="form-details">
               <label>Categoría <span className='required'>*</span></label>
               <select name="idCategory" value={formValues.idCategory} onChange={handleChange}>
-                <option value="">Categoría</option>
-                <option value="1">Regular</option>
-                <option value="2">Honorario</option>
-                <option value="3">Protector</option>
-                <option value="4">Socio</option>
-              </select>
+                  <option value="">Categoría</option>
+                  {categories?.map(cat => (
+                    <option key={cat.idCategory} value={cat.idCategory}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
             </div>
             <div className="form-details">
               <label>Nacionalidad</label>
               <input name="nationality" value={formValues.nationality} onChange={handleChange} placeholder="Nacionalidad" />
+            </div>
+            <div className="form-details" >
+              <label>Presentado por </label>
+              <input name="presentedBy" value={formValues.presentedBy} onChange={handleChange} placeholder="Presentado por" />
             </div>
           </div>
         </Accordion>
@@ -211,7 +252,9 @@ export default function FormAddPartner({ onPartnerCreated }) {
               <label>Localidad <span className='required'>*</span></label>
               <select name="LocalityId" value={formValues.LocalityId} onChange={handleChange} >
                 <option value="">Localidad</option>
-                <option value="1">Tandil</option>
+                {localities?.map(loc=>(
+                <option key={loc.id} value={loc.name}>{loc.name}</option>
+                ))}
               </select>
             </div>
             <div className="form-details" >

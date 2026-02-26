@@ -1,16 +1,34 @@
 import './ShowDetails.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Accordion from '../accordion/Accordion';
 import Btn from '../../common/btn/Btn';
 import { Table } from '../../common/table/Table';
 import UnpaidFees from '../../loan-components/unpaidfees/UnpaidFees';
 import BackviewBtn from '../../common/backviewbtn/BackviewBtn';
-export default function ShowDetails({ data, isPopup, detailsData, titleText,actions }) {
+export default function ShowDetails({ data, isPopup, detailsData, titleText,actions,catalogs }) {
 
  const [popupView,setPopupView]= useState(null);
  const [unpaidFees, setUnpaidFees] = useState([]);
  const [pendingBooks,setPendingBooks] = useState([]);
 
+ const [detailsMenus, setDetailsMenus] = useState(() =>
+  fillDetailsWithData(detailsData, data, catalogs)
+);
+
+useEffect(() => {
+  if (!data) return;
+
+  if (
+    !catalogs?.categories?.length ||
+    !catalogs?.states?.length ||
+    !catalogs?.maritalStatuses?.length
+  ) {
+    return;
+  }
+  console.log(catalogs)
+  setDetailsMenus(fillDetailsWithData(detailsData, data, catalogs));
+
+}, [data, catalogs]);
   const normalizeFees = (fees) =>
     fees.map(fee => ({
       ...fee,
@@ -87,26 +105,42 @@ export default function ShowDetails({ data, isPopup, detailsData, titleText,acti
             );
       }
   }
-    
 
-  function fillDetailsWithData(detailsData, data) {
-    if (!data) return detailsData;
 
-    return detailsData.map(menu => ({
-      ...menu,
-      rows: menu.rows.map(row =>
-        row.map(item => {
-          const rawValue = item.attribute ? data[item.attribute] ?? '—' : item.value;
-          return {
-            ...item,
-            value: rawValue
-          };
-        })
-      )
-    }));
-  }
+function fillDetailsWithData(detailsData, data, catalogs) {
 
-  const [detailsMenus, setDetailsMenus] = useState(() => fillDetailsWithData(detailsData, data));
+  if (!data) return detailsData;
+
+  return detailsData.map(menu => ({
+    ...menu,
+    rows: menu.rows.map(row =>
+      row.map(item => {
+        let value = item.attribute ? data[item.attribute] ?? '—' : item.value;
+
+      if (item.catalog && value !== '—' && catalogs?.[item.catalog]) {
+  const list = catalogs[item.catalog];
+
+        if (Array.isArray(list)) {
+
+          const found = list.find(obj =>
+            Object.values(obj).includes(value)
+          );
+
+          if (found) {
+            value =
+              found.name ??
+              found.status ??
+              found.statusName ??
+              value;
+          }
+        }
+      }
+
+        return { ...item, value };
+      })
+    )
+  }));
+}
 
   function toggleDropdownMenu(id) {
     setDetailsMenus(menus =>
@@ -137,16 +171,11 @@ export default function ShowDetails({ data, isPopup, detailsData, titleText,acti
     return String(value);
   };
 
-
-
-
   return (
     <div className="details-container">
       <div className="details-content">
         {!isPopup && (
-          <div className="titlepopup2">
             <h1 className="titlepopuph1">{titleText}</h1>
-          </div>
         )}
 
         <div className="dropdown-details-menu">
@@ -174,7 +203,6 @@ export default function ShowDetails({ data, isPopup, detailsData, titleText,acti
             
           ))}
           {actions && (
-            
           <div  className="partner-state-btns">
               <div>
                 <Btn text="Cuotas impagas"variant="secondary" onClick={fetchUnpaidFees}/>                   

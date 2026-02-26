@@ -15,7 +15,6 @@ import FeesBetweenDates from '../../components/fees-components/feesbetweendates/
 import PopUpDelete from '../../components/common/deletebtnComponent/PopUpDelete.jsx';
 import EditFees from '../../components/fees-components/formEditFee/EditFees.jsx';
 
-
 export const FeeSection = () => {
   const chunkSize = 100;
   const rowsPerPage = 5;
@@ -107,7 +106,7 @@ export const FeeSection = () => {
       year: "numeric"
     });
   };
-
+  
   const formattedFees = items.map(fee => ({
     ...fee,
     paid: fee.paid ? '✅ Pagada' : '❌ Impaga',
