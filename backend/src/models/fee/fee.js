@@ -23,7 +23,7 @@ const Fees = sequelize.define("Fees",
     amount: {
         type: DataTypes.DECIMAL(10, 2),
         field: "Monto",
-        allowNull: false
+        allowNull: true
     },
     idPartner: {
         type: DataTypes.INTEGER,

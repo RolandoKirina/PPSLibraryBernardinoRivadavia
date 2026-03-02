@@ -17,7 +17,9 @@ import ReaderIcon from '../../assets/img/reader.svg';
 import FormAddPartner from '../../components/partner-components/formaddpartner/FormAddPartner.jsx';
 import FormEditPartner from '../../components/partner-components/formeditpartner/FormEditPartner.jsx';
 import { useEntityManagerAPI } from '../../hooks/useEntityManagerAPI.js';
+import { useAuth } from '../../auth/AuthContext.jsx';
 export default function PartnerSection() {
+  const { auth } = useAuth();
   const chunkSize = 100;
   const rowsPerPage = 5;
   const [offsetActual, setOffsetActual] = useState(0);
@@ -39,29 +41,37 @@ export default function PartnerSection() {
   const [formData, setFormData] = useState({ unpaidFees: "", pendingBooks: "", isActive: "all", });
 
   useEffect(() => {
-  async function loadCatalogs() {
-    try {
-      const [catRes, stateRes, maritalRes] = await Promise.all([
-        fetch("http://localhost:4000/api/v1/partner-categories"),
-        fetch("http://localhost:4000/api/v1/state-partners"),
-        fetch("http://localhost:4000/api/v1/marital-statuses"),
-      ]);
+    async function loadCatalogs() {
+      try {
+        const fetchOptions = {
+          method: 'GET',
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${auth.token}` // Asegúrate de que 'auth.token' esté disponible
+          }
+        };
 
-      const catJson = await catRes.json();
-      const stateJson = await stateRes.json();
-      const maritalJson = await maritalRes.json();
+        const [catRes, stateRes, maritalRes] = await Promise.all([
+          fetch("http://localhost:4000/api/v1/partner-categories", fetchOptions),
+          fetch("http://localhost:4000/api/v1/state-partners", fetchOptions),
+          fetch("http://localhost:4000/api/v1/marital-statuses", fetchOptions),
+        ]);
 
-      setCategories(catJson.rows);
-      setStates(stateJson);
-      setMaritalStatuses(maritalJson);
+        const catJson = await catRes.json();
+        const stateJson = await stateRes.json();
+        const maritalJson = await maritalRes.json();
 
-    } catch (err) {
-      console.error("Error cargando catálogos", err);
+        setCategories(catJson.rows);
+        setStates(stateJson);
+        setMaritalStatuses(maritalJson);
+
+      } catch (err) {
+        console.error("Error cargando catálogos", err);
+      }
     }
-  }
 
-  loadCatalogs();
-}, []);
+    loadCatalogs();
+  }, []);
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -87,19 +97,19 @@ export default function PartnerSection() {
 
     return () => clearTimeout(delay);
   }, [formData]);
-  
+
 
   const handleFilterChange = (e) => {
-      const { name, value } = e.target;
+    const { name, value } = e.target;
 
-      let parsedValue = value;
+    let parsedValue = value;
 
-      if (["idState", "unpaidFees", "pendingBooks"].includes(name)) {
-        parsedValue = value === "" ? "" : Number(value);
-      }
+    if (["idState", "unpaidFees", "pendingBooks"].includes(name)) {
+      parsedValue = value === "" ? "" : Number(value);
+    }
 
-      const updated = { ...formData, [name]: parsedValue };
-      setFormData(updated);
+    const updated = { ...formData, [name]: parsedValue };
+    setFormData(updated);
   };
 
   async function handleChangePage(page) {
@@ -201,7 +211,7 @@ export default function PartnerSection() {
       key: 'editPopup',
       title: 'Editar socio',
       className: 'popup-container add-edit-partner-size',
-      content: <FormEditPartner selectedPartner={selectedItem}  />,
+      content: <FormEditPartner selectedPartner={selectedItem} />,
       close: () => {
         getItems({
           ...filters,
@@ -218,18 +228,18 @@ export default function PartnerSection() {
       key: 'AddPopup',
       title: 'Agregar Socio',
       className: 'popup-container add-edit-partner-size',
-      content:   <FormAddPartner
-          onPartnerCreated={() => {
-            getItems({
-              ...filters,
-              sortBy: 'id',
-              direction: 'asc',
-              limit: chunkSize,
-              offset: 0
-            });
-            setPopUpAdd(false);
-          }}
-        />,
+      content: <FormAddPartner
+        onPartnerCreated={() => {
+          getItems({
+            ...filters,
+            sortBy: 'id',
+            direction: 'asc',
+            limit: chunkSize,
+            offset: 0
+          });
+          setPopUpAdd(false);
+        }}
+      />,
       close: () => {
         getItems({
           ...filters,
@@ -247,14 +257,14 @@ export default function PartnerSection() {
       title: 'Detalles del socio',
       className: '',
       content: (
-      <ShowDetails data={selectedItem} detailsData={DetailPartner} 
-      catalogs={{
-  categories: categories || [],
-  states: states || [],
-  maritalStatuses: maritalStatuses || []
-}}
-      />
-),
+        <ShowDetails data={selectedItem} detailsData={DetailPartner}
+          catalogs={{
+            categories: categories || [],
+            states: states || [],
+            maritalStatuses: maritalStatuses || []
+          }}
+        />
+      ),
       close: () => setPopUpDetail(false),
       condition: PopUpDetail
     },
@@ -262,7 +272,7 @@ export default function PartnerSection() {
       key: 'printListPopup',
       title: 'Imprimir listado de socios',
       className: 'print-partners-size',
-      content: <PrintPartnerPopup categoriespartner={categories} statespartner={states}/>,
+      content: <PrintPartnerPopup categoriespartner={categories} statespartner={states} />,
       close: () => setPrintListPopup(false),
       condition: printListPopup
     },

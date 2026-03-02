@@ -1,23 +1,24 @@
 import express from 'express';
 import validateIdParam from "../../../middlewares/ValidateId.js";
+import { authorizeRoles } from '../../../middlewares/authorizeRoles.js';
 
 import * as LoanController from '../../../controllers/loan/LoanController.js';
 
 const router = express.Router();
 
-router.get('/', LoanController.getAllLoans);
-router.get('/employee-count', LoanController.getLoansByEmployeeCount);
-router.get('/print-list/:option', LoanController.getLoanPrintList);
-router.get('/returns', LoanController.getAllReturns);
+router.get('/', authorizeRoles(['admin', 'partner']), LoanController.getAllLoans);
+router.get('/employee-count', authorizeRoles(['admin']), LoanController.getLoansByEmployeeCount);
+router.get('/print-list/:option', authorizeRoles(['admin']), LoanController.getLoanPrintList);
+router.get('/returns',  authorizeRoles(['admin']), LoanController.getAllReturns);
 //agregue un middleware para evitar repetir codigo en la funcion validateid
 //router.get("/loan/:id", validateIdParam("loan id"), getLoan);
-router.get('/:id', validateIdParam("id"), LoanController.getLoan);
-router.post('/', LoanController.createLoan);
-router.put('/:id', validateIdParam("id"), LoanController.updateLoan);
+router.get('/:id',  authorizeRoles(['admin', 'partner']), validateIdParam("id"), LoanController.getLoan);
+router.post('/',  authorizeRoles(['admin']), LoanController.createLoan);
+router.put('/:id',  authorizeRoles(['admin']), validateIdParam("id"), LoanController.updateLoan);
 
 //quizas añadir patch
 
-router.delete('/:id', validateIdParam("id"), LoanController.removeLoan);
+router.delete('/:id', authorizeRoles(['admin']), validateIdParam("id"), LoanController.removeLoan);
 
 
 

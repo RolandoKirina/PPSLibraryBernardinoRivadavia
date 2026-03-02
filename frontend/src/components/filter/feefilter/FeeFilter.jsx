@@ -1,10 +1,12 @@
 import "./feefiltercheckbox.css";
-import { useState, useEffect} from "react";
-export default function BookFilter({formData, onChange}) {
-
+import { useState, useEffect } from "react";
+import roles from "../../../auth/roles";
+import { useAuth } from "../../../auth/AuthContext";
+export default function BookFilter({ formData, onChange }) {
+  const { auth } = useAuth();
   const [paidFeeCount, setPaidFeeCount] = useState(null);
-  
- const fetchPaidFees = async () => {
+
+  const fetchPaidFees = async () => {
     try {
       const response = await fetch(`http://localhost:4000/api/v1/fees/paid-count?partnerNumber=${formData.partnerNumber}`);
       const data = await response.json();
@@ -16,40 +18,45 @@ export default function BookFilter({formData, onChange}) {
     } catch {
       setPaidFeeCount(null);
     }
- };
+  };
 
-useEffect(() => {
-  if (formData.partnerNumber) {
-    fetchPaidFees();
-  } else {
-    setPaidFeeCount(0);
-  }
-}, [formData.partnerNumber]);
+  useEffect(() => {
+    if (formData.partnerNumber) {
+      fetchPaidFees();
+    } else {
+      setPaidFeeCount(0);
+    }
+  }, [formData.partnerNumber]);
 
- return (
+  return (
     <aside className="book-filter-aside">
       <div className="book-filter-form">
         <form>
           <h3 className="titleh3">Filtro de socios</h3>
 
           <div className="book-form-input-group">
-           <div className="feefiltercheckbox">
-              <label htmlFor="status" className="feefiltercheckbox-label">
-                Socios con cuotas
-              </label>
+            {auth.role === roles.admin && (
+              <>
+                <div className="feefiltercheckbox">
+                  <label htmlFor="status" className="feefiltercheckbox-label">
+                    Socios con cuotas
+                  </label>
 
-              <select
-                id="status"
-                name="status"
-                value={formData.status ?? ""}
-                onChange={onChange}
-                className="feefiltercheckbox-select"
-              >
-                <option value="">Todas</option>
-                <option value="paid">Pagas</option>
-                <option value="unpaid">Impagas</option>
-              </select>
-            </div>
+                  <select
+                    id="status"
+                    name="status"
+                    value={formData.status ?? ""}
+                    onChange={onChange}
+                    className="feefiltercheckbox-select"
+                  >
+                    <option value="">Todas</option>
+                    <option value="paid">Pagas</option>
+                    <option value="unpaid">Impagas</option>
+                  </select>
+                </div>
+              </>
+            )}
+
           </div>
 
           <div className="book-form-input-group">
@@ -59,46 +66,51 @@ useEffect(() => {
               name="paymentdate"
               value={formData.paymentdate ?? ""}
               onChange={onChange}
-              disabled={formData.status === "unpaid"} 
+              disabled={formData.status === "unpaid"}
             />
           </div>
 
-          <div className="book-form-input-group">
-            <label>Buscar por número de socio</label>
-            <input
-              type="number"
-              name="partnerNumber"
-              min="0"
-              value={formData.partnerNumber ?? ""}
-              onChange={onChange}
-            />
-          </div>
+          {auth.role === roles.admin && (
+            <>
+              <div className="book-form-input-group">
+                <label>Buscar por número de socio</label>
+                <input
+                  type="number"
+                  name="partnerNumber"
+                  min="0"
+                  value={formData.partnerNumber ?? ""}
+                  onChange={onChange}
+                />
+              </div>
 
-          <div className="book-form-input-group">
-            <label>Buscar por nombre</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name ?? ""}
-              onChange={onChange}
-            />
-          </div>
+              <div className="book-form-input-group">
+                <label>Buscar por nombre</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name ?? ""}
+                  onChange={onChange}
+                />
+              </div>
 
-          <div className="book-form-input-group">
-            <label>Buscar por apellido</label>
-            <input
-              type="text"
-              name="surname"
-              value={formData.surname ?? ""}
-              onChange={onChange}
-            />
-          </div>
+              <div className="book-form-input-group">
+                <label>Buscar por apellido</label>
+                <input
+                  type="text"
+                  name="surname"
+                  value={formData.surname ?? ""}
+                  onChange={onChange}
+                />
+              </div>
 
-          <div className="book-form-input-group">
-            <label className="color-secondary">
-               Total de cuotas pagas del socio N° {formData.partnerNumber} = {paidFeeCount ?? 0}
-            </label>
-          </div>
+              <div className="book-form-input-group">
+                <label className="color-secondary">
+                  Total de cuotas pagas del socio N° {formData.partnerNumber} = {paidFeeCount ?? 0}
+                </label>
+              </div>
+            </>
+          )}
+
         </form>
       </div>
     </aside>

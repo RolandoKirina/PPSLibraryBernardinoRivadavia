@@ -1,13 +1,18 @@
 import sequelize from "../../configs/database.js";
 import { DataTypes } from "sequelize";
 
-const Authors = sequelize.define("Authors", 
+const Authors = sequelize.define("Authors",
     {
         id: {
-            autoIncrement:true,
-            primaryKey:true,
+            autoIncrement: true,
+            primaryKey: true,
             type: DataTypes.INTEGER,
-            field:"Id"
+            field: "Id"
+        },
+        legacyAuthorCode: {
+            type: DataTypes.INTEGER,
+            field: "CodAutor",
+            allowNull: false
         },
         name: {
             type: DataTypes.STRING(100),
@@ -17,14 +22,14 @@ const Authors = sequelize.define("Authors",
         nationality: {
             type: DataTypes.STRING(50),
             field: 'Nacionalidad',
-            allowNull: false
+            allowNull: true
         }
     },
     {
         underscored: true,
-        tableName: "Autores", 
-        timestamps:false,
-        logging:true
+        tableName: "Autores",
+        timestamps: false,
+        logging: true
     }
 );
 

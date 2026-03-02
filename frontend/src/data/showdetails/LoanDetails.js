@@ -20,11 +20,11 @@ export const loanDetailsInfo = [
     rows: [
       [
         { label: 'Fecha de retiro', value: 'información', attribute: 'retiredDate' },
-        { label: 'Hora de Retiro', value: 'información', attribute: 'retiredHour' }
+        { label: 'Hora de Retiro', value: 'información', attribute: 'withdrawalTime' }
       ],
       [
         { label: 'Fecha prevista', value: 'información', attribute: 'expectedDate' },
-        { label: 'Fecha Devolución', value: 'información', attribute: 'returnDate' }
+        { label: 'Fecha Devolución', value: 'información', attribute: 'returnedDate' }
       ]
     ]
   },

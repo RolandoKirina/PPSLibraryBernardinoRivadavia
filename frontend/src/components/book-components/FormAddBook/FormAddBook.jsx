@@ -6,7 +6,7 @@ import BackviewBtn from "../../common/backviewbtn/BackviewBtn.jsx";
 import BookAuthors from "../BooksAuthor/BookAuthors.jsx";
 import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
 
-export default function FormAddBook({ getItems }) {
+export default function FormAddBook({ getItems, closeOnExit }) {
 
     const [popupView, setPopupView] = useState('default');
     const [authorsSelected, setAuthorsSelected] = useState([]);
@@ -100,7 +100,7 @@ export default function FormAddBook({ getItems }) {
             ubication: data.get("ubication"),
             numberOfCopies: Number(data.get("quantity")),
             notes: data.get("notes"),
-            type: Number(selectedType),
+            type: Number(bookForm.type),
             codeLing: data.get("codeLing"),
             idSupplier: Number(data.get("idSupplier")),
             invoiceNumber: data.get("numfactura"),
@@ -109,7 +109,6 @@ export default function FormAddBook({ getItems }) {
 
         try {
             const createdBook = await entityManagerApi.createItem(newItem);
-            console.log("Libro creado:", createdBook);
 
             if (authorsSelected.length > 0) {
                 for (const author of authorsSelected) {
@@ -123,7 +122,9 @@ export default function FormAddBook({ getItems }) {
 
             setSuccessMessage(" ✅ Libro guardado con exito");
 
-            setTimeout(() => setSuccessMessage(""), 10000);
+            setTimeout(() => {setSuccessMessage("")
+                closeOnExit()}
+            , 1500);
 
             await getItems();
 
@@ -216,9 +217,9 @@ export default function FormAddBook({ getItems }) {
                                 <div className="input">
                                     <label>Tipo <span className="required">*</span></label>
                                     <select
-                                        name="type"
+                                        name="type" 
                                         value={bookForm.type}
-                                        onChange={handleInputChange}
+                                        onChange={handleInputChange} 
                                         required
                                     >
                                         <option value="">Seleccione un tipo</option>

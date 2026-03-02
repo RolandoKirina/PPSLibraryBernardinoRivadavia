@@ -3,12 +3,15 @@ import PrintIcon from '../../../assets/img/print-icon.svg';
 import { titlesByType, columnsByType } from '../../../data/generatedlist/generatedList';
 import GenerateListPopup from '../../common/generatelistpopup/GenerateListPopup';
 import { useEffect, useState } from 'react';
+import { useAuth } from '../../../auth/AuthContext';
 
 export default function Listing({ type }) {
   const BASE_URL = "http://localhost:4000/api/v1";
 
   const chunkSize = 100;
   const rowsPerPage = 30;
+
+  const { auth } = useAuth();
 
   const [items, setItems] = useState([]);
   const [totalItems, setTotalItems] = useState(0);
@@ -18,6 +21,7 @@ export default function Listing({ type }) {
   const [resetPageTrigger, setResetPageTrigger] = useState(0);
 
   const getItems = async ({ limit, offset }, append = false) => {
+    console.log(auth.token);
     try {
       setLoading(true);
 
@@ -25,7 +29,8 @@ export default function Listing({ type }) {
         `${BASE_URL}/loans/print-list/${type}?limit=${limit}&offset=${offset}`,
         {
           method: 'GET',
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
+          "Authorization": `Bearer ${auth.token}`
         }
       );
 

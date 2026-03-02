@@ -47,7 +47,13 @@ export default function AddRenewe({ refreshItems, createReneweItem, errorMessage
   const getLibraryBooks = async (filters = {}, append = false) => {
     setLoadingBooks(true);
     const queryParams = new URLSearchParams(filters).toString();
-    const res = await fetch(`${BASE_URL}/books/withFields?${queryParams}`);
+    const res = await fetch(`${BASE_URL}/books/withFields?${queryParams}`, {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${auth.token}`
+      }
+    });
     const { rows, total } = await res.json();
 
     setTotalLibraryBooks(total);

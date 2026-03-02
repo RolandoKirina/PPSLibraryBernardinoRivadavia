@@ -1,6 +1,8 @@
 export const routePermissions = {
-  employees: ["admin"],
-  loggedAccess: ["admin", "user"],
-  allAccess: ["admin", "user", "reader"],
+  employees: ["admin"],          
+  loggedAccess: ["admin", "partner", "user"], 
+  allAccess: "any",
+  management: ["admin", "partner"]
 };
+
 

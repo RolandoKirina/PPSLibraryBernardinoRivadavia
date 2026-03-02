@@ -2,6 +2,7 @@ import './LoanBooks.css';
 import { useState, useEffect } from 'react';
 import { Table } from '../../common/table/Table';
 import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
+import { useAuth } from '../../../auth/AuthContext';
 
 export default function LoanBooks({ loanSelected }) {
   const BASE_URL = "http://localhost:4000/api/v1";
@@ -12,6 +13,7 @@ export default function LoanBooks({ loanSelected }) {
     bookCode: '',
     typeName: '', // solo esto, sin materialType
   });
+  const { auth } = useAuth();
 
   // Hook para obtener tipos de material
   const { items: bookTypes, getItems: getBookTypes } = useEntityManagerAPI("book-types");
@@ -41,7 +43,13 @@ export default function LoanBooks({ loanSelected }) {
         ? `${BASE_URL}/books/withFields/loan/${loanSelectedId}`
         : `${BASE_URL}/books/withFields`;
 
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${auth.token}`
+        }
+      });
       if (!response.ok) throw new Error("Error al obtener libros");
       return await response.json();
     } catch (error) {

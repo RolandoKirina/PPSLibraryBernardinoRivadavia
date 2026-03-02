@@ -1,32 +1,37 @@
 import sequelize from '../../configs/database.js';
 import { DataTypes } from "sequelize";
 
-const Partner = sequelize.define("Partner", {   
+const Partner = sequelize.define("Partner", {
     id: {
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER,
         field: "id"
     },
+    idUser: {
+        type: DataTypes.INTEGER,
+        field: "idUsuario",
+        unique: true,
+        allowNull: true
+    },
     partnerNumber: {
-        type: DataTypes.STRING(30),
+        type: DataTypes.INTEGER,
         field: "numero",
-        unique:true
+        unique: true
     },
     idCategory: {
         type: DataTypes.SMALLINT,
         field: "IdCategoria",
-        allowNull: false
     },
+
     LocalityId: {
         type: DataTypes.INTEGER,
         field: "IdLocal_part",
-        allowNull: false
+        allowNull: true
     },
     idState: {
         type: DataTypes.SMALLINT,
         field: "IdEstado",
-        allowNull: false
     },
     idReason: {
         type: DataTypes.INTEGER,
@@ -35,34 +40,27 @@ const Partner = sequelize.define("Partner", {
     },
     surname: {
         type: DataTypes.STRING(25),
-        field: "apellido",
-        allowNull: false
+        field: "apellido"
     },
     name: {
         type: DataTypes.STRING(25),
-        field: "nombre",
-        allowNull: false
+        field: "nombre"
     },
     birthDate: {
         type: DataTypes.DATEONLY,
-        field: "fecha_nac",
-        allowNull: false
-
+        field: "fecha_nac"
     },
     documentType: {
-      type: DataTypes.SMALLINT,
-      field: "tipo_docum",
-      allowNull: false
+        type: DataTypes.SMALLINT,
+        field: "tipo_docum"
     },
     documentNumber: {
         type: DataTypes.STRING(10),
-        field: "nro_docum",
-        allowNull: false
+        field: "nro_docum"
     },
     MaritalStatusId: {
         type: DataTypes.SMALLINT,
-        field: "est_civil",
-        allowNull: false
+        field: "est_civil"
     },
     nationality: {
         type: DataTypes.STRING(15),
@@ -70,23 +68,19 @@ const Partner = sequelize.define("Partner", {
     },
     homeAddress: {
         type: DataTypes.STRING(100),
-        field: "dir_part",
-        allowNull: false
+        field: "dir_part"
     },
     homePhone: {
         type: DataTypes.STRING(20),
-        field: "tel_part",
-        allowNull: false
+        field: "tel_part"
     },
     homePostalCode: {
         type: DataTypes.STRING(10),
-        field: "cp_part",
-        allowNull: false
+        field: "cp_part"
     },
     profession: {
         type: DataTypes.STRING(50),
-        field: "profesion",
-        allowNull: false
+        field: "profesion"
     },
     workplace: {
         type: DataTypes.STRING(100),
@@ -114,19 +108,22 @@ const Partner = sequelize.define("Partner", {
     },
     collectionAddress: {
         type: DataTypes.STRING(100),
-        field: "dir_cobro",
-        allowNull: false
+        field: "dir_cobro"
     },
     preferredTime: {
         type: DataTypes.STRING(20),
-        field: "horapref",
+        field: "horapref"
+    },
+    isActive: {
+        type: DataTypes.SMALLINT,
+        field: "est_socio"
     },
     withdrawalDate: {
         type: DataTypes.DATEONLY,
         field: "fecha_baja"
     },
     observations: {
-        type: DataTypes.STRING(255),
+        type: DataTypes.TEXT,
         field: "Observaciones"
     },
     workLocationId: {
@@ -135,30 +132,22 @@ const Partner = sequelize.define("Partner", {
     },
     unpaidFees: {
         type: DataTypes.INTEGER,
-        field: "CuotasImpagas",
+        field: "CuotasImpagas"
     },
     pendingBooks: {
         type: DataTypes.INTEGER,
-        field: "LibrosPendientes",
+        field: "LibrosPendientes"
     },
     resignationDate: {
         type: DataTypes.DATEONLY,
         field: "FechaRenuncia"
     }
 },
-{
-    underscored: true,
-    tableName: "socio",
-    timestamps: false,
-    logging: true
-});
-
-Partner.afterCreate(async (partner) => {
-  const number = `SOC-${String(partner.id).padStart(5, "0")}`;
-
-  partner.partnerNumber = number;
-
-  await partner.save();
-});
+    {
+        underscored: true,
+        tableName: "socio",
+        timestamps: false,
+        logging: true
+    });
 
 export default Partner;

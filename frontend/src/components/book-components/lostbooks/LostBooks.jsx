@@ -3,11 +3,13 @@ import Btn from '../../common/btn/Btn';
 import { useState } from 'react';
 import GenerateListPopup from '../../common/generatelistpopup/GenerateListPopup';
 import { dataByType, columnsByType } from '../../../data/generatedlist/generatedList';
+import { useAuth } from '../../../auth/AuthContext';
 
 export default function LostBooks() {
   const BASE_URL = "http://localhost:4000/api/v1";
   const [formValues, setFormValues] = useState({});
   const [error, setError] = useState(null);
+  const { auth } = useAuth();
 
   const chunkSize = 100;
   const rowsPerPage = 35;
@@ -53,7 +55,13 @@ export default function LostBooks() {
 
       const url = `${BASE_URL}/books/lostBooks?${params.toString()}`;
 
-      const res = await fetch(url);
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${auth.token}`
+        }
+      });
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({ msg: "Error del servidor" }));

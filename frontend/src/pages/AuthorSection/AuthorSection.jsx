@@ -23,6 +23,7 @@ export default function AuthorSection() {
     const [filterName, setFilterName] = useState("");
     const [filterBookTitle, setFilterBookTitle] = useState("");
     const [filterBookCode, setFilterBookCode] = useState("");
+    const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState("");
     const [filters, setFilters] = useState({
         authorName: "",
@@ -50,6 +51,8 @@ export default function AuthorSection() {
 
 
     useEffect(() => {
+        setErrorMessage("");
+
         const delay = setTimeout(() => {
             setOffsetActual(0);
             setResetPageTrigger(prev => prev + 1);
@@ -60,7 +63,7 @@ export default function AuthorSection() {
 
             getItems({ ...activeFilters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
         }, 300);
-        console.log(totalItems);
+
         return () => clearTimeout(delay);
     }, [filters]);
 
@@ -109,11 +112,20 @@ export default function AuthorSection() {
                 books: data.books
             }
 
-            await createItem(author);
+            const res = await createItem(author);
+
+            setSuccessMessage("Autor creado exitosamente");
+
+            setTimeout(() => {
+                setAddPopup(false);
+
+                setSuccessMessage('');
+
+                setErrorMessage(null);
+            }, 1500);
+
 
             await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
-
-            setAddPopup(false);
         }
         catch (error) {
             setErrorMessage(error.message);
@@ -124,16 +136,25 @@ export default function AuthorSection() {
 
     async function updateExistingAuthor(authorCode, data) {
         try {
-
-            await updateItem(authorCode, {
+            const res = await updateItem(authorCode, {
                 name: data.name,
                 nationality: data.nationality,
                 books: data.books
             });
 
-            await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
+            if (res) {
+                setSuccessMessage("Autor actualizado exitosamente");
 
-            setEditPopup(false);
+                setTimeout(() => {
+                    setEditPopup(false);
+
+                    setSuccessMessage('');
+
+                    setErrorMessage(null);
+                }, 1500);
+            }
+
+            await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
         }
         catch (error) {
             setErrorMessage(error.message);
@@ -147,7 +168,8 @@ export default function AuthorSection() {
             const response = await fetch(`${BASE_URL}/book-authors/deleteAllOfAuthor/${id}`, {
                 method: 'DELETE',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    "Authorization": `Bearer ${auth.token}`
                 }
             });
 
@@ -180,7 +202,7 @@ export default function AuthorSection() {
             key: 'editPopup',
             title: 'Editar autor',
             className: 'author-books-background',
-            content: <AuthorBooks authorSelected={selected} method={'update'} createAuthorItem={updateExistingAuthor} errorMessage={errorMessage} />,
+            content: <AuthorBooks successMessage={successMessage} authorSelected={selected} method={'update'} createAuthorItem={updateExistingAuthor} errorMessage={errorMessage} />,
             close: () => setEditPopup(false),
             condition: editPopup
         },
@@ -188,7 +210,7 @@ export default function AuthorSection() {
             key: 'addPopup',
             title: 'Agregar autor',
             className: 'author-books-background',
-            content: <AuthorBooks method={'add'} createAuthorItem={addNewAuthor} errorMessage={errorMessage} />,
+            content: <AuthorBooks successMessage={successMessage} method={'add'} createAuthorItem={addNewAuthor} errorMessage={errorMessage} />,
             close: () => setAddPopup(false),
             condition: addPopup
         },
@@ -250,20 +272,21 @@ export default function AuthorSection() {
             }
         ];
     }
-    else if ((auth.role === roles.user || auth.role === roles.reader)) {
+    else {
         columns = [
             { header: 'Nombre', accessor: 'name' },
             { header: 'Nacionalidad', accessor: 'nationality' },
             {
                 header: 'Ver libros',
-                accessor: 'edit',
+                accessor: 'books',
                 className: "action-buttons",
                 render: (_, row) => (
                     <button className="button-table" onClick={() => {
-                        setEditPopup(true)
-                        setSelected(row);
+                        setSelected(row)
+                        setBooksPopup(true)
+                        // getLoanDetails(row)
                     }}>
-                        <img src={BookIcon} alt="Libros" />
+                        <img src={BookIcon} alt="Detalles" />
                     </button>
                 )
             }

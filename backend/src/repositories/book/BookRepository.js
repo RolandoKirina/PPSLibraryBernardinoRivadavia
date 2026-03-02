@@ -117,10 +117,27 @@ export const getAll = async (filters) => {
     order
   });
 
+  const processedRows = rows.map(book => {
+    const bookJSON = book.toJSON(); 
+
+    const authorsString = bookJSON.BookAuthors
+      ? bookJSON.BookAuthors
+        .map(ba => ba.Author?.name) 
+        .filter(name => name) 
+        .join(' ; ') 
+      : '';
+
+    return {
+      ...bookJSON,
+      authors: authorsString 
+    };
+  });
+
   return {
-    rows,
+    rows: processedRows,
     count
   };
+
 };
 
 export const getAllPendingBooks = async (partnerNumber, filters = {}) => {

@@ -182,3 +182,18 @@
 .no-account-msg a span {
     color: var(--primary-dark-2);
 }
+
+.login-container .error-message {
+    margin-top: 1em;
+    font-size: larger;
+}
+
+.login-container .sucess-message {
+    margin-top: 1em;
+    font-size: larger;
+    color: var(--sucess);
+}
+
+.login-form form button {
+    height: 2.5em;
+}

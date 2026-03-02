@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "../auth/AuthContext";
 
 export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000/api/v1") => {
   const [items, setItems] = useState([]);
@@ -6,6 +7,7 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [others, setOthers] = useState(null);
+  const { auth } = useAuth();
 
   const getItems = async (filters = {}, append = false) => {
     setLoading(true);
@@ -29,7 +31,14 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
       : "";
 
     try {
-      const res = await fetch(`${baseUrl}/${entityName}${query}`);
+      const res = await fetch(`${baseUrl}/${entityName}${query}`, {
+        method: 'GET',
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${auth.token}`
+        }
+      });
+
       if (!res.ok) throw new Error("Error al obtener datos");
 
       const { rows, count, others } = await res.json();
@@ -41,7 +50,7 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
       );
 
       setOthers(others);
-      
+
       return rows || [];
     } catch (err) {
       setError(err.message);
@@ -51,13 +60,14 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
     }
   };
 
-
-
-
   const createItem = async (newItem) => {
     const res = await fetch(`${baseUrl}/${entityName}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${auth.token}`
+      },
+
       body: JSON.stringify(newItem)
     });
 
@@ -75,7 +85,10 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
   const updateItem = async (id, updatedData) => {
     const res = await fetch(`${baseUrl}/${entityName}/${id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${auth.token}`
+      },
       body: JSON.stringify(updatedData)
     });
 
@@ -105,7 +118,11 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
 
   const deleteItem = async (id) => {
     const res = await fetch(`${baseUrl}/${entityName}/${id}`, {
-      method: "DELETE"
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${auth.token}`
+      },
     });
     if (!res.ok) throw new Error("Error al eliminar");
     setItems((prev) => prev.filter((item) => item.id !== id));
@@ -117,7 +134,13 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
     setError(null);
 
     try {
-      const res = await fetch(`${baseUrl}/${entityName}/${id}`);
+      const res = await fetch(`${baseUrl}/${entityName}/${id}`, {
+        method: 'GET',
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${auth.token}`
+        }
+      });
       if (!res.ok) throw new Error("Error al obtener el item");
 
       const data = await res.json();
@@ -129,8 +152,6 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
         }
         return [...prev, data];
       });
-
-      console.log(data);
 
       return data;
     } catch (err) {

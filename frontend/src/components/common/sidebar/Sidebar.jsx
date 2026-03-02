@@ -9,6 +9,8 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useAuth } from '../../../auth/AuthContext';
 import roles from '../../../auth/roles.js';
+import { routePermissions } from '../../../auth/permissions.js';
+
 export default function Sidebar({ isOpen, onClose }) {
   const location = useLocation();
 
@@ -39,20 +41,22 @@ export default function Sidebar({ isOpen, onClose }) {
 
       <nav className={`sidebar ${isOpen ? 'sidebar-active' : ''}`}>
         <div className="sidebar-user-name">
-          <h3>
-            <strong>Javier Ondicol</strong>
-          </h3>
-          {auth.role === roles.admin
-            ? <h3>Administrador</h3>
-            : auth.role === roles.user
-              ? <h3>Usuario</h3>
-              : <h3>Lector</h3>}
-
+          {auth.isAuthenticated ? (
+            <>
+              <h3>
+                <strong>{auth.name}</strong>
+              </h3>
+              <h3>{auth.role}</h3></>
+          ) : (<>
+            <h3>
+              <strong>Visitante</strong>
+            </h3>
+          </>)}
         </div>
 
 
         <ul className="listsidebar">
-          {(auth.role === roles.admin || auth.role === roles.user) && (
+          {routePermissions.management.includes(auth.role) && (
             <li>
               <div className="iconssidebar">
                 <img src={loan} alt="Prestamos" />
@@ -64,7 +68,8 @@ export default function Sidebar({ isOpen, onClose }) {
                 Prestamos
               </NavLink>
             </li>)}
-          {(auth.role === roles.admin) && (
+
+          {routePermissions.employees.includes(auth.role) && (
             <li>
               <div className="iconssidebar">
                 <img src={loan} alt="Lectores" />
@@ -76,6 +81,7 @@ export default function Sidebar({ isOpen, onClose }) {
                 Lectores
               </NavLink>
             </li>)}
+
           <li>
             <div className="iconssidebar">
               <img src={book} alt="Libros" />
@@ -87,6 +93,7 @@ export default function Sidebar({ isOpen, onClose }) {
               Libros
             </NavLink>
           </li>
+
           <li>
             <div className="iconssidebar">
               <img src={author} alt="Autor" />
@@ -99,7 +106,7 @@ export default function Sidebar({ isOpen, onClose }) {
             </NavLink>
           </li>
 
-          {auth.role === roles.admin && (
+          {routePermissions.employees.includes(auth.role) && (
             <li>
               <div className="iconssidebar">
                 <img src={partner} alt="Socio" />
@@ -113,7 +120,7 @@ export default function Sidebar({ isOpen, onClose }) {
             </li>
           )}
 
-          {(auth.role === roles.admin || auth.role === roles.user) && (
+          {routePermissions.management.includes(auth.role) && (
             <li>
               <div className="iconssidebar">
                 <img src={fee} alt="Cuotas" />
@@ -127,7 +134,7 @@ export default function Sidebar({ isOpen, onClose }) {
             </li>)}
 
 
-          {(auth.role === roles.admin || auth.role === roles.user) && (
+          {routePermissions.employees.includes(auth.role) && (
             <li>
               <div className="iconssidebar">
                 <img src={options} alt="Opciones" />

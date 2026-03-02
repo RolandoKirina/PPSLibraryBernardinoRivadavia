@@ -10,7 +10,7 @@ import { DataTypes } from "sequelize";
     },
     documentType: {
       type: DataTypes.STRING(50),
-      field: "documentType"
+      field: "TipoDocumento"
     }
   }, {
     tableName: 'TipoDocumento',

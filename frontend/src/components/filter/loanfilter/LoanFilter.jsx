@@ -36,8 +36,6 @@ export default function LoanFilter({ onFilterChange }) {
 
     setFormData((prev) => {
       const updated = { ...prev, [name]: newValue };
-      console.log('Campo modificado:', name, '→', newValue);
-      console.log('Nuevo estado del form:', updated);
 
       return updated;
     });
@@ -58,32 +56,37 @@ export default function LoanFilter({ onFilterChange }) {
           </div>
 
           {auth.role === roles.admin && (
-            <div className="loan-form-checkbox-group partner-checkbox-group">
-              <h4>Empleado</h4>
-              <div className='partner-name-loan-filter'>
-                <label>Codigo</label>
-                <input className='' name="employeeCode" value={formData.employeeCode} onChange={handleChange} />
+            <>
+              <div className="loan-form-checkbox-group partner-checkbox-group">
+                <h4>Empleado</h4>
+                <div className='partner-name-loan-filter'>
+                  <label>Codigo</label>
+                  <input className='' name="employeeCode" value={formData.employeeCode} onChange={handleChange} />
+                </div>
+
+
               </div>
 
 
-            </div>
+              <div className="loan-form-checkbox-group">
+                <h4>Estado de préstamo</h4>
+                {['current', 'returned', 'all'].map((val) => (
+                  <label key={val}>
+                    <input
+                      type="radio"
+                      name="state"
+                      value={val}
+                      checked={formData.state === val}
+                      onChange={handleChange}
+                    />
+                    {val === 'current' ? 'Actuales' : val === 'returned' ? 'Devueltos' : 'Todos'}
+                  </label>
+                ))}
+              </div>
+            </>
+
           )}
 
-          <div className="loan-form-checkbox-group">
-            <h4>Estado de préstamo</h4>
-            {['current', 'returned', 'all'].map((val) => (
-              <label key={val}>
-                <input
-                  type="radio"
-                  name="state"
-                  value={val}
-                  checked={formData.state === val}
-                  onChange={handleChange}
-                />
-                {val === 'current' ? 'Actuales' : val === 'returned' ? 'Devueltos' : 'Todos'}
-              </label>
-            ))}
-          </div>
 
           <div className="loan-form-input-group">
             <h4>Fecha de retiro</h4>
@@ -119,14 +122,6 @@ export default function LoanFilter({ onFilterChange }) {
             </div>
           )}
 
-
-          {/* <div className="loan-form-input-group">
-            <h4>Libro</h4>
-            <label>Título</label>
-            <input name="bookTitle" value={formData.bookTitle} onChange={handleChange} />
-            <label>Código</label>
-            <input name="bookCode" value={formData.bookCode} onChange={handleChange} />
-          </div> */}
         </form>
       </div>
     </aside>

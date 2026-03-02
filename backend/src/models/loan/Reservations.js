@@ -23,6 +23,7 @@ const Reservations = sequelize.define("Reservations",
         },
         partnerNumber: {
             type: DataTypes.INTEGER,
+            allowNull: true,
             field: 'NumSocio'
         },
         partnerId: {

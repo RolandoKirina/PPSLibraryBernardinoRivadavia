@@ -15,16 +15,21 @@ export default function LoanButtons({ displayLoanform, displayReturnForm, displa
             <div className='loan-buttons'>
                 <div className='loan-options'>
                     {auth.role === roles.admin && (
-                        <Btn icon={<img src={PlusIcon} />} onClick={displayLoanform} text={'Nuevo'} variant="primary" />
+                        <>
+                            <Btn icon={<img src={PlusIcon} />} onClick={displayLoanform} text={'Nuevo'} variant="primary" />
+
+                            <Btn icon={<img src={ReturnIcon} />} onClick={displayReturnForm} text={'Devoluciones'} variant="primary" />
+
+                            <Btn icon={<img src={PrintIcon} />} onClick={displayListingsPopup} text={'Listados'} variant="primary" />
+                        </>
+
                     )}
 
-                    <Btn icon={<img src={ReturnIcon} />} onClick={displayReturnForm} text={'Devoluciones'} variant="primary" />
-
-                    {auth.role === roles.admin && (
-                        <Btn icon={<img src={PrintIcon} />} onClick={displayListingsPopup} text={'Listados'} variant="primary" />
+                    {(auth.role === roles.admin || auth.role === roles.partner) && (
+                        <Btn icon={<img src={ReserveIcon} />} onClick={displayRenewe} text={'Reservas'} variant="primary" />
                     )}
 
-                    <Btn icon={<img src={ReserveIcon} />} onClick={displayRenewe} text={'Reservas'} variant="primary" />
+
                 </div>
             </div>
         </>
