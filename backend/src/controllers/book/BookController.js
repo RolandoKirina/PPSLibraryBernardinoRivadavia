@@ -161,7 +161,6 @@ export const duplicateBook = async (req, res) => {
 
         const newBook = await BookService.duplicateBook(book);
 
-        console.log(newBook);
         res.status(HTTP_STATUS.CREATED.code).json(newBook);
     }
     catch (e) {
@@ -175,7 +174,6 @@ export const createBook = async (req, res) => {
     try {
         //lo que viene en el json del body de la solicitud http
         const book = req.body;
-        console.log(req.body)
 
         if (!book) {
             return res.status(HTTP_STATUS.BAD_REQUEST.code).json({ msg: HTTP_STATUS.BAD_REQUEST.msg });

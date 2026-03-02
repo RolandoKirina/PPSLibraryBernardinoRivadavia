@@ -41,6 +41,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
     const { auth, logout } = useAuth();
 
     const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
     const {
         items,
@@ -85,32 +86,51 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
 
     async function handleAddItem(data) {
         try {
-            await createItem(data);
+            const res = await createItem(data);
 
-            await getItems({ ...filters, sortBy: 'id', direction: 'asc', limit: chunkSize, offset: 0 });
+            if (res) {
+                setSuccessMessage("Prestamo creado exitosamente");
+                
+                setTimeout(() => {
+                    setAddPopup(false);
 
-            setAddPopup(false);
+                    setSuccessMessage('');
 
-            setErrorMessage(null);
+                    setErrorMessage(null);
+                }, 1500);
+
+                await getItems({ ...filters, sortBy: 'id', direction: 'asc', limit: chunkSize, offset: 0 });
+            }
+
         }
         catch (error) {
             setErrorMessage(error.message);
+            setSuccessMessage('');
             console.error("Error al crear un Prestamo:", error);
         }
     }
 
     async function handleUpdateItem(data) {
         try {
-            await updateItem(selected.loanId, data);
+            const res = await updateItem(selected.loanId, data);
 
-            await getItems({ ...filters, sortBy: 'id', direction: 'asc', limit: chunkSize, offset: 0 });
+            if (res) {
+                setSuccessMessage("Prestamo actualizado exitosamente");
 
-            setEditPopup(false);
+                setTimeout(() => {
+                    setEditPopup(false);
 
-            setErrorMessage(null);
+                    setSuccessMessage('');
+
+                    setErrorMessage(null);
+                }, 1500);
+
+                await getItems({ ...filters, sortBy: 'id', direction: 'asc', limit: chunkSize, offset: 0 });
+            }
         }
         catch (error) {
             setErrorMessage(error.message);
+            setSuccessMessage('');
             console.error("Error al actualizar un Prestamo:", error);
         }
     }
@@ -223,9 +243,10 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
             key: 'editPopup',
             title: 'Editar préstamo',
             className: 'loans-background',
-            content: <LoanForm method="update" createLoanItem={handleUpdateItem} loanSelected={selected} errorMessage={errorMessage} />,
+            content: <LoanForm successMessage={successMessage} method="update" createLoanItem={handleUpdateItem} loanSelected={selected} errorMessage={errorMessage} />,
             close: () => {
                 setEditPopup(false)
+                setSuccessMessage('');
                 setErrorMessage(null);
             },
             condition: editPopup
@@ -234,9 +255,10 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
             key: 'addPopup',
             title: 'Agregar préstamo',
             className: 'loans-background',
-            content: <LoanForm createLoanItem={handleAddItem} errorMessage={errorMessage} />,
+            content: <LoanForm successMessage={successMessage} createLoanItem={handleAddItem} errorMessage={errorMessage} />,
             close: () => {
                 setAddPopup(false)
+                setSuccessMessage('');
                 setErrorMessage(null);
             },
             condition: addPopup

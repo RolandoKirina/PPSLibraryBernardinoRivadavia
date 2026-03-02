@@ -3,7 +3,7 @@ import SaveIcon from '../../../assets/img/save-icon.svg';
 import { useState } from 'react';
 import Btn from '../../common/btn/Btn';
 
-export default function GenericForm({ fields, onSubmit, title, children, className,error }) {
+export default function GenericForm({ fields, onSubmit, title, children, className, error, successMessage }) {
   const [formState, setFormState] = useState({});
 
   const handleChange = (e) => {
@@ -116,10 +116,10 @@ export default function GenericForm({ fields, onSubmit, title, children, classNa
 
           {Array.isArray(fields[0])
             ? fields.map((row, rowIdx) => (
-                <div key={rowIdx} className="input-row">
-                  {row.map((field, idx) => renderField(field, idx))}
-                </div>
-              ))
+              <div key={rowIdx} className="input-row">
+                {row.map((field, idx) => renderField(field, idx))}
+              </div>
+            ))
             : (
               <div className="input-column">
                 {fields.map((field, idx) => renderField(field, idx))}
@@ -127,7 +127,10 @@ export default function GenericForm({ fields, onSubmit, title, children, classNa
             )
           }
         </div>
-      <div>{error && <p className="error-message">{error}</p>}</div>
+        <div>{error && <p className="error-message">{error}</p>}</div>
+        {successMessage && (
+          <div className='sucess-message'>{successMessage && <p className="">{successMessage}</p>}</div>
+        )}
 
         <div className="generic-btn-save">
           <Btn

@@ -40,8 +40,8 @@ export const BookDetail = [
     rows: [
       [
         { label: 'Tipo', value: 'información', attribute: 'type' },
-        { label: 'CDU', value: 'información', attribute: 'codeCDU' },
-        { label: 'COD_RCDU', value: 'información', attribute: 'codCDU' }
+        { label: 'COD_RCDU', value: 'información', attribute: 'codeCDU' },
+        { label: 'COD_CLAS', value: 'información', attribute: 'codeClasification' },
       ]
     ]
   }

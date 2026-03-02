@@ -275,6 +275,13 @@ async function migrateAll() {
                 transaction: t
             });
 
+            await sequelize.query(`
+            SELECT setval(
+                pg_get_serial_sequence('"Empleados"', 'Id'),
+                (SELECT MAX("Id") FROM "Empleados")
+            );
+        `, { transaction: t });
+
             console.log("Empleados importados correctamente.");
 
             /*
@@ -320,9 +327,14 @@ async function migrateAll() {
                 validate: true
             });
 
-            // Sincronizar sequence para que futuros inserts automáticos funcionen
             await sequelize.query(
-                `SELECT setval(pg_get_serial_sequence('"MotivoBaja"', 'Id'), (SELECT MAX("Id") FROM "MotivoBaja"));`,
+                `
+                SELECT setval(
+                    pg_get_serial_sequence('"MotivoBaja"', 'Id'),
+                    COALESCE((SELECT MAX("Id") FROM "MotivoBaja"), 1),
+                    true
+                );
+                `,
                 { transaction: t }
             );
 
@@ -370,6 +382,13 @@ async function migrateAll() {
             await PartnerCategory.bulkCreate(transformedPartnerCategories, {
                 transaction: t
             });
+
+            await sequelize.query(`
+            SELECT setval(
+                pg_get_serial_sequence('"CategoriaSocio"', 'Id'),
+                (SELECT MAX("Id") FROM "CategoriaSocio")
+            );
+        `, { transaction: t });
 
             console.log("Categorías de socio importadas correctamente.");
 

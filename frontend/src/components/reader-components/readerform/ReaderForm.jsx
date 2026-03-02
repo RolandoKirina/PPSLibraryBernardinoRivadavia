@@ -18,7 +18,7 @@ import { useEntityLookup } from '../../../hooks/useEntityLookup.js';
 import ReturnIcon from '../../../assets/img/return-icon.svg';
 import ReneweIcon from '../../../assets/img/renewe-icon.svg';
 import { useAuth } from '../../../auth/AuthContext.jsx';
-export default function ReaderForm({ method, createReaderItem, loanSelected, errorMessage }) {
+export default function ReaderForm({ method, successMessage, createReaderItem, loanSelected, errorMessage }) {
   const chunkSize = 100;
   const rowsPerPage = 5;
 
@@ -359,6 +359,10 @@ export default function ReaderForm({ method, createReaderItem, loanSelected, err
 
 
             </div>
+
+            {successMessage && (
+              <div className='sucess-message'>{successMessage && <p className="">{successMessage}</p>}</div>
+            )}
 
             <div className='save-changes-lend-books'>
               <div className='validate-error'>

@@ -24,6 +24,7 @@ export default function EmployeeSection() {
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
     const [selected, setSelected] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState(false);
     const [filters, setFilters] = useState({});
     const chunkSize = 100;
@@ -57,32 +58,50 @@ export default function EmployeeSection() {
 
     async function handleAddItem(data) {
         try {
-            await createItem(data);
+            const res = await createItem(data);
+
+            if (res) {
+                setSuccessMessage("Empleado creado exitosamente");
+
+                setTimeout(() => {
+                    setAddPopup(false);
+
+                    setSuccessMessage('');
+
+                    setErrorMessage(null);
+                }, 1500);
+            }
 
             await getItems({ ...filters, sortBy: 'code', direction: 'asc', limit: chunkSize, offset: 0 });
-
-            setAddPopup(false);
-
-            setErrorMessage(null);
         }
         catch (error) {
             setErrorMessage(error.message);
+            setSuccessMessage('');
             console.error("Error al crear un empleado:", error);
         }
     }
 
     async function handleEditItem(data) {
         try {
-            await updateItem(selected.id, data);
+            const res = await updateItem(selected.id, data);
+
+            if (res) {
+                setSuccessMessage("Prestamo actualizado exitosamente");
+
+                setTimeout(() => {
+                    setEditPopup(false);
+
+                    setSuccessMessage('');
+
+                    setErrorMessage(null);
+                }, 1500);
+            }
 
             await getItems({ ...filters, sortBy: 'code', direction: 'asc', limit: chunkSize, offset: 0 });
-
-            setEditPopup(false);
-
-            setErrorMessage(null);
         }
         catch (error) {
             setErrorMessage(error.message);
+            setSuccessMessage('');
             console.error("Error al actualizar un empleado:", error);
         }
     }
@@ -125,7 +144,7 @@ export default function EmployeeSection() {
             key: 'addPopup',
             title: 'Añadir empleado',
             className: 'employee-form-size',
-            content: <GenericForm fields={employeeFields} onSubmit={(data) => handleAddItem(data)} error={errorMessage} />,
+            content: <GenericForm fields={employeeFields} onSubmit={(data) => handleAddItem(data)} error={errorMessage} successMessage={successMessage} />,
             close: () => {
                 setAddPopup(false)
                 setErrorMessage(null)
@@ -136,7 +155,7 @@ export default function EmployeeSection() {
             key: 'editPopup',
             title: 'Editar empleado',
             className: 'employee-form-size',
-            content: <GenericForm fields={employeeFields} onSubmit={(data) => handleEditItem(data)} error={errorMessage} />,
+            content: <GenericForm fields={employeeFields} onSubmit={(data) => handleEditItem(data)} error={errorMessage} successMessage={successMessage} />,
             close: () => {
                 setEditPopup(false)
                 setErrorMessage(null)

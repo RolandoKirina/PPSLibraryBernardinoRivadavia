@@ -21,6 +21,7 @@ export default function Listing({ type }) {
   const [resetPageTrigger, setResetPageTrigger] = useState(0);
 
   const getItems = async ({ limit, offset }, append = false) => {
+    console.log(auth.token);
     try {
       setLoading(true);
 

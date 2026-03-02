@@ -37,9 +37,9 @@ export default function UnpaidFees({ partnerNumber }) {
         throw new Error('Error al obtener cuotas impagas');
       }
 
-      const { rows, total } = await res.json();
+      const { rows, count } = await res.json();
 
-      setTotalItems(total);
+      setTotalItems(count);
       setUnpaidFees(prev => (append ? [...prev, ...rows] : rows));
     } catch (err) {
       setError(err.message);

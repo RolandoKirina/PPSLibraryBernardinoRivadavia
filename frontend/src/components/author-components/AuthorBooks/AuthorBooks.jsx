@@ -16,7 +16,7 @@ import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI.js';
 import { addBookPositionFields } from '../../../data/forms/AuthorForms.js';
 import GenericForm from '../../generic/GenericForm/GenericForm.jsx';
 
-export default function AuthorBooks({ authorSelected, method, createAuthorItem, errorMessage }) {
+export default function AuthorBooks({ authorSelected, successMessage, method, createAuthorItem, errorMessage }) {
     const { auth } = useAuth();
     const [seeAllButton, setSeeAllButton] = useState('Todos');
     const [confirmPopup, setConfirmPopup] = useState(false);
@@ -61,7 +61,6 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem, 
                         books: rows
                     });
 
-                    console.log(rows);
                     setAllAuthorBooks(rows);
                 });
         }
@@ -342,7 +341,7 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem, 
                                 <div className='add-loan-retire-date input'>
                                     <label>Nombre <span className='required'>*</span></label>
                                     {auth.role === roles.admin ? (
-                                        <input type='text' name='name' value={authorData.name} onChange={handleAuthorChange} />
+                                        <input type='text' name='name' value={authorData.name || ''} onChange={handleAuthorChange} />
                                     ) : (
                                         <p className='readonly-field'>{authorSelected.name}</p>
                                     )}
@@ -351,7 +350,7 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem, 
                                 <div className='add-loan-retire-date input'>
                                     <label>Nacionalidad <span className='required'>*</span></label>
                                     {auth.role === roles.admin ? (
-                                        <input type='text' name='nationality' value={authorData.nationality} onChange={handleAuthorChange} />
+                                        <input type='text' name='nationality' value={authorData.nationality || ''} onChange={handleAuthorChange} />
                                     ) : (
                                         <p className='readonly-field'>{authorSelected.nationality}</p>
                                     )}
@@ -379,6 +378,10 @@ export default function AuthorBooks({ authorSelected, method, createAuthorItem, 
 
                                 </div>
                             </Table>
+
+                            {successMessage && (
+                                <div className='sucess-message'>{successMessage && <p className="">{successMessage}</p>}</div>
+                            )}
 
                             <div className='save-changes-lend-books'>
                                 {auth.role === roles.admin && (

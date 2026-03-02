@@ -18,6 +18,7 @@ import { readerFields } from '../../data/forms/LoanForms';
 import ReaderFilter from '../../components/filter/readerfilter/ReaderFilter';
 import ConfirmMessage from '../../components/common/confirmMessage/ConfirmMessage';
 import ReturnIcon from '../../assets/img/return-icon.svg';
+import { useAuth } from '../../auth/AuthContext';
 
 export default function ReaderSection() {
     const [filters, setFilters] = useState({});
@@ -29,11 +30,14 @@ export default function ReaderSection() {
     const [detailsPopup, setDetailsPopup] = useState(false);
     const [booksPopup, setBooksPopup] = useState(false);
 
+    const { auth } = useAuth();
+
     const chunkSize = 100;
     const rowsPerPage = 5;
     const [offsetActual, setOffsetActual] = useState(0);
     const [resetPageTrigger, setResetPageTrigger] = useState(0);
     const [errorMessage, setErrorMessage] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
 
     const baseUrl = "http://localhost:4000/api/v1/readers"
 
@@ -75,13 +79,21 @@ export default function ReaderSection() {
 
     async function handleAddItem(data) {
         try {
-            await createItem(data);
+            const res = await createItem(data);
+
+            if (res) {
+                setSuccessMessage("Lector creado exitosamente");
+
+                setTimeout(() => {
+                    setAddPopup(false);
+
+                    setSuccessMessage('');
+
+                    setErrorMessage(null);
+                }, 1500);
+            }
 
             await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
-
-            setAddPopup(false);
-
-            setErrorMessage(null);
         }
         catch (error) {
             setErrorMessage(error.message);
@@ -91,13 +103,21 @@ export default function ReaderSection() {
 
     async function handleUpdateItem(data) {
         try {
-            await updateItem(selected.id, data);
+            const res = await updateReaderBook(selected.id, data);
+
+            if (res) {
+                setSuccessMessage("Lector actualizado exitosamente");
+
+                setTimeout(() => {
+                    setEditPopup(false);
+
+                    setSuccessMessage('');
+
+                    setErrorMessage(null);
+                }, 1500);
+            }
 
             await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
-
-            setEditPopup(false);
-
-            setErrorMessage(null);
         }
         catch (error) {
             setErrorMessage(error.message);
@@ -161,7 +181,7 @@ export default function ReaderSection() {
             title: 'Editar lector',
             className: '',
             //content: <LoanForm method="update" createLoanItem={handleUpdateItem} loanSelected={selected} />,
-            content: <GenericForm fields={readerFields} onSubmit={(data) => handleUpdateItem(data)} />,
+            content: <GenericForm successMessage={successMessage} fields={readerFields} onSubmit={(data) => handleUpdateItem(data)} />,
             close: () => setEditPopup(false),
             condition: editPopup
         },
@@ -185,7 +205,7 @@ export default function ReaderSection() {
             key: 'addPopup',
             title: 'Agregar lector',
             className: 'loans-background',
-            content: <ReaderForm createReaderItem={handleAddItem} errorMessage={errorMessage} />,
+            content: <ReaderForm successMessage={successMessage} createReaderItem={handleAddItem} errorMessage={errorMessage} />,
             close: () => {
                 setAddPopup(false)
                 setErrorMessage(null);
@@ -237,14 +257,20 @@ export default function ReaderSection() {
             header: 'Devolver',
             accessor: 'return',
             className: "action-buttons",
-            render: (_, row) => (
-                <button className="button-table" onClick={() => {
-                    setReturnPopup(true)
-                    setSelected(row)
-                }}>
-                    <img src={ReturnIcon} alt="Editar" />
-                </button>
-            )
+            render: (_, row) => {
+                const hasDate = row.returnedDate && row.returnedDate.trim() !== 'No hay fecha';
+
+                return !hasDate ? (
+                    <button className="button-table" onClick={() => {
+                        setReturnPopup(true);
+                        setSelected(row);
+                    }}>
+                        <img src={ReturnIcon} alt="Devolver" />
+                    </button>
+                ) : (
+                    <span className="not-available-text">Ya devuelto</span>
+                );
+            }
         },
         {
             header: 'Ver detalle',

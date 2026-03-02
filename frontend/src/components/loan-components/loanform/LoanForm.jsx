@@ -22,7 +22,7 @@ import { useAuth } from '../../../auth/AuthContext.jsx';
 import PendingBooks from '../pendingBooks/PendingBooks.jsx';
 import PartnerMemo from '../partnermemo/PartnerMemo.jsx';
 
-export default function LoanForm({ method, createLoanItem, loanSelected, errorMessage }) {
+export default function LoanForm({ method, successMessage, createLoanItem, loanSelected, errorMessage }) {
   const chunkSize = 100;
   const rowsPerPage = 5;
   const [offsetActual, setOffsetActual] = useState(0);
@@ -518,6 +518,8 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
 
             <div className='reader-error'>{errorMessage && <p className="">{errorMessage}</p>}</div>
 
+
+
             <div className='lend-books-container'>
               <h2 className='lend-books-title'>Libros a Prestar</h2>
 
@@ -549,6 +551,10 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
 
 
             </div>
+
+            {successMessage && (
+              <div className='sucess-message'>{successMessage && <p className="">{successMessage}</p>}</div>
+            )}
 
             <div className='save-changes-lend-books'>
               <div className='validate-error'>

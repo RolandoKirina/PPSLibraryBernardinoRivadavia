@@ -21,6 +21,7 @@ export const getOne = async (id) => {
 };
 
 export const create = async (data) => {
+    console.log(data);
     if (!data.name || data.name.trim() === "") {
         throw new ValidationError("El campo Categoria no puede estar vacío");
     }

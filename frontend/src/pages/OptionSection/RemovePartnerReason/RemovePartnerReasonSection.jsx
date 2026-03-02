@@ -27,6 +27,7 @@ export default function RemovePartnerReasonSection({ chooseMode }) {
     const [choosePopup, setChoosePopup] = useState(false);
     const [confirmPopup, setConfirmPopup] = useState(false);
     const [selected, setSelected] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState(false);
 
     const [filters, setFilters] = useState({});
@@ -66,15 +67,24 @@ export default function RemovePartnerReasonSection({ chooseMode }) {
 
     async function handleAddItem(data) {
         try {
-            await createItem(data);
+            const res = await createItem(data);
 
-            await getItems({ ...filters, sortBy: 'reason', direction: 'asc', limit: chunkSize, offset: 0 });
+            if (res) {
+                setSuccessMessage("Motivo para dar de baja socio creado exitosamente");
 
-            setAddPopup(false);
+                setTimeout(() => {
+                    setAddPopup(false);
 
-            setErrorMessage(null);
+                    setSuccessMessage('');
+
+                    setErrorMessage(null);
+                }, 1500);
+
+                await getItems({ ...filters, sortBy: 'reason', direction: 'asc', limit: chunkSize, offset: 0 });
+            }
         }
         catch (error) {
+            setSuccessMessage('');
             setErrorMessage(error.message);
             console.error("Error al crear un motivo de baja:", error);
         }
@@ -82,15 +92,24 @@ export default function RemovePartnerReasonSection({ chooseMode }) {
 
     async function handleEditItem(data) {
         try {
-            await updateItem(selected.id, data);
+            const res = await updateItem(selected.id, data);
 
-            await getItems({ ...filters, sortBy: 'reason', direction: 'asc', limit: chunkSize, offset: 0 });
+            if (res) {
+                setSuccessMessage("Motivo para dar de baja socio actualizado exitosamente");
 
-            setEditPopup(false);
+                setTimeout(() => {
+                    setEditPopup(false);
 
-            setErrorMessage(null);
+                    setSuccessMessage('');
+
+                    setErrorMessage(null);
+                }, 1500);
+
+                await getItems({ ...filters, sortBy: 'reason', direction: 'asc', limit: chunkSize, offset: 0 });
+            }
         }
         catch (error) {
+            setSuccessMessage('');
             setErrorMessage(error.message);
             console.error("Error al editar un motivo de baja:", error);
         }
@@ -118,7 +137,7 @@ export default function RemovePartnerReasonSection({ chooseMode }) {
             key: 'editPopup',
             title: 'Editar motivo para dar de baja',
             className: '',
-            content: <GenericForm fields={removePartnerReasonForms} onSubmit={(data) => handleEditItem(data)} error={errorMessage} />,
+            content: <GenericForm fields={removePartnerReasonForms} onSubmit={(data) => handleEditItem(data)} error={errorMessage} successMessage={successMessage} />,
             close: () => {
                 setEditPopup(false)
                 setErrorMessage(null)
@@ -129,7 +148,7 @@ export default function RemovePartnerReasonSection({ chooseMode }) {
             key: 'addPopup',
             title: 'Agregar motivo para dar de baja',
             className: 'remove-parner-form-size',
-            content: <GenericForm fields={removePartnerReasonForms} onSubmit={(data) => {
+            content: <GenericForm successMessage={successMessage} fields={removePartnerReasonForms} onSubmit={(data) => {
                 handleAddItem(data)
 
             }} error={errorMessage} />,
@@ -194,7 +213,7 @@ export default function RemovePartnerReasonSection({ chooseMode }) {
                 } />
             ) : (
                 <PopUp title={'Seleccionar motivo para dar de baja socio'} className='remove-partner-reason-background' onClick={() => setChoosePopup(false)}>
-                    <Table columns={columnsChooseMode} data={items}  totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger}>
+                    <Table columns={columnsChooseMode} data={items} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger}>
                         <div className='remove-partner-reasons-options'>
                             <Btn className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg' />} />
                         </div>

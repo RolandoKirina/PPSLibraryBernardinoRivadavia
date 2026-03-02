@@ -129,6 +129,7 @@ const BookSection = () => {
             onClick={() => {
               setPopupEdit(true)
               setSelectedItem(row)
+              console.log(row)
             }}
 
           >
@@ -185,7 +186,7 @@ const BookSection = () => {
       key: 'editPopup',
       title: 'Editar Libro',
       className: 'popup-container-book-form editsize',
-      content: <FormEditBook selectedBook={selectedItem} getItems={() => getItems({
+      content: <FormEditBook closeOnExit={() => setPopupEdit(false)} selectedBook={selectedItem} getItems={() => getItems({
         ...filters,
         sortBy: 'title', direction: 'asc',
         limit: chunkSize,
@@ -198,7 +199,7 @@ const BookSection = () => {
       key: 'AddPopup',
       title: 'Agregar Libro',
       className: 'popup-container-book-form editsize',
-      content: <FormAddBook getItems={() => getItems({
+      content: <FormAddBook closeOnExit={() => setPopupAdd(false)} getItems={() => getItems({
         ...filters,
         sortBy: 'title', direction: 'asc',
         limit: chunkSize,

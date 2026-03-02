@@ -17,7 +17,7 @@ const Employees = sequelize.define("Employees",
         code: {
             type: DataTypes.STRING(10),
             field: "Codigo",
-            allowNull: false
+            allowNull: true
         }
     },
     {
@@ -28,4 +28,14 @@ const Employees = sequelize.define("Employees",
     }
 );
 
+Employees.afterCreate(async (employee, options) => {
+    const generatedCode = `EMP-${String(employee.id).padStart(5, "0")}`;
+
+    // Actualizamos solo la columna 'code' directamente
+    await employee.update({ code: generatedCode }, {
+        transaction: options.transaction // Importante para mantener la integridad
+    });
+});
+
 export default Employees;
+

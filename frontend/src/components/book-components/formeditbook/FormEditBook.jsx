@@ -6,7 +6,7 @@ import BackviewBtn from "../../common/backviewbtn/BackviewBtn.jsx";
 import BookAuthors from "../BooksAuthor/BookAuthors.jsx";
 import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
 
-export default function FormEditBook({ selectedBook, getItems }) {
+export default function FormEditBook({ selectedBook, getItems, closeOnExit }) {
     const [popupView, setPopupView] = useState('default');
     const [authorsSelected, setAuthorsSelected] = useState([]);
     const entityManagerApi = useEntityManagerAPI("books");
@@ -23,13 +23,13 @@ export default function FormEditBook({ selectedBook, getItems }) {
     async function onHandleFindAuthor(value) {
         try {
             if (!value.trim()) {
-            setResults([]);
-            return;
+                setResults([]);
+                return;
             }
             const res = await getAuthors({ authorName: value });
             setResults(res);
         } catch (err) {
-        console.error(err);
+            console.error(err);
         }
     }
 
@@ -94,7 +94,10 @@ export default function FormEditBook({ selectedBook, getItems }) {
             if (updated) {
                 setSuccessMessage(" ✅ Libro actualizado con exito");
 
-                setTimeout(() => setSuccessMessage(""), 10000);
+                setTimeout(() => {
+                    setSuccessMessage("")
+                    closeOnExit()
+                }, 1500);
 
                 await getItems();
             }
