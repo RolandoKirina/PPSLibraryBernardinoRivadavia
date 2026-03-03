@@ -17,7 +17,6 @@ export default function FormAddPartner({ onPartnerCreated,employees }) {
   const [maritalStatuses, setMaritalStatuses] = useState([]);
   const [localities, setLocalities] = useState([]);
 
-  // La referencia es clave para bloquear el hilo de ejecución instantáneamente
   const submittingRef = useRef(false);
   
   const maritalstatus = "http://localhost:4000/api/v1/marital-statuses";
@@ -133,7 +132,6 @@ export default function FormAddPartner({ onPartnerCreated,employees }) {
       const missingLabels = missingFields.map(field => fieldLabels[field] || field);
       setError("Faltan completar: " + missingLabels.join(", "));
       
-      // Liberamos el bloqueo solo porque el formulario falló validación
       submittingRef.current = false;
       setLoading(false);
       return;
@@ -154,7 +152,6 @@ export default function FormAddPartner({ onPartnerCreated,employees }) {
       if (onPartnerCreated) {
         setTimeout(() => {
           onPartnerCreated?.();
-          // No liberamos loading para que el botón no parpadee antes de irse
         }, 2000);
       }
     } catch (err) {
@@ -250,13 +247,20 @@ export default function FormAddPartner({ onPartnerCreated,employees }) {
             </div>
             <div className="form-details" >
               <label>Localidad <span className='required'>*</span></label>
-              <select name="LocalityId" value={formValues.LocalityId} onChange={handleChange} >
+              <select 
+                name="LocalityId" 
+                value={formValues.LocalityId} 
+                onChange={handleChange}
+              >
                 <option value="">Localidad</option>
-                {localities?.map(loc=>(
-                <option key={loc.id} value={loc.name}>{loc.name}</option>
+
+                {localities?.map(loc => (
+                  <option key={loc.id} value={loc.id}>
+                    {loc.name}
+                  </option>
                 ))}
               </select>
-            </div>
+              </div>
             <div className="form-details" >
               <label>Código postal <span className='required'>*</span></label>
               <input name="homePostalCode" value={formValues.homePostalCode} onChange={handleChange} placeholder="Código postal" />

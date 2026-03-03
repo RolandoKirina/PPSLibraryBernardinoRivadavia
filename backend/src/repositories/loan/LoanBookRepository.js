@@ -4,6 +4,27 @@ export const getAll = async () => {
   return await LoanBook.findAll();
 };
 
+export const getCountRetiredBooks = async (min, max) => {
+  const results = await sequelize.query(
+    `
+    SELECT 
+        l."partnerId",
+        COUNT(lb."LoanBookId") AS cantidad_libros
+    FROM "PrestamoLibro" lb
+    JOIN "Prestamo" l 
+        ON l."Id" = lb."IdPrestamo"
+    GROUP BY l."partnerId"
+    HAVING COUNT(lb."LoanBookId") BETWEEN :min AND :max
+    `,
+    {
+      replacements: { min, max },
+      type: QueryTypes.SELECT
+    }
+  );
+
+  return results;
+};
+
 export const getOneByBookAndLoan = async (BookId, loanId) => {
   return await LoanBook.findOne({
     where: {

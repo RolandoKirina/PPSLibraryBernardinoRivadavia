@@ -6,11 +6,11 @@ export const printList = async(req,res) =>{
     try{
         const queryOptions = buildListPartnerFilters(req.query);
         const result = await PartnerService.printList(queryOptions);
-        res.status(HTTP_STATUS.OK.code).send(partners);
+        res.status(HTTP_STATUS.OK.code).send(result);
         return result;
     }
     catch (e) {
-        console.error(error);
+        console.error(e);
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
 }

@@ -1,7 +1,9 @@
 import Partner from '../../models/partner/Partner.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
+import { fn, col } from 'sequelize';
 
-export const printList = async(id) =>{
+
+export const printList = async(filters) =>{
   const { wherePartner, limit, offset, order } = filters;
 
   const query = {};
@@ -29,6 +31,29 @@ export const printList = async(id) =>{
     count
   };
 }
+export const getCountRetiredBooks = async (min, max) => {
+  const results = await sequelize.query(
+    `
+      SELECT 
+      p."Id" AS "partnerId",
+      COUNT(lb."LoanBookId") AS cantidad_libros
+      FROM "Partner" p
+      JOIN "Prestamo" l 
+          ON l."partnerId" = p."Id"
+      JOIN "PrestamoLibro" lb 
+          ON lb."IdPrestamo" = l."Id"
+      GROUP BY p."Id"
+      HAVING COUNT(lb."LoanBookId") BETWEEN :min AND :max;
+    `,
+    {
+      replacements: { min, max },
+      type: QueryTypes.SELECT
+    }
+  );
+
+  return results;
+};
+
 export const getUnpaidFeesByPartner = async (id) => {
   try {
     const partner = await Partner.findByPk(id, {
@@ -54,6 +79,8 @@ export const getUnpaidFeesByPartner = async (id) => {
   }
 
 };
+
+
 
 export const getAll = async (filters = {}) => {
   const { wherePartner, limit, offset, order } = filters;
@@ -104,7 +131,6 @@ export const getOneByPartnerNumber = async (partnerNumber) => {
     throw err;
   }
 };
-
 
 export const create = async (data) => {
   return await Partner.create(data);

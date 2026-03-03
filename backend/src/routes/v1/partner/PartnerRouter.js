@@ -3,10 +3,9 @@ import * as PartnerController from "../../../controllers/partner/PartnerControll
 import validateIdParam from "../../../middlewares/ValidateId.js";
 
 const router = express.Router();
-
+router.get("/printlist", PartnerController.printList)
 router.get("/", PartnerController.getAllPartners);
 router.get("/:id", validateIdParam("id"), PartnerController.getPartner);
-router.get("/printlist", PartnerController.printList)
 router.get("/partner-number/:id", validateIdParam("id"), PartnerController.getOneByPartnerNumber);
 router.post("/", PartnerController.createPartner);
 router.put("/:id", validateIdParam("id"), PartnerController.updatePartner);

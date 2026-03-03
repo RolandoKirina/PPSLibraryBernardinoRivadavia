@@ -11,14 +11,15 @@ export const feesBetweenDatesListOptions = [
 ];
 
 export const sortOptions = [
-  { label: 'Apellido - Nombre', value: 'lastNameFirstName' },
+  
+  { label: 'Apellido - Nombre', value: 'nameSurname' },
   { label: 'Cantidad de cuotas impagas', value: 'unpaidFees' },
   { label: 'Cantidad de libros pendientes', value: 'pendingBooks' },
-  { label: 'Fecha de Baja', value: 'deactivationDate' },
+  { label: 'Fecha de Baja', value: 'withdrawalDate' },
   { label: 'Fecha Inscripción', value: 'registrationDate' },
   { label: 'Fecha Nacimiento', value: 'birthDate' },
-  { label: 'Motivo Baja', value: 'deactivationReason' },
-  { label: 'Número de Socio', value: 'memberNumber' }
+  { label: 'Motivo Baja', value: 'idReason' },
+  { label: 'Número de Socio', value: 'partnerNumber' }
 ];
 
 export const sortOptionsLostBooks = [

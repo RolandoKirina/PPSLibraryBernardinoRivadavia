@@ -54,20 +54,34 @@ export const buildListPartnerFilters = (query) => {
     cduCodeMax,
     quantityretiredbooksmin,
     quantityretiredbooksmax,
-    borrowedBooksMin,
-    borrowedBooksMax,
-    unpaidQuotesMin,
-    unpaidQuotesMax,
+    retiredBooksMin,
+    retiredBooksMax,
+    minUnpaidFees,
+    maxUnpaidFees,
     pendingBooks,
-    orderBy,
     limit,
     offset,
     sortBy,
     direction,
   } = query;
 
+
+const sortFields = [
+  
+  { label: 'Apellido - Nombre', value: 'nameSurname' },
+  { label: 'Cantidad de cuotas impagas', value: 'unpaidFees' },
+  { label: 'Cantidad de libros pendientes', value: 'pendingBooks' },
+  { label: 'Fecha de Baja', value: 'withdrawalDate' },
+  { label: 'Fecha Inscripción', value: 'registrationDate' },
+  { label: 'Fecha Nacimiento', value: 'birthDate' },
+  { label: 'Motivo Baja', value: 'idReason' },
+  { label: 'Número de Socio', value: 'partnerNumber' }
+];
+
+  
   const wherePartner = {};
   const whereBook = {};
+  
   if (category !== undefined){
     wherePartner.category = Number(category);
   }
@@ -94,25 +108,24 @@ export const buildListPartnerFilters = (query) => {
     };
   }
 
-
-    if (registrationStart && registrationEnd) {
-       wherePartner.registrationDate = {
-          [Op.between]: [
-            toStartOfDay(registrationStart),
-            toEndOfDay(registrationEnd)
-          ]
-        };
-    } 
-    else if (registrationStart) {
-        wherePartner.registrationDate = {
-          [Op.gte]: toStartOfDay(registrationStart)
-        };
-    } 
-    else if (registrationEnd) {
-        wherePartner.registrationDate = {
-          [Op.lte]: toEndOfDay(registrationEnd)
-        };
-    }
+  if (registrationStart && registrationEnd) {
+      wherePartner.registrationDate = {
+        [Op.between]: [
+          toStartOfDay(registrationStart),
+          toEndOfDay(registrationEnd)
+        ]
+      };
+  } 
+  else if (registrationStart) {
+      wherePartner.registrationDate = {
+        [Op.gte]: toStartOfDay(registrationStart)
+      };
+  } 
+  else if (registrationEnd) {
+      wherePartner.registrationDate = {
+        [Op.lte]: toEndOfDay(registrationEnd)
+      };
+  }
 
     if (resignationStart && resignationEnd) {
        wherePartner.withdrawalDate = {
@@ -132,18 +145,39 @@ export const buildListPartnerFilters = (query) => {
           [Op.lte]: toEndOfDay(resignationEnd)
         };
     }
-
-    if(presentedBy){
-      wherePartner.presentedBy = presentedBy;
-    }
-
-    if (reasonwithdrawal) {
+  
+     if (reasonwithdrawal) {
       wherePartner.reasonForWithdrawal = reasonwithdrawal;
     }
 
-    if (unpaidFees !== 0) {
-      wherePartner.unpaidFees = Number(unpaidFees);
+    if (presentedBy) {
+      wherePartner.presentedBy = presentedBy;
     }
+
+    if(retiredBooksMin && retiredBooksMax){
+    
+    }
+    else if(retiredBooksMin){
+
+    } 
+    else if (retiredBooksMax) {
+
+    }
+    
+  
+   
+ if (minUnpaidFees || maxUnpaidFees) {
+  wherePartner.unpaidFees = {};
+
+  if (minUnpaidFees) {
+    wherePartner.unpaidFees[Op.gte] = minUnpaidFees;
+  }
+
+  if (maxUnpaidFees) {
+    wherePartner.unpaidFees[Op.lte] = maxUnpaidFees;
+  }
+}
+   
 
   if (cduCodeMin || cduCodeMax) {
     whereBook.cduCode = {};
@@ -175,9 +209,18 @@ export const buildListPartnerFilters = (query) => {
   const parsedLimit = Number(limit);
   const parsedOffset = Number(offset);
 
-  const order = sortBy
-    ? [[sortBy, direction === 'asc' ? 'ASC' : 'DESC']]
-    : undefined;
+  let order = [];
+
+  if (sortBy && sortFields[sortBy]) {
+    const directionValue = direction === 'ASC' ? 'ASC' : 'DESC';
+
+    if (sortBy === 'nameSurname') {
+      order.push(['surname', directionValue]);
+      order.push(['name', directionValue]);
+    } else {
+      order.push([sortFields[sortBy], directionValue]);
+    }
+  }
 
   return {
     order,

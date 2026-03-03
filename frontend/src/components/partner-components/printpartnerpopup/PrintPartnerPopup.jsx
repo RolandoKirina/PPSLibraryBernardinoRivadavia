@@ -12,6 +12,7 @@ export default function PrintPartnerPopup({categoriespartner, statespartner}) {
     const [removePartnerReasons,setRemovePartnerReason] = useState([]);
     const [employees,setEmployees] = useState([]);
     const [formValues, setFormValues] = useState({});
+    const [resultprint,setresultprint] = useState([]);
 
     useEffect(() => {
         async function loadApis(){
@@ -32,6 +33,24 @@ export default function PrintPartnerPopup({categoriespartner, statespartner}) {
       loadApis();
     }, []);
 
+
+    async function printList(data){
+            try {
+
+                const queryParams = new URLSearchParams(data).toString();
+
+                const res = await fetch(
+                `http://localhost:4000/api/v1/partner/printlist?${queryParams}`
+                );
+
+                const reslist = await res.json();
+
+                setresultprint(reslist);
+                console.log(resultprint)
+            } catch(e){
+                console.log(e);
+            }
+    }
     const handleSubmit = (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -49,8 +68,8 @@ export default function PrintPartnerPopup({categoriespartner, statespartner}) {
             }
         });
 
-        console.log("Formulario:", data);
         setFormValues(data);
+        printList(data);
     };
 
     return (
@@ -162,7 +181,12 @@ export default function PrintPartnerPopup({categoriespartner, statespartner}) {
                                         <div className="input">
                                             <label htmlFor="cduCode">CDU de libros retirados por los socio</label>
                                             <div>
+                                                <label htmlFor="cduCodeMin">Menos de</label>
+
                                                 <input id="cduCodeMin" name="cduCodeMin" type="number" />
+
+                                                <label htmlFor="cduCodeMax">Más de</label>
+
                                                 <input id="cduCodeMax" name="cduCodeMax" type="number" />
                                             </div>
                                         </div>
@@ -242,7 +266,7 @@ export default function PrintPartnerPopup({categoriespartner, statespartner}) {
 
                 </div>
                 <div className='preview-list-container'>
-                    <GenerateListPopup dataByType={dataByType} columnsByType={columnsByType} typeList={formValues.listType ? formValues.listType : 'TypeOne'} title={formValues.listTitle} />
+                    <GenerateListPopup data={resultprint} dataByType={dataByType} columnsByType={columnsByType} typeList={formValues.listType ? formValues.listType : 'TypeOne'} title={formValues.listTitle} />
                 </div>
             </div>
 
