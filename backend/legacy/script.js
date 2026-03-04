@@ -26,6 +26,10 @@ import LoanBook from "../src/models/loan/LoanBook.js";
 import BookAuthor from "../src/models/author/BookAuthor.js";
 import BookReservations from "../src/models/loan/BookReservations.js";
 import BookTypeGroup from "../src/models/options/BookTypeGroup.js";
+import bcrypt from "bcrypt";
+import Role from "../src/models/auth/Role.js";
+import UserRole from "../src/models/auth/UserRole.js";
+import User from "../src/models/auth/User.js";
 
 async function migrateAll() {
     try {
@@ -1675,4 +1679,77 @@ async function migrateAll() {
     }
 }
 
+async function createAdminUser() {
+
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    const adminName = process.env.ADMIN_NAME || "Administrador";
+
+    if (!adminEmail || !adminPassword) {
+        console.log("ADMIN_EMAIL o ADMIN_PASSWORD no definidos. No se crea admin.");
+        return;
+    }
+
+    const t = await sequelize.transaction();
+
+    try {
+
+        const [adminRole] = await Role.findOrCreate({
+            where: { name: "admin" },
+            defaults: {
+                name: "admin",
+                description: "Rol administrador del sistema"
+            },
+            transaction: t
+        });
+
+        const existingUser = await User.findOne({
+            where: { email: adminEmail },
+            transaction: t
+        });
+
+        let adminUser;
+
+        if (!existingUser) {
+
+            const hashedPassword = await bcrypt.hash(adminPassword, 10);
+
+            adminUser = await User.create({
+                fullName: adminName,
+                email: adminEmail,
+                password: hashedPassword
+            }, { transaction: t });
+
+            console.log("Usuario admin creado.");
+        } else {
+            adminUser = existingUser;
+            console.log("Usuario admin ya existe.");
+        }
+
+        const existingRelation = await UserRole.findOne({
+            where: {
+                userId: adminUser.id,
+                roleId: adminRole.id
+            },
+            transaction: t
+        });
+
+        if (!existingRelation) {
+            await UserRole.create({
+                userId: adminUser.id,
+                roleId: adminRole.id
+            }, { transaction: t });
+        }
+
+        await t.commit();
+        console.log("Inicialización de admin completada.");
+
+    } catch (error) {
+        await t.rollback();
+        console.error("Error creando usuario admin:", error);
+    }
+}
+
+
+createAdminUser();
 migrateAll();
