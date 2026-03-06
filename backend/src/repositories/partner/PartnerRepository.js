@@ -2,7 +2,6 @@ import Partner from '../../models/partner/Partner.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 import { fn, col } from 'sequelize';
 
-
 export const printList = async(filters) =>{
   const { wherePartner, limit, offset, order } = filters;
 
@@ -31,6 +30,8 @@ export const printList = async(filters) =>{
     count
   };
 }
+
+
 export const getCountRetiredBooks = async (min, max) => {
   const results = await sequelize.query(
     `
