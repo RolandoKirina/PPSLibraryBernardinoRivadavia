@@ -81,7 +81,8 @@ const Book = sequelize.define("Book",
     },
     lostPartnerNumber: {
       type: DataTypes.INTEGER,
-      field: "NumSocioPerdida"
+      field: "NumSocioPerdida",
+      allowNull: true
     },
     lost: {
       type: DataTypes.BOOLEAN,

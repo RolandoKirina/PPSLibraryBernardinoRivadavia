@@ -14,6 +14,13 @@ export default function applyRelationships(models) {
   Book.hasMany(BookAuthor, { as: "BookAuthors", foreignKey: "BookId", sourceKey: "BookId" });
   BookAuthor.belongsTo(Book, { as: "Book", foreignKey: "BookId", targetKey: "BookId" });
 
+  Book.belongsTo(Partner, {
+    foreignKey: 'lostPartnerNumber',
+    targetKey: 'partnerNumber',
+    as: 'LostPartner',
+    constraints: false 
+  });
+
   LoanType.hasMany(Loan, { as: "Loans", foreignKey: "loanType", sourceKey: "id" });
   Loan.belongsTo(LoanType, { as: "LoanType", foreignKey: "loanType", targetKey: "id" });
 
