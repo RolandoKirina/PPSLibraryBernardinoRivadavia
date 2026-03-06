@@ -3,12 +3,16 @@ import PrintIcon from '../../../assets/img/print-icon.svg';
 import { titlesByType, columnsByType } from '../../../data/generatedlist/generatedList';
 import GenerateListPopup from '../../common/generatelistpopup/GenerateListPopup';
 import { useEffect, useState } from 'react';
+import { useAuth } from '../../../auth/AuthContext';
+import { generateUniversalPDF } from '../../../utils/pdfGenerator';
 
 export default function Listing({ type }) {
   const BASE_URL = "http://localhost:4000/api/v1";
 
-  const chunkSize = 100;
+  const chunkSize = 10000;
   const rowsPerPage = 30;
+
+  const { auth } = useAuth();
 
   const [items, setItems] = useState([]);
   const [totalItems, setTotalItems] = useState(0);
@@ -17,7 +21,28 @@ export default function Listing({ type }) {
   const [offsetActual, setOffsetActual] = useState(0);
   const [resetPageTrigger, setResetPageTrigger] = useState(0);
 
+  const handlePrint = () => {
+    if (items.length === 0) return;
+
+    const title = titlesByType[type];
+    const config = columnsByType[type];
+
+    // 1. Extraer Headers (Probamos con 'label', 'text' o 'header')
+    const headers = config.map(col => col.label || col.text || col.header || "Column");
+
+    // 2. Extraer Datos (Probamos con 'key', 'dataKey', 'field' o 'accessor')
+    const data = items.map(item => {
+      return config.map(col => {
+        const key = col.key || col.dataKey || col.field || col.accessor;
+        return item[key] ?? '';
+      });
+    });
+
+    generateUniversalPDF(title, headers, data, `report_${type}`);
+  };
+
   const getItems = async ({ limit, offset }, append = false) => {
+
     try {
       setLoading(true);
 
@@ -25,7 +50,11 @@ export default function Listing({ type }) {
         `${BASE_URL}/loans/print-list/${type}?limit=${limit}&offset=${offset}`,
         {
           method: 'GET',
-          headers: { 'Content-Type': 'application/json' }
+          headers: {
+            'Content-Type': 'application/json',
+            "Authorization": `Bearer ${auth.token}`
+          },
+
         }
       );
 
@@ -83,7 +112,9 @@ export default function Listing({ type }) {
         loading={loading}
         resetPageTrigger={resetPageTrigger}
         rowsPerPage={rowsPerPage}
+        onPrint={handlePrint}
       />
+
     </div>
   );
 }

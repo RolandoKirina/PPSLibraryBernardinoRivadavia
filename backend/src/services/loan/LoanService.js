@@ -63,7 +63,7 @@ export const createLoan = async (data) => {
 
     const transaction = await sequelize.transaction();
     try {
-      const loanType = await LoanTypeRepository.getOneByDescription("retired");
+      const loanType = await LoanTypeRepository.getOneByDescription("Prestamo");
       if (!loanType) {
         throw new ValidationError(`No existe un tipo de préstamo con la descripción "retired"`);
       }

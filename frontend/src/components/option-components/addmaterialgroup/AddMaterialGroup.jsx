@@ -10,6 +10,7 @@ import { Table } from '../../common/table/Table';
 
 import DeleteIcon from '../../../assets/img/delete-icon.svg';
 import AddBookIcon from '../../../assets/img/add-book-icon.svg';
+import { useAuth } from '../../../auth/AuthContext';
 
 export default function AddMaterialGroup({
   method,
@@ -18,6 +19,8 @@ export default function AddMaterialGroup({
   errorMessage
 }) {
   const BASE_URL = "http://localhost:4000/api/v1";
+
+  const { auth } = useAuth();
 
   const chunkSize = 100;
   const rowsPerPage = 5;
@@ -68,7 +71,13 @@ export default function AddMaterialGroup({
     setLoadingBookTypes(true);
 
     const queryParams = new URLSearchParams(filters).toString();
-    const res = await fetch(`${BASE_URL}/book-types?${queryParams}`);
+    const res = await fetch(`${BASE_URL}/book-types?${queryParams}`, {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${auth.token}`
+      }
+    });
     const { rows, count } = await res.json();
 
     setTotalLibraryBookTypes(count);

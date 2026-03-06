@@ -18,7 +18,7 @@ const Book = sequelize.define("Book",
       field: "Cod_rcdu"
     },
     title: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(500),
       field: "titulo"
     },
     editorial: {
@@ -46,7 +46,7 @@ const Book = sequelize.define("Book",
       field: "Cant_ejemplar"
     },
     notes: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
       field: "Notas"
     },
     type: {
@@ -59,7 +59,7 @@ const Book = sequelize.define("Book",
     },
     /*codigo signatura*/
     codeSignature: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
       field: "Autores"
     },
     idSupplier: {
@@ -81,7 +81,8 @@ const Book = sequelize.define("Book",
     },
     lostPartnerNumber: {
       type: DataTypes.INTEGER,
-      field: "NumSocioPerdida"
+      field: "NumSocioPerdida",
+      allowNull: true
     },
     lost: {
       type: DataTypes.BOOLEAN,

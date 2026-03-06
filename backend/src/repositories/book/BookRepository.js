@@ -117,10 +117,27 @@ export const getAll = async (filters) => {
     order
   });
 
+  const processedRows = rows.map(book => {
+    const bookJSON = book.toJSON();
+
+    const authorsString = bookJSON.BookAuthors
+      ? bookJSON.BookAuthors
+        .map(ba => ba.Author?.name)
+        .filter(name => name)
+        .join(' ; ')
+      : '';
+
+    return {
+      ...bookJSON,
+      authors: authorsString
+    };
+  });
+
   return {
-    rows,
+    rows: processedRows,
     count
   };
+
 };
 
 export const getAllPendingBooks = async (partnerNumber, filters = {}) => {
@@ -383,77 +400,18 @@ export const getAllBooksOfLoan = async (id, filters = {}) => {
     rows,
     count
   };
-};
+}; 
+
 export const getLostBooks = async ({ whereBooks, order, limit, offset }) => {
   try {
-    const count = await Book.count({
+    const { rows, count } = await Book.findAndCountAll({
       where: whereBooks,
-      distinct: true,
-      col: "id",
       include: [
         {
-          model: LoanBook,
-          as: "BookLoans",
-          required: true,
-          include: [
-            {
-              model: Loan,
-              as: "Loan",
-              required: true
-            }
-          ]
-        }
-      ]
-    });
-
-    const bookIds = await Book.findAll({
-      where: whereBooks,
-      attributes: ["id"],
-      include: [
-        {
-          model: LoanBook,
-          as: "BookLoans",
-          required: true,
-          include: [
-            {
-              model: Loan,
-              as: "Loan",
-              required: true
-            }
-          ]
-        }
-      ],
-      order,
-      limit,
-      offset,
-      subQuery: false,
-      raw: true
-    });
-
-    const ids = bookIds.map(b => b.id);
-
-    if (!ids.length) {
-      return { rows: [], count };
-    }
-
-    const books = await Book.findAll({
-      where: { id: ids },
-      include: [
-        {
-          model: LoanBook,
-          as: "BookLoans",
-          include: [
-            {
-              model: Loan,
-              as: "Loan",
-              include: [
-                {
-                  model: Partner,
-                  as: "Partner"
-                }
-              ]
-            }
-          ]
+          model: Partner,
+          as: "LostPartner",
+          required: false, // LEFT JOIN: Si el socio no existe, el libro NO desaparece
+          attributes: ["partnerNumber", "surname", "name", "homeAddress", "homePhone"]
         },
         {
           model: BookType,
@@ -461,12 +419,14 @@ export const getLostBooks = async ({ whereBooks, order, limit, offset }) => {
           attributes: ["typeName"]
         }
       ],
-      order
+      order,
+      limit,
+      offset,
+      distinct: true
     });
 
-    const rows = books.map(book => {
-      const firstLoan = book.BookLoans?.[0]?.Loan;
-      const partner = firstLoan?.Partner;
+    const formattedRows = rows.map(book => {
+      const partner = book.LostPartner;
 
       return {
         BookId: book.id,
@@ -474,21 +434,19 @@ export const getLostBooks = async ({ whereBooks, order, limit, offset }) => {
         bookCode: book.codeInventory,
         lossDate: formatDate(book.lossDate),
         typeName: book.BookType?.typeName || '',
-        partnerNumber: partner?.partnerNumber || null,
-        surname: partner?.surname || '',
+        // Prioridad: Dato de la tabla Partner > Dato legacy en Book > N/A
+        partnerNumber: partner?.partnerNumber || book.lostPartnerNumber || 'N/A',
+        surname: partner?.surname || (book.lostPartnerNumber ? `Socio #${book.lostPartnerNumber} no hallado` : 'Sin socio'),
         name: partner?.name || '',
         homeAddress: partner?.homeAddress || '',
         homePhone: partner?.homePhone || '',
       };
     });
 
-    return {
-      rows,
-      count
-    };
+    return { rows: formattedRows, count };
 
   } catch (error) {
-    console.error("Error en getLostBooks Repository:", error);
+    console.error("Error en getLostBooks:", error);
     throw error;
   }
 };
@@ -687,7 +645,7 @@ export const getPartnersAndBooks = async (filters) => {
     const totalPartners = await Loan.count({
       where: whereLoan,
       distinct: true,
-      col: 'partnerId',
+      col: 'NumSocio',
       include: [
         {
           model: Partner,
@@ -697,6 +655,7 @@ export const getPartnersAndBooks = async (filters) => {
         }
       ]
     });
+
 
     return {
       totalBooks,

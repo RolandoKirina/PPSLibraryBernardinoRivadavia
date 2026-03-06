@@ -1,4 +1,5 @@
 import sequelize from '../../configs/database.js';
+import Sequelize from 'sequelize';
 
 import Loan from '../../models/loan/Loan.js';
 import LoanBook from '../../models/loan/LoanBook.js';
@@ -18,6 +19,7 @@ import { formatDate } from '../../utils/date/formatDate.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 
 import { Op } from 'sequelize';
+import { fn, col, literal } from 'sequelize';
 
 export const getAll = async (filters) => {
   const {
@@ -285,277 +287,165 @@ export const getOne = async (id) => {
 export const getReturnPrintList = async (filters = {}) => {
   const { limit, offset } = filters;
 
-  const { rows: idRows, count } = await Loan.findAndCountAll({
-    subQuery: false,
-    attributes: ['id'],
+  const { rows, count } = await LoanBook.findAndCountAll({
+
+    attributes: [
+      'bookCode',
+      'expectedDate',
+      'returnedDate',
+      [Sequelize.col('Book.titulo'), 'bookTitle'],
+      [Sequelize.col('Book.codigo'), 'bookCodeInventory'],
+      [Sequelize.col('Loan.Partner.numero'), 'partnerNumber'],
+      [Sequelize.col('Loan.Partner.apellido'), 'partnerSurname'],
+      [Sequelize.col('Loan.Partner.nombre'), 'partnerName'],
+      [Sequelize.col('Loan.Partner.dir_part'), 'homeAddress'],
+      [Sequelize.col('Loan.FechaRetiro'), 'retiredDate'],
+    ],
     include: [
       {
-        model: LoanBook,
-        as: 'LoanBooks',
-        attributes: ['LoanBookId'],
+        model: Book,
+        as: 'Book',
+        attributes: [], 
         required: true,
-        include: [
-          {
-            model: Book,
-            as: 'Book',
-            attributes: ['BookId'],
-            required: true
-          }
-        ]
+      },
+      {
+        model: Loan,
+        as: 'Loan',
+        attributes: [],
+        required: true,
+        include: [{
+          model: Partner,
+          as: 'Partner',
+          attributes: [],
+          required: true
+        }]
       }
     ],
-    distinct: true,
-    col: 'Id',
-    order: [['id', 'ASC']],
+
+    order: [[Sequelize.literal('"Loan->Partner"."numero"'), 'ASC']],
     limit,
-    offset
+    offset,
+    raw: true,
   });
 
-  const ids = idRows.map(r => r.id);
 
-  if (!ids.length) {
-    return { rows: [], count: 0 };
-  }
+  const formattedRows = rows.map(r => ({
+    bookTitle: r.bookTitle || '',
+    bookCode: r.bookCodeInventory || r.bookCode || '',
+    partnerNumber: r.partnerNumber || '',
+    partnerName: `${r.partnerSurname || ''} ${r.partnerName || ''}`,
+    partnerAddress: r.partnerAddress || '',
+    retiredDate: formatDate(r.retiredDate),
+    expectedDate: formatDate(r.expectedDate),
+    returnedDate: formatDate(r.returnedDate)
+  }));
 
-  const loans = await Loan.findAll({
-    subQuery: false,
-    attributes: ['id', 'withdrawalTime', 'retiredDate'],
-    where: { id: ids },
-    order: [['id', 'ASC']],
-    include: [
-      {
-        model: LoanType,
-        as: 'LoanType',
-        attributes: ['description'],
-        required: true
-      },
-      {
-        model: Partner,
-        as: 'Partner',
-        attributes: ['id', 'homePhone', 'homeAddress', 'name', 'surname', 'partnerNumber'],
-        required: true
-      },
-      {
-        model: LoanBook,
-        as: 'LoanBooks',
-        attributes: ['bookCode', 'expectedDate', 'returnedDate'],
-        required: true,
-        include: [
-          {
-            model: Book,
-            as: 'Book',
-            attributes: ['title', 'codeInventory'],
-            required: true,
-            include: [
-              {
-                model: BookType,
-                as: 'BookType',
-                attributes: ['typeName'],
-                required: true
-              }
-            ]
-          }
-        ]
-      },
-      {
-        model: Employees,
-        as: 'Employee',
-        attributes: ['name', 'code'],
-        required: true
-      }
-    ]
-  });
-
-  const rows = loans.flatMap(loan =>
-    loan.LoanBooks.map(loanBook => ({
-      bookTitle: loanBook.Book?.title || '',
-      bookCode: loanBook.Book?.codeInventory || loanBook.bookCode || '',
-      partnerNumber: loan.Partner?.partnerNumber || '',
-      partnerName: `${loan.Partner?.surname || ''} ${loan.Partner?.name || ''}`,
-      partnerAddress: loan.Partner?.homeAddress || '',
-      retiredDate: formatDate(loan.retiredDate),
-      expectedDate: formatDate(loanBook.expectedDate),
-      returnedDate: formatDate(loanBook.returnedDate)
-    }))
-  );
-
-  return { rows, count };
+  return { rows: formattedRows, count };
 };
 
 export const getPhonePrintList = async (filters = {}) => {
   const { limit, offset } = filters;
 
-  const { rows: idRows, count } = await Loan.findAndCountAll({
-    subQuery: false,
-    attributes: ['id'],
+  const { rows, count } = await LoanBook.findAndCountAll({
+
+    attributes: [
+      'bookCode', 
+      'expectedDate',
+      [Sequelize.col('Book.titulo'), 'bookTitle'],
+      [Sequelize.col('Book.codigo'), 'bookCodeInventory'],
+      [Sequelize.col('Loan.Partner.numero'), 'partnerNumber'],
+      [Sequelize.col('Loan.Partner.apellido'), 'partnerSurname'],
+      [Sequelize.col('Loan.Partner.nombre'), 'partnerName'],
+      [Sequelize.col('Loan.Partner.tel_part'), 'partnerPhone'],
+      [Sequelize.col('Loan.FechaRetiro'), 'retiredDate'],
+    ],
     include: [
       {
-        model: LoanBook,
-        as: 'LoanBooks',
-        attributes: ['LoanBookId'],
-        required: true
+        model: Book,
+        as: 'Book',
+        attributes: [],
+        required: true,
+      },
+      {
+        model: Loan,
+        as: 'Loan',
+        attributes: [],
+        required: true,
+        include: [{
+          model: Partner,
+          as: 'Partner',
+          attributes: [],
+          required: true
+        }]
       }
     ],
-    distinct: true,
-    col: 'Id',
+    order: [[Sequelize.literal('"Loan->Partner"."numero"'), 'ASC']],
     limit,
-    offset
+    offset,
+    raw: true, 
   });
 
-  const ids = idRows.map(r => r.id);
+  const formattedRows = rows.map(r => ({
+    bookTitle: r.bookTitle || '',
+    bookCode: r.bookCodeInventory || r.bookCode || '',
+    partnerNumber: r.partnerNumber || '',
+    partnerName: `${r.partnerSurname || ''} ${r.partnerName || ''}`,
+    partnerPhone: r.partnerPhone || '',
+    retiredDate: formatDate(r.retiredDate),
+    expectedDate: formatDate(r.expectedDate)
+  }));
 
-  if (!ids.length) {
-    return { rows: [], count };
-  }
-
-  const loans = await Loan.findAll({
-    subQuery: false,
-    attributes: ['id', 'withdrawalTime', 'retiredDate'],
-    where: { id: ids },
-    include: [
-      {
-        model: LoanType,
-        as: 'LoanType',
-        attributes: ['description'],
-        required: true
-      },
-      {
-        model: Partner,
-        as: 'Partner',
-        attributes: [
-          'id',
-          'homePhone',
-          'homeAddress',
-          'name',
-          'surname',
-          'partnerNumber'
-        ],
-        required: true
-      },
-      {
-        model: LoanBook,
-        as: 'LoanBooks',
-        attributes: ['bookCode', 'expectedDate', 'returnedDate'],
-        required: true,
-        include: [
-          {
-            model: Book,
-            as: 'Book',
-            attributes: ['title', 'codeInventory'],
-            required: true,
-            include: [
-              {
-                model: BookType,
-                as: 'BookType',
-                attributes: ['typeName'],
-                required: true
-              }
-            ]
-          }
-        ]
-      },
-      {
-        model: Employees,
-        as: 'Employee',
-        attributes: ['name', 'code'],
-        required: true
-      }
-    ]
-  });
-
-  const rows = loans.flatMap(loan =>
-    loan.LoanBooks.map(loanBook => ({
-      bookTitle: loanBook.Book?.title || '',
-      bookCode: loanBook.Book?.codeInventory || loanBook.bookCode || '',
-      partnerNumber: loan.Partner?.partnerNumber || '',
-      partnerName: `${loan.Partner?.surname || ''} ${loan.Partner?.name || ''}`,
-      partnerPhone: loan.Partner?.homePhone || '',
-      retiredDate: formatDate(loan.retiredDate),
-      expectedDate: formatDate(loanBook.expectedDate)
-    }))
-  );
-
-  return { rows, count };
+  return { rows: formattedRows, count };
 };
 
 export const getPartnerPrintList = async (filters = {}) => {
   const { limit, offset } = filters;
 
-  const { rows: idRows, count } = await Partner.findAndCountAll({
-    attributes: ['id'],
-    include: [
-      {
-        model: Loan,
-        as: 'Loans',
-        attributes: [],
-        required: true,
-        include: [
-          {
-            model: LoanBook,
-            as: 'LoanBooks',
-            attributes: [],
-            required: true
-          }
-        ]
-      }
-    ],
-    distinct: true,
-    col: 'id',
-    limit,
-    offset
-  });
-
-  const partnerIds = idRows.map(r => r.id);
-
-  if (!partnerIds.length) {
-    return { rows: [], count };
-  }
-
-  const partners = await Partner.findAll({
-    where: { id: partnerIds },
+  const { rows, count } = await Partner.findAndCountAll({
     attributes: [
-      'id',
-      'homePhone',
-      'homeAddress',
-      'name',
+      'partnerNumber',
       'surname',
-      'partnerNumber'
+      'name',
+      'homeAddress',
+      'homePhone',
+      [Sequelize.fn('COUNT', Sequelize.col('Loans.LoanBooks.LoanBookId')), 'bookAmount']
     ],
-    include: [
-      {
-        model: Loan,
-        as: 'Loans',
-        required: true,
-        include: [
-          {
-            model: LoanBook,
-            as: 'LoanBooks',
-            required: true
-          }
-        ]
-      }
-    ]
+    include: [{
+      model: Loan,
+      as: 'Loans',
+      attributes: [],
+      required: true,
+      include: [{
+        model: LoanBook,
+        as: 'LoanBooks',
+        attributes: [],
+        required: true
+      }]
+    }],
+
+    group: ['Partner.id'],
+
+    order: [['partnerNumber', 'ASC']],
+
+    subQuery: false,
+    distinct: true,
+    limit,
+    offset,
+    raw: true
   });
 
+  const formattedRows = rows.map(p => ({
+    partnerNumber: p.partnerNumber || '',
+    partnerName: `${p.surname || ''} ${p.name || ''}`,
+    partnerAddress: p.homeAddress || '',
+    partnerPhone: p.homePhone || '',
+    bookAmount: parseInt(p.bookAmount, 10) || 0
+  }));
 
-  const rows = partners.map(partner => {
-    const bookAmount = partner.Loans.reduce(
-      (acc, loan) => acc + loan.LoanBooks.length,
-      0
-    );
+  const totalCount = Array.isArray(count) ? count.length : count;
 
-    return {
-      partnerNumber: partner.partnerNumber || '',
-      partnerName: `${partner.surname || ''} ${partner.name || ''}`,
-      partnerAddress: partner.homeAddress || '',
-      partnerPhone: partner.homePhone || '',
-      bookAmount
-    };
-  });
-
-  return { rows, count };
+  return { rows: formattedRows, count: totalCount };
 };
-
 
 export const create = async (loanData, transaction = null) => {
   return await Loan.create(loanData, { transaction });

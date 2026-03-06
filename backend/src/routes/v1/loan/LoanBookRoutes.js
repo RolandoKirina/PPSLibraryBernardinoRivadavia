@@ -2,22 +2,23 @@ import express from 'express';
 import validateIdParam from "../../../middlewares/ValidateId.js";
 
 import * as LoanBookController from '../../../controllers/loan/LoanBookController.js';
+import { authorizeRoles } from '../../../middlewares/authorizeRoles.js';
 
 const router = express.Router();
 
 
 
-router.get('/', LoanBookController.getAllLoanBooks);
+router.get('/', authorizeRoles(['admin']), LoanBookController.getAllLoanBooks);
 
-router.get('/repeated-book/:id', LoanBookController.verifyIfBookIsNotRepeated);
+router.get('/repeated-book/:id', authorizeRoles(['admin']), LoanBookController.verifyIfBookIsNotRepeated);
 
-router.get('/:id', validateIdParam("id"), LoanBookController.getLoanBook);
-router.post('/', LoanBookController.createLoanBook);
-router.put('/:id', validateIdParam("id"), LoanBookController.updateLoanBook);
+router.get('/:id', authorizeRoles(['admin']), validateIdParam("id"), LoanBookController.getLoanBook);
+router.post('/', authorizeRoles(['admin']), LoanBookController.createLoanBook);
+router.put('/:id', authorizeRoles(['admin']), validateIdParam("id"), LoanBookController.updateLoanBook);
 
 // quizás añadir patch
 // router.patch('/:id', LoanBookController.patchLoanBook);
 
-router.delete('/:id', validateIdParam("id"), LoanBookController.removeLoanBook);
+router.delete('/:id', authorizeRoles(['admin']), validateIdParam("id"), LoanBookController.removeLoanBook);
 
 export default router;

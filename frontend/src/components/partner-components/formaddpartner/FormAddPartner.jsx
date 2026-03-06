@@ -4,8 +4,10 @@ import Accordion from "../../generic/accordion/Accordion.jsx";
 import { useState, useEffect, useRef } from "react";
 import "../formeditpartner/FormEditPartner.css";
 import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
+import { useAuth } from "../../../auth/AuthContext.jsx";
 
-export default function FormAddPartner({ onPartnerCreated,employees }) {
+export default function FormAddPartner({ onPartnerCreated, employees }) {
+  const { auth } = useAuth();
   const [activeAccordion, setActiveAccordion] = useState(null);
   const entityManagerApi = useEntityManagerAPI("partners");
   const [error, setError] = useState("");
@@ -18,19 +20,27 @@ export default function FormAddPartner({ onPartnerCreated,employees }) {
   const [localities, setLocalities] = useState([]);
 
   const submittingRef = useRef(false);
-  
+
   const maritalstatus = "http://localhost:4000/api/v1/marital-statuses";
   const statepartners = "http://localhost:4000/api/v1/state-partners";
-  const partnerCategory = "http://localhost:4000/api/v1/partner-categories"  
-  const locality  = "http://localhost:4000/api/v1/localities";
+  const partnerCategory = "http://localhost:4000/api/v1/partner-categories"
+  const locality = "http://localhost:4000/api/v1/localities";
   useEffect(() => {
     async function loadOptions() {
       try {
+        const fetchOptions = {
+          method: 'GET',
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${auth.token}`
+          }
+        };
+
         const [catRes, stateRes, maritalRes, localityres] = await Promise.all([
-          fetch(partnerCategory),
-          fetch(statepartners),
-          fetch(maritalstatus),
-          fetch(locality)
+          fetch(partnerCategory, fetchOptions),
+          fetch(statepartners, fetchOptions),
+          fetch(maritalstatus, fetchOptions),
+          fetch(locality, fetchOptions)
         ]);
 
         const catJson = await catRes.json();
@@ -197,32 +207,32 @@ export default function FormAddPartner({ onPartnerCreated,employees }) {
               <label>Fecha de registro</label>
               <input type="date" name="registrationDate" value={formValues.registrationDate} readOnly />
             </div>
-            
-         <div className="form-details">
-            <label>Estado civil <span className='required'>*</span></label>
-            <select
-              name="MaritalStatusId"
-              value={formValues.MaritalStatusId}
-              onChange={handleChange}
-            >
-              <option value="">Estado civil</option>
-              {maritalStatuses?.map(ms => (
-                <option key={ms.id} value={ms.id}> {}
-                  {ms.statusName} {}
-                </option>
-              ))}
-            </select>
-          </div>
+
+            <div className="form-details">
+              <label>Estado civil <span className='required'>*</span></label>
+              <select
+                name="MaritalStatusId"
+                value={formValues.MaritalStatusId}
+                onChange={handleChange}
+              >
+                <option value="">Estado civil</option>
+                {maritalStatuses?.map(ms => (
+                  <option key={ms.id} value={ms.id}> { }
+                    {ms.statusName} { }
+                  </option>
+                ))}
+              </select>
+            </div>
             <div className="form-details">
               <label>Categoría <span className='required'>*</span></label>
               <select name="idCategory" value={formValues.idCategory} onChange={handleChange}>
-                  <option value="">Categoría</option>
-                  {categories?.map(cat => (
-                    <option key={cat.idCategory} value={cat.idCategory}>
-                      {cat.name}
-                    </option>
-                  ))}
-                </select>
+                <option value="">Categoría</option>
+                {categories?.map(cat => (
+                  <option key={cat.idCategory} value={cat.idCategory}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="form-details">
               <label>Nacionalidad</label>

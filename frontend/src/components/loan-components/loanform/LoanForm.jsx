@@ -22,7 +22,7 @@ import { useAuth } from '../../../auth/AuthContext.jsx';
 import PendingBooks from '../pendingBooks/PendingBooks.jsx';
 import PartnerMemo from '../partnermemo/PartnerMemo.jsx';
 
-export default function LoanForm({ method, createLoanItem, loanSelected, errorMessage }) {
+export default function LoanForm({ method, successMessage, createLoanItem, loanSelected, errorMessage }) {
   const chunkSize = 100;
   const rowsPerPage = 5;
   const [offsetActual, setOffsetActual] = useState(0);
@@ -90,7 +90,7 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
   }, []);
 
   useEffect(() => {
-    getLibraryBooks({bookTitle: bookTitleSearch, limit: chunkSize, offset: 0}, false);
+    getLibraryBooks({ bookTitle: bookTitleSearch, limit: chunkSize, offset: 0 }, false);
   }, [bookTitleSearch]);
 
 
@@ -99,9 +99,14 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
 
     const queryParams = new URLSearchParams(filters).toString();
 
-    const res = await fetch(`${BASE_URL}/books/withFields?${queryParams}`);
+    const res = await fetch(`${BASE_URL}/books/withFields?${queryParams}`, {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${auth.token}`
+      }
+    });
 
-    console.log(`${BASE_URL}/books/withFields?${queryParams}`);
     const { rows, total } = await res.json();
 
     setTotalLibraryBooks(total);
@@ -116,7 +121,14 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
 
     const queryParams = new URLSearchParams(filters).toString();
 
-    const res = await fetch(`${BASE_URL}/books/withFields/loan/${loanId}?${queryParams}`);
+    const res = await fetch(`${BASE_URL}/books/withFields/loan/${loanId}?${queryParams}`, {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${auth.token}`
+      }
+    });
+
     const { rows } = await res.json();
 
     setLoanBooksFetched(rows);
@@ -218,7 +230,13 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
 
   async function verifyIfExists(bookId) {
     try {
-      const res = await fetch(`${BASE_URL}/loan-books/repeated-book/${bookId}`);
+      const res = await fetch(`${BASE_URL}/loan-books/repeated-book/${bookId}`, {
+        method: 'GET',
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${auth.token}`
+        }
+      });
       if (!res.ok) throw new Error("Error al obtener datos");
       const data = await res.json();
       return data;
@@ -500,6 +518,8 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
 
             <div className='reader-error'>{errorMessage && <p className="">{errorMessage}</p>}</div>
 
+
+
             <div className='lend-books-container'>
               <h2 className='lend-books-title'>Libros a Prestar</h2>
 
@@ -531,6 +551,10 @@ export default function LoanForm({ method, createLoanItem, loanSelected, errorMe
 
 
             </div>
+
+            {successMessage && (
+              <div className='sucess-message'>{successMessage && <p className="">{successMessage}</p>}</div>
+            )}
 
             <div className='save-changes-lend-books'>
               <div className='validate-error'>

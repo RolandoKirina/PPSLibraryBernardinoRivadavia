@@ -4,8 +4,23 @@ import Btn from '../../common/btn/Btn';
 import printIcon from '../../../assets/img/print-icon.svg';
 import { titlesByType } from '../../../data/generatedlist/generatedList';
 
-export default function GenerateListPopup({ dataByType, totalItems, columnsByType, typeList, title, feeDates, handleChangePage, loading, resetPageTrigger, rowsPerPage, others }) {
+// Agregamos onPrint a las props que recibe el componente
+export default function GenerateListPopup({
+    dataByType,
+    totalItems,
+    columnsByType,
+    typeList,
+    title,
+    feeDates,
+    handleChangePage,
+    loading,
+    resetPageTrigger,
+    rowsPerPage,
+    others,
+    onPrint // <--- Recibimos la prop aquí
+}) {
 
+    console.log(totalItems);
     return (
         <>
             <div className='generate-list-container'>
@@ -21,16 +36,22 @@ export default function GenerateListPopup({ dataByType, totalItems, columnsByTyp
                             minute: '2-digit'
                         })}
                         </h4>
+
                         {(typeList === 'TypeOneFees' || typeList === 'TypeTwoFees') && (
                             <h4>Entre el: {feeDates.beforeDate} y el: {feeDates.afterDate}</h4>
                         )}
 
-                        {/* añadir fecha y hora y num pagina */}
-
                         {dataByType.length > 0 ? (
-                            <Table columns={columnsByType} data={dataByType} isPrintList={true} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger} rowsPerPage={rowsPerPage}>
-
-
+                            <Table
+                                columns={columnsByType}
+                                data={dataByType}
+                                isPrintList={true}
+                                totalItems={totalItems}
+                                handleChangePage={handleChangePage}
+                                loading={loading}
+                                resetPageTrigger={resetPageTrigger}
+                                rowsPerPage={rowsPerPage}
+                            >
                                 {typeList === 'TypeOneFees' &&
                                     others?.totalFees != null &&
                                     others?.totalAmount != null && (
@@ -39,7 +60,6 @@ export default function GenerateListPopup({ dataByType, totalItems, columnsByTyp
                                             <span>Monto total: {others.totalAmount}</span>
                                         </div>
                                     )}
-
 
                                 {typeList === 'TypeTwoFees' && (
                                     <div className='fees-info'>
@@ -56,11 +76,17 @@ export default function GenerateListPopup({ dataByType, totalItems, columnsByTyp
                     </div>
 
                     <div className='print-icon-btn'>
-                        <Btn onClick={() => window.print()} variant={'primary'} text={'Imprimir'} icon={<img src={printIcon} alt='printIcon' />} />
+                        {/* Cambiamos window.print() por onPrint. 
+                           Añadimos un check por si acaso la prop no viene (onPrint && onPrint())
+                        */}
+                        <Btn
+                            onClick={() => onPrint && onPrint()}
+                            variant={'primary'}
+                            text={'Generar PDF'}
+                            icon={<img src={printIcon} alt='printIcon' />}
+                        />
                     </div>
-
                 </div>
-
             </div>
         </>
     )

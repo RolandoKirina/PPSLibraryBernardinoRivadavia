@@ -12,21 +12,19 @@ import Return from "../../components/loan-components/return/Return";
 import Renewe from "../../components/loan-components/renewe/Renewe";
 import ShowDetails from "../../components/generic/ShowDetails/ShowDetails";
 import GenericSection from "../../components/generic/GenericSection/GenericSection";
-import GenericForm from "../../components/generic/GenericForm/GenericForm";
-import { editLoanformFields } from "../../data/forms/LoanForms";
 import { loanDetailsInfo } from '../../data/showdetails/LoanDetails';
 import PopUpDelete from '../../components/common/deletebtnComponent/PopUpDelete';
 import { useEffect } from "react";
 import { useAuth } from "../../auth/AuthContext";
 import { useEntityManagerAPI } from "../../hooks/useEntityManagerAPI";
 import LoanBooks from "../../components/loan-components/loanbooks/LoanBooks";
+import roles from "../../auth/roles";
 
 export default function LoanSection({ openRenewes, pendientBooks }) {
     const chunkSize = 100;
     const rowsPerPage = 5;
     const [offsetActual, setOffsetActual] = useState(0);
     const [resetPageTrigger, setResetPageTrigger] = useState(0);
-
 
     const [selected, setSelected] = useState(null);
     const [deletePopup, setDeletePopup] = useState(false);
@@ -43,6 +41,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
     const { auth, logout } = useAuth();
 
     const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
     const {
         items,
@@ -68,7 +67,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
 
             setResetPageTrigger(prev => prev + 1);
 
-            getItems({ ...filters, sortBy: 'id',direction: 'asc', limit: chunkSize, offset: 0 });
+            getItems({ ...filters, sortBy: 'id', direction: 'asc', limit: chunkSize, offset: 0 });
         }, 500);
 
         return () => clearTimeout(delay);
@@ -87,39 +86,58 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
 
     async function handleAddItem(data) {
         try {
-            await createItem(data);
+            const res = await createItem(data);
 
-            await getItems({ ...filters, sortBy: 'id',direction: 'asc', limit: chunkSize, offset: 0 });
+            if (res) {
+                setSuccessMessage("Prestamo creado exitosamente");
+                
+                setTimeout(() => {
+                    setAddPopup(false);
 
-            setAddPopup(false);
+                    setSuccessMessage('');
 
-            setErrorMessage(null);
+                    setErrorMessage(null);
+                }, 1500);
+
+                await getItems({ ...filters, sortBy: 'id', direction: 'asc', limit: chunkSize, offset: 0 });
+            }
+
         }
         catch (error) {
             setErrorMessage(error.message);
+            setSuccessMessage('');
             console.error("Error al crear un Prestamo:", error);
         }
     }
 
     async function handleUpdateItem(data) {
         try {
-            await updateItem(selected.loanId, data);
+            const res = await updateItem(selected.loanId, data);
 
-            await getItems({ ...filters, sortBy: 'id',direction: 'asc', limit: chunkSize, offset: 0 });
+            if (res) {
+                setSuccessMessage("Prestamo actualizado exitosamente");
 
-            setEditPopup(false);
+                setTimeout(() => {
+                    setEditPopup(false);
 
-            setErrorMessage(null);
+                    setSuccessMessage('');
+
+                    setErrorMessage(null);
+                }, 1500);
+
+                await getItems({ ...filters, sortBy: 'id', direction: 'asc', limit: chunkSize, offset: 0 });
+            }
         }
         catch (error) {
             setErrorMessage(error.message);
+            setSuccessMessage('');
             console.error("Error al actualizar un Prestamo:", error);
         }
     }
 
     let columns = [];
 
-    if (auth.role === 'admin') {
+    if (auth.role === roles.admin) {
         columns = [
             { header: 'CodigoPrestamo', accessor: 'loanId' },
             { header: 'Nombre Socio', accessor: 'name' },
@@ -180,12 +198,13 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
             }
         ];
     }
-    else if (auth.role === 'user') {
+    else if (auth.role === roles.partner) {
         columns = [
             { header: 'Nombre Socio', accessor: 'name' },
             { header: 'Fecha retiro', accessor: 'retiredDate' },
             { header: 'Fecha limite', accessor: 'plannedDate' },
             { header: 'Fecha devolución', accessor: 'returnedDate' },
+            { header: 'Empleado', accessor: 'employee' },
             {
                 header: 'Ver libros',
                 accessor: 'books',
@@ -224,9 +243,10 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
             key: 'editPopup',
             title: 'Editar préstamo',
             className: 'loans-background',
-            content: <LoanForm method="update" createLoanItem={handleUpdateItem} loanSelected={selected} errorMessage={errorMessage} />,
+            content: <LoanForm successMessage={successMessage} method="update" createLoanItem={handleUpdateItem} loanSelected={selected} errorMessage={errorMessage} />,
             close: () => {
                 setEditPopup(false)
+                setSuccessMessage('');
                 setErrorMessage(null);
             },
             condition: editPopup
@@ -235,9 +255,10 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
             key: 'addPopup',
             title: 'Agregar préstamo',
             className: 'loans-background',
-            content: <LoanForm createLoanItem={handleAddItem} errorMessage={errorMessage} />,
+            content: <LoanForm successMessage={successMessage} createLoanItem={handleAddItem} errorMessage={errorMessage} />,
             close: () => {
                 setAddPopup(false)
+                setSuccessMessage('');
                 setErrorMessage(null);
             },
             condition: addPopup
@@ -286,7 +307,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
 
     return (
         <>
-            <GenericSection title={auth.role === 'admin' ? 'Listado de préstamos' : 'Listado de tus préstamos'} filters={<LoanFilter onFilterChange={setFilters} />} columns={columns} data={items} popups={loanPopups} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger}
+            <GenericSection title={auth.role === roles.admin ? 'Listado de préstamos' : 'Listado de tus préstamos'} filters={<LoanFilter onFilterChange={setFilters} />} columns={columns} data={items} popups={loanPopups} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger}
                 actions={
                     <LoanButtons
                         displayLoanform={() => setAddPopup(true)}

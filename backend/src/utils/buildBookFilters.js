@@ -151,6 +151,8 @@ export const buildFilterLostBook = (query) => {
 
   whereBooks.lost = true;
 
+  whereBooks.lossDate = { [Op.ne]: null };
+
   if (lossStartDate) {
     const start = new Date(lossStartDate);
     start.setHours(0, 0, 0, 0); // inicio del día
@@ -174,39 +176,30 @@ export const buildFilterLostBook = (query) => {
     case "Apellido Socio":
       order = [
         [
-          { model: LoanBook, as: 'BookLoans' },
-          { model: Loan, as: 'Loan' },
-          { model: Partner, as: 'Partner' },
+          { model: Partner, as: 'LostPartner' },
           'surname',
           directionNormalized
         ]
       ];
       break;
+
     case "Número Socio":
-      order = [
-        [
-          { model: LoanBook, as: 'BookLoans' },
-          { model: Loan, as: 'Loan' },
-          { model: Partner, as: 'Partner' },
-          'partnerNumber',
-          directionNormalized
-        ]
-      ];
+      order = [['lostPartnerNumber', directionNormalized]];
       break;
+
     case "Código Libro":
       order = [['codeInventory', directionNormalized]];
       break;
+
     case "Título Libro":
       order = [['title', directionNormalized]];
       break;
+
     case "Fecha pérdida":
-      order = [['lossDate', directionNormalized]];
-      break;
     default:
       order = [['lossDate', directionNormalized]];
       break;
   }
-
 
   const parsedLimit = parseInt(limit);
   const parsedOffset = parseInt(offset);

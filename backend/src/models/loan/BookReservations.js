@@ -1,7 +1,5 @@
 import sequelize from "../../configs/database.js";
 import { DataTypes } from "sequelize";
-import Book from "../book/Book.js";
-import Reservations from "./Reservations.js";
 
 const BookReservations = sequelize.define("BookReservations", 
     {

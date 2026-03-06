@@ -5,7 +5,7 @@ export default function applyRelationships(models) {
     BookTypeGroup, BookTypeGroupList, Employees,
     Partner, PartnerCategory, Reader, ReaderBook, reasonForWithDrawal,
     statePartner, Locality, MaritalStatus,
-    Fees, typeDocument
+    Fees, typeDocument, User, Role, UserRole
   } = models;
 
   Author.hasMany(BookAuthor, { as: "BookAuthors", foreignKey: "authorCode", sourceKey: "id" });
@@ -13,6 +13,13 @@ export default function applyRelationships(models) {
 
   Book.hasMany(BookAuthor, { as: "BookAuthors", foreignKey: "BookId", sourceKey: "BookId" });
   BookAuthor.belongsTo(Book, { as: "Book", foreignKey: "BookId", targetKey: "BookId" });
+
+  Book.belongsTo(Partner, {
+    foreignKey: 'lostPartnerNumber',
+    targetKey: 'partnerNumber',
+    as: 'LostPartner',
+    constraints: false 
+  });
 
   LoanType.hasMany(Loan, { as: "Loans", foreignKey: "loanType", sourceKey: "id" });
   Loan.belongsTo(LoanType, { as: "LoanType", foreignKey: "loanType", targetKey: "id" });
@@ -28,7 +35,7 @@ export default function applyRelationships(models) {
 
   Employees.hasMany(ReaderBook, { as: "ReaderBooks", foreignKey: "employeeId", sourceKey: "id" });
   ReaderBook.belongsTo(Employees, { as: "Employee", foreignKey: "employeeId", targetKey: "id" });
-  
+
   Book.hasMany(ReaderBook, { as: "BookReaders", foreignKey: "BookId", sourceKey: "BookId" });
   ReaderBook.belongsTo(Book, { as: "Book", foreignKey: "BookId", targetKey: "BookId" });
 
@@ -79,4 +86,15 @@ export default function applyRelationships(models) {
 
   typeDocument.hasMany(Partner, { as: "Partners", foreignKey: "documentType", sourceKey: "Id" });
   Partner.belongsTo(typeDocument, { as: "TypeDocument", foreignKey: "documentType", targetKey: "Id" });
+
+  User.hasMany(UserRole, { as: "UserRoles", foreignKey: "userId", sourceKey: "id" });
+  UserRole.belongsTo(User, { as: "User", foreignKey: "userId", targetKey: "id" });
+
+  Role.hasMany(UserRole, { as: "UserRoles", foreignKey: "roleId", sourceKey: "id" });
+  UserRole.belongsTo(Role, { as: "Role", foreignKey: "roleId", targetKey: "id" });
+
+  User.hasOne(Partner, { as: "Partner", foreignKey: "idUser", sourceKey: "id" });
+  Partner.belongsTo(User, { as: "User", foreignKey: "idUser", targetKey: "id" });
+
+
 }

@@ -57,7 +57,13 @@ export default function EmployeeLoansGraphic() {
         ? `?${new URLSearchParams(cleanFilters).toString()}`
         : "";
 
-      const response = await fetch((`${URL}${query}`));
+      const response = await fetch((`${URL}${query}`, {
+        method: 'GET',
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${auth.token}`
+        }
+      }));
 
       if (!response.ok) throw new Error(`Response status: ${response.status}`);
 
@@ -195,8 +201,6 @@ export default function EmployeeLoansGraphic() {
     }
 
     setFormValues(data);
-
-    console.log(data);
 
     try {
       // const loansData = await getItems();

@@ -2,7 +2,7 @@ import sequelize from "../../configs/database.js";
 import { DataTypes } from "sequelize";
 import Book from "../book/Book.js";
 
-const BookAuthor = sequelize.define("BookAuthor", 
+const BookAuthor = sequelize.define("BookAuthor",
     {
         bookAuthorId: {
             type: DataTypes.INTEGER,
@@ -13,12 +13,17 @@ const BookAuthor = sequelize.define("BookAuthor",
         BookId: {
             type: DataTypes.INTEGER,
             field: 'BookId',
-            allowNull: false 
-        },   
+            allowNull: false
+        },
         authorCode: {
             type: DataTypes.INTEGER,
             field: "CodAutor",
             allowNull: false
+        },
+        legacyAuthorCode: {
+            type: DataTypes.INTEGER,
+            field: "legacyCodAuthor",
+            allowNull: true
         },
         position: {
             type: DataTypes.INTEGER,
@@ -31,7 +36,7 @@ const BookAuthor = sequelize.define("BookAuthor",
         freezeTableName: true,
         timestamps: false,
         logging: true,
-        
+
     }
 );
 

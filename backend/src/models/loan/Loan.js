@@ -1,8 +1,5 @@
 import sequelize from "../../configs/database.js";
 import { DataTypes } from "sequelize";
-import Partner from "../partner/Partner.js";
-import Employees from "../options/Employees.js";
-import LoanType from "./LoanType.js";
 
 const Loan = sequelize.define("Loan", {
   id: {
@@ -11,10 +8,14 @@ const Loan = sequelize.define("Loan", {
     type: DataTypes.INTEGER,
     field: "Id"
   },
+  legacyLoanId: {
+    type: DataTypes.INTEGER,
+    field: "legacyId"
+  },
   partnerId: {
     type: DataTypes.INTEGER,
-    field: "partnerId",
-    allowNull: false
+    field: "NumSocio",  //cambiar a numsocio
+    allowNull: true //cambiar a true
   },
   loanType: {
     type: DataTypes.INTEGER,

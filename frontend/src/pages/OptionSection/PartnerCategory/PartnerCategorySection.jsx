@@ -23,6 +23,9 @@ export default function PartnerCategorySection() {
     const [selected, setSelected] = useState(null);
     const [errorMessage, setErrorMessage] = useState(false);
 
+    const [successMessage, setSuccessMessage] = useState('');
+
+
     const [filters, setFilters] = useState({});
 
 
@@ -40,32 +43,51 @@ export default function PartnerCategorySection() {
 
     async function handleAddItem(data) {
         try {
-            await createItem(data);
+            const res = await createItem(data);
+
+            if (res) {
+                setSuccessMessage("Categoria de socio creada exitosamente");
+
+                setTimeout(() => {
+                    setAddPopup(false);
+
+                    setSuccessMessage('');
+
+                    setErrorMessage(null);
+                }, 1500);
+            }
 
             await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
 
-            setAddPopup(false);
-
-            setErrorMessage(null);
         }
         catch (error) {
             setErrorMessage(error.message);
+            setSuccessMessage('');
             console.error("Error al crear una categoria de socio:", error);
         }
     }
 
     async function handleEditItem(data) {
         try {
-            await updateItem(selected.idCategory, data);
+            const res = await updateItem(selected.idCategory, data);
+
+            if (res) {
+                setSuccessMessage("Categoria de socio actualizada exitosamente");
+
+                setTimeout(() => {
+                    setEditPopup(false);
+
+                    setSuccessMessage('');
+
+                    setErrorMessage(null);
+                }, 1500);
+            }
 
             await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
-
-            setEditPopup(false);
-
-            setErrorMessage(null);
         }
         catch (error) {
             setErrorMessage(error.message);
+            setSuccessMessage('');
             console.error("Error al actualizar una categoria de socio:", error);
         }
     }
@@ -113,7 +135,7 @@ export default function PartnerCategorySection() {
             key: 'editPopup',
             title: 'Editar categoria de socio',
             className: '',
-            content: <GenericForm fields={partnerCategoryFields} onSubmit={(data) => handleEditItem(data)} error={errorMessage} />,
+            content: <GenericForm fields={partnerCategoryFields} onSubmit={(data) => handleEditItem(data)} error={errorMessage} successMessage={successMessage} />,
             close: () => {
                 setEditPopup(false)
                 setErrorMessage(null)
@@ -124,7 +146,7 @@ export default function PartnerCategorySection() {
             key: 'addPopup',
             title: 'Agregar categoria de socio',
             className: '',
-            content: <GenericForm fields={partnerCategoryFields} onSubmit={(data) => handleAddItem(data)} error={errorMessage} />,
+            content: <GenericForm fields={partnerCategoryFields} onSubmit={(data) => handleAddItem(data)} error={errorMessage} successMessage={successMessage} />,
             close: () => {
                 setAddPopup(false)
                 setErrorMessage(null)

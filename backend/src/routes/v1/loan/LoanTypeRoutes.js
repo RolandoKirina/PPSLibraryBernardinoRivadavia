@@ -3,16 +3,18 @@ import validateIdParam from "../../../middlewares/ValidateId.js";
 
 import * as LoanTypeController from '../../../controllers/loan/LoanTypeController.js';
 
+import { authorizeRoles } from '../../../middlewares/authorizeRoles.js';
+
 const router = express.Router();
 
-router.get('/', LoanTypeController.getAllLoanTypes);
-router.get('/:id', validateIdParam("loanTypeId"), LoanTypeController.getLoanType);
-router.post('/', LoanTypeController.createLoanType);
-router.put('/:id', validateIdParam("loanTypeId"), LoanTypeController.updateLoanType);
+router.get('/', authorizeRoles(['admin']), LoanTypeController.getAllLoanTypes);
+router.get('/:id', authorizeRoles(['admin']), validateIdParam("loanTypeId"), LoanTypeController.getLoanType);
+router.post('/', authorizeRoles(['admin']), LoanTypeController.createLoanType);
+router.put('/:id', authorizeRoles(['admin']), validateIdParam("loanTypeId"), LoanTypeController.updateLoanType);
 
 // quizás añadir patch
 // router.patch('/:id', LoanTypeController.patchLoanType);
 
-router.delete('/:id', validateIdParam("loanTypeId"), LoanTypeController.removeLoanType);
+router.delete('/:id', authorizeRoles(['admin']), validateIdParam("loanTypeId"), LoanTypeController.removeLoanType);
 
 export default router;

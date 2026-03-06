@@ -3,9 +3,10 @@ import { useState } from 'react';
 import bookIcon from '../../../assets/img/book-icon.svg';
 import personIcon from '../../../assets/img/person-icon.svg';
 import Btn from '../../common/btn/Btn';
+import { useAuth } from '../../../auth/AuthContext';
 
 export default function PartnersBooks() {
-    
+    const { auth } = useAuth();
     const [formValues, setFormValues] = useState({});
     const [error, setError] = useState(null);
     const [data, setData] = useState({ totalBooks: 0, totalPartners: 0 });
@@ -34,7 +35,13 @@ export default function PartnersBooks() {
 
             const url = `http://localhost:4000/api/v1/books/partners-books?${params.toString()}`;
 
-            const res = await fetch(url);
+            const res = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${auth.token}`
+                }
+            });
 
             if (!res.ok) {
                 const errorData = await res.json().catch(() => ({ msg: "Error inesperado del servidor" }));
@@ -59,7 +66,7 @@ export default function PartnersBooks() {
         <div className='partners-books-container'>
             <div className='partners-books-filters'>
                 <form onSubmit={handleSubmit}>
-                    
+
                     <div className='partners-books-filter-option'>
                         <div className='partners-books-filter-title'>
                             <h3>Fecha de retiro</h3>

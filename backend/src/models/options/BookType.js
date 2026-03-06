@@ -1,28 +1,32 @@
 import sequelize from '../../configs/database.js';
 import { DataTypes } from "sequelize";
 
-const BookType = sequelize.define("BookType", 
-{
-    bookTypeId: {
-        autoIncrement: true,
-        primaryKey: true,
-        type: DataTypes.INTEGER,
-        field: "Id"
+const BookType = sequelize.define("BookType",
+    {
+        bookTypeId: {
+            autoIncrement: true,
+            primaryKey: true,
+            type: DataTypes.INTEGER,
+            field: "Id"
+        },
+        legacyBookTypeId: {
+            type: DataTypes.INTEGER,
+            field: "legacyBookTypeId"
+        },
+        typeName: {
+            type: DataTypes.STRING(50),
+            field: "TipoLibro"
+        },
+        loanDays: {
+            type: DataTypes.INTEGER,
+            field: "DiasPrestamo"
+        }
     },
-    typeName: {
-        type: DataTypes.STRING(50),
-        field: "TipoLibro"
-    },
-    loanDays: {
-        type: DataTypes.INTEGER,
-        field: "DiasPrestamo"
-    }
-},
-{
-    underscored: true,
-    tableName: "TipoLibro",
-    timestamps: false,
-    logging: true
-});
+    {
+        underscored: true,
+        tableName: "TipoLibro",
+        timestamps: false,
+        logging: true
+    });
 
 export default BookType;
