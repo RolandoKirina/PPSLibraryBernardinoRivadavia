@@ -12,7 +12,7 @@ const Authors = sequelize.define("Authors",
         legacyAuthorCode: {
             type: DataTypes.INTEGER,
             field: "CodAutor",
-            allowNull: false
+            allowNull: true
         },
         name: {
             type: DataTypes.STRING(100),

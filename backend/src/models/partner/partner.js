@@ -150,4 +150,20 @@ const Partner = sequelize.define("Partner", {
         logging: true
     });
 
+Partner.beforeCreate(async (partner, options) => {
+    // 1. Buscamos el número más alto actual
+    const lastPartner = await Partner.findOne({
+        attributes: ['partnerNumber'],
+        order: [['partnerNumber', 'DESC']],
+        transaction: options.transaction // Importante para evitar colisiones
+    });
+
+    // 2. Si no hay socios, empezamos en 1 (o el número que prefieras)
+    // Si hay, sumamos 1 al último
+    const nextNumber = lastPartner ? lastPartner.partnerNumber + 1 : 1;
+
+    // 3. Asignamos el valor al campo antes de que se guarde
+    partner.partnerNumber = nextNumber;
+});
+
 export default Partner;

@@ -23,7 +23,7 @@ const BookAuthor = sequelize.define("BookAuthor",
         legacyAuthorCode: {
             type: DataTypes.INTEGER,
             field: "legacyCodAuthor",
-            allowNull: false
+            allowNull: true
         },
         position: {
             type: DataTypes.INTEGER,

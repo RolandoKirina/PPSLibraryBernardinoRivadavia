@@ -100,3 +100,7 @@
 .main-author-books .save-changes-lend-books {
     margin-bottom: 0;
 }
+
+.author-books-container .table-data-info {
+    color: var(--white);
+}
