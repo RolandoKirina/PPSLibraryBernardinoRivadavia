@@ -1,30 +1,55 @@
 import './PrintPartnerPopup.css';
 import Btn from '../../common/btn/Btn';
-//import { mockPartnersCategory } from '../../../data/mocks/partnersCategory';
-//import { mockRemovePartnerReason } from '../../../data/mocks/removePartnerReason';
 import { useState } from 'react';
 import { listOptions, sortOptions, dataByType, columnsByType } from '../../../data/generatedlist/generatedList';
 import GenerateListPopup from '../../common/generatelistpopup/GenerateListPopup';
 import { useEffect } from 'react';
+import {useAuth} from '../../../auth/AuthContext';
+import { generateUniversalPDF } from '../../../utils/pdfGenerator';
 
 export default function PrintPartnerPopup({categoriespartner, statespartner}) {
-
+    const {auth} = useAuth();
     const [removePartnerReasons,setRemovePartnerReason] = useState([]);
-    const [employees,setEmployees] = useState([]);
     const [formValues, setFormValues] = useState({});
     const [resultprint,setresultprint] = useState([]);
+    const [totalItems, setTotalItems] = useState(0);
+    const [loading,setLoading] = useState(false);
+
+    const handlePrint = () => {
+
+                if (!resultprint || resultprint.length === 0) return;
+
+                const title = formValues.listTitle || 'Listado de socios';
+                const config = columnsByType["partner"];
+                console.log(config)
+                const headers = config.map(col => col.label || col.text || col.header || "Column");
+
+                const data = resultprint.map(item => {
+                    return config.map(col => {
+                        const key = col.key || col.dataKey || col.field || col.accessor;
+                        return item[key] ?? '';
+                    });
+                });
+
+                generateUniversalPDF(title, headers, data, `report_partners`);
+    };
 
     useEffect(() => {
         async function loadApis(){
             try {
-                const [reasonwithdrawal, resEmployees] = await Promise.all([
-                    fetch("http://localhost:4000/api/v1/reason-for-withdrawal"),
-                    fetch("http://localhost:4000/api/v1/employees")
-                ]); 
+                const [reasonwithdrawal] = await Promise.all([
+                    fetch("http://localhost:4000/api/v1/reason-for-withdrawal", {
+                        headers: {
+                            Authorization: `Bearer ${auth.token}`
+                        }
+                    }), fetch("http://localhost:4000/api/v1/employees", {
+                        headers: {
+                            Authorization: `Bearer ${auth.token}`
+                        }
+                    })
+                ]);
                 const resWithdrawal = await reasonwithdrawal.json();
-                const resEmployeesJson = await resEmployees.json();
                 setRemovePartnerReason(resWithdrawal);
-                setEmployees(resEmployeesJson);
             }
             catch(e){
                 console.log(e);
@@ -33,24 +58,32 @@ export default function PrintPartnerPopup({categoriespartner, statespartner}) {
       loadApis();
     }, []);
 
-
     async function printList(data){
             try {
-
+                setLoading(true);
                 const queryParams = new URLSearchParams(data).toString();
 
                 const res = await fetch(
-                `http://localhost:4000/api/v1/partner/printlist?${queryParams}`
+                `http://localhost:4000/api/v1/partner/printlist?${queryParams}`,
+                    {
+                        headers: {
+                                Authorization: `Bearer ${auth.token}`
+                        }
+                    }  
                 );
 
                 const reslist = await res.json();
-
-                setresultprint(reslist);
+                setresultprint(reslist.rows);
+                setTotalItems(reslist.count);
                 console.log(resultprint)
             } catch(e){
+                setLoading(false);
+
                 console.log(e);
+                
             }
     }
+
     const handleSubmit = (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -98,9 +131,9 @@ export default function PrintPartnerPopup({categoriespartner, statespartner}) {
                                         </div>
 
                                         <div className="input">
-                                            <label htmlFor="status">Estado</label>
+                                            <label htmlFor="idState">Estado</label>
 
-                                            <select id="status" name='status'>
+                                            <select id="idState" name='idState'>
                                                 <option value=''>Estado</option>
                                                 {statespartner?.map((state,index) => (
                                                     <option key={index} value={state.idState}>
@@ -138,7 +171,7 @@ export default function PrintPartnerPopup({categoriespartner, statespartner}) {
                                             <div>
                                                 <label htmlFor="registrationStart">Desde</label>
                                                 <input id="registrationStart" name="registrationStart" type="date" />
-                                                <label htmlFor="registrationEnd">Desde</label>
+                                                <label htmlFor="registrationEnd">Hasta</label>
                                                 <input id="registrationEnd" name="registrationEnd" type="date" />
                                             </div>
                                         </div>
@@ -157,8 +190,8 @@ export default function PrintPartnerPopup({categoriespartner, statespartner}) {
                                             <label htmlFor="removeReason">Motivo de baja</label> 
                                             <select id="removeReason" name='removeReason'>
                                                 <option value=''>Elegir</option>
-                                                {removePartnerReasons.map((removeReason, index) => (
-                                                    <option key={index} value={removeReason.reason}>
+                                               {removePartnerReasons?.map((removeReason) => (
+                                                    <option key={removeReason.idReason} value={removeReason.idReason}>
                                                         {removeReason.reason}
                                                     </option>
                                                 ))}
@@ -236,11 +269,11 @@ export default function PrintPartnerPopup({categoriespartner, statespartner}) {
                                             </div>
                                         </div>
                                         <div className="input">
-                                            <label htmlFor="orderBy">Ordenado por: </label>
-                                            <select id="orderBy" name='orderBy'>
+                                            <label htmlFor="sortBy">Ordenado por: </label>
+                                            <select id="sortBy" name='sortBy'>
                                                 <option value=''>Elegir</option>
                                                 {sortOptions.map((sortOption, index) => (
-                                                    <option key={index} value="sortOption.value">{sortOption.label}</option>
+                                                    <option key={index} value={sortOption.value}>{sortOption.label}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -263,10 +296,18 @@ export default function PrintPartnerPopup({categoriespartner, statespartner}) {
                         </div>
                     </div>
 
-
                 </div>
                 <div className='preview-list-container'>
-                    <GenerateListPopup data={resultprint} dataByType={dataByType} columnsByType={columnsByType} typeList={formValues.listType ? formValues.listType : 'TypeOne'} title={formValues.listTitle} />
+                    <GenerateListPopup 
+                        dataByType={resultprint}
+                        totalItems={totalItems}
+                        columnsByType={columnsByType["partner"]}
+                        typeList={formValues.listType}
+                        title={formValues.listTitle}
+                        loading={false}
+                        rowsPerPage={30}
+                        onPrint={handlePrint}
+                    />
                 </div>
             </div>
 

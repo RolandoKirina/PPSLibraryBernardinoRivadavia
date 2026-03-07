@@ -1,15 +1,47 @@
 import Partner from '../../models/partner/Partner.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
-import { fn, col } from 'sequelize';
 
 export const printList = async(filters) =>{
-  const { wherePartner, limit, offset, order } = filters;
+  const { wherePartner, whereBook, limit, offset, order } = filters;
 
   const query = {};
 
   if (wherePartner && Object.keys(wherePartner).length) {
     query.where = wherePartner;
   }
+
+  const bookIds = await Book.findAll({
+    attributes: ['id'],
+    subQuery: false,
+    where: {
+      ...whereCodeInventory,
+      ...whereCodeCDU,
+      ...whereCodeSignature,
+      ...whereBookTitle,
+      ...whereEdition,
+      ...whereYearEdition,
+      ...whereNumberEdition,
+    },
+    include: [
+      {
+        model: BookAuthor,
+        as: 'BookAuthors',
+        required: hasAuthorFilter,
+        include: [
+          {
+            model: Authors,
+            as: 'Author',
+            where: whereAuthor,
+            required: hasAuthorFilter
+          }
+        ]
+      }
+    ],
+    order,
+    limit,
+    offset,
+    raw: true
+  });
 
   if (Number.isInteger(limit)) {
     query.limit = limit;
@@ -30,7 +62,6 @@ export const printList = async(filters) =>{
     count
   };
 }
-
 
 export const getCountRetiredBooks = async (min, max) => {
   const results = await sequelize.query(

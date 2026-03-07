@@ -4,7 +4,6 @@ import Btn from '../../common/btn/Btn';
 import printIcon from '../../../assets/img/print-icon.svg';
 import { titlesByType } from '../../../data/generatedlist/generatedList';
 
-// Agregamos onPrint a las props que recibe el componente
 export default function GenerateListPopup({
     dataByType,
     totalItems,
@@ -17,10 +16,9 @@ export default function GenerateListPopup({
     resetPageTrigger,
     rowsPerPage,
     others,
-    onPrint // <--- Recibimos la prop aquí
+    onPrint
 }) {
 
-    console.log(totalItems);
     return (
         <>
             <div className='generate-list-container'>
@@ -76,9 +74,7 @@ export default function GenerateListPopup({
                     </div>
 
                     <div className='print-icon-btn'>
-                        {/* Cambiamos window.print() por onPrint. 
-                           Añadimos un check por si acaso la prop no viene (onPrint && onPrint())
-                        */}
+
                         <Btn
                             onClick={() => onPrint && onPrint()}
                             variant={'primary'}

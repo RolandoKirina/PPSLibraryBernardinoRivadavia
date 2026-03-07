@@ -48,16 +48,15 @@ export const buildListPartnerFilters = (query) => {
     registrationEnd,
     resignationStart,
     resignationEnd,
-    reasonwithdrawal,
+    removeReason,
     presentedBy,
     cduCodeMin,
     cduCodeMax,
+    unpaidQuotesMin, 
+    unpaidQuotesMax,
     quantityretiredbooksmin,
     quantityretiredbooksmax,
-    retiredBooksMin,
-    retiredBooksMax,
-    minUnpaidFees,
-    maxUnpaidFees,
+
     pendingBooks,
     limit,
     offset,
@@ -78,7 +77,6 @@ const sortFields = [
   { label: 'Número de Socio', value: 'partnerNumber' }
 ];
 
-  
   const wherePartner = {};
   const whereBook = {};
   
@@ -146,40 +144,14 @@ const sortFields = [
         };
     }
   
-     if (reasonwithdrawal) {
+     if (removeReason) {
       wherePartner.reasonForWithdrawal = reasonwithdrawal;
     }
 
     if (presentedBy) {
       wherePartner.presentedBy = presentedBy;
     }
-
-    if(retiredBooksMin && retiredBooksMax){
-    
-    }
-    else if(retiredBooksMin){
-
-    } 
-    else if (retiredBooksMax) {
-
-    }
-    
-  
-   
- if (minUnpaidFees || maxUnpaidFees) {
-  wherePartner.unpaidFees = {};
-
-  if (minUnpaidFees) {
-    wherePartner.unpaidFees[Op.gte] = minUnpaidFees;
-  }
-
-  if (maxUnpaidFees) {
-    wherePartner.unpaidFees[Op.lte] = maxUnpaidFees;
-  }
-}
-   
-
-  if (cduCodeMin || cduCodeMax) {
+    if (cduCodeMin || cduCodeMax) {
     whereBook.cduCode = {};
 
     if (cduCodeMin) {
@@ -191,7 +163,19 @@ const sortFields = [
     }
   }
 
-  if (quantityretiredbooksmin || quantityretiredbooksmax) {
+    if (unpaidQuotesMin || unpaidQuotesMax) {
+      wherePartner.unpaidFees = {};
+
+      if (unpaidQuotesMin) {
+        wherePartner.unpaidFees[Op.gte] = unpaidQuotesMin;
+      }
+
+      if (unpaidQuotesMax) {
+        wherePartner.unpaidFees[Op.lte] = unpaidQuotesMax;
+      }
+    }
+      
+  /*if (quantityretiredbooksmin || quantityretiredbooksmax) {
     whereBook.cduCode = {};
 
     if (cduCodeMin) {
@@ -201,7 +185,7 @@ const sortFields = [
     if (cduCodeMax) {
       whereBook.cduCode[Op.lte] = cduCodeMax;
     }
-  }
+  }*/
   if (pendingBooks !== undefined) {
     wherePartner.pendingBooks = Number(pendingBooks);
   }
@@ -225,6 +209,7 @@ const sortFields = [
   return {
     order,
     wherePartner,
+    whereBook,
     limit: Number.isNaN(parsedLimit) ? 20 : parsedLimit,
     offset: Number.isNaN(parsedOffset) ? 0 : parsedOffset
   };
