@@ -160,7 +160,6 @@ export const duplicateBook = async (req, res) => {
 
         const newBook = await BookService.duplicateBook(book);
 
-        console.log(newBook);
         res.status(HTTP_STATUS.CREATED.code).json(newBook);
     }
     catch (e) {

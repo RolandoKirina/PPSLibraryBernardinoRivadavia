@@ -119,8 +119,6 @@ export const buildFilterRanking = (query) => {
     return d;
   };
 
-  console.log("dateFrom:", dateFrom);
-  console.log("dateTo:", dateTo);
   if (dateFrom && dateTo) {
     whereRetiredDate.retiredDate = {
       [Op.between]: [
@@ -144,34 +142,50 @@ export const buildFilterRanking = (query) => {
   };
 };
 
+
+
 export const buildFilterLostBook = (query) => {
-  const { lossStartDate, lossEndDate, orderBy, direction, limit, offset } = query;
+  const {
+    lossStartDate,
+    lossEndDate,
+    orderBy,
+    direction,
+    limit,
+    offset
+  } = query;
 
-  const whereBooks = {};
+  const whereBooks = {
+    lost: true,
+    lossDate: { [Op.ne]: null } 
+  };
 
-  whereBooks.lost = true;
+  if (lossStartDate || lossEndDate) {
+    const dateConditions = [];
 
-  whereBooks.lossDate = { [Op.ne]: null };
+    dateConditions.push({ [Op.ne]: null });
 
-  if (lossStartDate) {
-    const start = new Date(lossStartDate);
-    start.setHours(0, 0, 0, 0); // inicio del día
-    whereBooks.lossDate = { [Op.gte]: start };
-  }
+    if (lossStartDate) {
+      const start = new Date(lossStartDate);
+      start.setHours(0, 0, 0, 0);
+      dateConditions.push({ [Op.gte]: start });
+    }
 
-  if (lossEndDate) {
-    const end = new Date(lossEndDate);
-    end.setHours(23, 59, 59, 999); // fin del día
+    if (lossEndDate) {
+      const end = new Date(lossEndDate);
+      end.setHours(23, 59, 59, 999);
+      dateConditions.push({ [Op.lte]: end });
+    }
+
     whereBooks.lossDate = {
-      ...(whereBooks.lossDate || {}),
-      [Op.lte]: end
+      [Op.and]: dateConditions
     };
   }
-  const directionNormalized = direction?.toUpperCase() === "ASC" ? "ASC" : "DESC";
 
+  const directionNormalized = direction?.toUpperCase() === "ASC" ? "ASC" : "DESC";
+  const parsedLimit = parseInt(limit);
+  const parsedOffset = parseInt(offset);
 
   let order = [];
-
   switch (orderBy?.trim()) {
     case "Apellido Socio":
       order = [
@@ -201,14 +215,10 @@ export const buildFilterLostBook = (query) => {
       break;
   }
 
-  const parsedLimit = parseInt(limit);
-  const parsedOffset = parseInt(offset);
-
   return {
     whereBooks,
     order,
-    direction: directionNormalized,
-    limit: isNaN(parsedLimit) ? 5 : parsedLimit,
+    limit: isNaN(parsedLimit) ? 35 : parsedLimit,
     offset: isNaN(parsedOffset) ? 0 : parsedOffset
   };
 };

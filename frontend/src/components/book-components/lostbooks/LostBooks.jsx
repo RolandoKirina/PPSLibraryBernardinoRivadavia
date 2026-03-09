@@ -2,8 +2,9 @@ import './LostBooks.css';
 import Btn from '../../common/btn/Btn';
 import { useState } from 'react';
 import GenerateListPopup from '../../common/generatelistpopup/GenerateListPopup';
-import { dataByType, columnsByType } from '../../../data/generatedlist/generatedList';
+import { columnsByType } from '../../../data/generatedlist/generatedList';
 import { useAuth } from '../../../auth/AuthContext';
+import { generateUniversalPDF } from '../../../utils/pdfGenerator'; // Importación para el PDF
 
 export default function LostBooks() {
   const BASE_URL = "http://localhost:4000/api/v1";
@@ -11,14 +12,33 @@ export default function LostBooks() {
   const [error, setError] = useState(null);
   const { auth } = useAuth();
 
-  const chunkSize = 100;
+  const chunkSize = 10000;
   const rowsPerPage = 35;
+  const type = "LostBooks";
+
   const [offsetActual, setOffsetActual] = useState(0);
   const [resetPageTrigger, setResetPageTrigger] = useState(0);
 
   const [items, setItems] = useState([]);
   const [totalItems, setTotalItems] = useState(0);
   const [loading, setLoading] = useState(false);
+  const handlePrint = () => {
+    if (items.length === 0) return;
+
+    const title = "Reporte de Libros Perdidos";
+    const config = columnsByType[type];
+
+    const headers = config.map(col => col.label || col.text || col.header || "Columna");
+
+    const data = items.map(item => {
+      return config.map(col => {
+        const key = col.key || col.dataKey || col.field || col.accessor;
+        return item[key] ?? '';
+      });
+    });
+
+    generateUniversalPDF(title, headers, data, `libros_perdidos`);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -31,7 +51,6 @@ export default function LostBooks() {
     });
 
     setFormValues(values);
-
     setItems([]);
     setOffsetActual(0);
     setResetPageTrigger(prev => prev + 1);
@@ -42,6 +61,7 @@ export default function LostBooks() {
   async function getLostBooks(values, { limit, offset }, append = false) {
     try {
       setLoading(true);
+      setError(null);
 
       const params = new URLSearchParams();
 
@@ -70,11 +90,7 @@ export default function LostBooks() {
       }
 
       const data = await res.json();
-
-      setItems(prev =>
-        append ? [...prev, ...data.rows] : data.rows
-      );
-
+      setItems(prev => append ? [...prev, ...data.rows] : data.rows);
       setTotalItems(data.count);
     } catch (err) {
       setError("No se pudo conectar con el servidor");
@@ -89,13 +105,11 @@ export default function LostBooks() {
 
     if (items.length < totalItems && lastItemIndex > items.length) {
       const newOffset = items.length;
-
       await getLostBooks(
         formValues,
         { limit: chunkSize, offset: newOffset },
         true
       );
-
       setOffsetActual(newOffset);
     }
   }
@@ -109,7 +123,7 @@ export default function LostBooks() {
               <div className='lost-books-filter-option'>
 
                 <div className='lost-books-filter-title'>
-                  <h3>Fecha de Perdida</h3>
+                  <h3>Fecha de Pérdida</h3>
                 </div>
 
                 <div className='filter-options'>
@@ -153,7 +167,7 @@ export default function LostBooks() {
                       Ascendente
                     </label>
                     <label>
-                      <input type="radio" name="orderDirection" value="DESC" />
+                      <input type="radio" name="orderDirection" value="DESC" defaultChecked />
                       Descendente
                     </label>
                   </div>
@@ -165,7 +179,6 @@ export default function LostBooks() {
                 <Btn variant={'primary'} text={'Generar'} type="submit" />
               </div>
             </form>
-
           </div>
         </div>
 
@@ -173,15 +186,18 @@ export default function LostBooks() {
           <GenerateListPopup
             dataByType={items}
             totalItems={totalItems}
-            columnsByType={columnsByType["LostBooks"]}
-            typeList={'LostBooks'}
-            title={formValues.listTitle}
+            columnsByType={columnsByType[type]}
+            typeList={type}
+            title={formValues.listTitle || 'Libros Perdidos'}
             handleChangePage={handleChangePage}
             loading={loading}
             resetPageTrigger={resetPageTrigger}
             rowsPerPage={rowsPerPage}
+            onPrint={handlePrint}
           />
+          {error && <div className="error-message" style={{ color: 'red', textAlign: 'center' }}>{error}</div>}
         </div>
+
       </div>
     </>
   );
