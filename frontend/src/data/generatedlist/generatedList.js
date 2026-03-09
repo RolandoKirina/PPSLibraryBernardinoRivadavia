@@ -92,7 +92,7 @@ export const columnsByType = {
     { header: 'Titulo', accessor: 'title' },
     { header: 'Número Socio', accessor: 'partnerNumber' },
     { header: 'Nombre', accessor: 'name' },
-    { header: 'Apellido', accessor: 'surname'},
+    { header: 'Apellido', accessor: 'surname' },
     { header: 'Dirección', accessor: 'homeAddress' },
     { header: 'Teléfono', accessor: 'homePhone' }
   ],
@@ -107,10 +107,18 @@ export const columnsByType = {
   //*este*/
   TypeTwoFees: [
     { header: 'Letra', accessor: 'letter' },
-    { header: 'Regular', accessor: 'regular' },
-    { header: 'Honorario', accessor: 'honorary' },
-    { header: 'Protector', accessor: 'protector' },
-    { header: 'Débito', accessor: 'debit' }
+    // Regular
+    { header: 'Cant. Reg.', accessor: 'regularCount' },
+    { header: 'Monto Reg.', accessor: 'regular' },
+    // Honorario
+    { header: 'Cant. Hon.', accessor: 'honoraryCount' },
+    { header: 'Monto Hon.', accessor: 'honorary' },
+    // Protector
+    { header: 'Cant. Prot.', accessor: 'protectorCount' },
+    { header: 'Monto Prot.', accessor: 'protector' },
+    // Débito
+    { header: 'Cant. Déb.', accessor: 'debitCount' },
+    { header: 'Monto Déb.', accessor: 'debit' }
   ],
   phone: [
     { header: 'Titulo', accessor: 'bookTitle' },

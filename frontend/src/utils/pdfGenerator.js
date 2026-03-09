@@ -8,21 +8,31 @@ import autoTable from 'jspdf-autotable';
  * @param {any[][]} data - Array of arrays containing the row data
  * @param {string} fileName - Name for the generated file
  */
-export const generateUniversalPDF = (title, columns, data, fileName = "report") => {
+export const generateUniversalPDF = (title, columns, data, fileName = "report", subtitle = "") => {
     const doc = new jsPDF('p', 'pt', 'a4');
 
-    // --- Header Section ---
-    doc.setFontSize(20);
-    doc.setTextColor(44, 62, 80); // Dark Blue/Grey
-    doc.text(title.toUpperCase(), 40, 50);
+    // --- Título Principal ---
+    doc.setFontSize(18); // Bajamos un poco de 20 a 18 para que respire mejor
+    doc.setTextColor(44, 62, 80);
+    doc.text(title.toUpperCase(), 40, 45);
 
-    doc.setFontSize(10);
-    doc.setTextColor(100);
+    // --- Subtítulo (Fechas) ---
+    if (subtitle) {
+        doc.setFontSize(11); // Tamaño más pequeño como pediste
+        doc.setTextColor(52, 73, 94); // Un tono gris azulado
+        doc.text(subtitle, 40, 62); // Ubicado justo debajo del título
+    }
+
+    // --- Línea de Generación ---
+    doc.setFontSize(9);
+    doc.setTextColor(120);
     const dateStr = new Date().toLocaleString();
-    doc.text(`Library Management System - Generated on: ${dateStr}`, 40, 65);
+    // Bajamos la posición de la fecha de generación a 75 para que no se superponga
+    doc.text(`Biblioteca Rivadavia - Generado el: ${dateStr}`, 40, 78);
 
+    // --- Línea Divisoria ---
     doc.setDrawColor(200);
-    doc.line(40, 75, 550, 75);
+    doc.line(40, 85, 550, 85); // Bajamos la línea a 85
 
     autoTable(doc, {
         startY: 90,
@@ -36,18 +46,18 @@ export const generateUniversalPDF = (title, columns, data, fileName = "report") 
             halign: 'center'
         },
         styles: {
-            fontSize: 7.5, 
-            cellPadding: 2, 
-            rowHeight: 12   
+            fontSize: 7.5,
+            cellPadding: 2,
+            rowHeight: 12
         },
-        margin: { top: 40, bottom: 40 }, 
+        margin: { top: 40, bottom: 40 },
         alternateRowStyles: {
             fillColor: [245, 247, 250]
         },
 
 
         didDrawPage: (data) => {
-            const str = "Page " + doc.internal.getNumberOfPages();
+            const str = "Pagina " + doc.internal.getNumberOfPages();
             doc.setFontSize(9);
             doc.text(str, data.settings.margin.left, doc.internal.pageSize.height - 20);
         }
