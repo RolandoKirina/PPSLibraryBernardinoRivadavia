@@ -64,30 +64,36 @@ export const buildListPartnerFilters = (query) => {
     direction,
   } = query;
 
-
-const sortFields = [
-  
-  { label: 'Apellido - Nombre', value: 'nameSurname' },
-  { label: 'Cantidad de cuotas impagas', value: 'unpaidFees' },
-  { label: 'Cantidad de libros pendientes', value: 'pendingBooks' },
-  { label: 'Fecha de Baja', value: 'withdrawalDate' },
-  { label: 'Fecha Inscripción', value: 'registrationDate' },
-  { label: 'Fecha Nacimiento', value: 'birthDate' },
-  { label: 'Motivo Baja', value: 'idReason' },
-  { label: 'Número de Socio', value: 'partnerNumber' }
-];
+  console.log("SORT BY" ,sortBy);
+const mapNameisActive = (idState) => {
+  if (idState === 1) return 1; 
+  if (idState === 2) return 0; 
+  return null;               
+};
+const isActive = mapNameisActive(idState)
+// Ejemplo de uso:
+const allowedSortFields = {
+  surname: 'surname',
+  name: 'name',
+  unpaidFees: 'unpaidFees',
+  pendingBooks: 'pendingBooks',
+  withdrawalDate: 'withdrawalDate',
+  registrationDate: 'registrationDate',
+  birthDate: 'birthDate',
+  idReason: 'idReason',
+  partnerNumber: 'partnerNumber'
+};
 
   const wherePartner = {};
   const whereBook = {};
   
   if (category !== undefined){
-    wherePartner.category = Number(category);
+    wherePartner.idCategory = Number(category);
   }
 
-  if (idState && idState !== '0') {
-    wherePartner.idState = Number(idState);
-  }
-
+if (isActive !== null) {
+  wherePartner.isActive = isActive;
+}
 
   if (birthDateFrom && birthDateTo) {
   wherePartner.birthDate = {
@@ -97,11 +103,11 @@ const sortFields = [
       ]
     };
   } else if (birthDateFrom) {
-    where.birthDate = {
+    wherePartner.birthDate = {
       [Op.gte]: toStartOfDay(birthDateFrom)
     };
   } else if (birthDateTo) {
-    where.birthDate = {
+    wherePartner.birthDate = {
       [Op.lte]: toEndOfDay(birthDateTo)
     };
   }
@@ -143,11 +149,9 @@ const sortFields = [
           [Op.lte]: toEndOfDay(resignationEnd)
         };
     }
-  
-     if (removeReason) {
-      wherePartner.reasonForWithdrawal = reasonwithdrawal;
-    }
-
+  if (removeReason) {
+    wherePartner.idReason = Number(removeReason);
+  }
     if (presentedBy) {
       wherePartner.presentedBy = presentedBy;
     }
@@ -194,18 +198,20 @@ const sortFields = [
   const parsedOffset = Number(offset);
 
   let order = [];
+if (sortBy) {
 
-  if (sortBy && sortFields[sortBy]) {
-    const directionValue = direction === 'ASC' ? 'ASC' : 'DESC';
+  const directionValue = direction === 'ASC' ? 'ASC' : 'DESC';
 
-    if (sortBy === 'nameSurname') {
-      order.push(['surname', directionValue]);
-      order.push(['name', directionValue]);
-    } else {
-      order.push([sortFields[sortBy], directionValue]);
+  const fields = sortBy.split(",");
+
+  fields.forEach(field => {
+      if (allowedSortFields[field]) {
+      order.push([allowedSortFields[field], directionValue]);
     }
-  }
+  });
 
+}
+  console.log("WHERE PARTNER filters:", wherePartner);
   return {
     order,
     wherePartner,

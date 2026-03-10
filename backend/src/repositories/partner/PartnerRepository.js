@@ -1,67 +1,58 @@
 import Partner from '../../models/partner/Partner.js';
+import Book from "../../models/book/Book.js";
+import LoanBook from '../../models/loan/LoanBook.js';
+import Loan from '../../models/loan/Loan.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 
-export const printList = async(filters) =>{
-  const { wherePartner, whereBook, limit, offset, order } = filters;
+export const printList = async (filters) => {
 
-  const query = {};
-
-  if (wherePartner && Object.keys(wherePartner).length) {
-    query.where = wherePartner;
-  }
-
-  const bookIds = await Book.findAll({
-    attributes: ['id'],
-    subQuery: false,
-    where: {
-      ...whereCodeInventory,
-      ...whereCodeCDU,
-      ...whereCodeSignature,
-      ...whereBookTitle,
-      ...whereEdition,
-      ...whereYearEdition,
-      ...whereNumberEdition,
-    },
-    include: [
-      {
-        model: BookAuthor,
-        as: 'BookAuthors',
-        required: hasAuthorFilter,
-        include: [
-          {
-            model: Authors,
-            as: 'Author',
-            where: whereAuthor,
-            required: hasAuthorFilter
-          }
-        ]
-      }
-    ],
+  const {
     order,
+    wherePartner,
+    whereBook,
     limit,
-    offset,
-    raw: true
-  });
+    offset
+  } = filters;
 
-  if (Number.isInteger(limit)) {
-    query.limit = limit;
-  }
 
-  if (Number.isInteger(offset)) {
-    query.offset = offset;
-  }
-
-  if (Array.isArray(order) && order.length) {
-    query.order = order;
-  }
-
-  const { rows, count } = await Partner.findAndCountAll(query);
+const { rows, count } = await Partner.findAndCountAll({
+  where: wherePartner,
+  include: [
+    {
+      model: Loan,
+      as: "Loans",
+      attributes: [],
+      required: true,
+      include: [
+        {
+          model: LoanBook,
+          as: "LoanBooks",
+          attributes: [],
+          include: [
+            {
+              model: Book,
+              as: "Book",
+              attributes: [],
+              where: whereBook
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  group: ['Partner.id'],
+  distinct: true,
+  subQuery: false,
+  order,
+  limit,
+  offset
+});
 
   return {
     rows,
     count
   };
-}
+};
 
 export const getCountRetiredBooks = async (min, max) => {
   const results = await sequelize.query(

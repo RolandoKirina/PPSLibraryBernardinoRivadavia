@@ -12,7 +12,8 @@ export const feesBetweenDatesListOptions = [
 
 export const sortOptions = [
   
-  { label: 'Apellido - Nombre', value: 'nameSurname' },
+  { label: 'Apellido ', value: 'surname' },
+  { label: 'Nombre ', value: 'name' },
   { label: 'Cantidad de cuotas impagas', value: 'unpaidFees' },
   { label: 'Cantidad de libros pendientes', value: 'pendingBooks' },
   { label: 'Fecha de Baja', value: 'withdrawalDate' },
