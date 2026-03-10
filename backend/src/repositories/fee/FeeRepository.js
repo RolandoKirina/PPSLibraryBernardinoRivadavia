@@ -39,6 +39,8 @@ export const getAll = async (filters = {}, listType = '') => {
     raw: true
   });
 
+  console.log(whereFees);
+
   const ids = idsResult.map(r => r.id);
 
   if (!ids.length) {

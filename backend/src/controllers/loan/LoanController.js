@@ -35,6 +35,7 @@ export const getAllReturns = async (req, res) => {
     try {
         const queryOptions = buildReturnFilters(req.query);
 
+        console.log(queryOptions);
         const loans = await LoanService.getAllReturns(queryOptions);
 
         res.status(HTTP_STATUS.OK.code).send(loans);
@@ -128,7 +129,6 @@ export const removeLoan = async (req, res) => {
 
 export const getLoansByEmployeeCount = async (req, res) => {
     try {
-        //const queryOptions = buildLoanFilters(req.query);
 
         const loans = await LoanService.getLoansByEmployeeCount(req.query);
 

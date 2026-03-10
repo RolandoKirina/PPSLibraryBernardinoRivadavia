@@ -6,6 +6,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import "./EmployeeLoansGraphic.css";
 ChartJS.register(ArcElement, Tooltip, Legend);
 import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
+import { useAuth } from '../../../auth/AuthContext';
 
 export default function EmployeeLoansGraphic() {
   const {
@@ -25,6 +26,8 @@ export default function EmployeeLoansGraphic() {
   const [employeeCounts, setEmployeeCounts] = useState([]);
   const [loans, setLoans] = useState([]);
 
+  const { auth } = useAuth();
+
 
   // useEffect(() => {
   //   if (!error && showChart) {
@@ -34,13 +37,13 @@ export default function EmployeeLoansGraphic() {
   // }, [formValues, error, showChart]);
 
   let inputs = ["sinDevolver", "devueltos"];
-
-  async function getCountQuantityAllLoansEmployee() {
+  // Agregamos 'filters' como parámetro
+  async function getCountQuantityAllLoansEmployee(filters) {
     try {
-
       const cleanFilters = Object.fromEntries(
-        Object.entries(formValues).filter(([key, value]) => {
-          if (["type", "state"].includes(key)) return true;
+        // Usamos 'filters' (el dato fresco) en lugar de 'formValues' (el estado lento)
+        Object.entries(filters).filter(([key, value]) => {
+          if (["type", "state", "ignoreLossDate"].includes(key)) return true;
           return (
             value !== "" &&
             value !== null &&
@@ -51,34 +54,24 @@ export default function EmployeeLoansGraphic() {
         })
       );
 
-      console.log(cleanFilters);
-
       const query = Object.keys(cleanFilters).length
         ? `?${new URLSearchParams(cleanFilters).toString()}`
         : "";
 
-      const response = await fetch((`${URL}${query}`, {
+      const response = await fetch(`${URL}${query}`, {
         method: 'GET',
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${auth.token}`
         }
-      }));
+      });
 
-      if (!response.ok) throw new Error(`Response status: ${response.status}`);
-
-      const result = await response.json();
-      console.log(result);
-
-      return result;
-
-    }
-    catch (err) {
-      console.error(err);
+      if (!response.ok) throw new Error(`Error ${response.status}`);
+      return await response.json();
+    } catch (err) {
+      console.error("Error en la petición:", err);
     }
   }
-
-
 
 
   function countQuantityAllLoansEmployee() {
@@ -172,11 +165,12 @@ export default function EmployeeLoansGraphic() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const formData = new FormData(e.target);
     const data = {};
 
-
     formData.forEach((value, key) => {
+
       if (data[key]) {
         if (Array.isArray(data[key])) {
           data[key].push(value);
@@ -188,7 +182,6 @@ export default function EmployeeLoansGraphic() {
       }
     });
 
-
     if (data.afterDateFrom && data.beforeDateTo) {
       const dateAfter = new Date(data.afterDateFrom);
       const dateBefore = new Date(data.beforeDateTo);
@@ -196,48 +189,30 @@ export default function EmployeeLoansGraphic() {
       if (dateAfter > dateBefore) {
         setError("La fecha 'mayor a' no puede ser posterior a la fecha 'menor a'");
         setShowChart(false);
-        return;
+        return; 
       }
     }
 
     setFormValues(data);
 
     try {
-      // const loansData = await getItems();
+      const results = await getCountQuantityAllLoansEmployee(data);
 
-      // setLoans(loansData);
+      if (results) {
+        console.log("Resultados recibidos:", results);
+        setEmployeeCounts(results);
+        setShowChart(true);
+        setError(""); 
+      } else {
+        setEmployeeCounts([]);
+        setShowChart(true);
+      }
 
-
-      //console.log(loansData);
-      const results = await getCountQuantityAllLoansEmployee();
-      setEmployeeCounts(results);
-
-
-
-      setShowChart(true);
-      setError("");
-
-      /*
-            const counts = getLoanCountsByEmployee();
-      
-            setEmployeeCounts(counts);
-      
-            setShowChart(true);
-            setError("");*/
+    } catch (err) {
+      console.error("Error al obtener datos:", err);
+      setError("Hubo un problema al conectar con el servidor.");
+      setShowChart(false);
     }
-    catch (err) {
-      console.log(err);
-    }
-
-
-
-    // 
-
-    // setError(""); // limpio error si está todo bien
-    // setFormValues(data);
-    // setShowChart(true);
-
-
   };
 
 
