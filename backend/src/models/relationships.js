@@ -66,8 +66,8 @@ export default function applyRelationships(models) {
   reasonForWithDrawal.hasMany(Partner, { as: "Partners", foreignKey: "idReason", sourceKey: "idReason" });
   Partner.belongsTo(reasonForWithDrawal, { as: "ReasonForWithdrawal", foreignKey: "idReason", targetKey: "idReason" });
 
-  statePartner.hasMany(Partner, { as: "Partners", foreignKey: "idState", sourceKey: "idState" });
-  Partner.belongsTo(statePartner, { as: "StatePartner", foreignKey: "idState", targetKey: "idState" });
+  statePartner.hasMany(Partner, { as: "Partners", foreignKey: "isActive", sourceKey: "idState" });
+  Partner.belongsTo(statePartner, { as: "StatePartner", foreignKey: "isActive", targetKey: "idState" });
 
   BookTypeGroupList.hasMany(BookTypeGroup, { as: "BookTypeGroups", foreignKey: "BookTypeGroupListId", sourceKey: "bookTypeGroupListId" });
   BookTypeGroup.belongsTo(BookTypeGroupList, { as: "BookTypeGroupList", foreignKey: "BookTypeGroupListId", targetKey: "bookTypeGroupListId" });

@@ -71,7 +71,8 @@ const mapNameisActive = (idState) => {
   return null;               
 };
 const isActive = mapNameisActive(idState)
-// Ejemplo de uso:
+
+
 const allowedSortFields = {
   surname: 'surname',
   name: 'name',

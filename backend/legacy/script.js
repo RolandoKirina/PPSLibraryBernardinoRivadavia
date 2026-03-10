@@ -605,6 +605,8 @@ async function migrateAll() {
                 validate: false
             });
 
+
+            
             /*
             =========================
             IMPORTAR TIPO DOCUMENTO
@@ -747,6 +749,28 @@ async function migrateAll() {
                 console.log(`Se agregaron ${newDocTypes.length} tipos de documento faltantes como "Desconocido".`);
             }
 
+
+
+            // ---------------------------
+            // Verificar Estados de Socio usados por socios
+            // ---------------------------
+            const stateIdsUsed = [...new Set(partnerRows.map(r => r.est_socio).filter(v => v != null))];
+            console.log("Estados de socio usados por socios:", stateIdsUsed);
+
+            const existingStates = await statePartner.findAll({
+                where: { idState: stateIdsUsed },
+                attributes: ["idState"],
+                transaction: t
+            });
+            const existingStateIds = existingStates.map(r => r.idState);
+
+            // Insertar los faltantes como "Desconocido"
+            const missingStates = stateIdsUsed.filter(id => !existingStateIds.includes(id));
+            if (missingStates.length > 0) {
+                const newStates = missingStates.map(id => ({ idState: id, status: "Desconocido" }));
+                await statePartner.bulkCreate(newStates, { transaction: t });
+                console.log(`Se agregaron ${newStates.length} estados de socio faltantes como "Desconocido".`);
+            }
             // ---------------------------
             // 3. Transformar socios para insertar
             // ---------------------------
@@ -756,7 +780,6 @@ async function migrateAll() {
                 partnerNumber: row.numero ?? null,
                 idCategory: row.IdCategoria ?? null,
                 LocalityId: row.IdLocal_part ?? null,
-                idState: row.IdEstado ?? null,
                 idReason: row.Motivo_Baj ?? null,
                 surname: row.apellido || null,
                 name: row.nombre || null,
