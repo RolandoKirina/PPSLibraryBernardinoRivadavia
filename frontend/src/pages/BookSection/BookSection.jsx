@@ -277,9 +277,8 @@ const BookSection = () => {
       }
 
       const result = await response.json();
-      console.log('Libro duplicado:', result);
 
-      await getItems({ ...formData, sortBy: 'title', direction: 'asc', limit: chunkSize, offset: newOffset }, true);
+      await getItems({ ...formData, sortBy: 'title', direction: 'asc', limit: chunkSize, offset: 0 }, true);
 
       return result;
 

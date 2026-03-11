@@ -8,7 +8,13 @@ export default function BookFilter({ formData, onChange }) {
 
   const fetchPaidFees = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/api/v1/fees/paid-count?partnerNumber=${formData.partnerNumber}`);
+      const response = await fetch(`http://localhost:4000/api/v1/fees/paid-count?partnerNumber=${formData.partnerNumber}`, {
+        method: 'GET',
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${auth.token}`
+        }
+      });
       const data = await response.json();
       if (response.ok) {
         setPaidFeeCount(data.count);

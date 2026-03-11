@@ -141,7 +141,7 @@ export const buildReturnFilters = (query) => {
   }
 
   if (partnerNumber) {
-    wherePartner.id = partnerNumber; // o usar Op.iLike si es string
+    wherePartner.partnerNumber = partnerNumber; // o usar Op.iLike si es string
   }
 
   if (memo?.trim()) {

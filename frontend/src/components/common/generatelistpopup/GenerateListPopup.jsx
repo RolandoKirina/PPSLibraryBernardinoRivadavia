@@ -16,8 +16,11 @@ export default function GenerateListPopup({
     resetPageTrigger,
     rowsPerPage,
     others,
-    onPrint
+    onPrint 
 }) {
+
+    console.log(dataByType);
+    console.log(columnsByType);
 
     return (
         <>
@@ -58,13 +61,6 @@ export default function GenerateListPopup({
                                             <span>Monto total: {others.totalAmount}</span>
                                         </div>
                                     )}
-
-                                {typeList === 'TypeTwoFees' && (
-                                    <div className='fees-info'>
-                                        <span>| Cantidad total | Regular: 7979 | Honorario: 0 | Protector: 313 | Débito: 0 | </span>
-                                        <span>| Importe total | Regular: $21.913.181,00 | Honorario: $204.000,00 | Protector: $1.867.450,00 | Débito: $0,00 |</span>
-                                    </div>
-                                )}
                             </Table>
                         ) : (
                             <div className="no-results">
