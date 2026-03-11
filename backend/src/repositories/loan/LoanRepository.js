@@ -334,7 +334,7 @@ export const getReturnPrintList = async (filters = {}) => {
     bookCode: r.bookCodeInventory || r.bookCode || '',
     partnerNumber: r.partnerNumber || '',
     partnerName: `${r.partnerSurname || ''} ${r.partnerName || ''}`,
-    partnerAddress: r.partnerAddress || '',
+    partnerAddress: r.homeAddress || '',
     retiredDate: formatDate(r.retiredDate),
     expectedDate: formatDate(r.expectedDate),
     returnedDate: formatDate(r.returnedDate)
