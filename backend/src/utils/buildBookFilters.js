@@ -97,7 +97,6 @@ export const buildFilterRanking = (query) => {
   } = query;
 
   const whereBooks = {};
-  const whereLoan = {};
 
   if (codeCDU?.trim()) {
     whereBooks.codeCDU = codeCDU.trim();
@@ -120,14 +119,24 @@ export const buildFilterRanking = (query) => {
     return d;
   };
 
-  if (dateFrom && dateTo) {
-    whereRetiredDate.retiredDate = {
-      [Op.between]: [
-        toStartOfDay(dateFrom),
-        toEndOfDay(dateTo)
-      ]
-    };
+  const conditions = {};
+
+  if (dateFrom) {
+    conditions[Op.gte] = toStartOfDay(dateFrom);
   }
+
+  if (dateTo) {
+    conditions[Op.lte] = toEndOfDay(dateTo);
+  }
+
+  if (Object.keys(conditions).length > 0 || Object.getOwnPropertySymbols(conditions).length > 0) {
+    whereRetiredDate.retiredDate = conditions;
+  }
+
+  console.log(whereRetiredDate);
+  console.log(conditions);
+  console.log("d", dateFrom);
+  console.log("s", dateTo);
 
   const parsedLimit = parseInt(limit);
   const parsedOffset = parseInt(offset);
@@ -142,7 +151,6 @@ export const buildFilterRanking = (query) => {
     offset: isNaN(parsedOffset) ? 0 : parsedOffset
   };
 };
-
 
 
 export const buildFilterLostBook = (query) => {
@@ -161,25 +169,22 @@ export const buildFilterLostBook = (query) => {
   };
 
   if (lossStartDate || lossEndDate) {
-    const dateConditions = [];
-
-    dateConditions.push({ [Op.ne]: null });
+    const conditions = { [Op.ne]: null }; 
 
     if (lossStartDate) {
       const start = new Date(lossStartDate);
       start.setHours(0, 0, 0, 0);
-      dateConditions.push({ [Op.gte]: start });
+      conditions[Op.gte] = start;
     }
 
     if (lossEndDate) {
       const end = new Date(lossEndDate);
       end.setHours(23, 59, 59, 999);
-      dateConditions.push({ [Op.lte]: end });
+      conditions[Op.lte] = end;
     }
 
-    whereBooks.lossDate = {
-      [Op.and]: dateConditions
-    };
+
+    whereBooks.lossDate = conditions;
   }
 
   const directionNormalized = direction?.toUpperCase() === "ASC" ? "ASC" : "DESC";
@@ -189,27 +194,17 @@ export const buildFilterLostBook = (query) => {
   let order = [];
   switch (orderBy?.trim()) {
     case "Apellido Socio":
-      order = [
-        [
-          { model: Partner, as: 'LostPartner' },
-          'surname',
-          directionNormalized
-        ]
-      ];
+      order = [[{ model: Partner, as: 'LostPartner' }, 'surname', directionNormalized]];
       break;
-
     case "Número Socio":
       order = [['lostPartnerNumber', directionNormalized]];
       break;
-
     case "Código Libro":
       order = [['codeInventory', directionNormalized]];
       break;
-
     case "Título Libro":
       order = [['title', directionNormalized]];
       break;
-
     case "Fecha pérdida":
     default:
       order = [['lossDate', directionNormalized]];

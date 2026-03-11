@@ -553,6 +553,8 @@ export const getRanking = async (filters) => {
     offset
   } = filters;
 
+  console.log(whereRetiredDate);
+
   const countResult = await Book.count({
     where: whereBooks,
     distinct: true,
