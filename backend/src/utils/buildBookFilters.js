@@ -97,6 +97,7 @@ export const buildFilterRanking = (query) => {
   } = query;
 
   const whereBooks = {};
+  const whereLoan = {};
 
   if (codeCDU?.trim()) {
     whereBooks.codeCDU = codeCDU.trim();

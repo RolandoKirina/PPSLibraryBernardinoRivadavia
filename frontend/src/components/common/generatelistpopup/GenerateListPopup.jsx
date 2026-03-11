@@ -19,9 +19,6 @@ export default function GenerateListPopup({
     onPrint 
 }) {
 
-    console.log(dataByType);
-    console.log(columnsByType);
-
     return (
         <>
             <div className='generate-list-container'>
