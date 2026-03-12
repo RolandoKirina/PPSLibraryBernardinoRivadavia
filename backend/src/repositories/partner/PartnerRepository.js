@@ -14,7 +14,6 @@ export const printList = async (filters) => {
     offset
   } = filters;
 
-
 const { rows, count } = await Partner.findAndCountAll({
   where: wherePartner,
   include: [
@@ -27,11 +26,13 @@ const { rows, count } = await Partner.findAndCountAll({
         {
           model: LoanBook,
           as: "LoanBooks",
+          required: true,
           attributes: [],
           include: [
             {
               model: Book,
               as: "Book",
+              required: true,
               attributes: [],
               where: whereBook
             }
@@ -41,18 +42,22 @@ const { rows, count } = await Partner.findAndCountAll({
     }
   ],
   group: ['Partner.id'],
-  distinct: true,
   subQuery: false,
   order,
   limit,
   offset
-});
+}
+);
+
+const total = Array.isArray(count) ? count.length : count;
 
   return {
     rows,
-    count
+    count: total
   };
 };
+
+
 
 export const getCountRetiredBooks = async (min, max) => {
   const results = await sequelize.query(

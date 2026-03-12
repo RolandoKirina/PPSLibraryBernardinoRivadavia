@@ -21,7 +21,6 @@ export default function PrintPartnerPopup({categoriespartner, statespartner}) {
 
                 const title = formValues.listTitle || 'Listado de socios';
                 const config = columnsByType["partner"];
-                console.log(config)
                 const headers = config.map(col => col.label || col.text || col.header || "Column");
 
                 const data = resultprint.map(item => {
@@ -33,6 +32,21 @@ export default function PrintPartnerPopup({categoriespartner, statespartner}) {
 
                 generateUniversalPDF(title, headers, data, `report_partners`);
     };
+//hacer on change
+
+
+    const handleFilterChange = (e) => {
+    const {name, value} = e.target;
+
+    const newValues = {
+        ...formValues,
+        [name]: value
+    };
+
+    setFormValues(newValues);
+    printList(newValues);
+};
+
 
     useEffect(() => {
         async function loadApis(){
@@ -61,34 +75,35 @@ export default function PrintPartnerPopup({categoriespartner, statespartner}) {
     async function printList(data){
             try {
                 setLoading(true);
+
                 const queryParams = new URLSearchParams(data).toString();
 
                 const res = await fetch(
-                `http://localhost:4000/api/v1/partner/printlist?${queryParams}`,
+                    `http://localhost:4000/api/v1/partner/printlist?${queryParams}`,
                     {
                         headers: {
-                                Authorization: `Bearer ${auth.token}`
+                            Authorization: `Bearer ${auth.token}`
                         }
-                    }  
+                    }
                 );
 
                 const reslist = await res.json();
+
                 setresultprint(reslist.rows);
                 setTotalItems(reslist.count);
-                console.log(resultprint)
-            } catch(e){
-                setLoading(false);
 
+            } catch(e){
                 console.log(e);
-                
+            } finally {
+                setLoading(false);
             }
-    }
+        }
 
     const handleSubmit = (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const data = {};
-
+    console.log("SUBMIT FUNCIONANDO");
         formData.forEach((value, key) => {
             if (data[key]) {
                 if (Array.isArray(data[key])) {
@@ -133,14 +148,16 @@ export default function PrintPartnerPopup({categoriespartner, statespartner}) {
                                         <div className="input">
                                             <label htmlFor="idState">Estado</label>
 
-                                            <select id="idState" name='idState'>
-                                                <option value=''>Estado</option>
-                                                {statespartner?.map((state,index) => (
+                                      <select id="idState" name="idState">
+                                            <option value="">Estado</option>
+                                            {statespartner
+                                                ?.filter(state => state.status !== "Desconocido")
+                                                .map((state, index) => (
                                                     <option key={index} value={state.idState}>
                                                         {state.status}
                                                     </option>
                                                 ))}
-                                            </select>
+                                        </select>
                                         </div>
 
                                       <div className="input birthDate-range">
@@ -212,15 +229,10 @@ export default function PrintPartnerPopup({categoriespartner, statespartner}) {
                                     </div>
                                     <div className='filter-options'>
                                         <div className="input">
-                                            <label htmlFor="cduCode">CDU de libros retirados por los socio</label>
+                                            <label htmlFor="codeCDU">CDU de libro retirados por los socio</label>
                                             <div>
-                                                <label htmlFor="cduCodeMin">Menos de</label>
-
-                                                <input id="cduCodeMin" name="cduCodeMin" type="number" />
-
-                                                <label htmlFor="cduCodeMax">Más de</label>
-
-                                                <input id="cduCodeMax" name="cduCodeMax" type="number" />
+                                               
+                                                <input id="codeCDU" name="codeCDU" type="text" />
                                             </div>
                                         </div>
                                         <div className="input">

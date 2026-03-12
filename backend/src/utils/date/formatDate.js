@@ -5,3 +5,16 @@ export const formatDate = (date) => {
 
   return `${day}-${month}-${year.slice(-2)}`;
 };
+
+
+
+export const toStartOfDay = (str) => {
+  const d = new Date(`${str}T00:00:00`);
+  return d;
+};
+
+export const toEndOfDay = (str) => {
+  const d = new Date(`${str}T23:59:59.999`);
+  return d;
+};
+

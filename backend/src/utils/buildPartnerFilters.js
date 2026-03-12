@@ -1,3 +1,6 @@
+import { Op } from "sequelize";
+import { toStartOfDay,toEndOfDay } from "./date/formatDate.js";
+
 export const buildPartnerFilters = (query) => {
   const {
     unpaidFees,
@@ -50,13 +53,11 @@ export const buildListPartnerFilters = (query) => {
     resignationEnd,
     removeReason,
     presentedBy,
-    cduCodeMin,
-    cduCodeMax,
+    codeCDU,
     unpaidQuotesMin, 
     unpaidQuotesMax,
     quantityretiredbooksmin,
     quantityretiredbooksmax,
-
     pendingBooks,
     limit,
     offset,
@@ -66,9 +67,12 @@ export const buildListPartnerFilters = (query) => {
 
   console.log("SORT BY" ,sortBy);
 const mapNameisActive = (idState) => {
-  if (idState === 1) return 1; 
-  if (idState === 2) return 0; 
-  return null;               
+  const id = Number(idState);
+
+  if (id === 1) return 1;
+  if (id === 2) return 0;
+
+  return null;
 };
 const isActive = mapNameisActive(idState)
 
@@ -88,7 +92,7 @@ const allowedSortFields = {
   const wherePartner = {};
   const whereBook = {};
   
-  if (category !== undefined){
+  if (category){
     wherePartner.idCategory = Number(category);
   }
 
@@ -97,7 +101,7 @@ if (isActive !== null) {
 }
 
   if (birthDateFrom && birthDateTo) {
-  wherePartner.birthDate = {
+    wherePartner.birthDate = {
       [Op.between]: [
         toStartOfDay(birthDateFrom),
         toEndOfDay(birthDateTo)
@@ -153,19 +157,18 @@ if (isActive !== null) {
   if (removeReason) {
     wherePartner.idReason = Number(removeReason);
   }
-    if (presentedBy) {
-      wherePartner.presentedBy = presentedBy;
-    }
-    if (cduCodeMin || cduCodeMax) {
-    whereBook.cduCode = {};
 
-    if (cduCodeMin) {
-      whereBook.cduCode[Op.gte] = cduCodeMin;
-    }
 
-    if (cduCodeMax) {
-      whereBook.cduCode[Op.lte] = cduCodeMax;
-    }
+  if (presentedBy) {
+    wherePartner.presentedBy = {
+      [Op.iLike]: `%${presentedBy.trim()}%`
+    };
+  }
+
+  if (codeCDU) {
+     whereBook.codeCDU = {
+      [Op.iLike]: `%${codeCDU.trim()}%`
+    };
   }
 
     if (unpaidQuotesMin || unpaidQuotesMax) {
@@ -181,15 +184,7 @@ if (isActive !== null) {
     }
       
   /*if (quantityretiredbooksmin || quantityretiredbooksmax) {
-    whereBook.cduCode = {};
-
-    if (cduCodeMin) {
-      whereBook.cduCode[Op.gte] = cduCodeMin;
-    }
-
-    if (cduCodeMax) {
-      whereBook.cduCode[Op.lte] = cduCodeMax;
-    }
+  
   }*/
   if (pendingBooks !== undefined) {
     wherePartner.pendingBooks = Number(pendingBooks);
@@ -199,17 +194,17 @@ if (isActive !== null) {
   const parsedOffset = Number(offset);
 
   let order = [];
-if (sortBy) {
+  if (sortBy) {
 
-  const directionValue = direction === 'ASC' ? 'ASC' : 'DESC';
+    const directionValue = direction === 'ASC' ? 'ASC' : 'DESC';
 
-  const fields = sortBy.split(",");
+    const fields = sortBy.split(",");
 
-  fields.forEach(field => {
-      if (allowedSortFields[field]) {
-      order.push([allowedSortFields[field], directionValue]);
-    }
-  });
+    fields.forEach(field => {
+        if (allowedSortFields[field]) {
+        order.push([allowedSortFields[field], directionValue]);
+      }
+    });
 
 }
   console.log("WHERE PARTNER filters:", wherePartner);

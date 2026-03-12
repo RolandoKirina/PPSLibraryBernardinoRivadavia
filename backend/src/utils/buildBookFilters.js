@@ -1,9 +1,6 @@
 import { Op } from "sequelize";
-import Loan from "../models/loan/Loan.js";
-import LoanBook from "../models/loan/LoanBook.js";
 import Partner from "../models/partner/Partner.js";
-import sequelize from "../configs/database.js";
-import Sequelize from "sequelize";
+import { toStartOfDay,toEndOfDay } from "./date/formatDate.js";
 
 export const buildBookFilters = (query) => {
   const {
@@ -107,17 +104,6 @@ export const buildFilterRanking = (query) => {
   }
 
   const whereRetiredDate = {};
-
-
-  const toStartOfDay = (str) => {
-    const d = new Date(`${str}T00:00:00`);
-    return d;
-  };
-
-  const toEndOfDay = (str) => {
-    const d = new Date(`${str}T23:59:59.999`);
-    return d;
-  };
 
   if (dateFrom && dateTo) {
     whereRetiredDate.retiredDate = {

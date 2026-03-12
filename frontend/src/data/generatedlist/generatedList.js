@@ -48,35 +48,39 @@ export const titlesByType = {
 
 export const columnsByType = {
   TypeOne: [
-    { header: 'Número - Apellido', accessor: 'memberCodeSurname' },
-    { header: 'Nombre', accessor: 'firstName' },
-    { header: 'Dirección', accessor: 'address' },
-    { header: 'Teléfono', accessor: 'phone' },
-    { header: 'Cuotas', accessor: 'fees' },
+    { header: 'Número', accessor: 'partnerNumber' },
+    { header: 'Apellido', accessor: 'surname'},
+    { header: 'Nombre', accessor: 'name' },
+    { header: 'Dirección', accessor: 'homeAddress' },
+    { header: 'Teléfono', accessor: 'homePhone' },
+    { header: 'Cuotas Impagas', accessor: 'unpaidFees' },
     { header: 'Libros Pendientes', accessor: 'pendingBooks' },
     { header: 'Fecha de Inscripción', accessor: 'registrationDate' }
   ],
   TypeTwo: [
-    { header: 'Número - Apellido', accessor: 'memberCodeSurname' },
-    { header: 'Nombre', accessor: 'firstName' },
-    { header: 'Dirección', accessor: 'address' },
-    { header: 'Teléfono', accessor: 'phone' },
-    { header: 'Estado', accessor: 'status' },
+    { header: 'Número', accessor: 'partnerNumber' },
+    { header: 'Apellido', accessor: 'surname'},
+    { header: 'Nombre', accessor: 'name' },
+    { header: 'Dirección', accessor: 'homeAddress' },
+    { header: 'Teléfono', accessor: 'homePhone' },
+    { header: 'Estado', accessor: 'isActive' },
     { header: 'Fecha de Inscripción', accessor: 'registrationDate' }
   ],
   TypeThree: [
-    { header: 'Número - Apellido', accessor: 'memberCodeSurname' },
-    { header: 'Nombre', accessor: 'firstName' },
-    { header: 'Dirección', accessor: 'address' },
-    { header: 'Teléfono', accessor: 'phone' },
-    { header: 'Fecha de Baja', accessor: 'deactivationDate' },
-    { header: 'Motivo', accessor: 'reason' }
+     { header: 'Número', accessor: 'partnerNumber' },
+    { header: 'Apellido', accessor: 'surname'},
+    { header: 'Nombre', accessor: 'name' },
+    { header: 'Dirección', accessor: 'homeAddress' },
+    { header: 'Teléfono', accessor: 'homePhone' },
+    { header: 'Fecha de Baja', accessor: 'withdrawalDate' },
+    { header: 'Motivo', accessor: 'idReason' }
   ],
   TypeFour: [
-    { header: 'Número - Apellido', accessor: 'memberCodeSurname' },
-    { header: 'Nombre', accessor: 'firstName' },
-    { header: 'Dirección', accessor: 'address' },
-    { header: 'Teléfono', accessor: 'phone' },
+     { header: 'Número', accessor: 'partnerNumber' },
+    { header: 'Apellido', accessor: 'surname'},
+    { header: 'Nombre', accessor: 'name' },
+    { header: 'Dirección', accessor: 'homeAddress' },
+    { header: 'Teléfono', accessor: 'homePhone' },
     { header: 'Presentado por', accessor: 'presentedBy' },
     { header: 'Fecha de Inscripción', accessor: 'registrationDate' }
   ],
