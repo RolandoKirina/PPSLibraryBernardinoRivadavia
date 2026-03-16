@@ -2,6 +2,8 @@ import Partner from '../../models/partner/Partner.js';
 import Book from "../../models/book/Book.js";
 import LoanBook from '../../models/loan/LoanBook.js';
 import Loan from '../../models/loan/Loan.js';
+import statePartner from '../../models/partner/statePartner.js';
+import Locality from '../../models/partner/locality.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 
 export const printList = async (filters) => {
@@ -15,38 +17,38 @@ export const printList = async (filters) => {
   } = filters;
 
 
-const { rows, count } = await Partner.findAndCountAll({
-  where: wherePartner,
-  include: [
-    {
-      model: Loan,
-      as: "Loans",
-      attributes: [],
-      required: true,
-      include: [
-        {
-          model: LoanBook,
-          as: "LoanBooks",
-          attributes: [],
-          include: [
-            {
-              model: Book,
-              as: "Book",
-              attributes: [],
-              where: whereBook
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  group: ['Partner.id'],
-  distinct: true,
-  subQuery: false,
-  order,
-  limit,
-  offset
-});
+  const { rows, count } = await Partner.findAndCountAll({
+    where: wherePartner,
+    include: [
+      {
+        model: Loan,
+        as: "Loans",
+        attributes: [],
+        required: true,
+        include: [
+          {
+            model: LoanBook,
+            as: "LoanBooks",
+            attributes: [],
+            include: [
+              {
+                model: Book,
+                as: "Book",
+                attributes: [],
+                where: whereBook
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    group: ['Partner.id'],
+    distinct: true,
+    subQuery: false,
+    order,
+    limit,
+    offset
+  });
 
   return {
     rows,
@@ -103,12 +105,23 @@ export const getUnpaidFeesByPartner = async (id) => {
 
 };
 
-
-
 export const getAll = async (filters = {}) => {
   const { wherePartner, limit, offset, order } = filters;
 
-  const query = {};
+  const query = {
+    include: [
+      {
+        model: statePartner,
+        as: 'StatePartner',
+        attributes: ['status'],
+      },
+      {
+        model: Locality,
+        as: 'Locality',
+        attributes: ['name'],
+      }
+    ]
+  };
 
   if (wherePartner && Object.keys(wherePartner).length) {
     query.where = wherePartner;
@@ -128,8 +141,19 @@ export const getAll = async (filters = {}) => {
 
   const { rows, count } = await Partner.findAndCountAll(query);
 
+  const flattenedRows = rows.map(partner => {
+    const p = partner.get({ plain: true });
+
+    return {
+      ...p,
+      status: p.StatePartner?.status || null,
+      Locality: p.Locality?.name || 'No definida',
+      StatePartner: undefined // 
+    };
+  });
+
   return {
-    rows,
+    rows: flattenedRows,
     count
   };
 };

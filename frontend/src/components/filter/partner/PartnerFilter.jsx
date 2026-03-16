@@ -23,6 +23,39 @@ export default function PartnerFilter({ formData, onChange }) {
           </div>
 
           <div className="form-input-group">
+            <label>Apellido</label>
+            <input
+              type="text"
+              name="surname"
+              value={formData.surname}
+              onChange={onChange}
+              placeholder="Ej: Pérez"
+            />
+          </div>
+
+          <div className="form-input-group">
+            <label>Nombre</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={onChange}
+              placeholder="Ej: Juan"
+            />
+          </div>
+
+          <div className="form-input-group">
+            <label>Número de socio</label>
+            <input
+              type="number"
+              name="partnerNumber"
+              min="0"
+              value={formData.partnerNumber}
+              onChange={onChange}
+            />
+          </div>
+
+          <div className="form-input-group">
             <label>Cuotas impagas</label>
             <input
               type="number"
@@ -48,5 +81,6 @@ export default function PartnerFilter({ formData, onChange }) {
         </form>
       </div>
     </aside>
+    
   );
 }

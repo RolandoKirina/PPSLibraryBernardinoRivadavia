@@ -1,6 +1,11 @@
+import { Op } from 'sequelize';
+
 export const buildPartnerFilters = (query) => {
   const {
     unpaidFees,
+    partnerNumber,
+    surname,
+    name,
     idState,
     pendingBooks,
     limit,
@@ -11,12 +16,24 @@ export const buildPartnerFilters = (query) => {
 
   const wherePartner = {};
 
+  if (partnerNumber) {
+    wherePartner.partnerNumber = Number(partnerNumber);
+  }
+
+  if (surname) {
+    wherePartner.surname = { [Op.like]: `%${surname}%` };
+  }
+
+  if (name) {
+    wherePartner.name = { [Op.like]: `%${name}%` };
+  }
+
   if (unpaidFees !== undefined) {
     wherePartner.unpaidFees = Number(unpaidFees);
   }
 
   if (idState && idState !== '0') {
-    wherePartner.idState = Number(idState);
+    wherePartner.isActive = Number(idState);
   }
 
   if (pendingBooks !== undefined) {
@@ -52,7 +69,7 @@ export const buildListPartnerFilters = (query) => {
     presentedBy,
     cduCodeMin,
     cduCodeMax,
-    unpaidQuotesMin, 
+    unpaidQuotesMin,
     unpaidQuotesMax,
     quantityretiredbooksmin,
     quantityretiredbooksmax,
@@ -64,39 +81,39 @@ export const buildListPartnerFilters = (query) => {
     direction,
   } = query;
 
-const mapNameisActive = (idState) => {
-  if (idState === 1) return 1; 
-  if (idState === 2) return 0; 
-  return null;               
-};
-const isActive = mapNameisActive(idState)
+  const mapNameisActive = (idState) => {
+    if (idState === 1) return 1;
+    if (idState === 2) return 0;
+    return null;
+  };
+  const isActive = mapNameisActive(idState)
 
 
-const allowedSortFields = {
-  surname: 'surname',
-  name: 'name',
-  unpaidFees: 'unpaidFees',
-  pendingBooks: 'pendingBooks',
-  withdrawalDate: 'withdrawalDate',
-  registrationDate: 'registrationDate',
-  birthDate: 'birthDate',
-  idReason: 'idReason',
-  partnerNumber: 'partnerNumber'
-};
+  const allowedSortFields = {
+    surname: 'surname',
+    name: 'name',
+    unpaidFees: 'unpaidFees',
+    pendingBooks: 'pendingBooks',
+    withdrawalDate: 'withdrawalDate',
+    registrationDate: 'registrationDate',
+    birthDate: 'birthDate',
+    idReason: 'idReason',
+    partnerNumber: 'partnerNumber'
+  };
 
   const wherePartner = {};
   const whereBook = {};
-  
-  if (category !== undefined){
+
+  if (category !== undefined) {
     wherePartner.idCategory = Number(category);
   }
 
-if (isActive !== null) {
-  wherePartner.isActive = isActive;
-}
+  if (isActive !== null) {
+    wherePartner.isActive = isActive;
+  }
 
   if (birthDateFrom && birthDateTo) {
-  wherePartner.birthDate = {
+    wherePartner.birthDate = {
       [Op.between]: [
         toStartOfDay(birthDateFrom),
         toEndOfDay(birthDateTo)
@@ -113,49 +130,49 @@ if (isActive !== null) {
   }
 
   if (registrationStart && registrationEnd) {
-      wherePartner.registrationDate = {
-        [Op.between]: [
-          toStartOfDay(registrationStart),
-          toEndOfDay(registrationEnd)
-        ]
-      };
-  } 
+    wherePartner.registrationDate = {
+      [Op.between]: [
+        toStartOfDay(registrationStart),
+        toEndOfDay(registrationEnd)
+      ]
+    };
+  }
   else if (registrationStart) {
-      wherePartner.registrationDate = {
-        [Op.gte]: toStartOfDay(registrationStart)
-      };
-  } 
+    wherePartner.registrationDate = {
+      [Op.gte]: toStartOfDay(registrationStart)
+    };
+  }
   else if (registrationEnd) {
-      wherePartner.registrationDate = {
-        [Op.lte]: toEndOfDay(registrationEnd)
-      };
+    wherePartner.registrationDate = {
+      [Op.lte]: toEndOfDay(registrationEnd)
+    };
   }
 
-    if (resignationStart && resignationEnd) {
-       wherePartner.withdrawalDate = {
-          [Op.between]: [
-            toStartOfDay(resignationStart),
-            toEndOfDay(resignationEnd)
-          ]
-        };
-    } 
-    else if (resignationStart) {
-        wherePartner.withdrawalDate = {
-          [Op.gte]: toStartOfDay(resignationStart)
-        };
-    } 
-    else if (resignationEnd) {
-        wherePartner.withdrawalDate = {
-          [Op.lte]: toEndOfDay(resignationEnd)
-        };
-    }
+  if (resignationStart && resignationEnd) {
+    wherePartner.withdrawalDate = {
+      [Op.between]: [
+        toStartOfDay(resignationStart),
+        toEndOfDay(resignationEnd)
+      ]
+    };
+  }
+  else if (resignationStart) {
+    wherePartner.withdrawalDate = {
+      [Op.gte]: toStartOfDay(resignationStart)
+    };
+  }
+  else if (resignationEnd) {
+    wherePartner.withdrawalDate = {
+      [Op.lte]: toEndOfDay(resignationEnd)
+    };
+  }
   if (removeReason) {
     wherePartner.idReason = Number(removeReason);
   }
-    if (presentedBy) {
-      wherePartner.presentedBy = presentedBy;
-    }
-    if (cduCodeMin || cduCodeMax) {
+  if (presentedBy) {
+    wherePartner.presentedBy = presentedBy;
+  }
+  if (cduCodeMin || cduCodeMax) {
     whereBook.cduCode = {};
 
     if (cduCodeMin) {
@@ -167,18 +184,18 @@ if (isActive !== null) {
     }
   }
 
-    if (unpaidQuotesMin || unpaidQuotesMax) {
-      wherePartner.unpaidFees = {};
+  if (unpaidQuotesMin || unpaidQuotesMax) {
+    wherePartner.unpaidFees = {};
 
-      if (unpaidQuotesMin) {
-        wherePartner.unpaidFees[Op.gte] = unpaidQuotesMin;
-      }
-
-      if (unpaidQuotesMax) {
-        wherePartner.unpaidFees[Op.lte] = unpaidQuotesMax;
-      }
+    if (unpaidQuotesMin) {
+      wherePartner.unpaidFees[Op.gte] = unpaidQuotesMin;
     }
-      
+
+    if (unpaidQuotesMax) {
+      wherePartner.unpaidFees[Op.lte] = unpaidQuotesMax;
+    }
+  }
+
   /*if (quantityretiredbooksmin || quantityretiredbooksmax) {
     whereBook.cduCode = {};
 
@@ -198,20 +215,19 @@ if (isActive !== null) {
   const parsedOffset = Number(offset);
 
   let order = [];
-if (sortBy) {
+  if (sortBy) {
 
-  const directionValue = direction === 'ASC' ? 'ASC' : 'DESC';
+    const directionValue = direction === 'ASC' ? 'ASC' : 'DESC';
 
-  const fields = sortBy.split(",");
+    const fields = sortBy.split(",");
 
-  fields.forEach(field => {
+    fields.forEach(field => {
       if (allowedSortFields[field]) {
-      order.push([allowedSortFields[field], directionValue]);
-    }
-  });
+        order.push([allowedSortFields[field], directionValue]);
+      }
+    });
 
-}
-
+  }
   return {
     order,
     wherePartner,

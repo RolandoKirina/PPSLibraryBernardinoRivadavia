@@ -1,6 +1,7 @@
 .partner-buttons {
     width: 100%;
     display: flex;
+    margin-top: 1em;
 }
 
 .print-partners-size {

@@ -109,8 +109,11 @@
   margin: 1em 0;
 }
 .lost-books-size{
-  min-width: 40em;
-  max-width:80%;
+    width: 80em;
     background-color: var(--white);
 
+}
+
+.lost-books-size .generate-list-container {
+  margin: 1em 1em;
 }
