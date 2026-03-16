@@ -25,7 +25,7 @@ export const generateUnpaidFees = async (body) => {
 
     const generatedFees = [];
     const data = await getAll({idState:1});
-    console.log(data)
+
     const partners = data.rows;
 
     if (!month_and_year) {
@@ -36,9 +36,8 @@ export const generateUnpaidFees = async (body) => {
         throw new Error("El monto es obligatorio");
     }
 
-    console.log(partners)
     for (const partner of partners) {
-        console.log(partner)
+
         const existingFee = await FeeRepository.findOne({
             idPartner: partner.id,
             month,
@@ -46,11 +45,9 @@ export const generateUnpaidFees = async (body) => {
         });
 
            if (existingFee) {
-            console.log("YA TENÍA CUOTA:", partner.name);
             continue;
            }
            else{
-                console.log("SE CREA CUOTA PARA:", partner.name);
                 const newFee = await FeeRepository.create({
                 idPartner: partner.id,
                 month,

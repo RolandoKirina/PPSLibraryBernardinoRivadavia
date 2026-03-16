@@ -68,8 +68,6 @@ export default function Renewe() {
     }, [popupView]);
 
     async function refreshItems() {
-        console.log("Iniciando refresh...");
-
         try {
             setPopupView('default'); // Solo se ejecuta tras obtener la respuesta
 
@@ -78,7 +76,7 @@ export default function Renewe() {
             setResetPageTrigger(prev => prev + 1);
 
             const data = await getItems({ ...filters, limit: chunkSize, offset: 0 });
-            console.log("Datos recibidos:", data);
+
         } catch (error) {
             console.error("Error al refrescar items:", error);
         }
@@ -359,16 +357,10 @@ export default function Renewe() {
                             fields={reneweLoanFields}
                             onSubmit={async (data) => {
                                 try {
-                                    console.log("Datos a actualizar:", data);
-                                    console.log("Elemento seleccionado:", selected);
-
-                                    // Esperar a que termine la actualización
                                     await updateReneweItem(selected.id, data);
 
-                                    // Refrescar la lista de items una vez actualizado
                                     await refreshItems();
 
-                                    // Volver a la vista por defecto
                                     setPopupView('default');
                                 } catch (error) {
                                     console.error("Error al actualizar la reserva:", error);

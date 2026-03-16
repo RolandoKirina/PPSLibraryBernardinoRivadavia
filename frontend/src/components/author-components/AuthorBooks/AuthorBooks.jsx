@@ -137,7 +137,6 @@ export default function AuthorBooks({ authorSelected, successMessage, method, cr
             [name]: value
         }))
 
-        //console.log("Datos del autor:", { ...authorData, [name]: value });
     }
 
     function handleAddAuthorBook(positionData) {

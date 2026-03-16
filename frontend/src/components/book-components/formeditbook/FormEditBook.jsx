@@ -102,7 +102,8 @@ export default function FormEditBook({ selectedBook, getItems, closeOnExit }) {
                 await getItems();
             }
         } catch (error) {
-            alert("Error al actualizar el libro");
+            setSuccessMessage("❌ Error al actualizar el libro");
+
             console.error("Error al editar libro:", error);
         }
     };

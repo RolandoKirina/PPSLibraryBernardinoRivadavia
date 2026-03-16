@@ -35,7 +35,6 @@ export const getAllReturns = async (req, res) => {
     try {
         const queryOptions = buildReturnFilters(req.query);
 
-        console.log(queryOptions);
         const loans = await LoanService.getAllReturns(queryOptions);
 
         res.status(HTTP_STATUS.OK.code).send(loans);

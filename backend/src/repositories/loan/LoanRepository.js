@@ -476,7 +476,7 @@ export const update = async (id, updates) => {
 
   try {
     const employee = await EmployeesRepository.getOneByCode(null, updates.employeeCode);
-    console.log("employee: ", employee);
+    
     if (!employee) {
       throw new ValidationError("Empleado no existe");
     }

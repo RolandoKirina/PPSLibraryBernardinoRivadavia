@@ -64,7 +64,6 @@ export const buildListPartnerFilters = (query) => {
     direction,
   } = query;
 
-  console.log("SORT BY" ,sortBy);
 const mapNameisActive = (idState) => {
   if (idState === 1) return 1; 
   if (idState === 2) return 0; 
@@ -212,7 +211,7 @@ if (sortBy) {
   });
 
 }
-  console.log("WHERE PARTNER filters:", wherePartner);
+
   return {
     order,
     wherePartner,

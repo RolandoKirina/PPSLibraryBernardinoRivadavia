@@ -38,7 +38,6 @@ export const getAllFees = async (req, res) => {
 
 export const generateUnpaidFees = async (req, res) => {
     try {
-        console.log(req.body)
         const fees = await FeeService.generateUnpaidFees(req.body);
         res.status(HTTP_STATUS.OK.code).json(fees);
     } catch (e) {

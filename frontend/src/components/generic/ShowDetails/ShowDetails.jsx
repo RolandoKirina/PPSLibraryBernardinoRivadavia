@@ -25,7 +25,7 @@ useEffect(() => {
   ) {
     return;
   }
-  console.log(catalogs)
+
   setDetailsMenus(fillDetailsWithData(detailsData, data, catalogs));
 
 }, [data, catalogs]);
@@ -42,7 +42,7 @@ useEffect(() => {
       const res = await fetch(`http://localhost:4000/api/v1/fees/partners/${data.id}/unpaid-fees`);
       
       const json = await res.json();
-      console.log(json)
+
       setUnpaidFees(normalizeFees(json.rows));
       setPopupView("unpaidfees");
 

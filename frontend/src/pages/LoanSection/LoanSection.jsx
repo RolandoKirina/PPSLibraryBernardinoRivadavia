@@ -163,7 +163,6 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
                     <button className="button-table" onClick={() => {
                         setEditPopup(true)
                         setSelected(row)
-                        console.log(row)
                     }}>
                         <img src={EditIcon} alt="Editar" />
                     </button>

@@ -133,11 +133,6 @@ export const buildFilterRanking = (query) => {
     whereRetiredDate.retiredDate = conditions;
   }
 
-  console.log(whereRetiredDate);
-  console.log(conditions);
-  console.log("d", dateFrom);
-  console.log("s", dateTo);
-
   const parsedLimit = parseInt(limit);
   const parsedOffset = parseInt(offset);
   const directionNormalized = orderDirection?.toUpperCase() === "ASC" ? "ASC" : "DESC";

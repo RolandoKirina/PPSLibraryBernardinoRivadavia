@@ -1,1 +1,0 @@
-chooseMode: si es true, entonces la tabla cambia a solo dos columnas, motivo y seleccionar (popup para cuando se quiere elimianar un socio)

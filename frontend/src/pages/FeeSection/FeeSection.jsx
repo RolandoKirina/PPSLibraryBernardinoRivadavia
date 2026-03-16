@@ -46,7 +46,6 @@ export const FeeSection = () => {
   async function handleUpdateItem(data) {
     try {
       const res = await updateItem(selectedItem.feeid, data);
-      console.log(res)
       setPopupEdit(false);
 
       await getItems();
@@ -185,7 +184,6 @@ export const FeeSection = () => {
           <button className="button-table"
             onClick={() => {
               () =>
-                console.log(row)
               setPopupEdit(true)
               setSelectedItem(row)
             }}

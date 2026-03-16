@@ -192,7 +192,6 @@ export default function Return() {
     const handleExtraData = (newData) => {
         setPartnerData(prev => {
             const updated = { ...prev, ...newData };
-            console.log("devolucion actualizado con datos externos:", updated);
             return updated;
         });
 

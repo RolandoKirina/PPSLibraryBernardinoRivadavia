@@ -166,14 +166,11 @@ export default function LoanForm({ method, successMessage, createLoanItem, loanS
       books: loanData.books
     };
 
-    console.log(newLoan);
     createLoanItem(newLoan);
   }
 
   function handleEditLoan() {
     if (validateError) return;
-
-    console.log(loanData.books);
 
     const normalizedBooks = loanData.books.map(b => {
       const returned =
@@ -447,7 +444,6 @@ export default function LoanForm({ method, successMessage, createLoanItem, loanS
   };
 
   const handleExtraData = (newData) => {
-    console.log(newData);
     setLoanData(prev => {
       const updated = { ...prev, ...newData };
       return updated;

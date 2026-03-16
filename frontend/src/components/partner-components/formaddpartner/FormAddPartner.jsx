@@ -51,7 +51,6 @@ export default function FormAddPartner({ onPartnerCreated, employees }) {
         setStates(stateJson.rows);
         setMaritalStatuses(maritalJson);
         setLocalities(localityJson);
-        console.log(maritalStatuses)
       } catch (err) {
         console.error("Error cargando opciones", err);
       }

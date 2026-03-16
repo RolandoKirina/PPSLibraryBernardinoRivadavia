@@ -21,7 +21,7 @@ export default function PrintPartnerPopup({categoriespartner, statespartner}) {
 
                 const title = formValues.listTitle || 'Listado de socios';
                 const config = columnsByType["partner"];
-                console.log(config)
+
                 const headers = config.map(col => col.label || col.text || col.header || "Column");
 
                 const data = resultprint.map(item => {
@@ -75,7 +75,7 @@ export default function PrintPartnerPopup({categoriespartner, statespartner}) {
                 const reslist = await res.json();
                 setresultprint(reslist.rows);
                 setTotalItems(reslist.count);
-                console.log(resultprint)
+
             } catch(e){
                 setLoading(false);
 

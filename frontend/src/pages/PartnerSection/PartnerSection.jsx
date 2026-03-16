@@ -84,8 +84,6 @@ export default function PartnerSection() {
       setOffsetActual(0);
       setResetPageTrigger(prev => prev + 1);
 
-      console.log("FILTROS QUE VAN AL BACK:", filters);
-
       getItems({
         ...activeFilters,
         sortBy: 'id',

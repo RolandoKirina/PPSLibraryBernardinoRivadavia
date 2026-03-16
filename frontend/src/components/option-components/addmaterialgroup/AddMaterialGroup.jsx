@@ -156,8 +156,6 @@ export default function AddMaterialGroup({
       }))
       .filter(bt => bt.bookTypeId);
 
-    console.log(normalizedBookTypes);
-
     createGroupItem({
       group,
       amount,

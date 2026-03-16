@@ -333,7 +333,7 @@ export default function ReaderForm({ method, successMessage, createReaderItem, l
             <div className='lend-books-container'>
               <h2 className='lend-books-title'>Libros a Prestar</h2>
 
-              <Table columns={columns} data={loanData.books} totalItems={loanData.books.length} handleChangePage={() => { console.log("work") }} loading={loadingBooks} resetPageTrigger={resetPageTrigger} >
+              <Table columns={columns} data={loanData.books} totalItems={loanData.books.length} loading={loadingBooks} resetPageTrigger={resetPageTrigger} >
                 <div className='add-book-to-lend'>
                   <Btn
                     variant={'primary'}
@@ -422,7 +422,7 @@ export default function ReaderForm({ method, successMessage, createReaderItem, l
               <div className='author-books-title'>
                 <h3>Libros para este lector</h3>
               </div>
-              <Table columns={lendBooksColumns} data={loanData.books} totalItems={loanData.books.length} handleChangePage={() => { console.log("work") }} loading={loadingBooks} resetPageTrigger={resetPageTrigger} />
+              <Table columns={lendBooksColumns} data={loanData.books} totalItems={loanData.books.length}  loading={loadingBooks} resetPageTrigger={resetPageTrigger} />
             </div>
           </div>
           {addBookMessage && (
