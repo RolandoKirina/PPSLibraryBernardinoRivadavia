@@ -97,7 +97,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
                     setSuccessMessage('');
 
                     setErrorMessage(null);
-                }, 1500);
+                }, 3000);
 
                 await getItems({ ...filters, sortBy: 'id', direction: 'asc', limit: chunkSize, offset: 0 });
             }
@@ -123,7 +123,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
                     setSuccessMessage('');
 
                     setErrorMessage(null);
-                }, 1500);
+                }, 3000);
 
                 await getItems({ ...filters, sortBy: 'id', direction: 'asc', limit: chunkSize, offset: 0 });
             }

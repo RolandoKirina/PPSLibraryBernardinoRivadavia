@@ -107,11 +107,33 @@ export const createFee = async (req, res) => {
 export const updateFee = async (req, res) => {
     try {
         const { id } = req.params;
-        const updates = req.body;
-        if (!updates) {
+
+        const newFee = await FeeService.updateFee(id);
+        res.status(HTTP_STATUS.OK.code).json(newFee);
+    }     
+    catch (error) {
+
+        if (error instanceof ValidationError) {
+            return res
+                .status(HTTP_STATUS.BAD_REQUEST.code)
+                .json({ msg: error.message });
+        }
+
+        return res
+            .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
+            .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+    }
+};
+
+
+export const changeState = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const update = req.body;
+        if (!update) {
             return res.status(HTTP_STATUS.BAD_REQUEST.code).json({ msg: HTTP_STATUS.BAD_REQUEST.msg });
         }
-        const newFee = await FeeService.updateFee(id, updates);
+        const newFee = await FeeService.changeState(id, update);
         res.status(HTTP_STATUS.OK.code).json(newFee);
     }     
     catch (error) {

@@ -16,6 +16,7 @@ import PopUpDelete from '../../components/common/deletebtnComponent/PopUpDelete.
 import EditFees from '../../components/fees-components/formEditFee/EditFees.jsx';
 import { useAuth } from '../../auth/AuthContext.jsx';
 import { roles } from '../../auth/roles.js';
+import ConfirmMessage from '../../components/common/confirmMessage/ConfirmMessage.jsx';
 
 export const FeeSection = () => {
   const chunkSize = 100;
@@ -33,6 +34,7 @@ export const FeeSection = () => {
   const [PopUpDetail, setPopUpDetail] = useState(false);
   const [PopUpFeesBetweenDates, setPopUpFeesBetweenDates] = useState(false);
   const [error, setError] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(false);
   const { items, loading, totalItems, getItems, getItem, createItem, updateItem, deleteItem } = useEntityManagerAPI("fees");
 
   const [formData, setFormData] = useState({
@@ -41,6 +43,7 @@ export const FeeSection = () => {
     name: "",
     surname: "",
     paymentdate: "",
+    feeStatus: "",
   });
 
   async function handleUpdateItem(data) {
@@ -109,11 +112,14 @@ export const FeeSection = () => {
       year: "numeric"
     });
   };
-  
+
   const formattedFees = items.map(fee => ({
     ...fee,
     paid: fee.paid ? '✅ Pagada' : '❌ Impaga',
   }));
+
+
+
 
   async function handleAddItem(data) {
     try {
@@ -139,6 +145,45 @@ export const FeeSection = () => {
 
     } catch (err) {
       console.error("Error al crear cuota", err);
+      setError("No se pudo conectar con el servidor");
+    }
+  }
+
+  async function changeFeeState(id) {
+    try {
+      const res = await fetch(`http://localhost:4000/api/v1/fees/change-state/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${auth.token}`
+        }
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ msg: "Error al cambiar el estado de la cuota" }));
+        setError(errorData.message || "Error al actualizar");
+        return;
+      } else {
+        setError(null);
+        setSuccessMessage("Cuota actualizada exitosamente");
+
+        setTimeout(() => {
+          setSuccessMessage("");
+          setPopUpDelete(false);
+        }, (3000));
+      }
+
+      await getItems({
+        ...formData,
+        sortBy: 'id',
+        direction: 'asc',
+        limit: chunkSize,
+        offset: 0
+      });
+
+    } catch (err) {
+      console.error("Error en changeFeeState:", err);
+      setError("No se pudo conectar con el servidor");
     }
   }
 
@@ -148,6 +193,7 @@ export const FeeSection = () => {
     columns = [
       { header: 'Numero de cuota', accessor: 'feeid' },
       { header: 'Nombre de socio', accessor: 'name' },
+      { header: 'Estado cuota', accessor: 'statusLabel' },
       { header: 'valor', accessor: 'amount' },
       { header: 'Numero de socio', accessor: 'partnerNumber' },
       {
@@ -161,7 +207,7 @@ export const FeeSection = () => {
         render: (value) => value ? '✅ Paga' : '❌ Impaga',
       },
       {
-        header: 'Borrar',
+        header: 'Habilitar/Deshabilitar',
         accessor: 'delete',
         className: "action-buttons",
         render: (_, row) => (
@@ -184,7 +230,7 @@ export const FeeSection = () => {
           <button className="button-table"
             onClick={() => {
               () =>
-              setPopupEdit(true)
+                setPopupEdit(true)
               setSelectedItem(row)
             }}
 
@@ -213,6 +259,7 @@ export const FeeSection = () => {
   else if (auth.role === roles.partner) {
     columns = [
       { header: 'Numero de cuota', accessor: 'feeid' },
+      { header: 'Estado cuota', accessor: 'statusLabel' },
       { header: 'valor', accessor: 'amount' },
       {
         header: "Fecha de pago",
@@ -232,13 +279,16 @@ export const FeeSection = () => {
       key: 'deletePopup',
       title: 'Borrar Cuota',
       className: 'delete-size-popup',
-      content: <PopUpDelete
-        title={"Cuotas"}
-        onConfirm={() => deleteItem(selectedId)}
+      content: <ConfirmMessage
+        text={'¿Quiere cambiar el estado de la cuota?'}
         closePopup={() => setPopUpDelete(false)}
-        refresh={() => getItems()} />,
+        onConfirm={() => changeFeeState(selectedId)}
+        successMessage={successMessage}
+      />,
+
       close: () => setPopUpDelete(false),
       condition: popupdelete,
+
     },
     {
       key: 'editPopup',
@@ -287,7 +337,7 @@ export const FeeSection = () => {
     adminFeeActions = <div className='fees-actions'>
       <Btn text="Agregar cuota" variant="primary" onClick={() => setPopupAdd(true)}></Btn>
       <Btn text="Cuotas entre fechas" variant="primary" onClick={() => setPopUpFeesBetweenDates(true)}></Btn>
-      <Btn text="Modificaciones en cuotas" variant="primary" onClick={() => alert("realizar")}></Btn>
+      {/* <Btn text="Modificaciones en cuotas" variant="primary" onClick={() => alert("realizar")}></Btn> */}
 
     </div>;
   }
@@ -296,7 +346,7 @@ export const FeeSection = () => {
     <>
       <GenericSection title={title} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger} filters={
         <FeeFilter formData={formData ||
-          { partnerWithUnpaidFees: false, name: "", surname: "", PaymentDate: "" }}
+          { partnerWithUnpaidFees: false, name: "", surname: "", PaymentDate: "", feeStatus: "" }}
           onChange={handleFilterChange} />}
 
         columns={columns} data={items} popups={feesPopUp}

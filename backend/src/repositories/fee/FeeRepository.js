@@ -72,7 +72,9 @@ export const getAll = async (filters = {}, listType = '') => {
         : "",
       partnerNumber: fee.Partner?.partnerNumber,
       name: fee.Partner ? `${fee.Partner.name} ${fee.Partner.surname}` : "",
-      surname: fee.Partner?.surname
+      surname: fee.Partner?.surname,
+      status: fee.status,
+      statusLabel: fee.status ? "Vigente" : "Anulada"
     })),
     count
   };
@@ -84,7 +86,7 @@ export const getAllFeesTypeOne = async (filters = {}) => {
   const beforeDate = filters.whereFees?.beforeDate;
   const afterDate = filters.whereFees?.afterDate;
 
-  let whereConditions = ['c."Paga" = true']; 
+  let whereConditions = ['c."Paga" = true'];
   const replacements = {
     limit: limit || 35,
     offset: offset || 0
@@ -231,7 +233,7 @@ export const getAllFeesTypeTwo = async (filters = {}) => {
 
     return {
       rows: finalRows,
-      count: rows.length 
+      count: rows.length
     };
   } catch (error) {
     console.error("Error en Reporte Tipo Dos:", error);

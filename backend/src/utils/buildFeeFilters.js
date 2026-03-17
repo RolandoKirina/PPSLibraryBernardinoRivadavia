@@ -7,12 +7,13 @@ export const buildFeeFilters = (query) => {
     surname,
     paymentdate,
     status,
-    beforeDate,  
-    afterDate,   
+    beforeDate,
+    afterDate,
     limit,
     offset,
     sortBy,
     direction,
+    feeStatus
   } = query;
 
   const whereFees = {};
@@ -22,6 +23,12 @@ export const buildFeeFilters = (query) => {
     whereFees.paid = false;
   } else if (status === "paid") {
     whereFees.paid = true;
+  }
+
+  if (feeStatus === "inactive") {
+    whereFees.status = false;
+  } else if (status === "active") {
+    whereFees.status = true;
   }
 
   if (paymentdate) {

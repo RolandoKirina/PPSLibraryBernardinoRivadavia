@@ -60,7 +60,26 @@ export default function BookFilter({ formData, onChange }) {
                     <option value="unpaid">Impagas</option>
                   </select>
                 </div>
+
+                <div className="feefiltercheckbox">
+                  <label htmlFor="status" className="feefiltercheckbox-label">
+                    Estado cuotas
+                  </label>
+
+                  <select
+                    id="feeStatus"
+                    name="feeStatus"
+                    value={formData.feeStatus ?? ""}
+                    onChange={onChange}
+                    className="feefiltercheckbox-select"
+                  >
+                    <option value="">Todas</option>
+                    <option value="active">Habilitadas</option>
+                    <option value="inactive">Deshabilitadas</option>
+                  </select>
+                </div>
               </>
+
             )}
 
           </div>

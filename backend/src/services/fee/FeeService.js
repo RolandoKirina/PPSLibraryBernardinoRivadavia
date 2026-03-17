@@ -24,7 +24,7 @@ export const generateUnpaidFees = async (body) => {
     const [year, month, day] = month_and_year.split("-").map(Number);
 
     const generatedFees = [];
-    const data = await getAll({idState:1});
+    const data = await getAll({ idState: 1 });
 
     const partners = data.rows;
 
@@ -44,11 +44,11 @@ export const generateUnpaidFees = async (body) => {
             year
         });
 
-           if (existingFee) {
+        if (existingFee) {
             continue;
-           }
-           else{
-                const newFee = await FeeRepository.create({
+        }
+        else {
+            const newFee = await FeeRepository.create({
                 idPartner: partner.id,
                 month,
                 year,
@@ -56,7 +56,7 @@ export const generateUnpaidFees = async (body) => {
                 observation: observation ?? "",
                 paid: false,
                 date_of_paid: date_of_paid
-                });
+            });
 
             generatedFees.push(newFee);
         }
@@ -128,6 +128,27 @@ export const updateFee = async (id, data) => {
 
 
     const updatedFee = await FeeRepository.update(id, data);
+
+    if (!updatedFee) {
+        throw new Error("Fee not found or not updated");
+    }
+
+    return updatedFee;
+};
+
+export const changeState = async (id) => {
+
+    const fee = await FeeRepository.getById(id);
+    
+    if (!fee) {
+        throw new Error("Fee not found");
+    }
+
+    let newStatus = !fee.status;
+
+    const updatedFee = await FeeRepository.update(id, {
+        status: newStatus
+    })
 
     if (!updatedFee) {
         throw new Error("Fee not found or not updated");

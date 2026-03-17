@@ -10,6 +10,7 @@ router.get("/paid-count", authorizeRoles(['admin']), FeeController.getPaidFeeCou
 router.get("/", authorizeRoles(['admin', 'partner']), FeeController.getAllFees);
 router.get("/:id", authorizeRoles(['admin', 'partner']), validateIdParam("id"), FeeController.getFee);
 router.post("/", authorizeRoles(['admin']), FeeController.createFee);
+router.put("/change-state/:id", authorizeRoles(['admin']), validateIdParam("id"), FeeController.changeState);
 router.put("/:id", authorizeRoles(['admin']), validateIdParam("id"), FeeController.updateFee);
 // router.delete("/:id", authorizeRoles(['admin']), validateIdParam("id"), FeeController.deleteFee);
 export default router;
