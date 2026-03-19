@@ -305,7 +305,7 @@ export const getReturnPrintList = async (filters = {}) => {
       {
         model: Book,
         as: 'Book',
-        attributes: [], 
+        attributes: [],
         required: true,
       },
       {
@@ -349,7 +349,7 @@ export const getPhonePrintList = async (filters = {}) => {
   const { rows, count } = await LoanBook.findAndCountAll({
 
     attributes: [
-      'bookCode', 
+      'bookCode',
       'expectedDate',
       [Sequelize.col('Book.titulo'), 'bookTitle'],
       [Sequelize.col('Book.codigo'), 'bookCodeInventory'],
@@ -382,7 +382,7 @@ export const getPhonePrintList = async (filters = {}) => {
     order: [[Sequelize.literal('"Loan->Partner"."numero"'), 'ASC']],
     limit,
     offset,
-    raw: true, 
+    raw: true,
   });
 
   const formattedRows = rows.map(r => ({
@@ -472,16 +472,24 @@ export const update = async (id, updates) => {
     }
   }
 
+  if (updates.retiredDate && updates.expectedDate) {
+    const start = new Date(updates.retiredDate);
+    const end = new Date(updates.expectedDate);
+
+    if (start > end) {
+      throw new ValidationError("La fecha de retiro no puede ser posterior a la fecha prevista de devolución");
+    }
+  }
+
   const transaction = await sequelize.transaction();
 
   try {
     const employee = await EmployeesRepository.getOneByCode(null, updates.employeeCode);
-    
+
     if (!employee) {
       throw new ValidationError("Empleado no existe");
     }
 
-    // Actualiza los datos del préstamo
     const loanData = {
       retiredDate: updates.retiredDate,
       employeeId: employee.id,
@@ -496,7 +504,6 @@ export const update = async (id, updates) => {
       throw new ValidationError("No se pudo actualizar el préstamo");
     }
 
-    // Elimina los registros previos
     await LoanBookRepository.removeAllLoanBooks(id, transaction);
 
     const newLoanBooks = updates.books.map((book) => ({

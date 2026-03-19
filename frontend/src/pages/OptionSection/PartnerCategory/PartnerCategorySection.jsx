@@ -187,7 +187,9 @@ export default function PartnerCategorySection() {
     return (
         <>
             <GenericSection title={'Listado de categorias de socios'} columns={columns} data={items} popups={authorsPopups} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger} actions={
-                <Btn variant={'primary'} className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg' />} />
+                <div className='partner-category-actions'>
+                    <Btn variant={'primary'} className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg' />} />
+                </div>
             } />
         </>
     )

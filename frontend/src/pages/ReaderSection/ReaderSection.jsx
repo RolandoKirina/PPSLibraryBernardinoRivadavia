@@ -103,25 +103,60 @@ export default function ReaderSection() {
 
     async function handleUpdateItem(data) {
         try {
+            const parseDate = (dateVal) => {
+                if (!dateVal) return new Date(NaN);
+                let d = dateVal instanceof Date ? new Date(dateVal) : new Date(dateVal);
+
+                if (typeof dateVal === 'string' && dateVal.includes('-') && !dateVal.includes('T')) {
+                    const parts = dateVal.split('-');
+                    if (parts[0].length <= 2) {
+                        const [day, month, year] = parts;
+                        d = new Date(`20${year}-${month}-${day}T12:00:00`);
+                    }
+                }
+                d.setHours(0, 0, 0, 0);
+                return d;
+            };
+
+            const retireValue = data.retiredDate !== undefined ? data.retiredDate : selected.retiredDate;
+            const returnValue = data.returnedDate !== undefined ? data.returnedDate : selected.returnedDate;
+
+            const dateRetiro = parseDate(retireValue);
+            const dateDevolucion = parseDate(returnValue);
+
+            if (dateRetiro.getTime() > dateDevolucion.getTime()) {
+                setErrorMessage("La fecha de retiro no puede ser posterior a la fecha de devolución.");
+
+                setTimeout(() => {
+                    setErrorMessage(null);
+                    setEditPopup(false);
+                }, 3000);
+
+                return;
+            }
+
             const res = await updateReaderBook(selected.id, data);
 
             if (res) {
                 setSuccessMessage("Lector actualizado exitosamente");
+                setErrorMessage(null);
 
                 setTimeout(() => {
                     setEditPopup(false);
-
                     setSuccessMessage('');
-
-                    setErrorMessage(null);
                 }, 3000);
             }
 
             await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
-        }
-        catch (error) {
+
+        } catch (error) {
             setErrorMessage(error.message);
             console.error("Error al actualizar un Lector:", error);
+
+            setTimeout(() => {
+                setErrorMessage(null);
+                setEditPopup(false);
+            }, 3000);
         }
     }
 
@@ -148,6 +183,7 @@ export default function ReaderSection() {
             const data = await res.json();
 
             if (!res.ok) {
+                setErrorMessage("Error al devolver el libro del Lector");
                 throw new Error(data.msg || "Error al devolver el libro del Lector");
             }
 
@@ -180,8 +216,7 @@ export default function ReaderSection() {
             key: 'editPopup',
             title: 'Editar lector',
             className: '',
-            //content: <LoanForm method="update" createLoanItem={handleUpdateItem} loanSelected={selected} />,
-            content: <GenericForm successMessage={successMessage} fields={readerFields} onSubmit={(data) => handleUpdateItem(data)} />,
+            content: <GenericForm successMessage={successMessage} fields={readerFields} onSubmit={(data) => handleUpdateItem(data)} error={errorMessage} />,
             close: () => setEditPopup(false),
             condition: editPopup
         },
@@ -189,7 +224,6 @@ export default function ReaderSection() {
             key: 'returnPopup',
             title: 'Devolver libro de ector',
             className: '',
-            //content: <LoanForm method="update" createLoanItem={handleUpdateItem} loanSelected={selected} />,
             content:
                 <ConfirmMessage
                     text={'¿Está seguro de devolver el libro del lector?'}
@@ -197,6 +231,7 @@ export default function ReaderSection() {
                     onConfirm={() => {
                         returnReaderBook();
                     }}
+                    errorMessage={errorMessage}
                 />,
             close: () => setReturnPopup(false),
             condition: returnPopup

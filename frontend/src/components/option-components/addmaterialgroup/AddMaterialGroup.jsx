@@ -16,7 +16,8 @@ export default function AddMaterialGroup({
   method,
   createGroupItem,
   groupSelected,
-  errorMessage
+  errorMessage,
+  successMessage
 }) {
   const BASE_URL = "http://localhost:4000/api/v1";
 
@@ -248,6 +249,10 @@ export default function AddMaterialGroup({
                   />
                 </div>
               </Table>
+
+              {successMessage && (
+                <div className='sucess-message'>{successMessage && <p className="">{successMessage}</p>}</div>
+              )}
             </div>
 
             {validateError && <p className="error-text">{validateError}</p>}

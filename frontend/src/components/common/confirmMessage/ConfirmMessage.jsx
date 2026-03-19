@@ -1,7 +1,7 @@
 import './ConfirmMessage.css';
 import Btn from '../btn/Btn';
 
-export default function ConfirmMessage({ text, closePopup, onConfirm, successMessage }) {
+export default function ConfirmMessage({ text, closePopup, onConfirm, successMessage, errorMessage }) {
     return (
         <>
             <div className={`confirm-container`}>
@@ -14,6 +14,8 @@ export default function ConfirmMessage({ text, closePopup, onConfirm, successMes
                         <Btn variant={'primary'} text={'Confirmar'} className={'confirm-btn'} onClick={onConfirm} />
                     </div>
                     {successMessage && (<div className='sucess-message-alt'>{successMessage && <p className="">{successMessage}</p>}</div>)}
+
+                    {errorMessage && (<div className='error-message'>{errorMessage && <p className="">{errorMessage}</p>}</div>)}
                 </div>
             </div>
 
