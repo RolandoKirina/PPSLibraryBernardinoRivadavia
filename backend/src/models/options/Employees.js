@@ -1,5 +1,5 @@
 import sequelize from "../../configs/database.js";
-import { DataTypes } from "sequelize";
+import { DataTypes, Sequelize } from "sequelize";
 
 const Employees = sequelize.define("Employees",
     {
@@ -28,14 +28,22 @@ const Employees = sequelize.define("Employees",
     }
 );
 
-Employees.afterCreate(async (employee, options) => {
-    const generatedCode = `EMP-${String(employee.id).padStart(5, "0")}`;
+Employees.beforeCreate(async (employee, options) => {
+    try {
+        const lastEmployee = await Employees.findOne({
+            attributes: ['code'],
+            order: [[Sequelize.cast(Sequelize.col('Codigo'), 'INTEGER'), 'DESC']],
+            transaction: options.transaction
+        });
 
-    // Actualizamos solo la columna 'code' directamente
-    await employee.update({ code: generatedCode }, {
-        transaction: options.transaction // Importante para mantener la integridad
-    });
+        const lastCodeValue = (lastEmployee && lastEmployee.code) ? Number(lastEmployee.code) : 0;
+        const nextCode = lastCodeValue + 1;
+
+        employee.code = String(nextCode);
+    } catch (error) {
+        console.error("Error en beforeCreate de Employees:", error);
+        throw error;
+    }
 });
 
 export default Employees;
-

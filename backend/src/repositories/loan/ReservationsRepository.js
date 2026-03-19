@@ -130,7 +130,22 @@ export const getOne = async (id) => {
 export const create = async (reservation) => {
 
   if (!reservation.books || reservation.books.length === 0) {
-    throw new ValidationError("No se puede crear un préstamo sin libros");
+    throw new ValidationError("No se puede crear una reserva sin libros");
+  }
+
+  if (!reservation.reservationDate || !reservation.expectedDate) {
+    throw new ValidationError("La reserva debe tener una fecha de inicio y una fecha de promesa");
+  }
+
+  const start = new Date(reservation.reservationDate);
+  const end = new Date(reservation.expectedDate);
+
+  if (start > end) {
+    throw new ValidationError("La fecha de reserva no puede ser posterior a la fecha de promesa");
+  }
+
+  if (!reservation.partnerNumber) {
+    throw new ValidationError("La reserva debe tener un número de socio vinculado");
   }
 
   const transaction = await sequelize.transaction();
@@ -141,11 +156,6 @@ export const create = async (reservation) => {
     if (!partner) {
       throw new ValidationError("Socio no existe");
     }
-
-    
-  // if(bookAlreadyReserved(reservation)) {
-  //   throw new ValidationError("No se puede reservar libros que no han sido devueltos aún por el socio de numero: "+reservation.partnerNumber);
-  // }
 
     const reservationData = {
       partnerId: partner.id,
