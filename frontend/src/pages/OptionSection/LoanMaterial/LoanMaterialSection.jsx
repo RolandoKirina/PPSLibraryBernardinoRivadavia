@@ -40,7 +40,7 @@ export default function LoanMaterialSection() {
         try {
             await createItem(data);
 
-            await getItems({ ...filters,  sortBy: 'typeName', direction: 'asc', limit: chunkSize, offset: 0 });
+            await getItems({ ...filters, sortBy: 'typeName', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setAddPopup(false);
 
@@ -56,7 +56,7 @@ export default function LoanMaterialSection() {
         try {
             await updateItem(selected.bookTypeId, data);
 
-            await getItems({ ...filters,  sortBy: 'typeName', direction: 'asc', limit: chunkSize, offset: 0 });
+            await getItems({ ...filters, sortBy: 'typeName', direction: 'asc', limit: chunkSize, offset: 0 });
 
             setEditPopup(false);
 
@@ -73,7 +73,7 @@ export default function LoanMaterialSection() {
 
             setResetPageTrigger(prev => prev + 1);
 
-            getItems({ ...filters,  sortBy: 'typeName', direction: 'asc', limit: chunkSize, offset: 0 });
+            getItems({ ...filters, sortBy: 'typeName', direction: 'asc', limit: chunkSize, offset: 0 });
         }, 500);
 
         return () => clearTimeout(delay);
@@ -97,7 +97,7 @@ export default function LoanMaterialSection() {
             title: 'Borrar material de préstamo',
             className: 'delete-size-popup',
             content: <PopUpDelete
-                title="Autor"
+                title="Material"
                 onConfirm={() => deleteItem(selected.bookTypeId)}
                 closePopup={() => setDeletePopup(false)}
                 refresh={() => getItems()}
@@ -161,8 +161,10 @@ export default function LoanMaterialSection() {
 
     return (
         <>
-            <GenericSection title={'Listado de material en préstamo'} columns={columns} data={items} popups={loanMaterialsPopups}  totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger} actions={
-                <Btn variant={'primary'} className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg' />} />
+            <GenericSection title={'Listado de material en préstamo'} columns={columns} data={items} popups={loanMaterialsPopups} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger} actions={
+                <div className='partner-category-actions'>
+                    <Btn variant={'primary'} className='new-btn' onClick={() => setAddPopup(true)} text={'Nuevo'} icon={<img src={PlusIcon} alt='plusIconImg' />} />
+                </div>
             } />
         </>
     )
