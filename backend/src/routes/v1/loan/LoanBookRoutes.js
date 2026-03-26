@@ -6,8 +6,6 @@ import { authorizeRoles } from '../../../middlewares/authorizeRoles.js';
 
 const router = express.Router();
 
-
-
 router.get('/', authorizeRoles(['admin']), LoanBookController.getAllLoanBooks);
 
 router.get('/repeated-book/:id', authorizeRoles(['admin']), LoanBookController.verifyIfBookIsNotRepeated);
@@ -15,9 +13,6 @@ router.get('/repeated-book/:id', authorizeRoles(['admin']), LoanBookController.v
 router.get('/:id', authorizeRoles(['admin']), validateIdParam("id"), LoanBookController.getLoanBook);
 router.post('/', authorizeRoles(['admin']), LoanBookController.createLoanBook);
 router.put('/:id', authorizeRoles(['admin']), validateIdParam("id"), LoanBookController.updateLoanBook);
-
-// quizás añadir patch
-// router.patch('/:id', LoanBookController.patchLoanBook);
 
 router.delete('/:id', authorizeRoles(['admin']), validateIdParam("id"), LoanBookController.removeLoanBook);
 

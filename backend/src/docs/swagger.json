@@ -20,15 +20,1443 @@
       }
     }
   },
+  "tags": [
+    {
+      "name": "Usuarios",
+      "description": "Administración de cuentas de la biblioteca"
+    },
+    {
+      "name": "Préstamos",
+      "description": "Gestión de libros retirados y devoluciones"
+    },
+    {
+      "name": "Préstamos - Libros",
+      "description": "Gestión de libros en préstamo"
+    },
+    {
+      "name": "Tipo Préstamo",
+      "description": "Gestión de tipos de préstamos"
+    },
+    {
+      "name": "Reservas",
+      "description": "Gestión de reservas"
+    },
+    {
+      "name": "Reservas - Libros",
+      "description": "Gestión de libros en reserva"
+    }
+  ],
   "paths": {
+    "/api/v1/users": {
+      "get": {
+        "summary": "Listado de Usuarios",
+        "description": "Obtener listado de todos los usuarios existentes",
+        "tags": [
+          "Usuarios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        }
+      }
+    },
+    "/api/v1/users/register": {
+      "post": {
+        "summary": "Registrar un usuario",
+        "description": "Crear un nuevo usuario",
+        "tags": [
+          "Usuarios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "username",
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "fullName": {
+                    "type": "string",
+                    "example": "juan_perez"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "juan@rivadavia.edu.ar"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuario creado exitosamente"
+          },
+          "400": {
+            "description": "Datos incompletos o inválidos (Bad Request)"
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "409": {
+            "description": "Conflicto: El usuario o email ya existe"
+          }
+        }
+      }
+    },
+    "/api/v1/users/login": {
+      "post": {
+        "summary": "Ingresar sesion con un usuario",
+        "description": "Iniciar sesion con un usuario existente",
+        "tags": [
+          "Usuarios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "juan@rivadavia.edu.ar"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "El usuario se logueó exitosamente"
+          },
+          "400": {
+            "description": "Datos incompletos o inválidos (Bad Request)"
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "409": {
+            "description": "Conflicto: El usuario o email no existe"
+          }
+        }
+      }
+    },
+    "/api/v1/users/{id}": {
+      "get": {
+        "summary": "Obtener usuario",
+        "description": "Obtener los datos de un usuario filtrado por su ID único",
+        "tags": [
+          "Usuarios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID númerico de usuario",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "404": {
+            "description": "Usuario no encontrado"
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualizar usuario",
+        "description": "Actualizar los datos de un usuario filtrado por su ID único",
+        "tags": [
+          "Usuarios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID númerico de usuario",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "juan@rivadavia.edu.ar"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "El usuario se actualizó exitosamente"
+          },
+          "400": {
+            "description": "Datos incompletos o inválidos (Bad Request)"
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Eliminar usuario",
+        "description": "Eliminar los datos de un usuario filtrado por su ID único",
+        "tags": [
+          "Usuarios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID númerico de usuario",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario eliminado correctamente"
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "404": {
+            "description": "Usuario no encontrado"
+          }
+        }
+      }
+    },
     "/api/v1/loans": {
       "get": {
-        "summary": "Listado de préstamos",
-        "tags": ["Loans"],
-        "security": [{ "bearerAuth": [] }],
+        "summary": "Obtener todos los préstamos",
+        "tags": [
+          "Préstamos"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
-          "200": { "description": "OK" },
-          "401": { "description": "No autorizado" }
+          "200": {
+            "description": "Lista de préstamos obtenida con éxito"
+          },
+          "401": {
+            "description": "No autorizado - Falta Token"
+          }
+        }
+      },
+      "post": {
+        "summary": "Crear un nuevo préstamo",
+        "description": "Registra un nuevo préstamo de libro en el sistema de la Biblioteca.",
+        "tags": [
+          "Préstamos"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "partnerId",
+                  "loanType",
+                  "retiredDate",
+                  "expectedDate",
+                  "employeeId"
+                ],
+                "properties": {
+                  "legacyLoanId": {
+                    "type": "integer",
+                    "example": 1024,
+                    "description": "ID del sistema antiguo (opcional)"
+                  },
+                  "partnerId": {
+                    "type": "integer",
+                    "example": 500
+                  },
+                  "loanType": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "retiredDate": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2026-03-25"
+                  },
+                  "expectedDate": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2026-03-30"
+                  },
+                  "withdrawalTime": {
+                    "type": "string",
+                    "example": "14:30",
+                    "description": "Hora del retiro en formato HH:mm"
+                  },
+                  "employeeId": {
+                    "type": "integer",
+                    "example": 5
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "Juan Pérez",
+                    "description": "Nombre del socio o persona que retira"
+                  },
+                  "dni": {
+                    "type": "string",
+                    "example": "35123456",
+                    "description": "DNI del socio"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Préstamo creado"
+          },
+          "401": {
+            "description": "No autorizado: Token faltante o inválido"
+          },
+          "403": {
+            "description": "Prohibido - Rol insuficiente"
+          }
+        }
+      }
+    },
+    "/api/v1/loans/employee-count": {
+      "get": {
+        "summary": "Cantidad de préstamos agrupados por empleados",
+        "tags": [
+          "Préstamos"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Estadística obtenida"
+          },
+          "401": {
+            "description": "No autorizado: Token faltante o inválido"
+          }
+        }
+      }
+    },
+    "/api/v1/loans/print-list/{option}": {
+      "get": {
+        "summary": "Generar lista de impresión",
+        "tags": [
+          "Préstamos"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "option",
+            "in": "path",
+            "required": true,
+            "description": "Opción de filtrado para el PDF",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "PDF generado correctamente"
+          },
+          "401": {
+            "description": "No autorizado: Token faltante o inválido"
+          }
+        }
+      }
+    },
+    "/api/v1/loans/returns": {
+      "get": {
+        "summary": "Listado de todas las devoluciones",
+        "tags": [
+          "Préstamos"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de devoluciones obtenida"
+          },
+          "401": {
+            "description": "No autorizado: Token faltante o inválido"
+          }
+        }
+      }
+    },
+    "/api/v1/loans/{id}": {
+      "get": {
+        "summary": "Obtener un préstamo por ID",
+        "tags": [
+          "Préstamos"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalles del préstamo"
+          },
+          "401": {
+            "description": "No autorizado: Token faltante o inválido"
+          },
+          "404": {
+            "description": "Préstamo no encontrado"
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualizar un préstamo",
+        "description": "Modifica los datos de un préstamo existente. No es necesario enviar todos los campos, solo los que se desean cambiar.",
+        "tags": [
+          "Préstamos"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID del préstamo a actualizar",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "partnerId": {
+                    "type": "integer",
+                    "example": 500
+                  },
+                  "loanType": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "retiredDate": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2026-03-25"
+                  },
+                  "expectedDate": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2026-03-30"
+                  },
+                  "withdrawalTime": {
+                    "type": "string",
+                    "example": "14:30"
+                  },
+                  "employeeId": {
+                    "type": "integer",
+                    "example": 5
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "Juan Pérez"
+                  },
+                  "dni": {
+                    "type": "string",
+                    "example": "35123456"
+                  },
+                  "legacyLoanId": {
+                    "type": "integer",
+                    "example": 1024
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Préstamo actualizado exitosamente"
+          },
+          "400": {
+            "description": "Error en la validación de los datos"
+          },
+          "401": {
+            "description": "No autorizado: Token faltante o inválido"
+          },
+          "404": {
+            "description": "Préstamo no encontrado"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Eliminar un préstamo",
+        "tags": [
+          "Préstamos"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Préstamo eliminado"
+          },
+          "401": {
+            "description": "No autorizado: Token faltante o inválido"
+          }
+        }
+      }
+    },
+    "/api/v1/loan-books": {
+      "get": {
+        "summary": "Listar todos los libros en préstamo",
+        "tags": [
+          "Préstamos - Libros"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista obtenida correctamente"
+          },
+          "401": {
+            "description": "No autorizado: Token faltante o inválido"
+          }
+        }
+      },
+      "post": {
+        "summary": "Asociar un libro a un préstamo",
+        "tags": [
+          "Préstamos - Libros"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "loanId",
+                  "bookCode"
+                ],
+                "properties": {
+                  "BookId": {
+                    "type": "integer",
+                    "example": 101
+                  },
+                  "loanId": {
+                    "type": "integer",
+                    "example": 50
+                  },
+                  "bookCode": {
+                    "type": "string",
+                    "example": "740.12-B"
+                  },
+                  "expectedDate": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2026-04-10"
+                  },
+                  "returnedDate": {
+                    "type": "string",
+                    "format": "date",
+                    "example": null
+                  },
+                  "reneweAmount": {
+                    "type": "integer",
+                    "example": 0
+                  },
+                  "returned": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "copy": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Libro asociado exitosamente"
+          },
+          "400": {
+            "description": "Error de validación"
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        }
+      }
+    },
+    "/api/v1/loan-books/repeated-book/{id}": {
+      "get": {
+        "summary": "Verificar si un libro ya está en préstamo",
+        "tags": [
+          "Préstamos - Libros"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Verificación realizada"
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        }
+      }
+    },
+    "/api/v1/loan-books/{id}": {
+      "get": {
+        "summary": "Obtener detalle de un libro en préstamo",
+        "tags": [
+          "Préstamos - Libros"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalle del registro"
+          },
+          "401": {
+            "description": "No autorizado: Token faltante o inválido"
+          },
+          "404": {
+            "description": "No encontrado"
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualizar estado de un libro prestado",
+        "description": "Útil para marcar como devuelto o cambiar la fecha prevista.",
+        "tags": [
+          "Préstamos - Libros"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "expectedDate": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "returnedDate": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "returned": {
+                    "type": "boolean"
+                  },
+                  "reneweAmount": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Registro actualizado"
+          },
+          "400": {
+            "description": "Error de validación: faltan campos obligatorios o el formato es incorrecto"
+          },
+          "401": {
+            "description": "No autorizado: Token faltante o inválido"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Eliminar asociación de libro y préstamo",
+        "tags": [
+          "Préstamos - Libros"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Registro eliminado"
+          },
+          "401": {
+            "description": "No autorizado: Token faltante o inválido"
+          }
+        }
+      }
+    },
+    "/api/v1/loan-types": {
+      "get": {
+        "summary": "Listar todos los tipos de préstamo",
+        "tags": [
+          "Tipo Préstamo"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista obtenida correctamente"
+          },
+          "401": {
+            "description": "No autorizado - Token inválido o ausente"
+          },
+          "403": {
+            "description": "Prohibido - Se requiere rol de Administrador"
+          }
+        }
+      },
+      "post": {
+        "summary": "Crear un nuevo tipo de préstamo",
+        "tags": [
+          "Tipo Préstamo"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "description"
+                ],
+                "properties": {
+                  "description": {
+                    "type": "string",
+                    "example": "Préstamo a domicilio - 7 días",
+                    "description": "Nombre descriptivo del tipo de préstamo"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tipo de préstamo creado con éxito"
+          },
+          "400": {
+            "description": "Bad Request - Datos inválidos o descripción faltante"
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "403": {
+            "description": "Prohibido - Solo administradores"
+          }
+        }
+      }
+    },
+    "/api/v1/loan-types/{id}": {
+      "get": {
+        "summary": "Obtener un tipo de préstamo por ID",
+        "tags": [
+          "Tipo Préstamo"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID numérico del tipo de préstamo",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Datos del tipo de préstamo"
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "404": {
+            "description": "Tipo de préstamo no encontrado"
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualizar un tipo de préstamo",
+        "tags": [
+          "Tipo Préstamo"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "description": {
+                    "type": "string",
+                    "example": "Préstamo Especial Sala"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Actualizado correctamente"
+          },
+          "400": {
+            "description": "Error en los datos de entrada"
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "404": {
+            "description": "ID no encontrado"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Eliminar un tipo de préstamo",
+        "tags": [
+          "Tipo Préstamo"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Eliminado exitosamente"
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "403": {
+            "description": "Prohibido - Acción restringida"
+          },
+          "404": {
+            "description": "El ID no existe"
+          }
+        }
+      }
+    },
+    "/api/v1/reservations": {
+      "get": {
+        "summary": "Obtener todas las reservas",
+        "description": "Retorna un listado de todas las reservas de libros.",
+        "tags": [
+          "Reservas"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de reservas obtenida correctamente"
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        }
+      },
+      "post": {
+        "summary": "Crear una nueva reserva",
+        "tags": [
+          "Reservas"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "bookTitle",
+                  "partnerId"
+                ],
+                "properties": {
+                  "bookTitle": {
+                    "type": "string",
+                    "example": "El Aleph"
+                  },
+                  "reservationDate": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2026-03-25"
+                  },
+                  "expectedDate": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2026-04-01"
+                  },
+                  "partnerNumber": {
+                    "type": "integer",
+                    "example": 1234
+                  },
+                  "partnerId": {
+                    "type": "integer",
+                    "example": 10
+                  },
+                  "comments": {
+                    "type": "string",
+                    "example": "Socio busca edición especial"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Reserva creada exitosamente"
+          },
+          "400": {
+            "description": "Error en los datos de entrada"
+          }
+        }
+      }
+    },
+    "/api/v1/reservations/{id}": {
+      "get": {
+        "summary": "Obtener una reserva por ID",
+        "tags": [
+          "Reservas"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalle de la reserva"
+          },
+          "404": {
+            "description": "Reserva no encontrada"
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualizar una reserva",
+        "tags": [
+          "Reservas"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "bookTitle": {
+                    "type": "string"
+                  },
+                  "expectedDate": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "comments": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Reserva actualizada"
+          },
+          "404": {
+            "description": "Reserva no encontrada"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Eliminar una reserva",
+        "tags": [
+          "Reservas"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reserva eliminada correctamente"
+          }
+        }
+      }
+    },
+    "/api/v1/book-reservations": {
+      "get": {
+        "summary": "Listar libros asociados a reservas",
+        "tags": [
+          "Reservas - Libros"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de libros en reserva obtenida correctamente"
+          },
+          "401": {
+            "description": "No autorizado: Token faltante o inválido"
+          },
+          "403": {
+            "description": "Prohibido: Se requieren permisos de administrador"
+          }
+        }
+      },
+      "post": {
+        "summary": "Asociar un libro a una reserva",
+        "tags": [
+          "Reservas - Libros"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "BookId",
+                  "reservationId",
+                  "bookCode",
+                  "bookTitle"
+                ],
+                "properties": {
+                  "BookId": {
+                    "type": "integer",
+                    "example": 101
+                  },
+                  "reservationId": {
+                    "type": "integer",
+                    "example": 5
+                  },
+                  "bookCode": {
+                    "type": "string",
+                    "example": "740.12-B"
+                  },
+                  "bookTitle": {
+                    "type": "string",
+                    "example": "Rayuela"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Libro asociado exitosamente"
+          },
+          "400": {
+            "description": "Error de validación: Datos de entrada incorrectos"
+          },
+          "401": {
+            "description": "No autorizado: Token faltante o inválido"
+          },
+          "403": {
+            "description": "Prohibido: Permisos insuficientes"
+          }
+        }
+      }
+    },
+    "/api/v1/book-reservations/{id}": {
+      "get": {
+        "summary": "Obtener detalle de un libro en reserva",
+        "tags": [
+          "Reservas - Libros"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID del registro (bookReservationId)",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalle del libro reservado encontrado"
+          },
+          "401": {
+            "description": "No autorizado: Token faltante"
+          },
+          "404": {
+            "description": "No encontrado: El ID proporcionado no existe"
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualizar datos de un libro reservado",
+        "tags": [
+          "Reservas - Libros"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "bookCode": {
+                    "type": "string"
+                  },
+                  "bookTitle": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Registro actualizado correctamente"
+          },
+          "400": {
+            "description": "ID de parámetro o cuerpo de solicitud inválido"
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "404": {
+            "description": "No se encontró el registro para actualizar"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Eliminar asociación de libro en reserva",
+        "tags": [
+          "Reservas - Libros"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Asociación eliminada exitosamente"
+          },
+          "401": {
+            "description": "No autorizado: Requiere login"
+          },
+          "403": {
+            "description": "Prohibido: No tienes rango de administrador"
+          },
+          "404": {
+            "description": "No se encontró el registro a eliminar"
+          }
         }
       }
     }

@@ -12,9 +12,6 @@ router.get('/:id', authorizeRoles(['admin']), validateIdParam("loanTypeId"), Loa
 router.post('/', authorizeRoles(['admin']), LoanTypeController.createLoanType);
 router.put('/:id', authorizeRoles(['admin']), validateIdParam("loanTypeId"), LoanTypeController.updateLoanType);
 
-// quizás añadir patch
-// router.patch('/:id', LoanTypeController.patchLoanType);
-
 router.delete('/:id', authorizeRoles(['admin']), validateIdParam("loanTypeId"), LoanTypeController.removeLoanType);
 
 export default router;
