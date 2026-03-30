@@ -122,7 +122,7 @@ export default function AuthorSection() {
                 setSuccessMessage('');
 
                 setErrorMessage(null);
-            }, 1500);
+            }, 3000);
 
 
             await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
@@ -151,7 +151,7 @@ export default function AuthorSection() {
                     setSuccessMessage('');
 
                     setErrorMessage(null);
-                }, 1500);
+                }, 3000);
             }
 
             await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });

@@ -111,7 +111,6 @@ const BookSection = () => {
         render: (_, row) => (
           <button className="button-table"
             onClick={() => {
-              console.log("ID seleccionado:", row.BookId);
               setSelectedId(row.BookId);
               setPopUpDelete(true);
             }}>
@@ -129,7 +128,6 @@ const BookSection = () => {
             onClick={() => {
               setPopupEdit(true)
               setSelectedItem(row)
-              console.log(row)
             }}
 
           >

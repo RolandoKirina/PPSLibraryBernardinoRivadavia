@@ -24,8 +24,8 @@ export const generateUnpaidFees = async (body) => {
     const [year, month, day] = month_and_year.split("-").map(Number);
 
     const generatedFees = [];
-    const data = await getAll({idState:1});
-    console.log(data)
+    const data = await getAll({ idState: 1 });
+
     const partners = data.rows;
 
     if (!month_and_year) {
@@ -36,22 +36,19 @@ export const generateUnpaidFees = async (body) => {
         throw new Error("El monto es obligatorio");
     }
 
-    console.log(partners)
     for (const partner of partners) {
-        console.log(partner)
+
         const existingFee = await FeeRepository.findOne({
             idPartner: partner.id,
             month,
             year
         });
 
-           if (existingFee) {
-            console.log("YA TENÍA CUOTA:", partner.name);
+        if (existingFee) {
             continue;
-           }
-           else{
-                console.log("SE CREA CUOTA PARA:", partner.name);
-                const newFee = await FeeRepository.create({
+        }
+        else {
+            const newFee = await FeeRepository.create({
                 idPartner: partner.id,
                 month,
                 year,
@@ -59,7 +56,7 @@ export const generateUnpaidFees = async (body) => {
                 observation: observation ?? "",
                 paid: false,
                 date_of_paid: date_of_paid
-                });
+            });
 
             generatedFees.push(newFee);
         }
@@ -131,6 +128,27 @@ export const updateFee = async (id, data) => {
 
 
     const updatedFee = await FeeRepository.update(id, data);
+
+    if (!updatedFee) {
+        throw new Error("Fee not found or not updated");
+    }
+
+    return updatedFee;
+};
+
+export const changeState = async (id) => {
+
+    const fee = await FeeRepository.getById(id);
+    
+    if (!fee) {
+        throw new Error("Fee not found");
+    }
+
+    let newStatus = !fee.status;
+
+    const updatedFee = await FeeRepository.update(id, {
+        status: newStatus
+    })
 
     if (!updatedFee) {
         throw new Error("Fee not found or not updated");

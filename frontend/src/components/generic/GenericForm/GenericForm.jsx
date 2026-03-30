@@ -6,12 +6,31 @@ import Btn from '../../common/btn/Btn';
 export default function GenericForm({ fields, onSubmit, title, children, className, error, successMessage }) {
   const [formState, setFormState] = useState({});
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleChange = (e) => {
     const { name, type, value, checked } = e.target;
     setFormState({
       ...formState,
       [name]: type === 'checkbox' ? checked : value
     });
+  };
+
+  const handleSave = async () => {
+    if (isSubmitting) return; 
+
+    setIsSubmitting(true);
+    
+    try {
+      await onSubmit(formState);
+    } catch (err) {
+      console.error(err);
+    } finally {
+
+      setTimeout(() => {
+        setIsSubmitting(false);
+      }, 3000);
+    }
   };
 
   const incrementCounter = (name, step) => {
@@ -27,14 +46,12 @@ export default function GenericForm({ fields, onSubmit, title, children, classNa
     const isSelect = field.type === 'select';
     const isCounter = field.type === 'counter';
 
-    // helper para renderizar label con asterisco si es requerido
     const renderLabel = (text) => (
       <span className="label-text">
         {text}
         {field.required && <span className="required"> *</span>}
       </span>
     );
-
 
     return (
       <div
@@ -113,7 +130,6 @@ export default function GenericForm({ fields, onSubmit, title, children, classNa
         {children}
 
         <div className={`generic-inputs-width ${Array.isArray(fields[0]) ? 'row-layout' : 'column-layout'}`}>
-
           {Array.isArray(fields[0])
             ? fields.map((row, rowIdx) => (
               <div key={rowIdx} className="input-row">
@@ -127,17 +143,19 @@ export default function GenericForm({ fields, onSubmit, title, children, classNa
             )
           }
         </div>
+        
         <div>{error && <p className="error-message">{error}</p>}</div>
         {successMessage && (
-          <div className='sucess-message'>{successMessage && <p className="">{successMessage}</p>}</div>
+          <div className='sucess-message'><p className="">{successMessage}</p></div>
         )}
 
         <div className="generic-btn-save">
           <Btn
             variant={'primary'}
-            text={'Guardar'}
-            onClick={() => onSubmit(formState)}
-            icon={<img src={SaveIcon} alt="Guardar" />}
+            text={isSubmitting ? 'Guardando...' : 'Guardar'} 
+            onClick={handleSave} 
+            disabled={isSubmitting} 
+            icon={<img src={SaveIcon} alt="Guardar" style={{ opacity: isSubmitting ? 0.5 : 1 }} />}
           />
         </div>
       </div>

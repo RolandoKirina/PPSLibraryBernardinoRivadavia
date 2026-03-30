@@ -24,6 +24,9 @@ export default function LoanAmountSection() {
     const [editPopup, setEditPopup] = useState(false);
     const [addPopup, setAddPopup] = useState(false);
 
+    const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState("");
+
     const [selected, setSelected] = useState(false);
     const {
         items: groupItems,
@@ -62,12 +65,22 @@ export default function LoanAmountSection() {
         try {
             await createItem(data);
 
-            await getGroupItem({ ...filters, sortBy: 'group', direction: 'asc', limit: chunkSize, offset: 0 });
+            setSuccessMessage("Grupo de material creado exitosamente");
 
-            setAddPopup(false);
+            setTimeout(() => {
+                setAddPopup(false);
+
+                setSuccessMessage('');
+
+                setErrorMessage(null);
+            }, 3000);
+
+
+            await getGroupItem({ ...filters, sortBy: 'group', direction: 'asc', limit: chunkSize, offset: 0 });
         }
         catch (error) {
-            console.error(error);
+            setErrorMessage(error.message);
+            console.error("Error al crear un autor:", error);
         }
     }
 
@@ -75,12 +88,22 @@ export default function LoanAmountSection() {
         try {
             await updateItem(selected.bookTypeGroupListId, data);
 
-            await getGroupItem({ ...filters, sortBy: 'group', direction: 'asc', limit: chunkSize, offset: 0 });
+            setSuccessMessage("Grupo de material actualizado exitosamente");
 
-            setEditPopup(false);
+            setTimeout(() => {
+                setEditPopup(false);
+
+                setSuccessMessage('');
+
+                setErrorMessage(null);
+            }, 3000);
+
+
+            await getGroupItem({ ...filters, sortBy: 'group', direction: 'asc', limit: chunkSize, offset: 0 });
         }
         catch (error) {
-            console.error(error);
+            setErrorMessage(error.message);
+            console.error("Error al crear un autor:", error);
         }
     }
 
@@ -103,7 +126,7 @@ export default function LoanAmountSection() {
             key: 'editPopup',
             title: 'Editar Grupo de tipo de material',
             className: 'loans-background',
-            content: <AddMaterialGroup method={'update'} createGroupItem={handleUpdateGroup} getItems={getGroupItem} groupSelected={selected} closePopup={() => setEditPopup(false)} />,
+            content: <AddMaterialGroup method={'update'} createGroupItem={handleUpdateGroup} getItems={getGroupItem} groupSelected={selected} closePopup={() => setEditPopup(false)} errorMessage={errorMessage} successMessage={successMessage} />,
             close: () => setEditPopup(false),
             condition: editPopup
         },
@@ -113,8 +136,7 @@ export default function LoanAmountSection() {
             className: 'loans-background',
             content:
                 <>
-                    <AddMaterialGroup method={'add'} createGroupItem={handleAddNewGroup} getItems={getGroupItem} closePopup={() => setAddPopup(false)} />
-                    {/* <AddMaterialGroup method={'add'} createItem={createItem} updateItem={updateItem} getItemGroup={getGroupItem} getMaterialItem={getMaterialItem} items={materialsItems} />  */}
+                    <AddMaterialGroup method={'add'} createGroupItem={handleAddNewGroup} getItems={getGroupItem} closePopup={() => setAddPopup(false)} errorMessage={errorMessage} successMessage={successMessage} />
                 </>,
             close: () => setAddPopup(false),
             condition: addPopup

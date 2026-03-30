@@ -97,7 +97,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
                     setSuccessMessage('');
 
                     setErrorMessage(null);
-                }, 1500);
+                }, 3000);
 
                 await getItems({ ...filters, sortBy: 'id', direction: 'asc', limit: chunkSize, offset: 0 });
             }
@@ -123,7 +123,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
                     setSuccessMessage('');
 
                     setErrorMessage(null);
-                }, 1500);
+                }, 3000);
 
                 await getItems({ ...filters, sortBy: 'id', direction: 'asc', limit: chunkSize, offset: 0 });
             }
@@ -163,7 +163,6 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
                     <button className="button-table" onClick={() => {
                         setEditPopup(true)
                         setSelected(row)
-                        console.log(row)
                     }}>
                         <img src={EditIcon} alt="Editar" />
                     </button>

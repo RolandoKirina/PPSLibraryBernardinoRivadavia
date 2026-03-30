@@ -11,10 +11,6 @@ router.get('/', authorizeRoles(['admin']), BookReservationsController.getAllBook
 router.get('/:id', authorizeRoles(['admin']), validateIdParam("bookReservationId"), BookReservationsController.getBookReservation);
 router.post('/', authorizeRoles(['admin']), BookReservationsController.createBookReservation);
 router.put('/:id', authorizeRoles(['admin']), validateIdParam("bookReservationId"), BookReservationsController.updateBookReservation);
-
-// quizás añadir patch
-// router.patch('/:id', BookReservationsController.patchBookReservation);
-
 router.delete('/:id', authorizeRoles(['admin']), validateIdParam("bookReservationId"), BookReservationsController.removeBookReservation);
 
 export default router;

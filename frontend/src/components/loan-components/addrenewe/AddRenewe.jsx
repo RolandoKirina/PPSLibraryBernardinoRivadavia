@@ -20,11 +20,12 @@ export default function AddRenewe({ refreshItems, createReneweItem, errorMessage
 
   const chunkSize = 100;
   const rowsPerPage = 5;
-  const [offsetActual, setOffsetActual] = useState(0);
   const [resetPageTrigger, setResetPageTrigger] = useState(0);
 
   const [popupView, setPopupView] = useState('default');
   const [confirmPopup, setConfirmPopup] = useState(false);
+
+  const [bookTitleSearch, setBookTitleSearch] = useState('');
 
   const [reneweData, setReneweData] = useState({
     partnerNumber: '',
@@ -40,9 +41,18 @@ export default function AddRenewe({ refreshItems, createReneweItem, errorMessage
   const [loadingBooks, setLoadingBooks] = useState(false);
   const [addBookMessage, setAddBookMessage] = useState('');
 
+
   useEffect(() => {
     getLibraryBooks({ limit: chunkSize, offset: 0 });
   }, []);
+
+
+  useEffect(() => {
+
+    getLibraryBooks({ bookTitle: bookTitleSearch, limit: chunkSize, offset: 0 }, false);
+    setResetPageTrigger(prev => prev + 1); 
+  }, [bookTitleSearch]);
+  // ----------------------------------------------------
 
   const getLibraryBooks = async (filters = {}, append = false) => {
     setLoadingBooks(true);
@@ -65,7 +75,11 @@ export default function AddRenewe({ refreshItems, createReneweItem, errorMessage
     const lastItemIndex = Number(page) * rowsPerPage;
     if (libraryBooks.length < totalLibraryBooks && lastItemIndex > libraryBooks.length) {
       await getLibraryBooks(
-        { limit: chunkSize, offset: libraryBooks.length },
+        { 
+          bookTitle: bookTitleSearch, 
+          limit: chunkSize, 
+          offset: libraryBooks.length 
+        },
         true
       );
     }
@@ -99,11 +113,8 @@ export default function AddRenewe({ refreshItems, createReneweItem, errorMessage
   }
 
   async function handleSaveChanges() {
-    // if (!reneweData.partnerNumber || reneweData.books.length === 0) return;
-
     await createReneweItem(reneweData);
     setConfirmPopup(false);
-    // await refreshItems();
   }
 
   const bookshelfBooksColumns = [
@@ -147,6 +158,7 @@ export default function AddRenewe({ refreshItems, createReneweItem, errorMessage
       )
     }
   ];
+
   return (
     <div className='renewe-books-container'>
       {popupView === 'default' && (
@@ -174,7 +186,6 @@ export default function AddRenewe({ refreshItems, createReneweItem, errorMessage
                 memoSearch: reneweData.memoSearch
               }}
             />
-
           </div>
 
           <div className='reader-error'>{errorMessage && <p className="">{errorMessage}</p>}</div>
@@ -197,8 +208,7 @@ export default function AddRenewe({ refreshItems, createReneweItem, errorMessage
 
           {popups.map(({ condition, title, content }, idx) =>
             condition ? (
-              <PopUp key={idx} title={title} onClick={() =>
-                setConfirmPopup(false)}>
+              <PopUp key={idx} title={title} onClick={() => setConfirmPopup(false)}>
                 {content}
               </PopUp>
             ) : null
@@ -209,12 +219,31 @@ export default function AddRenewe({ refreshItems, createReneweItem, errorMessage
       {popupView === 'addBook' && (
         <>
           <BackviewBtn menu='default' changeView={setPopupView} />
+          
           <div className='library-books'>
             <div className='renewe-books-title'>
               <h3>Libros cargados en la biblioteca</h3>
             </div>
-            <Table columns={bookshelfBooksColumns} data={libraryBooks} totalItems={totalLibraryBooks} handleChangePage={handleChangePage} loading={loadingBooks} resetPageTrigger={resetPageTrigger} />
+
+            <input
+              type='text'
+              className='search-book-input' 
+              placeholder="Buscar libro por título..."
+              value={bookTitleSearch}
+              onChange={(e) => setBookTitleSearch(e.target.value)}
+              
+            />
+
+            <Table 
+              columns={bookshelfBooksColumns} 
+              data={libraryBooks} 
+              totalItems={totalLibraryBooks} 
+              handleChangePage={handleChangePage} 
+              loading={loadingBooks} 
+              resetPageTrigger={resetPageTrigger} 
+            />
           </div>
+
           <div className='renewe-books'>
             <div className='renewe-books-title'>
               <h3>Libros vinculados</h3>
@@ -230,14 +259,12 @@ export default function AddRenewe({ refreshItems, createReneweItem, errorMessage
           <UnpaidFees changeView={setPopupView} partnerNumber={reneweData.partnerNumber} />
         </>
       )}
-
       {popupView === 'pendingBooks' && (
         <>
           <BackviewBtn menu={'default'} changeView={setPopupView} />
           <PendingBooks changeView={setPopupView} partnerNumber={reneweData.partnerNumber} />
         </>
       )}
-
       {popupView === 'partnerMemo' && (
         <>
           <BackviewBtn menu={'default'} changeView={setPopupView} />

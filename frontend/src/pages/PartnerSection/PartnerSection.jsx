@@ -38,7 +38,7 @@ export default function PartnerSection() {
   const [categories, setCategories] = useState([]);
   const [maritalStatuses, setMaritalStatuses] = useState([]);
 
-  const [formData, setFormData] = useState({ unpaidFees: "", pendingBooks: "", isActive: "all", });
+  const [formData, setFormData] = useState({ unpaidFees: "", pendingBooks: "", isActive: "all", partnerNumber: "", name: "", surname: "" });
 
   useEffect(() => {
     async function loadCatalogs() {
@@ -84,8 +84,6 @@ export default function PartnerSection() {
       setOffsetActual(0);
       setResetPageTrigger(prev => prev + 1);
 
-      console.log("FILTROS QUE VAN AL BACK:", filters);
-
       getItems({
         ...activeFilters,
         sortBy: 'id',
@@ -129,17 +127,8 @@ export default function PartnerSection() {
     { header: 'Apellido', accessor: 'surname' },
     { header: 'Cuotas impagas', accessor: 'unpaidFees' },
     { header: 'Libros pendientes', accessor: 'pendingBooks' },
+    { header: 'Estado', accessor: 'status' },
 
-    {
-      header: 'Estado',
-      accessor: 'idState',
-      render: (_, row) => {
-        const value = row.idState;
-        if (value === 1 || value === true) return 'Activo';
-        if (value === 2 || value === false || value === 0) return 'Inactivo';
-        return `Valor desconocido: ${value}`;
-      }
-    },
     {
       header: 'Editar',
       accessor: 'edit',

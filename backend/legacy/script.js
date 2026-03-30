@@ -85,6 +85,57 @@ async function migrateAll() {
             console.log(Object.entries(authorLegacyToNewId).slice(0, 5));
 
             console.log("Autores importados correctamente.");
+
+            /* ========================= 
+            IMPORTAR TIPOS DE PRÉSTAMO 
+            ========================= 
+            */
+
+            const loanTypeTable = reader.getTable("TipoPrestamo"); // Asumo que el nombre en el archivo es este
+            const loanTypeRows = loanTypeTable.getData();
+
+            console.log(`Importando ${loanTypeRows.length} tipos de préstamo...`);
+
+            // Transformamos los datos. 
+            // Nota: Si no tienes un campo 'legacy_id' en tu DB, el ID autoincremental de Sequelize será distinto al del Excel.
+            const transformedLoanTypes = loanTypeRows.map(row => ({
+                // Si quieres conservar el ID original del archivo, asegúrate de que el modelo 
+                // lo permita o mapealo a un campo temporal si es necesario.
+                id: row.Id,
+                description: row.Descripcion
+            }));
+
+            // Limpiamos la tabla antes de insertar
+            await LoanType.destroy({
+                truncate: true,
+                restartIdentity: true,
+                cascade: true,
+                transaction: t
+            });
+
+            // Inserción masiva
+            await LoanType.bulkCreate(transformedLoanTypes, {
+                transaction: t
+            });
+
+            // 🔎 Crear mapa legacy ID → nuevo ID de base de datos
+            const loanTypesForMap = await LoanType.findAll({
+                attributes: ["id", "description"],
+                transaction: t
+            });
+
+            const loanTypeLegacyToNewId = {};
+
+            loanTypesForMap.forEach(lt => {
+                // Mapeamos el ID que acabamos de insertar (que debería coincidir con el del archivo por el bulkCreate)
+                loanTypeLegacyToNewId[String(lt.id)] = lt.id;
+            });
+
+            console.log("Mapa tipos de préstamo (ejemplos):");
+            console.log(Object.entries(loanTypeLegacyToNewId).slice(0, 5));
+
+            console.log("Tipos de préstamo importados correctamente.");
+
             /*
             =========================
             IMPORTAR TIPO-LIBROS
@@ -297,27 +348,15 @@ async function migrateAll() {
             const removeReasonTable = reader.getTable("MotivoBaja");
             const removeReasonRows = removeReasonTable.getData();
 
-            console.log(`Importando ${removeReasonRows.length} motivos de baja...`);
-
-            // Preview limpio
-            console.table(
-                removeReasonRows.slice(0, 5).map(r => ({
-                    Id: r.Id,
-                    Motivo: r.Motivo
-                }))
-            );
-
-            // Transformar y filtrar motivos válidos
+            // 1. Filtrar y transformar
             const transformedRemoveReasons = removeReasonRows
                 .filter(row => row.Motivo && row.Motivo.trim() !== "")
                 .map(row => ({
-                    id: row.Id, // conservar Id original por si hay FK
+                    id: Number(row.Id),
                     reason: row.Motivo.trim()
                 }));
 
-            console.log(`Motivos válidos a insertar: ${transformedRemoveReasons.length}`);
-
-            // Limpiar tabla antes de insertar
+            // 2. Limpiar tabla
             await RemoveReason.destroy({
                 truncate: true,
                 restartIdentity: true,
@@ -325,28 +364,26 @@ async function migrateAll() {
                 transaction: t
             });
 
-            // Insertar todos los motivos
+            // 3. Insertar con IDs originales
+            // Usamos raw: true o especificamos los campos para que Sequelize no ignore el ID
             await RemoveReason.bulkCreate(transformedRemoveReasons, {
                 transaction: t,
                 validate: true
             });
 
+            // 4. CORRECCIÓN CRÍTICA: Sincronizar la secuencia
+            // Esto le dice a Postgres: "El último que usé fue el MAX(Id), el siguiente dame el que sigue"
             await sequelize.query(
                 `
                 SELECT setval(
-                    pg_get_serial_sequence('"MotivoBaja"', 'Id'),
-                    COALESCE((SELECT MAX("Id") FROM "MotivoBaja"), 1),
-                    true
+                    pg_get_serial_sequence('"MotivoBaja"', 'Id'), 
+                    (SELECT MAX("Id") FROM "MotivoBaja")
                 );
                 `,
                 { transaction: t }
             );
 
-            // Contar y verificar inserción
-            const insertedCount = await RemoveReason.count({ transaction: t });
-            console.log(`Motivos insertados en DB: ${insertedCount}`);
-
-            console.log("Motivos de baja importados correctamente.");
+            console.log("Importación y sincronización de secuencias completada.");
 
             /*
             =========================
@@ -606,7 +643,7 @@ async function migrateAll() {
             });
 
 
-            
+
             /*
             =========================
             IMPORTAR TIPO DOCUMENTO

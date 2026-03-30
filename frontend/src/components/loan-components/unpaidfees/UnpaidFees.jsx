@@ -39,9 +39,6 @@ export default function UnpaidFees({ partnerNumber }) {
 
       const { rows, count } = await res.json();
 
-      console.log(rows);
-      console.log(count);
-
       setTotalItems(count);
       setUnpaidFees(prev => (append ? [...prev, ...rows] : rows));
     } catch (err) {

@@ -20,7 +20,6 @@ export default function SearchPartner({ onFilterChange, method, menu, onDataChan
   const handleChange = (e) => {
     const { name, value } = e.target;
     const updated = { ...partnerData, [name]: value };
-    console.log("Datos del socio:", updated);
 
     if (onDataChange) {
       onDataChange(updated);

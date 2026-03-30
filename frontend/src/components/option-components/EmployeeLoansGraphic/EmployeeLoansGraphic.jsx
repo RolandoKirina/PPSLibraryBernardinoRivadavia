@@ -199,7 +199,6 @@ export default function EmployeeLoansGraphic() {
       const results = await getCountQuantityAllLoansEmployee(data);
 
       if (results) {
-        console.log("Resultados recibidos:", results);
         setEmployeeCounts(results);
         setShowChart(true);
         setError(""); 

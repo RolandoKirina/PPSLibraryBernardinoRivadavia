@@ -23,8 +23,6 @@ export default function ReaderFilter({ onFilterChange }) {
 
     setFormData((prev) => {
       const updated = { ...prev, [name]: newValue };
-      console.log('Campo modificado:', name, '→', newValue);
-      console.log('Nuevo estado del form:', updated);
       return updated;
     });
   };

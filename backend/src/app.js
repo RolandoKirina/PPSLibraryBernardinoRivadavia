@@ -1,5 +1,8 @@
 import express from "express";
 import { sequelize } from "./models/index.js";
+import swaggerUi from "swagger-ui-express";
+import fs from "fs";
+import path from "path";
 
 // book
 import BookRoutes from "./routes/v1/book/BookRoutes.js";
@@ -54,8 +57,14 @@ import cors from "cors";
 
 const app = express();
 
+const swaggerPath = path.resolve("./src/docs/swagger.json");
+const swaggerData = JSON.parse(fs.readFileSync(swaggerPath, "utf8"));
+
 app.use(express.json());
 app.use(cors());
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerData));
+
 sequelize.sync({ alter: true }).then(() => {
   console.log("Se sincronizó la base de datos");
 });

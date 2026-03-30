@@ -11,10 +11,6 @@ router.get('/', authorizeRoles(['admin']), ReservationsController.getAllReservat
 router.get('/:id', authorizeRoles(['admin']), validateIdParam("id"), ReservationsController.getReservation);
 router.post('/', authorizeRoles(['admin']), ReservationsController.createReservation);
 router.put('/:id', authorizeRoles(['admin']), validateIdParam("id"), ReservationsController.updateReservation);
-
-// quizás añadir patch
-// router.patch('/:id', ReservationsController.patchReservation);
-
 router.delete('/:id', authorizeRoles(['admin']), validateIdParam("id"), ReservationsController.removeReservation);
 
 export default router;

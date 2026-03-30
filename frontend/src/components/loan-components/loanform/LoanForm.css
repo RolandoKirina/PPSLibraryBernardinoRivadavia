@@ -195,3 +195,7 @@
 .sucess-message p {
     color: var(--sucess);
 }
+
+.sucess-message-alt p {
+    color: var(--sucess-alt);
+}

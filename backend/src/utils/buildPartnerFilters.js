@@ -4,6 +4,9 @@ import { toStartOfDay,toEndOfDay } from "./date/formatDate.js";
 export const buildPartnerFilters = (query) => {
   const {
     unpaidFees,
+    partnerNumber,
+    surname,
+    name,
     idState,
     pendingBooks,
     limit,
@@ -14,12 +17,24 @@ export const buildPartnerFilters = (query) => {
 
   const wherePartner = {};
 
+  if (partnerNumber) {
+    wherePartner.partnerNumber = Number(partnerNumber);
+  }
+
+  if (surname) {
+    wherePartner.surname = { [Op.like]: `%${surname}%` };
+  }
+
+  if (name) {
+    wherePartner.name = { [Op.like]: `%${name}%` };
+  }
+
   if (unpaidFees !== undefined) {
     wherePartner.unpaidFees = Number(unpaidFees);
   }
 
   if (idState && idState !== '0') {
-    wherePartner.idState = Number(idState);
+    wherePartner.isActive = Number(idState);
   }
 
   if (pendingBooks !== undefined) {
@@ -77,17 +92,17 @@ const mapNameisActive = (idState) => {
 const isActive = mapNameisActive(idState)
 
 
-const allowedSortFields = {
-  surname: 'surname',
-  name: 'name',
-  unpaidFees: 'unpaidFees',
-  pendingBooks: 'pendingBooks',
-  withdrawalDate: 'withdrawalDate',
-  registrationDate: 'registrationDate',
-  birthDate: 'birthDate',
-  idReason: 'idReason',
-  partnerNumber: 'partnerNumber'
-};
+  const allowedSortFields = {
+    surname: 'surname',
+    name: 'name',
+    unpaidFees: 'unpaidFees',
+    pendingBooks: 'pendingBooks',
+    withdrawalDate: 'withdrawalDate',
+    registrationDate: 'registrationDate',
+    birthDate: 'birthDate',
+    idReason: 'idReason',
+    partnerNumber: 'partnerNumber'
+  };
 
   const wherePartner = {};
   const whereBook = {};
@@ -96,9 +111,9 @@ const allowedSortFields = {
     wherePartner.idCategory = Number(category);
   }
 
-if (isActive !== null) {
-  wherePartner.isActive = isActive;
-}
+  if (isActive !== null) {
+    wherePartner.isActive = isActive;
+  }
 
   if (birthDateFrom && birthDateTo) {
     wherePartner.birthDate = {
@@ -118,42 +133,42 @@ if (isActive !== null) {
   }
 
   if (registrationStart && registrationEnd) {
-      wherePartner.registrationDate = {
-        [Op.between]: [
-          toStartOfDay(registrationStart),
-          toEndOfDay(registrationEnd)
-        ]
-      };
-  } 
+    wherePartner.registrationDate = {
+      [Op.between]: [
+        toStartOfDay(registrationStart),
+        toEndOfDay(registrationEnd)
+      ]
+    };
+  }
   else if (registrationStart) {
-      wherePartner.registrationDate = {
-        [Op.gte]: toStartOfDay(registrationStart)
-      };
-  } 
+    wherePartner.registrationDate = {
+      [Op.gte]: toStartOfDay(registrationStart)
+    };
+  }
   else if (registrationEnd) {
-      wherePartner.registrationDate = {
-        [Op.lte]: toEndOfDay(registrationEnd)
-      };
+    wherePartner.registrationDate = {
+      [Op.lte]: toEndOfDay(registrationEnd)
+    };
   }
 
-    if (resignationStart && resignationEnd) {
-       wherePartner.withdrawalDate = {
-          [Op.between]: [
-            toStartOfDay(resignationStart),
-            toEndOfDay(resignationEnd)
-          ]
-        };
-    } 
-    else if (resignationStart) {
-        wherePartner.withdrawalDate = {
-          [Op.gte]: toStartOfDay(resignationStart)
-        };
-    } 
-    else if (resignationEnd) {
-        wherePartner.withdrawalDate = {
-          [Op.lte]: toEndOfDay(resignationEnd)
-        };
-    }
+  if (resignationStart && resignationEnd) {
+    wherePartner.withdrawalDate = {
+      [Op.between]: [
+        toStartOfDay(resignationStart),
+        toEndOfDay(resignationEnd)
+      ]
+    };
+  }
+  else if (resignationStart) {
+    wherePartner.withdrawalDate = {
+      [Op.gte]: toStartOfDay(resignationStart)
+    };
+  }
+  else if (resignationEnd) {
+    wherePartner.withdrawalDate = {
+      [Op.lte]: toEndOfDay(resignationEnd)
+    };
+  }
   if (removeReason) {
     wherePartner.idReason = Number(removeReason);
   }
@@ -171,18 +186,18 @@ if (isActive !== null) {
     };
   }
 
-    if (unpaidQuotesMin || unpaidQuotesMax) {
-      wherePartner.unpaidFees = {};
+  if (unpaidQuotesMin || unpaidQuotesMax) {
+    wherePartner.unpaidFees = {};
 
-      if (unpaidQuotesMin) {
-        wherePartner.unpaidFees[Op.gte] = unpaidQuotesMin;
-      }
-
-      if (unpaidQuotesMax) {
-        wherePartner.unpaidFees[Op.lte] = unpaidQuotesMax;
-      }
+    if (unpaidQuotesMin) {
+      wherePartner.unpaidFees[Op.gte] = unpaidQuotesMin;
     }
-      
+
+    if (unpaidQuotesMax) {
+      wherePartner.unpaidFees[Op.lte] = unpaidQuotesMax;
+    }
+  }
+
   /*if (quantityretiredbooksmin || quantityretiredbooksmax) {
   
   }*/
@@ -206,8 +221,7 @@ if (isActive !== null) {
       }
     });
 
-}
-  console.log("WHERE PARTNER filters:", wherePartner);
+  }
   return {
     order,
     wherePartner,

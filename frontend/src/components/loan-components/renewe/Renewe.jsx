@@ -68,8 +68,6 @@ export default function Renewe() {
     }, [popupView]);
 
     async function refreshItems() {
-        console.log("Iniciando refresh...");
-
         try {
             setPopupView('default'); // Solo se ejecuta tras obtener la respuesta
 
@@ -78,7 +76,7 @@ export default function Renewe() {
             setResetPageTrigger(prev => prev + 1);
 
             const data = await getItems({ ...filters, limit: chunkSize, offset: 0 });
-            console.log("Datos recibidos:", data);
+
         } catch (error) {
             console.error("Error al refrescar items:", error);
         }
@@ -107,8 +105,53 @@ export default function Renewe() {
         }
     }
 
+    async function handleUpdateItem(data) {
+        try {
+            const parseDate = (dateVal) => {
+                if (!dateVal) return new Date(NaN);
+                let d = dateVal instanceof Date ? new Date(dateVal) : new Date(dateVal);
 
+                if (typeof dateVal === 'string' && dateVal.includes('-') && !dateVal.includes('T')) {
+                    const parts = dateVal.split('-');
+                    if (parts[0].length <= 2) {
+                        const [day, month, year] = parts;
+                        d = new Date(`20${year}-${month}-${day}T12:00:00`);
+                    }
+                }
 
+                d.setHours(0, 0, 0, 0);
+                return d;
+            };
+
+            const resValue = data.reservationDate !== undefined ? data.reservationDate : selected.reservationDate;
+            const expValue = data.expectedDate !== undefined ? data.expectedDate : selected.expectedDate;
+
+            const dateReserva = parseDate(resValue);
+            const datePromesa = parseDate(expValue);
+            if (datePromesa.getTime() < dateReserva.getTime()) {
+                setErrorMessage("La fecha de promesa no puede ser anterior a la fecha de reserva.");
+                setTimeout(() => {
+                    setErrorMessage(null);
+                    setPopupView('default');
+                }, 2000);
+                return; 
+            }
+
+            setErrorMessage(null);
+            await updateReneweItem(selected.id, data);
+
+            await getItems({ ...filters, sortBy: 'partnerNumber', direction: 'asc', limit: chunkSize, offset: 0 });
+
+            setPopupView('default');
+
+        } catch (error) {
+            setErrorMessage(error.message);
+            setTimeout(() => {
+                setErrorMessage(null);
+                setPopupView('default');
+            }, 2000);
+        }
+    }
     function validateData(data) {
 
         if (data.books.length === 0) {
@@ -117,6 +160,13 @@ export default function Renewe() {
 
         if (!data.expectedDate || !data.reservationDate) {
             return "La reserva debe tener una fecha de reserva y de promesa";
+        }
+
+        const start = new Date(data.reservationDate);
+        const end = new Date(data.expectedDate);
+
+        if (start > end) {
+            return "La fecha de reserva no puede ser posterior a la fecha de promesa";
         }
 
         if (!data.partnerNumber) {
@@ -143,12 +193,6 @@ export default function Renewe() {
             title: 'Borrar reserva',
             className: 'delete-size-popup',
             content:
-                // <PopUpDelete title={"Reserva"} closePopup={() => setDeletePopup(false)} onConfirm={
-                //     () => {
-                //         deleteReneweItem(selected.id)
-                //         setDeletePopup(false)
-                //     }
-                // } />,
                 <PopUpDelete
                     title="Reserva"
                     onConfirm={() => deleteItem(selected.id)}
@@ -238,7 +282,7 @@ export default function Renewe() {
                                         }
                                     />
                                 </div>
-                                
+
                                 {auth.role === roles.admin && (
                                     <>
 
@@ -358,28 +402,12 @@ export default function Renewe() {
                         <GenericForm
                             fields={reneweLoanFields}
                             onSubmit={async (data) => {
-                                try {
-                                    console.log("Datos a actualizar:", data);
-                                    console.log("Elemento seleccionado:", selected);
-
-                                    // Esperar a que termine la actualización
-                                    await updateReneweItem(selected.id, data);
-
-                                    // Refrescar la lista de items una vez actualizado
-                                    await refreshItems();
-
-                                    // Volver a la vista por defecto
-                                    setPopupView('default');
-                                } catch (error) {
-                                    console.error("Error al actualizar la reserva:", error);
-                                    setErrorMessage(error.message);
-                                }
+                                await handleUpdateItem(data);
                             }}
                             title={'Editar reserva'}
                             error={errorMessage}
                             className={'renewe-edit-form-size'}
                         />
-
                     </>
                 )}
                 {popupView === 'details' && (

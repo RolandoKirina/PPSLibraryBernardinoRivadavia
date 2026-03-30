@@ -17,10 +17,11 @@ export const DetailPartner = [
         { label: "Número de documento", value: "información", attribute: "documentNumber" },
       ],
       [
-        { label: "Estado civil", value: "información", attribute: "MaritalStatusId", catalog: "maritalStatuses",  
+        {
+          label: "Estado civil", value: "información", attribute: "MaritalStatusId", catalog: "maritalStatuses",
         },
         { label: "Nacionalidad", value: "información", attribute: "nationality" },
-        
+
       ],
       [
         { label: "Profesión", value: "información", attribute: "profession" },
@@ -30,7 +31,7 @@ export const DetailPartner = [
         { label: "Fecha de registro", value: "información", attribute: "registrationDate" },
         { label: "Observaciones", value: "información", attribute: "observations" },
       ],
-            [        {label: "Localidad", value: "información", attribute: "locality"}]
+      [{ label: "Localidad", value: "información", attribute: "Locality" }]
 
     ]
   },
@@ -65,22 +66,22 @@ export const DetailPartner = [
     title: "Estado de la cuenta",
     active: false,
     rows: [
-       [ { label: "Estado", value: "información", attribute: "idState", catalog: "states"},
-        { label: "Categoría", value: "información", attribute: "idCategory",  catalog: "categories"},
+      [{ label: "Estado", value: "información", attribute: "status", catalog: "states" },
+      { label: "Categoría", value: "información", attribute: "idCategory", catalog: "categories" },
       ],
       [
         { label: "Libros pendientes", value: "información", attribute: "pendingBooks" },
         { label: "Cuotas adeudadas", value: "información", attribute: "unpaidFees" },
       ],
 
-      [ 
+      [
         { label: "Motivo de baja", value: "información", attribute: "idReason" },
         { label: "Fecha de baja", value: "información", attribute: "resignationDate" },
       ],
-      [  
+      [
         { label: "Observaciones", value: "información", attribute: "observations" },
       ],
-  
+
     ]
   }
 

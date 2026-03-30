@@ -166,36 +166,32 @@ export default function LoanForm({ method, successMessage, createLoanItem, loanS
       books: loanData.books
     };
 
-    console.log(newLoan);
     createLoanItem(newLoan);
   }
-
   function handleEditLoan() {
     if (validateError) return;
 
-    console.log(loanData.books);
-
     const normalizedBooks = loanData.books.map(b => {
-      const returned =
-        b.returned === true || b.returned === "Si" || b.returned === "Sí";
+      const isReturned = b.returned === true || b.returned === "Si" || b.returned === "Sí";
+
+      let finalReturnedDate = null;
+      if (isReturned) {
+        const isAlreadyISO = typeof b.returnedDate === 'string' && b.returnedDate.includes('T');
+        finalReturnedDate = isAlreadyISO ? b.returnedDate : new Date().toISOString();
+      }
 
       return {
         BookId: b.BookId,
         loanId: loanData.loanId,
         renewes: b.renewes || 0,
         BookCode: b.codeInventory,
-        returned,
-        returnedDate: returned
-          ? (
-            b.returnedDate instanceof Date
-              ? b.returnedDate.toISOString()
-              : null
-          )
-          : null
+        returned: isReturned,
+        returnedDate: finalReturnedDate 
       };
     });
 
     const updatedLoan = {
+      loanId: loanData.loanId,
       employeeCode: loanData.employeeCode,
       retiredDate: loanData.retiredDate,
       expectedDate: loanData.expectedDate,
@@ -204,7 +200,6 @@ export default function LoanForm({ method, successMessage, createLoanItem, loanS
 
     createLoanItem(updatedLoan);
   }
-
 
   async function handleAddBook(book) {
     const res = await verifyIfExists(book.BookId);
@@ -311,22 +306,22 @@ export default function LoanForm({ method, successMessage, createLoanItem, loanS
 
 
   function returnAllLoanBooks() {
-    const iso = nowISO();
-    const text = nowText();
-
     setLoanData(prev => ({
       ...prev,
-      books: prev.books.map(b => {
-        if (b.returned) return b;
-
-        return {
-          ...b,
-          returned: true,
-          returnedDate: iso,
-          returnDateText: text,
-        };
-      }),
+      books: prev.books.map(b =>
+        b.returned
+          ? b
+          : {
+            ...b,
+            returned: true,
+            returnedDate: new Date().toISOString(),
+            returnDateText: new Date().toLocaleDateString("es-AR")
+          }
+      )
     }));
+
+    console.log(loanData);
+
   }
 
 
@@ -447,7 +442,6 @@ export default function LoanForm({ method, successMessage, createLoanItem, loanS
   };
 
   const handleExtraData = (newData) => {
-    console.log(newData);
     setLoanData(prev => {
       const updated = { ...prev, ...newData };
       return updated;

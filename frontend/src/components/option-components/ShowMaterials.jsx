@@ -18,10 +18,9 @@ export default function ShowMaterials({ authorSelected }) {
   // Cargar libros del autor seleccionado
   useEffect(() => {
     const fetchAllBooksFromAuthor = async () => {
-        console.log(authorSelected);
       const authorSelectedId = authorSelected.id;
       const booksFromAuthor = await getBooks(authorSelectedId);
-      console.log(booksFromAuthor);
+
       setAuthorBooks(booksFromAuthor);
       setFilteredBooks(booksFromAuthor);
     };

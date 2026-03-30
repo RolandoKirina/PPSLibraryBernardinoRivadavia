@@ -23,14 +23,13 @@ export const useEntityManager = (initialItemsEntity, nameEntity) => {
     localStorage.setItem(nameEntity, JSON.stringify(items));
   }, [items]);
 
-  // 🔍 GET BY ID
   const getItem = (id) => {
     const found = items.find((item) => item.id === id);
     if (!found) console.warn(`Elemento con ID ${id} no encontrado`);
     return found;
   };
 
-  // ➕ CREATE
+
   const createItem = (newItem) => {
     const itemWithId = {
       ...newItem,
@@ -39,7 +38,7 @@ export const useEntityManager = (initialItemsEntity, nameEntity) => {
     setItems((prev) => [...prev, itemWithId]);
   };
 
-  // 📝 UPDATE
+
   const updateItem = (id, updatedData) => {
     setItems((prev) =>
       prev.map((item) =>
@@ -48,12 +47,11 @@ export const useEntityManager = (initialItemsEntity, nameEntity) => {
     );
   };
 
-  // ❌ DELETE
+
   const deleteItem = (id) => {
     setItems((prev) =>
       prev.filter((item) => item.id !== id)
     );
-    console.log(items);
   };
 
   return {

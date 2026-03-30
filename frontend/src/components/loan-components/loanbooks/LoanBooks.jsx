@@ -22,7 +22,6 @@ export default function LoanBooks({ loanSelected }) {
 
   useEffect(() => {
     getBookTypes();
-    console.log(loanSelected.books);
   }, []);
 
   // Cargar libros del préstamo seleccionado

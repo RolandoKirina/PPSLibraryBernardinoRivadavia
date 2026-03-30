@@ -5,11 +5,6 @@ export default function EmployeeForm({ method, createItem, updateItem, selected 
 
     function handleSubmit(e) {
         e.preventDefault();
-        console.log(e.target.username);
-        console.log(e.target.fullname.value);
-        console.log(e.target.email.value);
-        console.log(e.target.password.value);
-        console.log(e.target.rol.value);
 
         let employeeData = {
             username: e.target.username.value,

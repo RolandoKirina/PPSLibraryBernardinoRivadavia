@@ -98,7 +98,7 @@ export const getRanking = async (req, res) => {
         res.status(HTTP_STATUS.OK.code).send(ranking);
     }
     catch (e) {
-        console.log(e);
+        console.error(e);
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
 
     }
@@ -111,7 +111,7 @@ export const getLostBooks = async (req, res) => {
         res.status(HTTP_STATUS.OK.code).send(lostBooks);
     }
     catch (e) {
-        console.log(e);
+        console.error(e);
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
 
     }
@@ -126,7 +126,7 @@ export const getPartnersAndBooks = async (req, res) => {
     }
 
     catch (e) {
-        console.log(e);
+        console.error(e);
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
 
     }
@@ -171,9 +171,7 @@ export const duplicateBook = async (req, res) => {
 
 export const createBook = async (req, res) => {
     try {
-        //lo que viene en el json del body de la solicitud http
         const book = req.body;
-        console.log(req.body)
 
         if (!book) {
             return res.status(HTTP_STATUS.BAD_REQUEST.code).json({ msg: HTTP_STATUS.BAD_REQUEST.msg });

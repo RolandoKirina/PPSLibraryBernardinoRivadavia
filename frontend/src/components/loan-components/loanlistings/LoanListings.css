@@ -25,3 +25,12 @@
     width: 100%;
     background: var(--white);
 }
+
+.loan-listing-size {
+    width: 70em;
+}
+
+.loan-listing-size .preview-list-container .generate-list-container {
+    background: var(--white);
+    padding: 1em 0em;
+}

@@ -50,10 +50,32 @@ export const createUser = async (user) => {
 
 
 export const updateUser = async (id, data) => {
-    const updatedUser = await UserRepository.update(id, data);
-    if (!updatedUser) {
-        throw new Error("User not found or not updated");
+
+    const userToUpdate = await UserRepository.getById(id);
+    if (!userToUpdate) {
+        throw new ValidationError("Usuario no encontrado");
     }
+
+    const updateData = { ...data };
+
+    if (updateData.email && updateData.email !== userToUpdate.email) {
+        const emailTaken = await existUser(updateData.email);
+        if (emailTaken) {
+            throw new ValidationError("El email ya está en uso por otro usuario");
+        }
+    }
+
+    if (updateData.password) {
+        const salt = await bcrypt.genSalt(10);
+        updateData.password = await bcrypt.hash(updateData.password, salt);
+    }
+
+    const updatedUser = await UserRepository.update(id, updateData);
+
+    if (!updatedUser) {
+        throw new Error("No se pudo actualizar el usuario");
+    }
+
     return updatedUser;
 };
 

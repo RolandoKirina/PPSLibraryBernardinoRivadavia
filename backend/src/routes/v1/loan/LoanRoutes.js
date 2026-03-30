@@ -10,13 +10,10 @@ router.get('/', authorizeRoles(['admin', 'partner']), LoanController.getAllLoans
 router.get('/employee-count', authorizeRoles(['admin']), LoanController.getLoansByEmployeeCount);
 router.get('/print-list/:option', authorizeRoles(['admin']), LoanController.getLoanPrintList);
 router.get('/returns',  authorizeRoles(['admin']), LoanController.getAllReturns);
-//agregue un middleware para evitar repetir codigo en la funcion validateid
-//router.get("/loan/:id", validateIdParam("loan id"), getLoan);
+
 router.get('/:id',  authorizeRoles(['admin', 'partner']), validateIdParam("id"), LoanController.getLoan);
 router.post('/',  authorizeRoles(['admin']), LoanController.createLoan);
 router.put('/:id',  authorizeRoles(['admin']), validateIdParam("id"), LoanController.updateLoan);
-
-//quizas añadir patch
 
 router.delete('/:id', authorizeRoles(['admin']), validateIdParam("id"), LoanController.removeLoan);
 
