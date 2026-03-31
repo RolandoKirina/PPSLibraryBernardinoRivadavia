@@ -149,3 +149,14 @@
     position: sticky;
     top: 0;    
 }
+
+.preview-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.print-button-container {
+    display: flex;
+    justify-content: center; 
+    margin-top: 10px;
+}

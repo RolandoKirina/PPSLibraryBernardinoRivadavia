@@ -45,7 +45,7 @@ export const buildPartnerFilters = (query) => {
   const parsedOffset = Number(offset);
 
   const order = sortBy
-    ? [[sortBy, direction === 'asc' ? 'ASC' : 'DESC']]
+    ? [[sortBy, direction === 'desc' ? 'DESC' : 'ASC']]
     : undefined;
 
   return {
@@ -221,8 +221,7 @@ const isActive = mapNameisActive(idState)
       }
     });
 
-  }
-  return {
+  }return {
     order,
     wherePartner,
     whereBook,

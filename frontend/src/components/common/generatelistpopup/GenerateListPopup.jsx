@@ -22,7 +22,7 @@ export default function GenerateListPopup({
     return (
         <>
             <div className='generate-list-container'>
-                <div className='generate-list-title'>
+                <div className='generate-list-content'>
                     <div className="print-loans-area">
                         <h3>{title ? title : titlesByType[typeList]} </h3>
                         <h4>{new Date().toLocaleString('es-AR', {

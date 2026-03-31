@@ -16,7 +16,6 @@ export const printList = async (filters) => {
     offset
   } = filters;
 
-<<<<<<< HEAD
 const { rows, count } = await Partner.findAndCountAll({
   where: wherePartner,
   include: [
@@ -53,41 +52,6 @@ const { rows, count } = await Partner.findAndCountAll({
 );
 
 const total = Array.isArray(count) ? count.length : count;
-=======
-
-  const { rows, count } = await Partner.findAndCountAll({
-    where: wherePartner,
-    include: [
-      {
-        model: Loan,
-        as: "Loans",
-        attributes: [],
-        required: true,
-        include: [
-          {
-            model: LoanBook,
-            as: "LoanBooks",
-            attributes: [],
-            include: [
-              {
-                model: Book,
-                as: "Book",
-                attributes: [],
-                where: whereBook
-              }
-            ]
-          }
-        ]
-      }
-    ],
-    group: ['Partner.id'],
-    distinct: true,
-    subQuery: false,
-    order,
-    limit,
-    offset
-  });
->>>>>>> 951d5baed06735e7ad47c0efb8adb0da3f832e91
 
   return {
     rows,

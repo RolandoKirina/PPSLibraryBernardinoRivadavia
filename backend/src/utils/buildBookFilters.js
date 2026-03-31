@@ -105,15 +105,6 @@ export const buildFilterRanking = (query) => {
 
   const whereRetiredDate = {};
 
-<<<<<<< HEAD
-  if (dateFrom && dateTo) {
-    whereRetiredDate.retiredDate = {
-      [Op.between]: [
-        toStartOfDay(dateFrom),
-        toEndOfDay(dateTo)
-      ]
-    };
-=======
 
   const toStartOfDay = (str) => {
     const d = new Date(`${str}T00:00:00`);
@@ -137,7 +128,6 @@ export const buildFilterRanking = (query) => {
 
   if (Object.keys(conditions).length > 0 || Object.getOwnPropertySymbols(conditions).length > 0) {
     whereRetiredDate.retiredDate = conditions;
->>>>>>> 951d5baed06735e7ad47c0efb8adb0da3f832e91
   }
 
   const parsedLimit = parseInt(limit);

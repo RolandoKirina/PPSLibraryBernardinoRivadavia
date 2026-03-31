@@ -29,10 +29,7 @@ const Partner = sequelize.define("Partner", {
         field: "IdLocal_part",
         allowNull: true
     },
-    /*idState: {
-        type: DataTypes.SMALLINT,
-        field: "IdEstado",
-    },*/
+
     idReason: {
         type: DataTypes.INTEGER,
         field: "Motivo_Baj",

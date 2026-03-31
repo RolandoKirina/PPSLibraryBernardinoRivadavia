@@ -4,6 +4,8 @@ import { listOptions, sortOptions, columnsByType } from '../../../data/generated
 import GenerateListPopup from '../../common/generatelistpopup/GenerateListPopup';
 import { useAuth } from '../../../auth/AuthContext';
 import { generateUniversalPDF } from '../../../utils/pdfGenerator';
+import Btn from '../../common/btn/Btn';
+import printIcon from '../../../assets/img/print-icon.svg';
 
 export default function PrintPartnerPopup({ categoriespartner, statespartner }) {
     const { auth } = useAuth();
@@ -31,16 +33,37 @@ export default function PrintPartnerPopup({ categoriespartner, statespartner }) 
         unpaidQuotesMax: '',
         listTitle: '',
         sortBy: '',
+        direction: 'asc',
         listType: ''
     });
+        const printList = useCallback(async (currentFilters) => {
+                try {
+                    setLoading(true);
+                    const queryParams = new URLSearchParams(
+                        Object.fromEntries(Object.entries(currentFilters).filter(([_, v]) => v !== ''))
+                    ).toString();
+
+                    const res = await fetch(
+                        `http://localhost:4000/api/v1/partners/printlist?${queryParams}`,
+                        { headers: { Authorization: `Bearer ${auth.token}` } }
+                    );
+
+                    const reslist = await res.json();
+                    setresultprint(reslist.rows || []);
+                    setTotalItems(reslist.count || 0);
+                } catch (e) {
+                    console.error(e);
+                } finally {
+                    setLoading(false);
+                }
+            }, [auth.token]);
 
     const handlePrint = () => {
-        if (!resultprint || resultprint.length === 0) return;
        
 
                 if (!resultprint || resultprint.length === 0) return;
 
-                const title = formValues.listTitle || 'Listado de socios';
+                const title = filters.listTitle || 'Listado de socios';
                 const config = columnsByType["partner"];
                 const headers = config.map(col => col.label || col.text || col.header || "Column");
 
@@ -53,24 +76,27 @@ export default function PrintPartnerPopup({ categoriespartner, statespartner }) 
 
                 generateUniversalPDF(title, headers, data, `report_partners`);
     };
-//hacer on change
 
 
-    const handleFilterChange = (e) => {
-    const {name, value} = e.target;
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
 
-    const newValues = {
-        ...formValues,
-        [name]: value
+        setFilters(prev => ({
+            ...prev,
+            [name]: value
+        }));
     };
 
-    setFormValues(newValues);
-    printList(newValues);
-};
-
-
     useEffect(() => {
-        async function loadApis(){
+        const timeout = setTimeout(() => {
+            printList(filters);
+        }, 500);
+
+        return () => clearTimeout(timeout);
+    }, [filters, printList]);
+
+     useEffect(() => {
+        async function loadApis() {
             try {
                 const [reasonwithdrawal] = await Promise.all([
                     fetch("http://localhost:4000/api/v1/reason-for-withdrawal", {
@@ -85,70 +111,6 @@ export default function PrintPartnerPopup({ categoriespartner, statespartner }) 
                 ]);
                 const resWithdrawal = await reasonwithdrawal.json();
                 setRemovePartnerReason(resWithdrawal);
-            }
-            catch(e){
-                console.log(e);
-            }
-        }
-      loadApis();
-    }, []);
-
-    async function printList(data){
-            try {
-                setLoading(true);
-
-                const queryParams = new URLSearchParams(data).toString();
-
-                const res = await fetch(
-                    `http://localhost:4000/api/v1/partner/printlist?${queryParams}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${auth.token}`
-                        }
-                    }
-                );
-
-                const reslist = await res.json();
-
-                setresultprint(reslist.rows);
-                setTotalItems(reslist.count);
-
-            } catch(e){
-                console.log(e);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        const data = {};
-    console.log("SUBMIT FUNCIONANDO");
-        formData.forEach((value, key) => {
-            if (data[key]) {
-                if (Array.isArray(data[key])) {
-                    data[key].push(value);
-                } else {
-                    data[key] = [data[key], value];
-                }
-            } else {
-                data[key] = value;
-            }
-        });
-
-        generateUniversalPDF(title, headers, data, `report_partners`);
-    };
-
-
-    useEffect(() => {
-        async function loadApis() {
-            try {
-                const res = await fetch("http://localhost:4000/api/v1/reason-for-withdrawal", {
-                    headers: { Authorization: `Bearer ${auth.token}` }
-                });
-                const data = await res.json();
-                setRemovePartnerReason(data);
             } catch (e) {
                 console.error("Error loading reasons:", e);
             }
@@ -157,45 +119,9 @@ export default function PrintPartnerPopup({ categoriespartner, statespartner }) 
     }, [auth.token]);
 
 
-    const printList = useCallback(async (currentFilters) => {
-        try {
-            setLoading(true);
-            const queryParams = new URLSearchParams(
-                Object.fromEntries(Object.entries(currentFilters).filter(([_, v]) => v !== ''))
-            ).toString();
-
-            const res = await fetch(
-                `http://localhost:4000/api/v1/partner/printlist?${queryParams}`,
-                { headers: { Authorization: `Bearer ${auth.token}` } }
-            );
-
-            const reslist = await res.json();
-            setresultprint(reslist.rows || []);
-            setTotalItems(reslist.count || 0);
-        } catch (e) {
-            console.error(e);
-        } finally {
-            setLoading(false);
-        }
-    }, [auth.token]);
-
-    useEffect(() => {
-
-        const delayDebounceFn = setTimeout(() => {
-            printList(filters);
-        }, 500); // 500ms de retraso
-
-        return () => clearTimeout(delayDebounceFn);
-    }, [filters, printList]);
 
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFilters(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
+
 
     return (
         <div className='print-partners-container'>
@@ -218,20 +144,10 @@ export default function PrintPartnerPopup({ categoriespartner, statespartner }) 
                                         </select>
                                     </div>
 
-                                    <div className="input">
-                                        <label htmlFor="idState">Estado</label>
-                                        <select id="idState" name='idState' value={filters.idState} onChange={handleInputChange}>
-                                            <option value=''>Estado</option>
-                                            {statespartner?.map((state, index) => (
-                                                <option key={index} value={state.idState}>{state.status}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-
                                         <div className="input">
                                             <label htmlFor="idState">Estado</label>
 
-                                      <select id="idState" name="idState">
+                                      <select id="idState" name="idState"   value={filters.idState}  onChange={handleInputChange}>
                                             <option value="">Estado</option>
                                             {statespartner
                                                 ?.filter(state => state.status !== "Desconocido")
@@ -240,7 +156,7 @@ export default function PrintPartnerPopup({ categoriespartner, statespartner }) 
                                                         {state.status}
                                                     </option>
                                                 ))}
-                                        </select>
+                                        </select >
                                         </div>
 
                                       <div className="input birthDate-range">
@@ -289,7 +205,13 @@ export default function PrintPartnerPopup({ categoriespartner, statespartner }) 
                                             <label htmlFor="codeCDU">CDU de libro retirados por los socio</label>
                                             <div>
                                                
-                                                <input id="codeCDU" name="codeCDU" type="text" />
+                                              <input 
+                                                id="codeCDU" 
+                                                name="codeCDU" 
+                                                type="text" 
+                                                value={filters.codeCDU || ''} 
+                                                onChange={handleInputChange} 
+                                                />
                                             </div>
                                         </div>
                                         <div className="input">
@@ -297,13 +219,44 @@ export default function PrintPartnerPopup({ categoriespartner, statespartner }) 
                                            
                                             <div>
                                                 <label htmlFor="borrowedBooksMin">Más de</label>
-                                                <input type="number" id="borrowedBooksMin" name="borrowedBooksMin" />
+                                                <input type="number" id="borrowedBooksMin" name="borrowedBooksMin"  onChange={handleInputChange} />
                                             </div>
                                             <div>
                                                 <label htmlFor="borrowedBooksMax">Y menos de:</label>
-                                                <input type="number" id="borrowedBooksMax" name="borrowedBooksMax" />
+                                                <input type="number" id="borrowedBooksMax" name="borrowedBooksMax" onChange={handleInputChange}  />
                                             </div>
                                         </div>
+                                        <div className="input">
+                                            <label htmlFor="sortBy">Ordenado por: </label>
+                                            <select 
+                                                id="sortBy" 
+                                                name="sortBy"
+                                                value={filters.sortBy}
+                                                onChange={handleInputChange}
+                                            >
+                                                <option value=''>Elegir</option>
+                                                {sortOptions.map((sortOption, index) => (
+                                                    <option key={index} value={sortOption.value}>
+                                                        {sortOption.label}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+                                {filters.sortBy && (
+                                        <div className="input">
+                                            <label htmlFor="direction">Dirección</label>
+                                            <select 
+                                                id="direction" 
+                                                name="direction"
+                                                value={filters.direction}
+                                                onChange={handleInputChange}
+                                            >
+                                                <option value=''>Elegir</option>
+                                                <option value='asc'>Ascendente</option>
+                                                <option value='desc'>Descendente</option>
+                                            </select>
+                                        </div>)}
                                     </div>
                                 </div>
                             </div>
@@ -320,11 +273,22 @@ export default function PrintPartnerPopup({ categoriespartner, statespartner }) 
                     columnsByType={columnsByType["partner"]}
                     typeList={filters.listType}
                     title={filters.listTitle}
-                    loading={loading} // Ahora pasamos el estado de loading real
+                    loading={loading} 
                     rowsPerPage={30}
                     onPrint={handlePrint}
                 />
+                  <div className="print-button-container">
+                    <Btn
+                        onClick={handlePrint}
+                        variant={'primary'}
+                        text={'Generar PDF'}
+                        icon={<img src={printIcon} alt='printIcon' />}
+                    />
+                   </div>
             </div>
+
+             
+                
         </div>
     );
 }
