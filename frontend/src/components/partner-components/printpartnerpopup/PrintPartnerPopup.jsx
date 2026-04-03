@@ -13,7 +13,9 @@ export default function PrintPartnerPopup({ categoriespartner, statespartner }) 
     const [resultprint, setresultprint] = useState([]);
     const [totalItems, setTotalItems] = useState(0);
     const [loading, setLoading] = useState(false);
-
+    const chunkSize = 10000;
+    const rowsPerPage =35;
+    const unknown = "Desconocido";
     const [filters, setFilters] = useState({
         category: '',
         idState: '',
@@ -23,7 +25,7 @@ export default function PrintPartnerPopup({ categoriespartner, statespartner }) 
         registrationEnd: '',
         resignationStart: '',
         resignationEnd: '',
-        removeReason: '',
+        idReason: '',
         presentedBy: '',
         cduCodeMin: '',
         cduCodeMax: '',
@@ -34,7 +36,9 @@ export default function PrintPartnerPopup({ categoriespartner, statespartner }) 
         listTitle: '',
         sortBy: '',
         direction: 'asc',
-        listType: ''
+        listType: '',
+        limit: chunkSize,
+        offset: 0
     });
         const printList = useCallback(async (currentFilters) => {
                 try {
@@ -150,7 +154,7 @@ export default function PrintPartnerPopup({ categoriespartner, statespartner }) 
                                       <select id="idState" name="idState"   value={filters.idState}  onChange={handleInputChange}>
                                             <option value="">Estado</option>
                                             {statespartner
-                                                ?.filter(state => state.status !== "Desconocido")
+                                                ?.filter(state => state.status !== unknown)
                                                 .map((state, index) => (
                                                     <option key={index} value={state.idState}>
                                                         {state.status}
@@ -178,13 +182,22 @@ export default function PrintPartnerPopup({ categoriespartner, statespartner }) 
                                         <label htmlFor="presentedBy">Presentado por:</label>
                                         <input id="presentedBy" name="presentedBy" type="text" placeholder="Nombre" onChange={handleInputChange} />
                                     </div>
-                                    
-                                    <div className="input">
-                                        <label htmlFor="removeReason">Motivo de baja</label>
-                                        <select id="removeReason" name='removeReason' value={filters.removeReason} onChange={handleInputChange}>
+                                  <div className="input">
+                                        <label htmlFor="idReason">Motivo de baja</label>
+                                        <select 
+                                            id="idReason" 
+                                            name='idReason' 
+                                            value={filters.idReason} 
+                                            onChange={handleInputChange}
+                                        >
                                             <option value=''>Elegir</option>
-                                            {removePartnerReasons?.map((r) => (
-                                                <option key={r.idReason} value={r.idReason}>{r.reason}</option>
+
+                                            {removePartnerReasons
+                                                ?.filter(r => r.reason !== "Desconocido")
+                                                .map((r) => (
+                                                    <option key={r.idReason} value={r.idReason}>
+                                                        {r.reason}
+                                                    </option>
                                             ))}
                                         </select>
                                     </div>
@@ -195,14 +208,15 @@ export default function PrintPartnerPopup({ categoriespartner, statespartner }) 
                                 <div className='partner-list-filter-title'>
                                     <h3>Opciones de listado</h3>
                                 </div>
-                                <div className='filter-options'>
-                                    <div className="input">
-                                        <label htmlFor="listTitle">Título del listado</label>
-                                        <input id="listTitle" name="listTitle" type="text" placeholder="Ej: Socios activos" onChange={handleInputChange} />
-                                    </div>
+                                                                                
                                     <div className='filter-options'>
+
+                                         <div className="input">
+                                            <label htmlFor="listTitle">Título del listado</label>
+                                            <input id="listTitle" name="listTitle" type="text" placeholder="Ej: Socios activos" onChange={handleInputChange} />
+                                        </div>
                                         <div className="input">
-                                            <label htmlFor="codeCDU">CDU de libro retirados por los socio</label>
+                                            <label htmlFor="codeCDU">CDU de libro que ha sido retirado por los socios</label>
                                             <div>
                                                
                                               <input 
@@ -215,16 +229,28 @@ export default function PrintPartnerPopup({ categoriespartner, statespartner }) 
                                             </div>
                                         </div>
                                         <div className="input">
-                                            <label htmlFor="borrowedBooks">Cantidad de libros retirados</label>
-                                           
-                                            <div>
-                                                <label htmlFor="borrowedBooksMin">Más de</label>
-                                                <input type="number" id="borrowedBooksMin" name="borrowedBooksMin"  onChange={handleInputChange} />
+                                           <div>
+                                            <label htmlFor="borrowedBooksMin">Mas de:</label>
+                                            <input
+                                                type="number"
+                                                id="borrowedBooksMin"
+                                                name="borrowedBooksMin"
+                                                onChange={handleInputChange}
+                                                min={0}
+                                            />
                                             </div>
+
                                             <div>
-                                                <label htmlFor="borrowedBooksMax">Y menos de:</label>
-                                                <input type="number" id="borrowedBooksMax" name="borrowedBooksMax" onChange={handleInputChange}  />
+                                            <label htmlFor="borrowedBooksMax">Menos de:</label>
+                                            <input
+                                                type="number"
+                                                id="borrowedBooksMax"
+                                                name="borrowedBooksMax"
+                                                onChange={handleInputChange}
+                                                min={0}
+                                            />
                                             </div>
+                                          
                                         </div>
                                         <div className="input">
                                             <label htmlFor="sortBy">Ordenado por: </label>
@@ -258,7 +284,6 @@ export default function PrintPartnerPopup({ categoriespartner, statespartner }) 
                                             </select>
                                         </div>)}
                                     </div>
-                                </div>
                             </div>
                             
                         </form>
@@ -274,17 +299,10 @@ export default function PrintPartnerPopup({ categoriespartner, statespartner }) 
                     typeList={filters.listType}
                     title={filters.listTitle}
                     loading={loading} 
-                    rowsPerPage={30}
+                    rowsPerPage={rowsPerPage}
                     onPrint={handlePrint}
                 />
-                  <div className="print-button-container">
-                    <Btn
-                        onClick={handlePrint}
-                        variant={'primary'}
-                        text={'Generar PDF'}
-                        icon={<img src={printIcon} alt='printIcon' />}
-                    />
-                   </div>
+                  
             </div>
 
              

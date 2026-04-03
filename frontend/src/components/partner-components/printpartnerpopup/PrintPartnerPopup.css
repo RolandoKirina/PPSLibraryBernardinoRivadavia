@@ -1,9 +1,9 @@
 .print-partners-container {
     width: 100%;
     display: flex;
-    max-height: 75vh;
+    max-height: 85vh;
     overflow-y: auto;
-      overflow-x: hidden;
+    overflow-x: hidden;
     position: relative;
     background-color: var(--white);
 }
@@ -58,7 +58,6 @@
 .partner-list-filter-option .filter-options {
     display: flex;
     flex-wrap: wrap;
-    margin: 1em;
     margin-top: 0.5em;
     justify-content: space-between;
     width: 100%;

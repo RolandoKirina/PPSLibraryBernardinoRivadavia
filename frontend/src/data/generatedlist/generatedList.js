@@ -147,11 +147,17 @@ export const columnsByType = {
   partner: [
     { header: 'Numero Socio', accessor: 'partnerNumber' },
     { header: 'Nombre Socio', accessor: 'name' },
+    { header: 'Apellido Socio', accessor: 'surname'},
+    { header:'Activo', accessor:'isActive'},
     { header: 'Direccion particular', accessor: 'homeAddress' },
     { header: 'Telefono particular', accessor: 'homePhone' },
-    { header: 'Cantidad libros', accessor: 'bookAmount' },
+    { header: 'Cantidad libros prestados', accessor: 'totalBorrowedBooks' },
+    { header: 'Cuotas impagas', accessor:'unpaidFees'},
+    { header:'Libros pendientes', accessor:'pendingBooks'},
+    { header:'Fecha de baja', accessor:'withdrawalDate'},
+    { header:'Motivo de baja', accessor:'idReason'},
+    {header:'presentado',accessor:'presentedBy'}
   ]
-
 };
 
 export const dataByType = {

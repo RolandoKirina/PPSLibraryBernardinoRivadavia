@@ -4,9 +4,8 @@
     align-items: center;
     justify-content: flex-start;
     margin: 0 1em 0 1em;
-    max-height: 85vh;
-    /* Ajustá según el diseño */
-    overflow-y: auto;
+    height: 85vh;
+    overflow: hidden;
 }
 
 .generate-list-container .table td {
@@ -50,67 +49,27 @@
 
 .print-icon-btn {
     width: 100%;
-    margin-top: 1em;
 }
-
-
-
-@media print {
-  /* Ocultamos todo excepto el área de impresión */
-  body * {
-    visibility: hidden;
-  }
-
-  .print-loans-area, .print-loans-area * {
-    visibility: visible;
-  }
-
-  .print-loans-area {
-    position: relative; /* no absolute */
-    width: 100%;
-    overflow: visible;  /* aseguramos que se expanda */
-    
-  }
-
-  .no-print {
-    display: none;
-  }
-
-  table {
-    page-break-inside: auto; /* deja que corte naturalmente */
-  }
-
-  tr, td, th {
-    page-break-inside: avoid;
-    page-break-after: auto;
-  }
-}
-
-
-/*
-
-
-@media print {
-  body * {
-    visibility: hidden;
-  }
-
-  .printable-area, .printable-area * {
-    visibility: visible;
-  }
-
-  .printable-area {
-    position: absolute;
-    left: 0;
-    top: 0;
-  }
-
-  .print-button {
-    display: none;
-  }
-}
-*/
 
 .no-results{
   color: var(--black);
+}
+
+.generate-list-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.print-loans-area {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.print-icon-btn {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    padding: 10px;
+    z-index: 10;
 }
