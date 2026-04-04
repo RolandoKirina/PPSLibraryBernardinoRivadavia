@@ -88,6 +88,58 @@
     {
       "name": "Asociaciones de Materiales",
       "description": "Gestión de la tabla intermedia TipoLibroGrupo (Relación entre categorías y sus límites)"
+    },
+    {
+      "name": "Libros",
+      "description": "Gestión del catálogo principal, inventario, libros perdidos y rankings"
+    },
+    {
+      "name": "Claves de Libro",
+      "description": "Gestión de descriptores y palabras clave asociadas a los libros"
+    },
+    {
+      "name": "Claves",
+      "description": "Administración del diccionario de términos y descriptores de búsqueda"
+    },
+    {
+      "name": "Signos",
+      "description": "Gestión de rangos de clasificación para la signatura de los libros"
+    },
+    {
+      "name": "Estadísticas",
+      "description": "Consultas de datos agregados y métricas generales del sistema"
+    },
+    {
+      "name": "Cuotas",
+      "description": "Gestión financiera: pagos mensuales, deudas de socios y generación masiva de cobros"
+    },
+    {
+      "name": "Control de Procesos",
+      "description": "Registros técnicos de ejecución de procesos masivos (UltimaGeneracion)"
+    },
+    {
+      "name": "Localidades",
+      "description": "Gestión del catálogo de ciudades y códigos postales para socios"
+    },
+    {
+      "name": "Estados Civiles",
+      "description": "Catálogo de estados civiles para la gestión de datos de socios"
+    },
+    {
+      "name": "Socios",
+      "description": "Administración del padrón de socios, carnetización y estados de cuenta"
+    },
+    {
+      "name": "Categorías de Socios",
+      "description": "Gestión de niveles de membresía y aranceles mensuales (CategoriaSocio)"
+    },
+    {
+      "name": "Motivos de Baja",
+      "description": "Gestión de las causales de desvinculación de socios (MotivoBaja)"
+    },
+    {
+      "name": "Estados de Socio",
+      "description": "Gestión de los estados administrativos (EstadoSocio) para el control de acceso y préstamos"
     }
   ],
   "paths": {
@@ -3704,6 +3756,2236 @@
         "responses": {
           "200": {
             "description": "Asociación eliminada con éxito"
+          }
+        }
+      }
+    },
+    "/api/v1/books": {
+      "get": {
+        "summary": "Listar todos los libros",
+        "description": "Retorna una lista básica de libros. Acceso público.",
+        "tags": [
+          "Libros"
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista obtenida correctamente"
+          }
+        }
+      },
+      "post": {
+        "summary": "Crear un nuevo libro",
+        "tags": [
+          "Libros"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "title",
+                  "codeInventory"
+                ],
+                "properties": {
+                  "codeInventory": {
+                    "type": "string",
+                    "example": "INV-001"
+                  },
+                  "codeCDU": {
+                    "type": "string",
+                    "example": "82-31"
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "Rayuela"
+                  },
+                  "editorial": {
+                    "type": "string"
+                  },
+                  "yearEdition": {
+                    "type": "integer"
+                  },
+                  "numberOfCopies": {
+                    "type": "integer",
+                    "default": 1
+                  },
+                  "type": {
+                    "type": "integer",
+                    "description": "ID del Tipo de Libro"
+                  },
+                  "ubication": {
+                    "type": "string",
+                    "example": "Estante A-12"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Libro creado con éxito"
+          }
+        }
+      }
+    },
+    "/api/v1/books/withFields": {
+      "get": {
+        "summary": "Listar libros con todos sus campos relacionados",
+        "tags": [
+          "Libros"
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista detallada obtenida correctamente"
+          }
+        }
+      }
+    },
+    "/api/v1/books/ranking": {
+      "get": {
+        "summary": "Obtener ranking de libros más pedidos",
+        "tags": [
+          "Libros"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ranking generado"
+          }
+        }
+      }
+    },
+    "/api/v1/books/lost-book": {
+      "get": {
+        "summary": "Listar libros marcados como perdidos",
+        "tags": [
+          "Libros"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de libros perdidos"
+          }
+        }
+      }
+    },
+    "/api/v1/books/duplicateBook": {
+      "post": {
+        "summary": "Duplicar un libro existente",
+        "description": "Crea una copia de un libro para agilizar la carga de múltiples ejemplares.",
+        "tags": [
+          "Libros"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Copia creada exitosamente"
+          }
+        }
+      }
+    },
+    "/api/v1/books/{id}": {
+      "get": {
+        "summary": "Obtener detalle de un libro por ID",
+        "tags": [
+          "Libros"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Datos del libro"
+          },
+          "404": {
+            "description": "Libro no encontrado"
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualizar datos del libro",
+        "tags": [
+          "Libros"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "lost": {
+                    "type": "boolean"
+                  },
+                  "lossDate": {
+                    "type": "string",
+                    "format": "date"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Actualizado correctamente"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Eliminar un libro",
+        "tags": [
+          "Libros"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Libro eliminado"
+          }
+        }
+      }
+    },
+    "/api/v1/book-keys": {
+      "get": {
+        "summary": "Obtener todas las claves de libros",
+        "description": "Retorna la lista completa de asociaciones entre libros y palabras clave.",
+        "tags": [
+          "Claves de Libro"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista obtenida correctamente"
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "403": {
+            "description": "Prohibido: Solo administradores"
+          }
+        }
+      },
+      "post": {
+        "summary": "Asociar una nueva clave a un libro",
+        "tags": [
+          "Claves de Libro"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "keyId",
+                  "BookId"
+                ],
+                "properties": {
+                  "keyId": {
+                    "type": "integer",
+                    "example": 102,
+                    "description": "ID de la palabra clave"
+                  },
+                  "BookId": {
+                    "type": "integer",
+                    "example": 45,
+                    "description": "ID del libro"
+                  },
+                  "bookCode": {
+                    "type": "string",
+                    "example": "INV-001",
+                    "description": "Código interno del libro (CodLibro)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Clave asociada exitosamente"
+          },
+          "400": {
+            "description": "Error en los datos de entrada"
+          }
+        }
+      }
+    },
+    "/api/v1/book-keys/{id}": {
+      "get": {
+        "summary": "Obtener una asociación de clave por ID",
+        "tags": [
+          "Claves de Libro"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Asociación encontrada"
+          },
+          "404": {
+            "description": "ID no encontrado"
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualizar una asociación de clave",
+        "tags": [
+          "Claves de Libro"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "keyId": {
+                    "type": "integer"
+                  },
+                  "BookId": {
+                    "type": "integer"
+                  },
+                  "bookCode": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Actualizado correctamente"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Eliminar la asociación de una clave",
+        "tags": [
+          "Claves de Libro"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Asociación eliminada con éxito"
+          }
+        }
+      }
+    },
+    "/api/v1/keys": {
+      "get": {
+        "summary": "Listar todas las claves (palabras clave)",
+        "description": "Retorna el catálogo completo de términos disponibles para indexar libros.",
+        "tags": [
+          "Claves"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de claves obtenida correctamente"
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        }
+      },
+      "post": {
+        "summary": "Crear una nueva palabra clave",
+        "tags": [
+          "Claves"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "value"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "string",
+                    "example": "Literatura Contemporánea",
+                    "description": "El término o palabra clave a registrar"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Clave creada exitosamente"
+          },
+          "400": {
+            "description": "Error en los datos de entrada"
+          }
+        }
+      }
+    },
+    "/api/v1/keys/{id}": {
+      "get": {
+        "summary": "Obtener una clave por ID",
+        "tags": [
+          "Claves"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Clave encontrada"
+          },
+          "404": {
+            "description": "Clave no encontrada"
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualizar el texto de una clave",
+        "tags": [
+          "Claves"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "string",
+                    "example": "Realismo Mágico"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Clave actualizada correctamente"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Eliminar una clave del catálogo",
+        "tags": [
+          "Claves"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Clave eliminada con éxito"
+          }
+        }
+      }
+    },
+    "/api/v1/signs": {
+      "get": {
+        "summary": "Obtener todos los signos de clasificación",
+        "description": "Retorna la lista de rangos alfabéticos y sus números asociados para la organización de libros.",
+        "tags": [
+          "Signos"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de signos obtenida correctamente"
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "403": {
+            "description": "Prohibido: Solo administradores"
+          }
+        }
+      },
+      "post": {
+        "summary": "Crear un nuevo signo",
+        "tags": [
+          "Signos"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "from",
+                  "to",
+                  "number"
+                ],
+                "properties": {
+                  "from": {
+                    "type": "string",
+                    "example": "Aa",
+                    "maxLength": 2,
+                    "description": "Inicio del rango alfabético"
+                  },
+                  "to": {
+                    "type": "string",
+                    "example": "Ab",
+                    "maxLength": 2,
+                    "description": "Fin del rango alfabético"
+                  },
+                  "number": {
+                    "type": "integer",
+                    "example": 10,
+                    "description": "Número de clasificación asociado"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Signo creado exitosamente"
+          },
+          "400": {
+            "description": "Error en los datos de entrada"
+          }
+        }
+      }
+    },
+    "/api/v1/signs/{id}": {
+      "get": {
+        "summary": "Obtener un signo por ID",
+        "tags": [
+          "Signos"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Signo encontrado"
+          },
+          "404": {
+            "description": "Signo no encontrado"
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualizar un signo",
+        "tags": [
+          "Signos"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "from": {
+                    "type": "string",
+                    "maxLength": 2
+                  },
+                  "to": {
+                    "type": "string",
+                    "maxLength": 2
+                  },
+                  "number": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Signo actualizado correctamente"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Eliminar un signo",
+        "tags": [
+          "Signos"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Signo eliminado con éxito"
+          }
+        }
+      }
+    },
+    "/api/v1/stats-books/quantity-books-partners": {
+      "get": {
+        "summary": "Obtener cantidad total de libros y socios",
+        "description": "Retorna un resumen estadístico con el conteo total de libros en inventario y el total de socios registrados en el sistema.",
+        "tags": [
+          "Estadísticas"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Estadísticas obtenidas correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "totalBooks": {
+                      "type": "integer",
+                      "example": 1250
+                    },
+                    "totalPartners": {
+                      "type": "integer",
+                      "example": 450
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado: Token faltante o inválido"
+          },
+          "403": {
+            "description": "Prohibido: Se requieren permisos de administrador"
+          }
+        }
+      }
+    },
+    "/api/v1/fees": {
+      "get": {
+        "summary": "Listar todas las cuotas",
+        "description": "Retorna el historial completo de cuotas del sistema.",
+        "tags": [
+          "Cuotas"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista obtenida correctamente"
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        }
+      },
+      "post": {
+        "summary": "Crear una cuota individual",
+        "tags": [
+          "Cuotas"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "month",
+                  "year",
+                  "idPartner",
+                  "paid"
+                ],
+                "properties": {
+                  "month": {
+                    "type": "integer",
+                    "example": 4
+                  },
+                  "year": {
+                    "type": "integer",
+                    "example": 2026
+                  },
+                  "amount": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 1500.50
+                  },
+                  "idPartner": {
+                    "type": "integer",
+                    "example": 120
+                  },
+                  "paid": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "observation": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "boolean",
+                    "default": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cuota creada exitosamente"
+          }
+        }
+      }
+    },
+    "/api/v1/fees/generate-unpaid-fees": {
+      "post": {
+        "summary": "Generación masiva de cuotas impagas",
+        "description": "Proceso administrativo para generar las cuotas del mes actual a todos los socios activos.",
+        "tags": [
+          "Cuotas"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Proceso de generación completado"
+          }
+        }
+      }
+    },
+    "/api/v1/fees/partners/{partnerId}/unpaid-fees": {
+      "get": {
+        "summary": "Obtener cuotas pendientes de un socio",
+        "tags": [
+          "Cuotas"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "partnerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de deudas del socio"
+          }
+        }
+      }
+    },
+    "/api/v1/fees/change-state/{id}": {
+      "put": {
+        "summary": "Cambiar estado de pago/activación",
+        "description": "Permite marcar una cuota como pagada o cambiar su visibilidad (Activa).",
+        "tags": [
+          "Cuotas"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Estado actualizado correctamente"
+          }
+        }
+      }
+    },
+    "/api/v1/fees/{id}": {
+      "get": {
+        "summary": "Obtener detalle de una cuota",
+        "tags": [
+          "Cuotas"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Datos de la cuota"
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualizar datos de una cuota",
+        "tags": [
+          "Cuotas"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "number"
+                  },
+                  "observation": {
+                    "type": "string"
+                  },
+                  "date_of_paid": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cuota actualizada"
+          }
+        }
+      }
+    },
+    "/api/v1/last-generations": {
+      "get": {
+        "summary": "Listar registros de generaciones de cuotas",
+        "description": "Retorna el historial de cuándo se ejecutaron los procesos de generación de cuotas masivas.",
+        "tags": [
+          "Control de Procesos"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista obtenida correctamente"
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "403": {
+            "description": "Prohibido: Solo administradores"
+          }
+        }
+      },
+      "post": {
+        "summary": "Registrar una nueva generación de cuotas",
+        "description": "Se utiliza internamente después de completar el proceso de facturación mensual.",
+        "tags": [
+          "Control de Procesos"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "month",
+                  "year",
+                  "date"
+                ],
+                "properties": {
+                  "month": {
+                    "type": "integer",
+                    "example": 4,
+                    "description": "Mes generado"
+                  },
+                  "year": {
+                    "type": "integer",
+                    "example": 2026,
+                    "description": "Año generado"
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2026-04-01",
+                    "description": "Fecha de ejecución"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Registro creado exitosamente"
+          }
+        }
+      }
+    },
+    "/api/v1/last-generations/{id}": {
+      "get": {
+        "summary": "Obtener un registro específico por ID",
+        "tags": [
+          "Control de Procesos"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Registro encontrado"
+          },
+          "404": {
+            "description": "ID no encontrado"
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualizar un registro de generación",
+        "tags": [
+          "Control de Procesos"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "month": {
+                    "type": "integer"
+                  },
+                  "year": {
+                    "type": "integer"
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Registro actualizado"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Eliminar un registro de generación",
+        "tags": [
+          "Control de Procesos"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Registro eliminado con éxito"
+          }
+        }
+      }
+    },
+    "/api/v1/localities": {
+      "get": {
+        "summary": "Obtener todas las localidades",
+        "description": "Retorna el listado de ciudades y códigos postales registrados para los socios.",
+        "tags": [
+          "Localidades"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista obtenida correctamente"
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "403": {
+            "description": "Prohibido: Solo administradores"
+          }
+        }
+      },
+      "post": {
+        "summary": "Crear una nueva localidad",
+        "tags": [
+          "Localidades"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "postalCode"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Tandil",
+                    "description": "Nombre de la localidad"
+                  },
+                  "postalCode": {
+                    "type": "string",
+                    "example": "7000",
+                    "description": "Código postal (CPostal)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Localidad creada exitosamente"
+          },
+          "400": {
+            "description": "Error en los datos de entrada"
+          }
+        }
+      }
+    },
+    "/api/v1/localities/{id}": {
+      "get": {
+        "summary": "Obtener detalle de una localidad por ID",
+        "tags": [
+          "Localidades"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Localidad encontrada"
+          },
+          "404": {
+            "description": "ID no encontrado"
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualizar una localidad",
+        "tags": [
+          "Localidades"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "postalCode": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Localidad actualizada correctamente"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Eliminar una localidad",
+        "tags": [
+          "Localidades"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Localidad eliminada con éxito"
+          }
+        }
+      }
+    },
+    "/api/v1/marital-statuses": {
+      "get": {
+        "summary": "Obtener todos los estados civiles",
+        "description": "Retorna el catálogo de estados civiles (ej: Soltero, Casado, Viudo) para la ficha de los socios.",
+        "tags": [
+          "Estados Civiles"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista obtenida correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "statusName": {
+                        "type": "string",
+                        "example": "Casado/a"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "403": {
+            "description": "Prohibido: Solo administradores"
+          }
+        }
+      }
+    },
+    "/api/v1/partners": {
+      "get": {
+        "summary": "Listar todos los socios",
+        "description": "Retorna la lista completa de socios con su información personal y estado de cuenta.",
+        "tags": [
+          "Socios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de socios obtenida correctamente"
+          }
+        }
+      },
+      "post": {
+        "summary": "Registrar un nuevo socio",
+        "description": "Crea un socio. El 'partnerNumber' se genera automáticamente de forma correlativa.",
+        "tags": [
+          "Socios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "surname",
+                  "name",
+                  "documentNumber",
+                  "idCategory"
+                ],
+                "properties": {
+                  "idUser": {
+                    "type": "integer",
+                    "description": "ID de usuario vinculado (opcional)"
+                  },
+                  "surname": {
+                    "type": "string",
+                    "example": "Pérez"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "Juan"
+                  },
+                  "idCategory": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "birthDate": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "documentType": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "documentNumber": {
+                    "type": "string",
+                    "example": "35123456"
+                  },
+                  "homeAddress": {
+                    "type": "string",
+                    "example": "Calle Falsa 123"
+                  },
+                  "LocalityId": {
+                    "type": "integer",
+                    "description": "ID de la Localidad"
+                  },
+                  "isActive": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "1 para activo, 0 para inactivo"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Socio creado exitosamente"
+          }
+        }
+      }
+    },
+    "/api/v1/partners/printlist": {
+      "get": {
+        "summary": "Generar lista de socios para impresión",
+        "description": "Retorna un reporte o vista optimizada de los socios para su impresión masiva.",
+        "tags": [
+          "Socios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Documento o lista generada correctamente"
+          }
+        }
+      }
+    },
+    "/api/v1/partners/partner-number/{id}": {
+      "get": {
+        "summary": "Buscar socio por su número de carnet",
+        "description": "Utiliza el 'partnerNumber' (número correlativo) en lugar del ID interno de la DB.",
+        "tags": [
+          "Socios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Datos del socio encontrados"
+          },
+          "404": {
+            "description": "Socio no encontrado"
+          }
+        }
+      }
+    },
+    "/api/v1/partners/{id}": {
+      "get": {
+        "summary": "Obtener socio por ID primario",
+        "tags": [
+          "Socios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalle del socio"
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualizar datos del socio",
+        "tags": [
+          "Socios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "surname": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "isActive": {
+                    "type": "integer"
+                  },
+                  "observations": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Socio actualizado"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Eliminar o dar de baja a un socio",
+        "tags": [
+          "Socios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Socio eliminado correctamente"
+          }
+        }
+      }
+    },
+    "/api/v1/partner-categories": {
+      "get": {
+        "summary": "Obtener todas las categorías de socios",
+        "description": "Retorna el listado de categorías (ej: Activo, Adherente, Cadete) con sus respectivos importes de cuota.",
+        "tags": [
+          "Categorías de Socios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de categorías obtenida correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "idCategory": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "Activo"
+                      },
+                      "amount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 1500.00
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "403": {
+            "description": "Prohibido: Solo administradores"
+          }
+        }
+      },
+      "post": {
+        "summary": "Crear una nueva categoría de socio",
+        "tags": [
+          "Categorías de Socios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "amount"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Socio Cadete",
+                    "description": "Nombre de la categoría (Categoria)"
+                  },
+                  "amount": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 800.50,
+                    "description": "Importe de la cuota mensual (Importe)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Categoría creada exitosamente"
+          },
+          "400": {
+            "description": "Error en los datos de entrada"
+          }
+        }
+      }
+    },
+    "/api/v1/partner-categories/{id}": {
+      "get": {
+        "summary": "Obtener una categoría por ID",
+        "tags": [
+          "Categorías de Socios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalle de la categoría encontrado"
+          },
+          "404": {
+            "description": "Categoría no encontrada"
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualizar una categoría existente",
+        "tags": [
+          "Categorías de Socios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "amount": {
+                    "type": "number",
+                    "format": "float"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Categoría actualizada correctamente"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Eliminar una categoría",
+        "tags": [
+          "Categorías de Socios"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Categoría eliminada con éxito"
+          }
+        }
+      }
+    },
+    "/api/v1/reasons-withdrawal": {
+      "get": {
+        "summary": "Obtener todos los motivos de baja",
+        "description": "Retorna el listado de razones tipificadas para la desvinculación de socios.",
+        "tags": [
+          "Motivos de Baja"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista obtenida correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "idReason": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "reason": {
+                        "type": "string",
+                        "example": "Renuncia voluntaria"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        }
+      },
+      "post": {
+        "summary": "Crear un nuevo motivo de baja",
+        "tags": [
+          "Motivos de Baja"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "reason"
+                ],
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "example": "Mudanza",
+                    "description": "Descripción del motivo (Motivo)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Motivo creado exitosamente"
+          }
+        }
+      }
+    },
+    "/api/v1/reasons-withdrawal/{id}": {
+      "get": {
+        "summary": "Obtener un motivo por ID",
+        "tags": [
+          "Motivos de Baja"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Motivo encontrado"
+          },
+          "404": {
+            "description": "ID no encontrado"
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualizar un motivo de baja",
+        "tags": [
+          "Motivos de Baja"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reason": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Actualizado correctamente"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Eliminar un motivo de baja",
+        "tags": [
+          "Motivos de Baja"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Motivo eliminado con éxito"
+          }
+        }
+      }
+    },
+    "/api/v1/state-partners": {
+      "get": {
+        "summary": "Obtener todos los estados de socio",
+        "description": "Retorna el listado de estados administrativos posibles para los socios.",
+        "tags": [
+          "Estados de Socio"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de estados obtenida correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "idState": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "status": {
+                        "type": "string",
+                        "example": "Activo"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        }
+      },
+      "post": {
+        "summary": "Crear un nuevo estado de socio",
+        "tags": [
+          "Estados de Socio"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "status"
+                ],
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "example": "Suspendido",
+                    "description": "Nombre del estado (Estado)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Estado creado exitosamente"
+          }
+        }
+      }
+    },
+    "/api/v1/state-partners/{id}": {
+      "get": {
+        "summary": "Obtener un estado por ID",
+        "tags": [
+          "Estados de Socio"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Estado encontrado"
+          },
+          "404": {
+            "description": "Estado no encontrado"
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualizar un estado de socio",
+        "tags": [
+          "Estados de Socio"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Actualizado correctamente"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Eliminar un estado de socio",
+        "tags": [
+          "Estados de Socio"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Estado eliminado con éxito"
           }
         }
       }
