@@ -1,5 +1,5 @@
 import { Op } from "sequelize";
-import { toStartOfDay,toEndOfDay } from "./date/formatDate.js";
+import { toStartOfDay, toEndOfDay } from "./date/formatDate.js";
 
 export const buildPartnerFilters = (query) => {
   const {
@@ -69,28 +69,16 @@ export const buildListPartnerFilters = (query) => {
     removeReason,
     presentedBy,
     codeCDU,
-    unpaidQuotesMin, 
+    unpaidQuotesMin,
     unpaidQuotesMax,
-    quantityretiredbooksmin,
-    quantityretiredbooksmax,
+    borrowedBooksMin,
+    borrowedBooksMax,
     pendingBooks,
     limit,
     offset,
     sortBy,
     direction,
   } = query;
-
-  console.log("SORT BY" ,sortBy);
-const mapNameisActive = (idState) => {
-  const id = Number(idState);
-
-  if (id === 1) return 1;
-  if (id === 2) return 0;
-
-  return null;
-};
-const isActive = mapNameisActive(idState)
-
 
   const allowedSortFields = {
     surname: 'surname',
@@ -106,13 +94,13 @@ const isActive = mapNameisActive(idState)
 
   const wherePartner = {};
   const whereBook = {};
-  
-  if (category){
+
+  if (category) {
     wherePartner.idCategory = Number(category);
   }
 
-  if (isActive !== null) {
-    wherePartner.isActive = isActive;
+  if (idState) {
+    wherePartner.isActive = idState;
   }
 
   if (birthDateFrom && birthDateTo) {
@@ -181,7 +169,7 @@ const isActive = mapNameisActive(idState)
   }
 
   if (codeCDU) {
-     whereBook.codeCDU = {
+    whereBook.codeCDU = {
       [Op.iLike]: `%${codeCDU.trim()}%`
     };
   }
@@ -198,9 +186,6 @@ const isActive = mapNameisActive(idState)
     }
   }
 
-  /*if (quantityretiredbooksmin || quantityretiredbooksmax) {
-  
-  }*/
   if (pendingBooks !== undefined) {
     wherePartner.pendingBooks = Number(pendingBooks);
   }
@@ -211,20 +196,24 @@ const isActive = mapNameisActive(idState)
   let order = [];
   if (sortBy) {
 
-    const directionValue = direction === 'ASC' ? 'ASC' : 'DESC';
+    const directionValue = direction.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
 
     const fields = sortBy.split(",");
 
     fields.forEach(field => {
-        if (allowedSortFields[field]) {
+      if (allowedSortFields[field]) {
         order.push([allowedSortFields[field], directionValue]);
       }
     });
 
-  }return {
+  }
+
+  return {
     order,
     wherePartner,
     whereBook,
+    borrowedBooksMin,
+    borrowedBooksMax,
     limit: Number.isNaN(parsedLimit) ? 20 : parsedLimit,
     offset: Number.isNaN(parsedOffset) ? 0 : parsedOffset
   };

@@ -5,85 +5,202 @@ import Loan from '../../models/loan/Loan.js';
 import statePartner from '../../models/partner/statePartner.js';
 import Locality from '../../models/partner/locality.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
-
+import { Sequelize, QueryTypes } from 'sequelize';
+/*
 export const printList = async (filters) => {
-
-  const {
-    order,
-    wherePartner,
-    whereBook,
-    limit,
-    offset
+  const { 
+    order, 
+    wherePartner, 
+    borrowedBooksMax, 
+    borrowedBooksMin, 
+    whereBook, 
+    limit, 
+    offset 
   } = filters;
 
-const { rows, count } = await Partner.findAndCountAll({
-  where: wherePartner,
-  include: [
-    {
-      model: Loan,
-      as: "Loans",
-      attributes: [],
-      required: true,
-      include: [
-        {
-          model: LoanBook,
-          as: "LoanBooks",
-          required: true,
-          attributes: [],
-          include: [
-            {
-              model: Book,
-              as: "Book",
-              required: true,
-              attributes: [],
-              where: whereBook
-            }
-          ]
-        }
-      ]
+  let havingCondition = null;
+  if (borrowedBooksMin !== undefined || borrowedBooksMax !== undefined) {
+    const conditions = [];
+    if (borrowedBooksMin !== undefined) {
+      conditions.push(`COUNT("Loans->LoanBooks"."LoanBookId") >= ${Number(borrowedBooksMin)}`);
     }
-  ],
-  group: ['Partner.id'],
-  subQuery: false,
-  order,
-  limit,
-  offset
-}
-);
-
-const total = Array.isArray(count) ? count.length : count;
-
-  return {
-    rows,
-    count: total
-  };
-};
-
-
-
-export const getCountRetiredBooks = async (min, max) => {
-  const results = await sequelize.query(
-    `
-      SELECT 
-      p."Id" AS "partnerId",
-      COUNT(lb."LoanBookId") AS cantidad_libros
-      FROM "Partner" p
-      JOIN "Prestamo" l 
-          ON l."partnerId" = p."Id"
-      JOIN "PrestamoLibro" lb 
-          ON lb."IdPrestamo" = l."Id"
-      GROUP BY p."Id"
-      HAVING COUNT(lb."LoanBookId") BETWEEN :min AND :max;
-    `,
-    {
-      replacements: { min, max },
-      type: QueryTypes.SELECT
+    if (borrowedBooksMax !== undefined) {
+      conditions.push(`COUNT("Loans->LoanBooks"."LoanBookId") <= ${Number(borrowedBooksMax)}`);
     }
-  );
+    havingCondition = Sequelize.literal(conditions.join(' AND '));
+  }
 
-  return results;
+
+  const totalResults = await Partner.findAll({
+    attributes: ['id'],
+    where: wherePartner,
+    include: [{
+      model: Loan, as: "Loans", required: true, attributes: [],
+      include: [{
+        model: LoanBook, as: "LoanBooks", required: true, attributes: [],
+        include: [{
+          model: Book, as: "Book", required: true, attributes: [], where: whereBook
+        }]
+      }]
+    }],
+    group: ['Partner.id'],
+    having: havingCondition,
+    raw: true,
+    subQuery: false
+  });
+
+  const totalCount = totalResults.length;
+  if (totalCount === 0) return { rows: [], count: 0 };
+
+
+  const partnersWithFilters = await Partner.findAll({
+    attributes: ['id'],
+    where: wherePartner,
+    include: [{
+      model: Loan, as: "Loans", required: true, attributes: [],
+      include: [{
+        model: LoanBook, as: "LoanBooks", required: true, attributes: [],
+        include: [{
+          model: Book, as: "Book", required: true, attributes: [], where: whereBook
+        }]
+      }]
+    }],
+    group: ['Partner.id'],
+    having: havingCondition,
+    order,
+    limit,
+    offset,
+    raw: true,
+    subQuery: false
+  });
+
+  const partnerIds = partnersWithFilters.map(p => p.id);
+
+  let cduValue = whereBook?.codeCDU;
+  if (cduValue && typeof cduValue === 'object') {
+    cduValue = cduValue[Object.getOwnPropertySymbols(cduValue)[0]] || cduValue;
+  }
+
+  const rows = await Partner.findAll({
+    where: { id: partnerIds },
+    attributes: {
+      include: [[
+        Sequelize.literal(`(
+          SELECT COUNT(*)
+          FROM "PrestamoLibro" AS lb
+          INNER JOIN "Prestamo" AS l ON lb."IdPrestamo" = l."Id"
+          INNER JOIN "Libros" AS b ON lb."BookId" = b."id"
+          WHERE l."NumSocio" = "Partner"."id"
+          ${cduValue ? `AND b."Cod_rcdu" LIKE '${cduValue.toString().replace('%','')}%'` : ''}
+        )`),
+        'totalBorrowedBooks'
+      ]]
+    },
+    order
+  });
+
+  return { rows, count: totalCount };
 };
+*/
 
+export const printList = async (filters) => {
+  const { 
+    order, 
+    wherePartner, 
+    borrowedBooksMax, 
+    borrowedBooksMin, 
+    whereBook, 
+    limit, 
+    offset 
+  } = filters;
+
+  // --- 1. CONFIGURACIÓN DEL HAVING (Igual que antes) ---
+  let havingCondition = null;
+  if (borrowedBooksMin !== undefined || borrowedBooksMax !== undefined) {
+    const conditions = [];
+    if (borrowedBooksMin !== undefined) {
+      conditions.push(`COUNT("Loans->LoanBooks"."LoanBookId") >= ${Number(borrowedBooksMin)}`);
+    }
+    if (borrowedBooksMax !== undefined) {
+      conditions.push(`COUNT("Loans->LoanBooks"."LoanBookId") <= ${Number(borrowedBooksMax)}`);
+    }
+    havingCondition = Sequelize.literal(conditions.join(' AND '));
+  }
+
+  // --- 2. PASO 1: CONTEO TOTAL ---
+  const totalResults = await Partner.findAll({
+    attributes: ['id'],
+    where: wherePartner,
+    include: [{
+      model: Loan, as: "Loans", required: true, attributes: [],
+      include: [{
+        model: LoanBook, as: "LoanBooks", required: true, attributes: [],
+        include: [{
+          model: Book, as: "Book", required: true, attributes: [], where: whereBook
+        }]
+      }]
+    }],
+    group: ['Partner.id'],
+    having: havingCondition,
+    raw: true,
+    subQuery: false
+  });
+
+  const totalCount = totalResults.length;
+  if (totalCount === 0) return { rows: [], count: 0 };
+
+  // --- 3. PASO 2: OBTENER IDs FILTRADOS Y ORDENADOS ---
+  const partnersWithFilters = await Partner.findAll({
+    attributes: ['id'],
+    where: wherePartner,
+    include: [{
+      model: Loan, as: "Loans", required: true, attributes: [],
+      include: [{
+        model: LoanBook, as: "LoanBooks", required: true, attributes: [],
+        include: [{
+          model: Book, as: "Book", required: true, attributes: [], where: whereBook
+        }]
+      }]
+    }],
+    group: ['Partner.id'],
+    having: havingCondition,
+    order, // <--- El orden aplicado aquí decide qué IDs entran en la página
+    limit,
+    offset,
+    raw: true,
+    subQuery: false
+  });
+
+  const partnerIds = partnersWithFilters.map(p => p.id);
+
+  // --- 4. PASO 3: DATA FINAL (Manteniendo el orden) ---
+  let cduValue = whereBook?.codeCDU;
+  if (cduValue && typeof cduValue === 'object') {
+    cduValue = cduValue[Object.getOwnPropertySymbols(cduValue)[0]] || cduValue;
+  }
+
+  const rows = await Partner.findAll({
+    where: { id: partnerIds },
+    attributes: {
+      include: [[
+        Sequelize.literal(`(
+          SELECT COUNT(*)
+          FROM "PrestamoLibro" AS lb
+          INNER JOIN "Prestamo" AS l ON lb."IdPrestamo" = l."Id"
+          INNER JOIN "Libros" AS b ON lb."BookId" = b."id"
+          WHERE l."NumSocio" = "Partner"."id"
+          ${cduValue ? `AND b."Cod_rcdu" LIKE '${cduValue.toString().replace('%','')}%'` : ''}
+        )`),
+        'totalBorrowedBooks'
+      ]]
+    },
+    // IMPORTANTE: El orden aquí debe ser el mismo que en el Paso 2
+    // para que la respuesta final sea consistente.
+    order 
+  });
+
+  return { rows, count: totalCount };
+};
 export const getUnpaidFeesByPartner = async (id) => {
   try {
     const partner = await Partner.findByPk(id, {
