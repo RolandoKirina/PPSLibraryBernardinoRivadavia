@@ -67,16 +67,37 @@
 
 PPSLibrary/
 ├── backend/               # Servidor Node.js + Express
-├── config/           # Configuración de Sequelize CLI
-│   └── config.cjs    # Usa dotenv para leer variables de entorno
-├── migrations/       # Migraciones de base de datos
-├── models/           # Modelos Sequelize
-│   └── index.js      # Inicialización y relaciones entre modelos
-├── seeders/          # Seeders opcionales para datos iniciales
-│   └── src/               # Controladores, Rutas y Middlewares
-├── frontend/    # Aplicación React + Vite
-│   ├── src/components     # Componentes reutilizables
-│   └── src/pages          # Vistas principales del sistema
+│   ├── config/            # Configuración de Sequelize CLI
+│   │   └── config.cjs     # Usa dotenv para leer variables de entorno
+│   ├── migrations/        # Migraciones de base de datos
+│   ├── models/            # Modelos Sequelize
+│   │   └── index.js       # Inicialización y relaciones entre modelos
+│   ├── seeders/           # Seeders opcionales para datos iniciales
+│   └── src/               # Código fuente principal
+│       ├── configs/       # Configuraciones internas de la app
+│       ├── controllers/   # Lógica de controladores
+│       ├── docs/          # Documentación interna de la API
+│       ├── https/         # Configuración de codigos de servidor HTTPS
+│       ├── middlewares/   # Middlewares personalizados
+│       ├── models/        # Modelos adicionales (separados por dominio)
+│       ├── repositories/  # Acceso a datos y queries
+│       ├── routes/        # Definición de rutas Express
+│       ├── services/      # Lógica de negocio
+│       └── utils/         # Funciones utilitarias
+├── frontend/              # Aplicación React + Vite
+│   ├── public/            # Archivos estáticos públicos
+│   └── src/               # Código fuente principal del frontend
+│       ├── assets/        # Recursos estáticos (imágenes, íconos, estilos)
+│       ├── auth/          # Lógica de autenticación y contexto
+│       ├── components/    # Componentes reutilizables
+│       ├── data/          # Datos mock o constantes
+│       ├── hooks/         # Custom hooks de React
+│       ├── layout/        # Componentes de estructura/layout
+│       ├── pages/         # Vistas principales del sistema
+│       └── utils/         # Funciones utilitarias
+│       ├── App.jsx        # Componente raíz de la aplicación
+│       ├── index.css      # Estilos globales
+│       └── main.jsx       # Punto de entrada de React
 └── README.md              # Documentación general
 
 
