@@ -5,6 +5,9 @@ export const listOptions = [
   { label: 'Núm-Apey-Nomb-Direc-Tel-Present-X-FInsc', value: 'TypeFour' }
 ];
 
+
+
+
 export const feesBetweenDatesListOptions = [
   { label: 'Listado de cuotas pagas por categoria', value: 'TypeOneFees' },
   { label: 'Cuotas por letra y categoria', value: 'TypeTwoFees' },
@@ -146,17 +149,18 @@ export const columnsByType = {
   ],
   partner: [
     { header: 'Numero Socio', accessor: 'partnerNumber' },
-    { header: 'Nombre Socio', accessor: 'name' },
-    { header: 'Apellido Socio', accessor: 'surname'},
-    { header:'Activo', accessor:'isActive'},
-    { header: 'Direccion particular', accessor: 'homeAddress' },
-    { header: 'Telefono particular', accessor: 'homePhone' },
-    { header: 'Cantidad libros prestados', accessor: 'totalBorrowedBooks' },
+    { header: 'Nombre', accessor: 'name' },
+    { header: 'Apellido', accessor: 'surname'},
+    { header: 'Direccion', accessor: 'homeAddress' },
+    { header: 'Telefono', accessor: 'homePhone' },    
+    { header: 'Estado',accessor:'isActive'},
+    { header: 'Libros prestados', accessor: 'totalBorrowedBooks' },
     { header: 'Cuotas impagas', accessor:'unpaidFees'},
     { header:'Libros pendientes', accessor:'pendingBooks'},
     { header:'Fecha de baja', accessor:'withdrawalDate'},
     { header:'Motivo de baja', accessor:'idReason'},
-    {header:'presentado',accessor:'presentedBy'}
+    {header:'Presentado por',accessor:'presentedBy'},    
+    {header:'Fecha de inscripción',accessor:'registrationDate'},
   ]
 };
 

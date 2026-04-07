@@ -66,31 +66,23 @@ export const buildListPartnerFilters = (query) => {
     registrationEnd,
     resignationStart,
     resignationEnd,
-    removeReason,
+    idReason,
     presentedBy,
     codeCDU,
     unpaidQuotesMin, 
     unpaidQuotesMax,
-    quantityretiredbooksmin,
-    quantityretiredbooksmax,
+    borrowedBooksMin,
+    borrowedBooksMax,
     pendingBooks,
     limit,
     offset,
     sortBy,
     direction,
   } = query;
+  
+  console.log(idState);
 
   console.log("SORT BY" ,sortBy);
-const mapNameisActive = (idState) => {
-  const id = Number(idState);
-
-  if (id === 1) return 1;
-  if (id === 2) return 0;
-
-  return null;
-};
-const isActive = mapNameisActive(idState)
-
 
   const allowedSortFields = {
     surname: 'surname',
@@ -111,8 +103,8 @@ const isActive = mapNameisActive(idState)
     wherePartner.idCategory = Number(category);
   }
 
-  if (isActive !== null) {
-    wherePartner.isActive = isActive;
+  if (idState) {
+    wherePartner.isActive = idState;
   }
 
   if (birthDateFrom && birthDateTo) {
@@ -169,8 +161,8 @@ const isActive = mapNameisActive(idState)
       [Op.lte]: toEndOfDay(resignationEnd)
     };
   }
-  if (removeReason) {
-    wherePartner.idReason = Number(removeReason);
+  if (idReason) {
+    wherePartner.idReason = Number(idReason);
   }
 
 
@@ -198,9 +190,9 @@ const isActive = mapNameisActive(idState)
     }
   }
 
-  /*if (quantityretiredbooksmin || quantityretiredbooksmax) {
+
+
   
-  }*/
   if (pendingBooks !== undefined) {
     wherePartner.pendingBooks = Number(pendingBooks);
   }
@@ -211,7 +203,8 @@ const isActive = mapNameisActive(idState)
   let order = [];
   if (sortBy) {
 
-    const directionValue = direction === 'ASC' ? 'ASC' : 'DESC';
+    const directionValue = direction?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
+
 
     const fields = sortBy.split(",");
 
@@ -225,6 +218,8 @@ const isActive = mapNameisActive(idState)
     order,
     wherePartner,
     whereBook,
+    borrowedBooksMin: borrowedBooksMin ? Number(borrowedBooksMin) : undefined,
+    borrowedBooksMax: borrowedBooksMax ? Number(borrowedBooksMax) : undefined,
     limit: Number.isNaN(parsedLimit) ? 20 : parsedLimit,
     offset: Number.isNaN(parsedOffset) ? 0 : parsedOffset
   };

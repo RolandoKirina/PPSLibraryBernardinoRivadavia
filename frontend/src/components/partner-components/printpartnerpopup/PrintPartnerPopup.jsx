@@ -1,21 +1,52 @@
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import './PrintPartnerPopup.css';
-import { useState, useEffect, useCallback } from 'react';
+
 import { listOptions, sortOptions, columnsByType } from '../../../data/generatedlist/generatedList';
 import GenerateListPopup from '../../common/generatelistpopup/GenerateListPopup';
 import { useAuth } from '../../../auth/AuthContext';
 import { generateUniversalPDF } from '../../../utils/pdfGenerator';
-import Btn from '../../common/btn/Btn';
-import printIcon from '../../../assets/img/print-icon.svg';
 
-export default function PrintPartnerPopup({ categoriespartner, statespartner }) {
+export default function PrintPartnerPopup({ categoriespartner = [], statespartner = [] }) {
     const { auth } = useAuth();
     const [removePartnerReasons, setRemovePartnerReason] = useState([]);
     const [resultprint, setresultprint] = useState([]);
     const [totalItems, setTotalItems] = useState(0);
     const [loading, setLoading] = useState(false);
-    const chunkSize = 10000;
+       const chunkSize = 10000;
     const rowsPerPage =35;
     const unknown = "Desconocido";
+
+    /*const listTypesConfig = {
+    'TypeOne': ["partnerNumber", "surname", "name", "homeAddress", "homePhone", "unpaidFees", "pendingBooks", "registrationDate"],
+    'TypeTwo': ["partnerNumber", "surname", "name", "homeAddress", "homePhone", "isActive", "registrationDate"],
+    'TypeThree': ["partnerNumber", "surname", "name", "homeAddress", "homePhone", "withdrawalDate", "idReason"],
+    'TypeFour': ["partnerNumber", "surname", "name", "homeAddress", "homePhone", "presentedBy", "registrationDate"]
+    };*/
+
+
+    const listTypes = [
+        {
+            value: "basic",
+            label: "Número - Nombre - Apellido - Dirección - Teléfono - Estado - Fecha inscripción",
+            columns: ["partnerNumber", "name", "surname", "homeAddress", "homePhone", "isActive", "registrationDate"]
+        },
+        {
+            value: "withWithdrawal",
+            label: "Número - Nombre - Apellido - Dirección - Teléfono - Estado - Fecha baja - Motivo",
+            columns: ["partnerNumber", "name", "surname", "homeAddress", "homePhone", "isActive", "withdrawalDate", "idReason"]
+        },
+        {
+            value: "presentedBy",
+            label: "Número - Nombre - Apellido - Dirección - Teléfono - Estado - Presentado por - Fecha inscripción",
+            columns: ["partnerNumber", "name", "surname", "homeAddress", "homePhone", "isActive", "presentedBy", "registrationDate"]
+        },
+        {
+            value: "stats",
+            label: "Número - Nombre - Apellido - Dirección - Teléfono - Estado - Cuotas impagas - Libros pendientes",
+            columns: ["partnerNumber", "name", "surname", "homeAddress", "homePhone", "isActive", "unpaidFees", "pendingBooks"]
+        }
+    ];
+
     const [filters, setFilters] = useState({
         category: '',
         idState: '',
@@ -36,96 +67,98 @@ export default function PrintPartnerPopup({ categoriespartner, statespartner }) 
         listTitle: '',
         sortBy: '',
         direction: 'asc',
-        listType: '',
+        listType: 'basic',
         limit: chunkSize,
         offset: 0
     });
-        const printList = useCallback(async (currentFilters) => {
-                try {
-                    setLoading(true);
-                    const queryParams = new URLSearchParams(
-                        Object.fromEntries(Object.entries(currentFilters).filter(([_, v]) => v !== ''))
-                    ).toString();
 
-                    const res = await fetch(
-                        `http://localhost:4000/api/v1/partners/printlist?${queryParams}`,
-                        { headers: { Authorization: `Bearer ${auth.token}` } }
-                    );
+const getColumnKey =(col) =>
+  col.key ||
+  col.dataKey ||
+  col.field ||
+  (typeof col.accessor === "string" ? col.accessor : undefined);
 
-                    const reslist = await res.json();
-                    setresultprint(reslist.rows || []);
-                    setTotalItems(reslist.count || 0);
-                } catch (e) {
-                    console.error(e);
-                } finally {
-                    setLoading(false);
-                }
-            }, [auth.token]);
+
+    const dynamicColumns = useMemo(() => {
+        const allColumns = columnsByType?.["partner"] || [];
+
+        const selectedType = listTypes.find(t => t.value === filters.listType);
+
+        if (!selectedType) return allColumns;
+
+        return allColumns.filter(col =>
+            selectedType.columns.includes(col.accessor)
+        );
+    }, [filters.listType]);
+
+
+    const printList = useCallback(async (currentFilters) => {
+        try {
+            setLoading(true);
+            // Limpiamos filtros vacíos
+            const cleanFilters = Object.fromEntries(
+                Object.entries(currentFilters).filter(([_, v]) => v !== '' && v !== null)
+            );
+            
+            const queryParams = new URLSearchParams(cleanFilters).toString();
+
+            const res = await fetch(
+                `http://localhost:4000/api/v1/partners/printlist?${queryParams}`,
+                { headers: { Authorization: `Bearer ${auth.token}` } }
+            );
+
+            if (!res.ok) throw new Error("Error en la respuesta del servidor");
+
+            const reslist = await res.json();
+            console.log(reslist);
+            setresultprint(reslist.rows || []);
+            setTotalItems(reslist.count || 0);
+        } catch (e) {
+            console.error("Error fetching list:", e);
+        } finally {
+            setLoading(false);
+        }
+    }, [auth.token]);
 
     const handlePrint = () => {
-       
+        if (!resultprint.length || !dynamicColumns.length) return;
 
-                if (!resultprint || resultprint.length === 0) return;
+        const title = filters.listTitle || 'Listado de socios';
+        const headers = dynamicColumns.map(col => col.header || "Columna");
+        
+        const data = resultprint.map(item => 
+         dynamicColumns.map(col => item[col.accessor] ?? '')
+        );
 
-                const title = filters.listTitle || 'Listado de socios';
-                const config = columnsByType["partner"];
-                const headers = config.map(col => col.label || col.text || col.header || "Column");
-
-                const data = resultprint.map(item => {
-                    return config.map(col => {
-                        const key = col.key || col.dataKey || col.field || col.accessor;
-                        return item[key] ?? '';
-                    });
-                });
-
-                generateUniversalPDF(title, headers, data, `report_partners`);
+        generateUniversalPDF(title, headers, data, `report_partners`);
     };
-
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-
-        setFilters(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        setFilters(prev => ({ ...prev, [name]: value }));
     };
 
     useEffect(() => {
         const timeout = setTimeout(() => {
             printList(filters);
         }, 500);
-
         return () => clearTimeout(timeout);
     }, [filters, printList]);
 
-     useEffect(() => {
-        async function loadApis() {
+    useEffect(() => {
+        async function loadReasons() {
             try {
-                const [reasonwithdrawal] = await Promise.all([
-                    fetch("http://localhost:4000/api/v1/reason-for-withdrawal", {
-                        headers: {
-                            Authorization: `Bearer ${auth.token}`
-                        }
-                    }), fetch("http://localhost:4000/api/v1/employees", {
-                        headers: {
-                            Authorization: `Bearer ${auth.token}`
-                        }
-                    })
-                ]);
-                const resWithdrawal = await reasonwithdrawal.json();
-                setRemovePartnerReason(resWithdrawal);
+                const res = await fetch("http://localhost:4000/api/v1/reason-for-withdrawal", {
+                    headers: { Authorization: `Bearer ${auth.token}` }
+                });
+                const data = await res.json();
+                setRemovePartnerReason(Array.isArray(data) ? data : []);
             } catch (e) {
                 console.error("Error loading reasons:", e);
             }
         }
-        loadApis();
+        if (auth.token) loadReasons();
     }, [auth.token]);
-
-
-
-
-
 
     return (
         <div className='print-partners-container'>
@@ -278,12 +311,23 @@ export default function PrintPartnerPopup({ categoriespartner, statespartner }) 
                                                 value={filters.direction}
                                                 onChange={handleInputChange}
                                             >
-                                                <option value=''>Elegir</option>
                                                 <option value='asc'>Ascendente</option>
                                                 <option value='desc'>Descendente</option>
                                             </select>
                                         </div>)}
+
+                                        <div className="input">
+                                        <label>Tipo de listado</label>
+                                        <select name="listType" value={filters.listType} onChange={handleInputChange}>
+                                            {listTypes.map(type => (
+                                                <option key={type.value} value={type.value}>{type.label}</option>
+                                            ))}
+                                        </select>
                                     </div>
+                                    </div>
+
+
+                                    
                             </div>
                             
                         </form>
@@ -291,22 +335,19 @@ export default function PrintPartnerPopup({ categoriespartner, statespartner }) 
                 </div>
             </div>
 
+
             <div className='preview-list-container'>
                 <GenerateListPopup 
                     dataByType={resultprint}
                     totalItems={totalItems}
-                    columnsByType={columnsByType["partner"]}
+                    columnsByType={dynamicColumns}
                     typeList={filters.listType}
                     title={filters.listTitle}
                     loading={loading} 
                     rowsPerPage={rowsPerPage}
                     onPrint={handlePrint}
                 />
-                  
             </div>
-
-             
-                
         </div>
     );
 }

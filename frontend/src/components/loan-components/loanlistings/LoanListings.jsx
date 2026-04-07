@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Listing from '../listing/Listing';
 import BackviewBtn from '../../common/backviewbtn/BackviewBtn';
 
-
 export default function LoanListings() {
     const [popupView, setPopupView] = useState('default');
     const [type, setType] = useState();
