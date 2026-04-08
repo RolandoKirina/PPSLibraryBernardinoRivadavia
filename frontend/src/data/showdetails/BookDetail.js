@@ -8,7 +8,7 @@ export const BookDetail = [
       [
         { label: 'Título', value: 'información', attribute: 'title' },
         { label: 'Código', value: 'información', attribute: 'codeInventory' },
-        { label: 'Año de edicion', value: 'información', attribute: 'numberEdition' }
+        { label: 'Año de edicion', value: 'información', attribute: 'yearEdition' }
       ],
     ]
   },
