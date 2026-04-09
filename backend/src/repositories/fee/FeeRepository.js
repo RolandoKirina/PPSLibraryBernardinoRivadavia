@@ -300,9 +300,9 @@ export const getQuantityPaidFees = async (partnerNumber) => {
   return count;
 };
 
-export const findOne = async ({ month, year }) => {
+export const findOne = async ({ idPartner,month, year }) => {
   return await Fees.findOne({
-    where: { month, year }
+    where: { idPartner, month, year }
   });
 };
 export const getById = async (id) => {

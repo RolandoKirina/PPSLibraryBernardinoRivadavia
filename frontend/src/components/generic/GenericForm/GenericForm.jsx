@@ -5,9 +5,8 @@ import Btn from '../../common/btn/Btn';
 
 export default function GenericForm({ fields, onSubmit, title, children, className, error, successMessage }) {
   const [formState, setFormState] = useState({});
-
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  
   const handleChange = (e) => {
     const { name, type, value, checked } = e.target;
     setFormState({
@@ -16,22 +15,19 @@ export default function GenericForm({ fields, onSubmit, title, children, classNa
     });
   };
 
-  const handleSave = async () => {
-    if (isSubmitting) return; 
+const handleSave = async () => {
+  if (isSubmitting) return;
 
-    setIsSubmitting(true);
-    
-    try {
-      await onSubmit(formState);
-    } catch (err) {
-      console.error(err);
-    } finally {
+  setIsSubmitting(true);
 
-      setTimeout(() => {
-        setIsSubmitting(false);
-      }, 3000);
-    }
-  };
+  try {
+    await onSubmit(formState);
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setIsSubmitting(false); 
+  }
+};
 
   const incrementCounter = (name, step) => {
     setFormState((prevState) => ({
@@ -111,6 +107,7 @@ export default function GenericForm({ fields, onSubmit, title, children, classNa
               name={field.name}
               value={value}
               onChange={handleChange}
+              required={field.required} // ✅ ahora sí funciona
             />
           </>
         )}
@@ -120,7 +117,14 @@ export default function GenericForm({ fields, onSubmit, title, children, classNa
 
   return (
     <div className={`generic-form-container${className ? ` ${className}` : ''}`}>
-      <div className="generic-form">
+      
+      <form
+        className="generic-form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSave();
+        }}
+      >
         {title && (
           <div className="generic-form-title">
             <h2>{title}</h2>
@@ -145,20 +149,30 @@ export default function GenericForm({ fields, onSubmit, title, children, classNa
         </div>
         
         <div>{error && <p className="error-message">{error}</p>}</div>
+
         {successMessage && (
-          <div className='sucess-message'><p className="">{successMessage}</p></div>
+          <div className='sucess-message'>
+            <p>{successMessage}</p>
+          </div>
         )}
 
         <div className="generic-btn-save">
           <Btn
             variant={'primary'}
-            text={isSubmitting ? 'Guardando...' : 'Guardar'} 
-            onClick={handleSave} 
-            disabled={isSubmitting} 
-            icon={<img src={SaveIcon} alt="Guardar" style={{ opacity: isSubmitting ? 0.5 : 1 }} />}
+            text={isSubmitting ? 'Guardando...' : 'Guardar'}
+            type="submit" 
+            disabled={isSubmitting}
+            icon={
+              <img
+                src={SaveIcon}
+                alt="Guardar"
+                style={{ opacity: isSubmitting ? 0.5 : 1 }}
+              />
+            }
           />
         </div>
-      </div>
+
+      </form>
     </div>
   );
 }

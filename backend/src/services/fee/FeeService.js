@@ -28,13 +28,15 @@ export const generateUnpaidFees = async (body) => {
 
     const partners = data.rows;
 
-    if (!month_and_year) {
+    if (!month_and_year ||  month_and_year === undefined  || month_and_year === null || month_and_year === "" ) {
         throw new Error("El campo mes y año es obligatorio");
     }
 
     if (amount === undefined || amount === null || amount === "") {
         throw new Error("El monto es obligatorio");
     }
+
+
 
     for (const partner of partners) {
 
@@ -45,6 +47,7 @@ export const generateUnpaidFees = async (body) => {
         });
 
         if (existingFee) {
+             console.log("YA EXISTE:", partner.id);
             continue;
         }
         else {
@@ -62,9 +65,9 @@ export const generateUnpaidFees = async (body) => {
         }
     }
 
-    /*if (generatedFees.length === 0) {
+    if (generatedFees.length === 0) {
         throw new Error(`Ya existen cuotas generadas para el mes ${month} y año ${year}`);
-    }*/
+    }
 
     return {
         message: "Cuotas generadas correctamente",

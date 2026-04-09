@@ -119,10 +119,10 @@ export const FeeSection = () => {
   }));
 
 
-
-
   async function handleAddItem(data) {
     try {
+      console.time("API");
+
       const res = await fetch("http://localhost:4000/api/v1/fees/generate-unpaid-fees", {
         method: "POST",
         headers: {
@@ -131,6 +131,8 @@ export const FeeSection = () => {
         },
         body: JSON.stringify(data)
       });
+      
+      console.timeEnd("API");
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({ msg: "Error inesperado del servidor" }));
