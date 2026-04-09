@@ -1,5 +1,6 @@
 import * as FeeRepository from "../../repositories/fee/FeeRepository.js";
 import { getAll, create, update, remove } from "../../repositories/partner/PartnerRepository.js";
+import { ValidationError } from "../../utils/errors/ValidationError.js";
 
 
 export const getUnpaidFeesByPartner = async (id, filters) => {
@@ -86,51 +87,51 @@ export const getQuantityPaidFees = async (partnerNumber) => {
 export const updateFee = async (id, data) => {
 
     const fee = await FeeRepository.getById(id);
+
     if (!fee) {
-        throw new Error("Fee not found");
+        throw new ValidationError("Fee not found");
     }
 
     if (fee.paid === true) {
         if (data.paid === false || data.paid === "false") {
-            throw new Error("No se puede marcar como impaga una cuota ya pagada.");
+            throw new ValidationError("No se puede marcar como impaga una cuota ya pagada.");
         }
     }
 
     if (fee.paid === true && data.amount && Number(data.amount) !== fee.amount) {
-        throw new Error("No se puede modificar el monto de una cuota ya pagada.");
+        throw new ValidationError("No se puede modificar el monto de una cuota ya pagada.");
     }
 
     if (fee.paid === true) {
         if ((data.month && data.month !== fee.month) ||
             (data.year && data.year !== fee.year)) {
-            throw new Error("No se puede cambiar el período (mes/año) de una cuota pagada.");
+            throw new ValidationError("No se puede cambiar el período (mes/año) de una cuota pagada.");
         }
     }
 
 
     if ((data.paid === true || data.paid === "true")) {
         if (!data.date_of_paid) {
-            throw new Error("Debe ingresar una fecha de pago para marcar como pagada.");
+            throw new ValidationError("Debe ingresar una fecha de pago para marcar como pagada.");
         }
     }
 
     if (data.date_of_paid && isNaN(new Date(data.date_of_paid).getTime())) {
-        throw new Error("La fecha de pago no es válida.");
+        throw new ValidationError("La fecha de pago no es válida.");
     }
 
     if (
         (data.paid === false || data.paid === "false") &&
         data.date_of_paid) {
-        throw new Error(
+        throw new ValidationError(
             "Una cuota impaga no puede tener fecha de pago."
         );
     }
 
-
     const updatedFee = await FeeRepository.update(id, data);
 
     if (!updatedFee) {
-        throw new Error("Fee not found or not updated");
+        throw new ValidationError("Fee not found or not updated");
     }
 
     return updatedFee;

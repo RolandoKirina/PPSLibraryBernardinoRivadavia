@@ -96,6 +96,11 @@ export const FeeSection = () => {
     }
   }
 
+  async function refreshFees() {
+    await getItems({ ...formData, sortBy: 'id', direction: 'asc', limit: chunkSize, offset: 0 }, true);
+    setPopupEdit(false);
+  }
+
   const formatDate = (value) => {
 
     if (!value || value === "No pagada" || value === "null" || value === "") {
@@ -227,13 +232,12 @@ export const FeeSection = () => {
         accessor: 'edit',
         className: "action-buttons",
         render: (_, row) => (
-          <button className="button-table"
+          <button
+            className="button-table"
             onClick={() => {
-              () =>
-                setPopupEdit(true)
-              setSelectedItem(row)
+              setPopupEdit(true);
+              setSelectedItem(row);
             }}
-
           >
             <img src={EditIcon} alt="Editar" />
           </button>
@@ -294,7 +298,7 @@ export const FeeSection = () => {
       key: 'editPopup',
       title: 'Editar Cuota',
       className: 'feespopup',
-      content: <EditFees title={'Editar cuota'} selectedFee={selectedItem}
+      content: <EditFees title={'Editar cuota'} selectedFee={selectedItem} refresh={refreshFees}
         itemSelected={selectedItem}
         fields={editnewFeesForm}
         className="editfees" />,

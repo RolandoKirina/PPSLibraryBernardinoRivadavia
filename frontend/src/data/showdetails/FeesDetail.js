@@ -37,7 +37,7 @@ export const FeesDetail = [
         active: false,
         rows: [
             [
-                { label: 'Estado de pago', value: 'información', attribute: 'paid' },
+                { label: 'Estado de pago', value: 'información', attribute: 'paidLabel' },
                 { label: 'Fecha de pago', value: 'información', attribute: 'date_of_paid' }
             ]
         ]
