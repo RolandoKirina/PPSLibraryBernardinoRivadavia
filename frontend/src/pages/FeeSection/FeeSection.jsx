@@ -46,18 +46,6 @@ export const FeeSection = () => {
     feeStatus: "",
   });
 
-  async function handleUpdateItem(data) {
-    try {
-      const res = await updateItem(selectedItem.feeid, data);
-      setPopupEdit(false);
-
-      await getItems();
-    }
-    catch (err) {
-      console.error(err);
-    }
-  }
-
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     const updated = { ...formData, [name]: value };
@@ -113,15 +101,8 @@ export const FeeSection = () => {
     });
   };
 
-  const formattedFees = items.map(fee => ({
-    ...fee,
-    paid: fee.paid ? '✅ Pagada' : '❌ Impaga',
-  }));
-
-
   async function handleAddItem(data) {
     try {
-      console.time("API");
 
       const res = await fetch("http://localhost:4000/api/v1/fees/generate-unpaid-fees", {
         method: "POST",
@@ -132,8 +113,6 @@ export const FeeSection = () => {
         body: JSON.stringify(data)
       });
       
-      console.timeEnd("API");
-
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({ msg: "Error inesperado del servidor" }));
         setError(errorData.message);
@@ -141,6 +120,8 @@ export const FeeSection = () => {
       }
       else {
         setError(null)
+        setSuccessMessage("Cuota actualizada exitosamente");
+
       }
       setPopupAdd(false);
       await getItems();
@@ -339,7 +320,6 @@ export const FeeSection = () => {
     adminFeeActions = <div className='fees-actions'>
       <Btn text="Agregar cuota" variant="primary" onClick={() => setPopupAdd(true)}></Btn>
       <Btn text="Cuotas entre fechas" variant="primary" onClick={() => setPopUpFeesBetweenDates(true)}></Btn>
-      {/* <Btn text="Modificaciones en cuotas" variant="primary" onClick={() => alert("realizar")}></Btn> */}
 
     </div>;
   }

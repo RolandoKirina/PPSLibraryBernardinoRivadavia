@@ -36,8 +36,6 @@ export const generateUnpaidFees = async (body) => {
         throw new Error("El monto es obligatorio");
     }
 
-
-
     for (const partner of partners) {
 
         const existingFee = await FeeRepository.findOne({
@@ -47,8 +45,14 @@ export const generateUnpaidFees = async (body) => {
         });
 
         if (existingFee) {
-             console.log("YA EXISTE:", partner.id);
-            continue;
+            console.log("ENCONTRADO:", {
+                buscado: { partner: partner.id, month, year },
+                encontrado: {
+                    idPartner: existingFee.idPartner,
+                    month: existingFee.month,
+                    year: existingFee.year
+                }
+            });
         }
         else {
             const newFee = await FeeRepository.create({
@@ -63,12 +67,20 @@ export const generateUnpaidFees = async (body) => {
 
             generatedFees.push(newFee);
         }
+
+         
+
     }
+
+
+    console.log(typeof month, month);
+    console.log(typeof year, year);
 
     if (generatedFees.length === 0) {
         throw new Error(`Ya existen cuotas generadas para el mes ${month} y año ${year}`);
     }
 
+    
     return {
         message: "Cuotas generadas correctamente",
         detail: generatedFees
