@@ -15,63 +15,113 @@ export const getAllFees = async (filters, listType) => {
     return fees;
 };
 
+// export const generateUnpaidFees = async (body) => {
+//     if (!body) {
+//         throw new Error("No se recibieron datos para generar cuotas");
+//     }
+
+//     const { month_and_year, amount, observation, date_of_paid } = body;
+
+//     const [year, month, day] = month_and_year.split("-").map(Number);
+
+//     const generatedFees = [];
+//     const data = await getAll({ idState: 1 });
+
+//     const partners = data.rows;
+
+//     if (!month_and_year) {
+//         throw new Error("El campo mes y año es obligatorio");
+//     }
+
+//     if (amount === undefined || amount === null || amount === "") {
+//         throw new Error("El monto es obligatorio");
+//     }
+
+//     console.log(month_and_year, amount, observation, date_of_paid);
+
+//     // for (const partner of partners) {
+
+//     //     const existingFee = await FeeRepository.findOne({
+//     //         idPartner: partner.id,
+//     //         month,
+//     //         year
+//     //     });
+
+//     //     if (existingFee) {
+//     //         continue;
+//     //     }
+//     //     else {
+//     //         const newFee = await FeeRepository.create({
+//     //             idPartner: partner.id,
+//     //             month,
+//     //             year,
+//     //             amount: amount ?? 0,
+//     //             observation: observation ?? "",
+//     //             paid: false,
+//     //             date_of_paid: date_of_paid
+//     //         });
+
+//     //         generatedFees.push(newFee);
+//     //     }
+//     // }
+
+//     /*if (generatedFees.length === 0) {
+//         throw new Error(`Ya existen cuotas generadas para el mes ${month} y año ${year}`);
+//     }*/
+
+//     return {
+//         message: "Cuotas generadas correctamente",
+//         detail: generatedFees
+//     };
+
+// };
+
 export const generateUnpaidFees = async (body) => {
-    if (!body) {
-        throw new Error("No se recibieron datos para generar cuotas");
+    if (!body || !body.month_and_year || !body.amount) {
+        throw new Error("Faltan datos obligatorios (fecha o monto)");
     }
 
-    const { month_and_year, amount, observation, date_of_paid } = body;
+    const { month_and_year, amount, observation } = body;
 
-    const [year, month, day] = month_and_year.split("-").map(Number);
+    // Extraemos mes y año para validación interna, pero usaremos el string completo para la fecha
+    const [year, month] = month_and_year.split("-").map(Number);
 
-    const generatedFees = [];
-    const data = await getAll({ idState: 1 });
+    // 1. Obtenemos solo los IDs de los socios activos (idState: 1)
+    const activePartners = await getAll({ idState: 1 });
+    const partners = activePartners.rows;
 
-    const partners = data.rows;
-
-    if (!month_and_year) {
-        throw new Error("El campo mes y año es obligatorio");
+    if (partners.length === 0) {
+        throw new Error("No hay socios activos para generar cuotas");
     }
 
-    if (amount === undefined || amount === null || amount === "") {
-        throw new Error("El monto es obligatorio");
-    }
+    // 2. Buscamos qué socios ya tienen cuota en este mes/año para no duplicar
+    const existingFees = await FeeRepository.findExistingFees(month, year);
+    const partnersWithFee = new Set(existingFees.map(f => f.idPartner));
 
-    for (const partner of partners) {
-
-        const existingFee = await FeeRepository.findOne({
+    // 3. Filtramos los socios que NO tienen la cuota y armamos el array para bulkCreate
+    const feesToCreate = partners
+        .filter(partner => !partnersWithFee.has(partner.id))
+        .map(partner => ({
             idPartner: partner.id,
             month,
-            year
-        });
+            year,
+            amount: amount,
+            observation: observation || "",
+            paid: false,
+            // Usamos la fecha completa recibida como fecha de emisión/pago
+            date_of_paid: month_and_year
+        }));
 
-        if (existingFee) {
-            continue;
-        }
-        else {
-            const newFee = await FeeRepository.create({
-                idPartner: partner.id,
-                month,
-                year,
-                amount: amount ?? 0,
-                observation: observation ?? "",
-                paid: false,
-                date_of_paid: date_of_paid
-            });
-
-            generatedFees.push(newFee);
-        }
+    if (feesToCreate.length === 0) {
+        return { message: "Todos los socios ya tienen su cuota generada para este periodo." };
     }
 
-    /*if (generatedFees.length === 0) {
-        throw new Error(`Ya existen cuotas generadas para el mes ${month} y año ${year}`);
-    }*/
+    const generatedFees = await FeeRepository.bulkCreate(feesToCreate);
 
     return {
-        message: "Cuotas generadas correctamente",
+        message: `Se generaron ${generatedFees.length} cuotas exitosamente`,
         detail: generatedFees
     };
-
 };
 
 
@@ -140,7 +190,7 @@ export const updateFee = async (id, data) => {
 export const changeState = async (id) => {
 
     const fee = await FeeRepository.getById(id);
-    
+
     if (!fee) {
         throw new Error("Fee not found");
     }

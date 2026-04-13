@@ -81,6 +81,23 @@ export const getAll = async (filters = {}, listType = '') => {
 
 };
 
+export const findExistingFees = async (month, year) => {
+    try {
+        const existingFees = await Fees.findAll({
+            where: { 
+                month, 
+                year 
+            },
+            attributes: ['idPartner'], // Solo traemos el ID del socio
+            raw: true // Devuelve objetos planos de JS, no instancias de Sequelize
+        });
+        return existingFees;
+    } catch (error) {
+        console.error("Error en FeeRepository.findExistingFees:", error);
+        throw error;
+    }
+};
+
 export const getAllFeesTypeOne = async (filters = {}) => {
   const { limit, offset } = filters;
   const beforeDate = filters.whereFees?.beforeDate;
@@ -319,4 +336,17 @@ export const update = async (id, fee) => {
     return null;
   }
   return await Fees.findByPk(id);
+};
+
+export const bulkCreate = async (data) => {
+    try {
+        const newFees = await Fees.bulkCreate(data, {
+            validate: true, 
+            returning: true 
+        });
+        return newFees;
+    } catch (error) {
+        console.error("Error en FeeRepository.bulkCreate:", error);
+        throw error; 
+    }
 };

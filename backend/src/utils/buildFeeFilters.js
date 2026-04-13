@@ -5,10 +5,9 @@ export const buildFeeFilters = (query) => {
     partnerNumber,
     name,
     surname,
-    paymentdate,
+    paymentStartDate,
+    paymentEndDate,
     status,
-    beforeDate,
-    afterDate,
     limit,
     offset,
     sortBy,
@@ -27,23 +26,24 @@ export const buildFeeFilters = (query) => {
 
   if (feeStatus === "inactive") {
     whereFees.status = false;
-  } else if (status === "active") {
+  } else if (feeStatus === "active") {
     whereFees.status = true;
   }
 
-  if (paymentdate) {
-    whereFees.date_of_paid = {
-      [Op.gte]: new Date(`${paymentdate}T00:00:00Z`),
-      [Op.lte]: new Date(`${paymentdate}T23:59:59Z`)
-    };
+  if (paymentStartDate || paymentEndDate) {
+    const dateFilter = {};
+    
+    if (paymentStartDate) {
+      dateFilter[Op.gte] = new Date(`${paymentStartDate}T00:00:00Z`);
+    }
+    
+    if (paymentEndDate) {
+      dateFilter[Op.lte] = new Date(`${paymentEndDate}T23:59:59Z`);
+    }
+    
+    whereFees.date_of_paid = dateFilter;
   }
 
-  if (beforeDate || afterDate) {
-    whereFees.beforeDate = beforeDate || null;
-    whereFees.afterDate = afterDate || null;
-  }
-
-  // 4. Filtros de Socio
   if (partnerNumber) {
     const parsed = Number(partnerNumber);
     if (!isNaN(parsed)) wherePartner.partnerNumber = parsed;

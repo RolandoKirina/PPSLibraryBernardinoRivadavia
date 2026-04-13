@@ -2,7 +2,8 @@ import "./feefiltercheckbox.css";
 import { useState, useEffect } from "react";
 import roles from "../../../auth/roles";
 import { useAuth } from "../../../auth/AuthContext";
-export default function BookFilter({ formData, onChange }) {
+
+export default function FeeFilter({ formData, onChange }) {
   const { auth } = useAuth();
   const [paidFeeCount, setPaidFeeCount] = useState(null);
 
@@ -38,7 +39,7 @@ export default function BookFilter({ formData, onChange }) {
     <aside className="book-filter-aside">
       <div className="book-filter-form">
         <form>
-          <h3 className="titleh3">Filtro de socios</h3>
+          <h3 className="titleh3">Filtro de cuotas</h3>
 
           <div className="book-form-input-group">
             {auth.role === roles.admin && (
@@ -62,7 +63,7 @@ export default function BookFilter({ formData, onChange }) {
                 </div>
 
                 <div className="feefiltercheckbox">
-                  <label htmlFor="status" className="feefiltercheckbox-label">
+                  <label htmlFor="feeStatus" className="feefiltercheckbox-label">
                     Estado cuotas
                   </label>
 
@@ -79,17 +80,24 @@ export default function BookFilter({ formData, onChange }) {
                   </select>
                 </div>
               </>
-
             )}
-
           </div>
 
           <div className="book-form-input-group">
-            <label>Fecha de pago</label>
+            <h4>Fecha de pago</h4>
+            <label>Mayor a: </label>
             <input
               type="date"
-              name="paymentdate"
-              value={formData.paymentdate ?? ""}
+              name="paymentStartDate"
+              value={formData.paymentStartDate ?? ""}
+              onChange={onChange}
+              disabled={formData.status === "unpaid"}
+            />
+            <label>Y Menor a: </label>
+            <input
+              type="date"
+              name="paymentEndDate"
+              value={formData.paymentEndDate ?? ""}
               onChange={onChange}
               disabled={formData.status === "unpaid"}
             />
@@ -135,7 +143,6 @@ export default function BookFilter({ formData, onChange }) {
               </div>
             </>
           )}
-
         </form>
       </div>
     </aside>
