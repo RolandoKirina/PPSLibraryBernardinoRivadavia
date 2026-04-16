@@ -305,3 +305,26 @@ export const changeUnpaidFees = async (change, values) => {
         });
     }
 };
+
+export const changePendingBooks = async (change, partnerId, amount = 1, transaction = null) => {
+  if (!partnerId) return;
+
+  const options = {
+    by: amount,
+    where: { id: partnerId },
+    transaction 
+  };
+
+  if (change === 'increment') {
+    await Partner.increment('pendingBooks', options);
+  } 
+  else if (change === 'decrement') {
+    await Partner.decrement('pendingBooks', {
+      ...options,
+      where: { 
+        ...options.where,
+        pendingBooks: { [Op.gt]: 0 } 
+      }
+    });
+  }
+};

@@ -5,77 +5,15 @@ import { changeUnpaidFees } from "../../repositories/partner/PartnerRepository.j
 import Partner from "../../models/partner/Partner.js";
 
 export const getUnpaidFeesByPartner = async (id, filters) => {
-
     const fees = await FeeRepository.getUnpaidFeesByPartner(id, filters);
     return fees;
 };
-
 
 export const getAllFees = async (filters, listType) => {
     const fees = await FeeRepository.getAll(filters, listType);
     return fees;
 };
 
-// export const generateUnpaidFees = async (body) => {
-//     if (!body) {
-//         throw new Error("No se recibieron datos para generar cuotas");
-//     }
-
-//     const { month_and_year, amount, observation, date_of_paid } = body;
-
-//     const [year, month, day] = month_and_year.split("-").map(Number);
-
-//     const generatedFees = [];
-//     const data = await getAll({ idState: 1 });
-
-//     const partners = data.rows;
-
-//     if (!month_and_year) {
-//         throw new Error("El campo mes y año es obligatorio");
-//     }
-
-//     if (amount === undefined || amount === null || amount === "") {
-//         throw new Error("El monto es obligatorio");
-//     }
-
-//     console.log(month_and_year, amount, observation, date_of_paid);
-
-//     // for (const partner of partners) {
-
-//     //     const existingFee = await FeeRepository.findOne({
-//     //         idPartner: partner.id,
-//     //         month,
-//     //         year
-//     //     });
-
-//     //     if (existingFee) {
-//     //         continue;
-//     //     }
-//     //     else {
-//     //         const newFee = await FeeRepository.create({
-//     //             idPartner: partner.id,
-//     //             month,
-//     //             year,
-//     //             amount: amount ?? 0,
-//     //             observation: observation ?? "",
-//     //             paid: false,
-//     //             date_of_paid: date_of_paid
-//     //         });
-
-//     //         generatedFees.push(newFee);
-//     //     }
-//     // }
-
-//     /*if (generatedFees.length === 0) {
-//         throw new Error(`Ya existen cuotas generadas para el mes ${month} y año ${year}`);
-//     }*/
-
-//     return {
-//         message: "Cuotas generadas correctamente",
-//         detail: generatedFees
-//     };
-
-// };
 
 export const generateUnpaidFees = async (body) => {
     if (!body || !body.month_and_year || !body.amount) {

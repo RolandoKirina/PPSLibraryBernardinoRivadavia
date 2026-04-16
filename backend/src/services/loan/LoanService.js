@@ -7,141 +7,133 @@ import sequelize from '../../configs/database.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 
 export const getAllLoans = async (filters) => {
-    return await LoanRepository.getAll(filters);
+  return await LoanRepository.getAll(filters);
 }
 
 export const getLoanPrintList = async (filters, option) => {
-    let loans = [];
+  let loans = [];
 
-    switch(option) {
-        case 'return': {
-            loans = await LoanRepository.getReturnPrintList(filters);
-            break;
-        }
-        case 'phone': {
-            loans = await LoanRepository.getPhonePrintList(filters);
-            break;
-        }
-        case 'partner': {
-            loans = await LoanRepository.getPartnerPrintList(filters);
-            break;
-        }
-        default: {
-            
-        }
+  switch (option) {
+    case 'return': {
+      loans = await LoanRepository.getReturnPrintList(filters);
+      break;
     }
+    case 'phone': {
+      loans = await LoanRepository.getPhonePrintList(filters);
+      break;
+    }
+    case 'partner': {
+      loans = await LoanRepository.getPartnerPrintList(filters);
+      break;
+    }
+    default: {
 
-    return loans;
+    }
+  }
+
+  return loans;
 }
 
 
-export const getAllReturns= async (filters) => {
-    return await LoanRepository.getAllReturns(filters);
+export const getAllReturns = async (filters) => {
+  return await LoanRepository.getAllReturns(filters);
 }
 
 export const getLoan = async (id) => {
-    return await LoanRepository.getOne(id);
+  return await LoanRepository.getOne(id);
 }
-
 export const createLoan = async (data) => {
+  if (!data.books || data.books.length === 0) {
+    throw new ValidationError("No se puede crear un préstamo sin libros");
+  }
+  if (!data.employeeCode?.trim()) {
+    throw new ValidationError("El campo código de empleado no puede estar vacío");
+  }
+  if (!data.retiredDate?.trim()) {
+    throw new ValidationError("El campo fecha de retiro no puede estar vacío");
+  }
+  if (!data.expectedDate?.trim()) {
+    throw new ValidationError("El campo fecha prevista no puede estar vacío");
+  }
+  if (!data.partnerNumber?.trim()) {
+    throw new ValidationError("El campo numero de socio no puede estar vacío");
+  }
+
+  const transaction = await sequelize.transaction();
+  try {
+    const loanType = await LoanTypeRepository.getOneByDescription("Prestamo");
+    if (!loanType) {
+      throw new ValidationError(`No existe un tipo de préstamo con la descripción "Prestamo"`);
+    }
+
+    const employee = await EmployeesRepository.getOneByCode(null, data.employeeCode);
+    if (!employee) {
+      throw new ValidationError("Empleado no existe");
+    }
+
+    const partner = await PartnerRepository.getOneByPartnerNumber(data.partnerNumber);
+    if (!partner) {
+      throw new ValidationError("Socio no existe");
+    }
+
+    const loanData = {
+      partnerId: partner.id,
+      loanType: loanType.id,
+      retiredDate: data.retiredDate,
+      employeeId: employee.id,
+      name: partner.name,
+    };
+
+    const newLoan = await LoanRepository.create(loanData, transaction);
+
+    const loanBooks = data.books.map(book => ({
+      BookId: book.BookId,
+      loanId: newLoan.id,
+      bookCode: book.codeInventory,
+      expectedDate: data.expectedDate,
+      reneweAmount: 0,
+      returned: false,
+    }));
+
+    await Promise.all(
+      loanBooks.map(book => LoanBookRepository.create(book, transaction))
+    );
+
+    const booksCount = data.books.length;
     
-   if (!data.books || data.books.length === 0) {
-      throw new ValidationError("No se puede crear un préstamo sin libros");
+    await PartnerRepository.changePendingBooks("increment", partner.id, booksCount, transaction);
+
+    await transaction.commit();
+
+    return {
+      msg: "Préstamo creado correctamente",
+      loanId: newLoan.id,
+      partnerNumber: data.partnerNumber
+    };
+  } catch (err) {
+    if (!transaction.finished) {
+      await transaction.rollback();
     }
-    if (!data.employeeCode?.trim()) {
-      throw new ValidationError("El campo código de empleado no puede estar vacío");
-    }
-    if (!data.retiredDate?.trim()) {
-      throw new ValidationError("El campo fecha de retiro no puede estar vacío");
-    }
-    if (!data.expectedDate?.trim()) {
-      throw new ValidationError("El campo fecha prevista no puede estar vacío");
-    }
-    if (!data.partnerNumber?.trim()) {
-      throw new ValidationError("El campo numero de socio no puede estar vacío");
-    }
-
-    const transaction = await sequelize.transaction();
-    try {
-      const loanType = await LoanTypeRepository.getOneByDescription("Prestamo");
-      if (!loanType) {
-        throw new ValidationError(`No existe un tipo de préstamo con la descripción "retired"`);
-      }
-
-      const employee = await EmployeesRepository.getOneByCode(null, data.employeeCode);
-
-      if (!employee) {
-        throw new ValidationError("Empleado no existe");
-      }
-
-      const partner = await PartnerRepository.getOneByPartnerNumber(data.partnerNumber);
-      if (!partner) {
-        throw new ValidationError("Socio no existe");
-      }
-
-      const loanData = {
-        partnerId: partner.id,
-        loanType: loanType.id,
-        retiredDate: data.retiredDate,
-        employeeId: employee.id,
-        name: partner.name,
-      };
-
-      const newLoan = await LoanRepository.create(loanData, transaction);
-
-      const loanBooks = data.books.map(book => ({
-        BookId: book.BookId,
-        loanId: newLoan.id,
-        bookCode: book.codeInventory,
-        expectedDate: data.expectedDate,
-        reneweAmount: 0,
-        returned: false,
-      }));
-
-      await Promise.all(
-        loanBooks.map(book => LoanBookRepository.create(book, transaction))
-      );
-
-      //creo el prestamo, y por ej añadio a pepe 5 libros.
-
-      //buscamos el socio por su numero de socio dado por el prestamo, que viene del front la data, incrementarle por x, segun al cantidad de loanbooks nuevos que le genero
-      //socio mediante 0
-      //increment libros pendientes
-      
-
-      //y cuando en un prestamo devuelva un libro del socio pepe, decrmeento
-      await transaction.commit();
-
-      return {
-        msg: "Préstamo creado correctamente",
-        loanId: newLoan.id,
-        partnerNumber: data.partnerNumber
-      };
-    } catch (err) {
-      if (!transaction.finished) {
-        await transaction.rollback();
-      }
-      throw err;
-    }
-  
-}
+    throw err;
+  }
+};
 
 export const updateLoan = async (id, updates) => {
-    const existingLoan = await LoanRepository.getOne(id);
+  const existingLoan = await LoanRepository.getOne(id);
 
-    if (!existingLoan) throw new Error("Loan not found");
+  if (!existingLoan) throw new Error("Loan not found");
 
-    return await LoanRepository.update(id, updates);
+  return await LoanRepository.update(id, updates);
 }
 
 export const removeLoan = async (id) => {
-    const existingLoan = await LoanRepository.getOne(id);
-    
-    if (!existingLoan) throw new Error("Loan not found");
+  const existingLoan = await LoanRepository.getOne(id);
 
-    return await LoanRepository.remove(id);
+  if (!existingLoan) throw new Error("Loan not found");
+
+  return await LoanRepository.remove(id);
 }
 
 export const getLoansByEmployeeCount = async (filters) => {
-    return await LoanRepository.getLoansByEmployeeCount(filters);
+  return await LoanRepository.getLoansByEmployeeCount(filters);
 }
