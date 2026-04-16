@@ -52,6 +52,7 @@ export default function EditFees({ selectedFee, refresh }) {
       paid: isPaid,
       date_of_paid: hasDate ? formState.date_of_paid : null,
       observation: formState.observation.trim() === "" ? null : formState.observation,
+      partnerNumber: selectedFee.partnerNumber 
     };
 
     try {

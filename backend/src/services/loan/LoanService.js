@@ -102,6 +102,14 @@ export const createLoan = async (data) => {
         loanBooks.map(book => LoanBookRepository.create(book, transaction))
       );
 
+      //creo el prestamo, y por ej añadio a pepe 5 libros.
+
+      //buscamos el socio por su numero de socio dado por el prestamo, que viene del front la data, incrementarle por x, segun al cantidad de loanbooks nuevos que le genero
+      //socio mediante 0
+      //increment libros pendientes
+      
+
+      //y cuando en un prestamo devuelva un libro del socio pepe, decrmeento
       await transaction.commit();
 
       return {

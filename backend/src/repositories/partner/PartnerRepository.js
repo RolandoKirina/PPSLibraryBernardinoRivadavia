@@ -250,3 +250,58 @@ export const remove = async (id) => {
     data: partner
   };
 };
+
+export const getPartnerIdFromPartnerNumber = async (partnerNumbers) => {
+    const isArray = Array.isArray(partnerNumbers);
+    const numbers = isArray ? partnerNumbers : [partnerNumbers];
+
+    const partners = await Partner.findAll({
+        attributes: ['id'],
+        where: {
+            partnerNumber: numbers
+        },
+        raw: true
+    });
+
+    const ids = partners.map(p => p.id);
+
+    if (isArray) return ids;
+
+    return ids.length > 0 ? ids[0] : null;
+};
+
+export const changeUnpaidFees = async (change, values) => {
+    if (!values || (Array.isArray(values) && values.length === 0)) return;
+
+    const inputValues = Array.isArray(values) ? values : [values];
+    let targetIds = [];
+
+    if (change === 'decrement') {
+        const foundIds = await getPartnerIdFromPartnerNumber(inputValues);
+        console.log(foundIds);
+        targetIds = Array.isArray(foundIds) ? foundIds : [foundIds];
+    } else {
+        targetIds = inputValues;
+    }
+
+    if (targetIds.length === 0 || targetIds[0] === undefined) {
+        console.error("No se encontraron IDs válidos para actualizar unpaidFees");
+        return;
+    }
+
+    if (change === 'increment') {
+        await Partner.increment('unpaidFees', {
+            by: 1,
+            where: { id: targetIds }
+        });
+    } 
+    else if (change === 'decrement') {
+        await Partner.decrement('unpaidFees', {
+            by: 1,
+            where: { 
+                id: targetIds,
+                unpaidFees: { [Op.gt]: 0 }
+            }
+        });
+    }
+};

@@ -1,7 +1,8 @@
 import * as FeeRepository from "../../repositories/fee/FeeRepository.js";
 import { getAll, create, update, remove } from "../../repositories/partner/PartnerRepository.js";
 import { ValidationError } from "../../utils/errors/ValidationError.js";
-
+import { changeUnpaidFees } from "../../repositories/partner/PartnerRepository.js";
+import Partner from "../../models/partner/Partner.js";
 
 export const getUnpaidFeesByPartner = async (id, filters) => {
 
@@ -82,23 +83,21 @@ export const generateUnpaidFees = async (body) => {
     }
 
     const { month_and_year, amount, observation } = body;
-
-    // Extraemos mes y año para validación interna, pero usaremos el string completo para la fecha
     const [year, month] = month_and_year.split("-").map(Number);
 
-    // 1. Obtenemos solo los IDs de los socios activos (idState: 1)
-    const activePartners = await getAll({ idState: 1 });
+    const activePartners = await getAll({ 
+        isActive: 1 
+    });
+    
     const partners = activePartners.rows;
 
     if (partners.length === 0) {
         throw new Error("No hay socios activos para generar cuotas");
     }
 
-    // 2. Buscamos qué socios ya tienen cuota en este mes/año para no duplicar
     const existingFees = await FeeRepository.findExistingFees(month, year);
     const partnersWithFee = new Set(existingFees.map(f => f.idPartner));
 
-    // 3. Filtramos los socios que NO tienen la cuota y armamos el array para bulkCreate
     const feesToCreate = partners
         .filter(partner => !partnersWithFee.has(partner.id))
         .map(partner => ({
@@ -108,8 +107,7 @@ export const generateUnpaidFees = async (body) => {
             amount: amount,
             observation: observation || "",
             paid: false,
-            // Usamos la fecha completa recibida como fecha de emisión/pago
-            date_of_paid: month_and_year
+            date_of_paid: null 
         }));
 
     if (feesToCreate.length === 0) {
@@ -118,18 +116,19 @@ export const generateUnpaidFees = async (body) => {
 
     const generatedFees = await FeeRepository.bulkCreate(feesToCreate);
 
+    const newFeePartnerIds = feesToCreate.map(f => f.idPartner);
+    
+    await changeUnpaidFees("increment", newFeePartnerIds);
+
     return {
         message: `Se generaron ${generatedFees.length} cuotas exitosamente`,
         detail: generatedFees
     };
 };
 
-
 export const getFee = async (id) => {
     return await FeeRepository.getById(id);
 };
-
-
 
 export const getQuantityPaidFees = async (partnerNumber) => {
     return await FeeRepository.getQuantityPaidFees(partnerNumber);
@@ -159,11 +158,12 @@ export const updateFee = async (id, data) => {
         }
     }
 
-
     if ((data.paid === true || data.paid === "true")) {
         if (!data.date_of_paid) {
             throw new ValidationError("Debe ingresar una fecha de pago para marcar como pagada.");
         }
+
+        await changeUnpaidFees("decrement", [data.partnerNumber]);
     }
 
     if (data.date_of_paid && isNaN(new Date(data.date_of_paid).getTime())) {
