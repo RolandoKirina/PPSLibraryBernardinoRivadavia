@@ -12,6 +12,7 @@ export const buildLoanFilters = (query) => {
     returnEndDate,
     partnerName,
     partnerSurname,
+    partnerNumber,
     onlyActiveMembers,
     bookTitle,
     bookCode,
@@ -82,12 +83,16 @@ export const buildLoanFilters = (query) => {
     wherePartner.surname = { [Op.iLike]: `%${partnerSurname.trim()}%` };
   }
 
-  if (onlyActiveMembers === 'true') {
-    wherePartner.isActive = 1; // solo activos (en la db no tienen fecha de renuncia)
-  } else if (onlyActiveMembers === 'false') {
-    wherePartner.isActive = 2; // solo inactivos (tienen fecha de renuncia)
+  if (partnerNumber && partnerNumber.toString().trim() !== '') {
+    wherePartner.partnerNumber = Number(partnerNumber);
   }
 
+  if (onlyActiveMembers === 'true') {
+    wherePartner.isActive = 1; 
+  } else if (onlyActiveMembers === 'false') {
+    wherePartner.isActive = 2; 
+  }
+  
   if (bookTitle) whereBook.title = { [Op.iLike]: `%${bookTitle}%` };
   if (bookCode) whereBook.codeInventory = bookCode;
 

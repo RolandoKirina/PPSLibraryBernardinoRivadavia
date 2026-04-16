@@ -23,12 +23,12 @@ export default function LoanFilter({ onFilterChange }) {
     returnEndDate: '',
     partnerName: '',
     partnerSurname: '',
+    partnerNumber: '',
     onlyActiveMembers: false,
     bookTitle: '',
     bookCode: '',
     employeeCode: '',
   });
-
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -36,7 +36,6 @@ export default function LoanFilter({ onFilterChange }) {
 
     setFormData((prev) => {
       const updated = { ...prev, [name]: newValue };
-
       return updated;
     });
   };
@@ -63,10 +62,7 @@ export default function LoanFilter({ onFilterChange }) {
                   <label>Codigo</label>
                   <input className='' name="employeeCode" value={formData.employeeCode} onChange={handleChange} />
                 </div>
-
-
               </div>
-
 
               <div className="loan-form-checkbox-group">
                 <h4>Estado de préstamo</h4>
@@ -84,9 +80,19 @@ export default function LoanFilter({ onFilterChange }) {
                 ))}
               </div>
             </>
-
           )}
 
+          <div className="loan-form-input-group">
+            <h4>Libro</h4>
+            <div className='partner-name-loan-filter'>
+              <label>Título</label>
+              <input name="bookTitle" value={formData.bookTitle} onChange={handleChange} />
+            </div>
+            <div className='partner-name-loan-filter'>
+              <label>Código / Inventario</label>
+              <input name="bookCode" value={formData.bookCode} onChange={handleChange} />
+            </div>
+          </div>
 
           <div className="loan-form-input-group">
             <h4>Fecha de retiro</h4>
@@ -118,10 +124,17 @@ export default function LoanFilter({ onFilterChange }) {
                 <input className='' name="partnerName" value={formData.partnerName} onChange={handleChange} />
               </div>
 
+              <div className='partner-name-loan-filter'>
+                <label>Apellido</label>
+                <input className='' name="partnerSurname" value={formData.partnerSurname} onChange={handleChange} />
+              </div>
 
+              <div className='partner-name-loan-filter'>
+                <label>Número de Socio</label>
+                <input type={'number'} className='' name="partnerNumber" value={formData.partnerNumber} onChange={handleChange} />
+              </div>
             </div>
           )}
-
         </form>
       </div>
     </aside>

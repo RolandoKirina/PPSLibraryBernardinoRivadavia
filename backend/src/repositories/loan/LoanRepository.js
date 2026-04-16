@@ -35,7 +35,6 @@ export const getAll = async (filters) => {
     offset
   } = filters;
 
-  // COUNT TOTAL (sin limit/offset)
   const count = await Loan.count({
     where: whereLoan,
     distinct: true,
