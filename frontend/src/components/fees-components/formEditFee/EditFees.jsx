@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Btn from "../../common/btn/Btn.jsx";
-import  "./EditFees.css";
+import "./EditFees.css";
 import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
 
-  export default function EditFees({ selectedFee }) {
+export default function EditFees({ selectedFee, refresh }) {
 
   const [formState, setFormState] = useState({
     paid: selectedFee?.paid ?? false,
@@ -11,8 +11,8 @@ import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
     date_of_paid: selectedFee?.date_of_paid ?? "",
     observation: selectedFee?.observation ?? "",
   });
-  const [error,setError] = useState(null);
-    const entityManagerApi = useEntityManagerAPI("fees");
+  const [error, setError] = useState(null);
+  const entityManagerApi = useEntityManagerAPI("fees");
   const [success, setSuccess] = useState(null);
 
   const handleChange = (e) => {
@@ -24,61 +24,66 @@ import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
   };
 
   const handleSubmit = async (e) => {
-      e.preventDefault();
+    e.preventDefault();
 
-      const isPaid = formState.paid === "true" || formState.paid === true;
-      const hasDate = formState.date_of_paid && formState.date_of_paid.trim() !== "";
+    const isPaid = formState.paid === "true" || formState.paid === true;
+    const hasDate = formState.date_of_paid && formState.date_of_paid.trim() !== "";
 
-      if (!isPaid && hasDate) {
-        setSuccess(null)
-        setError("No podés marcar la cuota como 'Impaga' si tiene una fecha de pago.");
-        return;
-      }
 
-      if (isPaid && !hasDate) {
-        setSuccess(null)
-        setError("Si la cuota está marcada como 'Pagada', debe tener una fecha de pago.");
-        return;
-      }
+    let validationError = null;
 
-      setError(null);  
-      setSuccess(null); 
+    if (!isPaid && hasDate) {
+      validationError = "No podés marcar la cuota como 'Impaga' si tiene una fecha de pago.";
+    } else if (isPaid && !hasDate) {
+      validationError = "Si la cuota está marcada como 'Pagada', debe tener una fecha de pago.";
+    }
 
-      if(!error){
-        const updatedFee = {
-          feeid: selectedFee.feeid,
-          amount: Number(formState.amount),
-          paid: formState.paid === "true" || formState.paid === true,
-          date_of_paid: formState.date_of_paid,
-          observation: formState.observation,
-        };
-        try {
-              const updated = await entityManagerApi.updateItem(selectedFee.feeid, updatedFee);
-              if (updated) {
-                 setError(null);
-                 setSuccess("Cuota actualizada con éxito.");
-              }
-        } 
-        catch (error) {
-           setSuccess(null); 
-           setError("Error al editar la cuota.");
-        }
-      }
-      
+    if (validationError) {
+      setError(validationError);
+      setSuccess(null);
+      return;
+    }
+
+    setError(null);
+    setSuccess(null);
+
+    const updatedFee = {
+      amount: Number(formState.amount),
+      paid: isPaid,
+      date_of_paid: hasDate ? formState.date_of_paid : null,
+      observation: formState.observation.trim() === "" ? null : formState.observation,
+      partnerNumber: selectedFee.partnerNumber 
     };
 
-  
+    try {
+      const updated = await entityManagerApi.updateItem(selectedFee.feeid, updatedFee);
+
+      if (updated) {
+        setSuccess("Cuota actualizada con éxito.");
+
+        setTimeout(() => {
+          refresh();
+        }, 2000);
+      }
+    } catch (err) {
+      console.error(err);
+      setSuccess(null);
+      setError("Error al editar la cuota.");
+    }
+  };
+
+
 
   return (
     <form className="edit-fees-form" onSubmit={handleSubmit}>
 
       <h2>Editar cuota</h2>
-       <div className="titlefee">
-            <h3>Cuota n° {selectedFee.feeid} </h3>
-        </div>
+      <div className="titlefee">
+        <h3>Cuota n° {selectedFee.feeid} </h3>
+      </div>
       <div>
-       
-       
+
+
         <div className="form-group">
           <label htmlFor="amount">Monto</label>
           <input
@@ -86,7 +91,7 @@ import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
             id="amount"
             name="amount"
             value={formState.amount}
-             disabled={selectedFee?.paid === true}
+            disabled={selectedFee?.paid === true}
             onChange={handleChange}
           />
         </div>
@@ -132,7 +137,7 @@ import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
         </div>
       </div>
 
-    {error && (
+      {error && (
         <p className={`error-message ${error ? "visible" : ""}`}>
           {error}
         </p>
@@ -149,8 +154,8 @@ import { useEntityManagerAPI } from "../../../hooks/useEntityManagerAPI.js";
           type="submit"
         />
       </div>
-    
+
     </form>
-    
+
   );
 }

@@ -1,5 +1,5 @@
 import { Op } from "sequelize";
-import { toStartOfDay,toEndOfDay } from "./date/formatDate.js";
+import { toStartOfDay, toEndOfDay } from "./date/formatDate.js";
 
 export const buildPartnerFilters = (query) => {
   const {
@@ -69,7 +69,7 @@ export const buildListPartnerFilters = (query) => {
     idReason,
     presentedBy,
     codeCDU,
-    unpaidQuotesMin, 
+    unpaidQuotesMin,
     unpaidQuotesMax,
     borrowedBooksMin,
     borrowedBooksMax,
@@ -80,10 +80,6 @@ export const buildListPartnerFilters = (query) => {
     direction,
   } = query;
   
-  console.log(idState);
-
-  console.log("SORT BY" ,sortBy);
-
   const allowedSortFields = {
     surname: 'surname',
     name: 'name',
@@ -98,8 +94,8 @@ export const buildListPartnerFilters = (query) => {
 
   const wherePartner = {};
   const whereBook = {};
-  
-  if (category){
+
+  if (category) {
     wherePartner.idCategory = Number(category);
   }
 
@@ -173,7 +169,7 @@ export const buildListPartnerFilters = (query) => {
   }
 
   if (codeCDU) {
-     whereBook.codeCDU = {
+    whereBook.codeCDU = {
       [Op.iLike]: `%${codeCDU.trim()}%`
     };
   }
@@ -190,10 +186,7 @@ export const buildListPartnerFilters = (query) => {
     }
   }
 
-
-
-  
-  if (pendingBooks !== undefined) {
+  if (pendingBooks) {
     wherePartner.pendingBooks = Number(pendingBooks);
   }
 
@@ -209,12 +202,14 @@ export const buildListPartnerFilters = (query) => {
     const fields = sortBy.split(",");
 
     fields.forEach(field => {
-        if (allowedSortFields[field]) {
+      if (allowedSortFields[field]) {
         order.push([allowedSortFields[field], directionValue]);
       }
     });
 
-  }return {
+  }
+
+  return {
     order,
     wherePartner,
     whereBook,

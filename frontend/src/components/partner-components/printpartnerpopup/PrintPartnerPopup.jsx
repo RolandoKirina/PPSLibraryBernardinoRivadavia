@@ -165,7 +165,7 @@ const getColumnKey =(col) =>
             <div className='partner-list-container'>
                 <div className='partner-list-content'>
                     <div className='partner-list-filters'>
-                        <form> 
+                        <form>
                             <div className='partner-list-filter-option'>
                                 <div className='partner-list-filter-title'>
                                     <h3>Datos del socio</h3>
@@ -181,10 +181,10 @@ const getColumnKey =(col) =>
                                         </select>
                                     </div>
 
-                                        <div className="input">
-                                            <label htmlFor="idState">Estado</label>
+                                    <div className="input">
+                                        <label htmlFor="idState">Estado</label>
 
-                                      <select id="idState" name="idState"   value={filters.idState}  onChange={handleInputChange}>
+                                        <select id="idState" name="idState" value={filters.idState} onChange={handleInputChange}>
                                             <option value="">Estado</option>
                                             {statespartner
                                                 ?.filter(state => state.status !== unknown)
@@ -194,13 +194,13 @@ const getColumnKey =(col) =>
                                                     </option>
                                                 ))}
                                         </select >
-                                        </div>
+                                    </div>
 
-                                      <div className="input birthDate-range">
-                                            <label>Fecha de nacimiento</label>
+                                    <div className="input birthDate-range">
+                                        <label>Fecha de nacimiento</label>
 
-                                            <div className="date-range">
-                                                <div>
+                                        <div className="date-range">
+                                            <div>
                                                 <label htmlFor="birthDateFrom">Desde</label>
                                                 <input id="birthDateFrom" name="birthDateFrom" type="date" onChange={handleInputChange} />
                                             </div>
@@ -215,12 +215,12 @@ const getColumnKey =(col) =>
                                         <label htmlFor="presentedBy">Presentado por:</label>
                                         <input id="presentedBy" name="presentedBy" type="text" placeholder="Nombre" onChange={handleInputChange} />
                                     </div>
-                                  <div className="input">
+                                    <div className="input">
                                         <label htmlFor="idReason">Motivo de baja</label>
-                                        <select 
-                                            id="idReason" 
-                                            name='idReason' 
-                                            value={filters.idReason} 
+                                        <select
+                                            id="idReason"
+                                            name='idReason'
+                                            value={filters.idReason}
                                             onChange={handleInputChange}
                                         >
                                             <option value=''>Elegir</option>
@@ -231,7 +231,7 @@ const getColumnKey =(col) =>
                                                     <option key={r.idReason} value={r.idReason}>
                                                         {r.reason}
                                                     </option>
-                                            ))}
+                                                ))}
                                         </select>
                                     </div>
                                 </div>
@@ -241,28 +241,28 @@ const getColumnKey =(col) =>
                                 <div className='partner-list-filter-title'>
                                     <h3>Opciones de listado</h3>
                                 </div>
-                                                                                
-                                    <div className='filter-options'>
 
-                                         <div className="input">
-                                            <label htmlFor="listTitle">Título del listado</label>
-                                            <input id="listTitle" name="listTitle" type="text" placeholder="Ej: Socios activos" onChange={handleInputChange} />
+                                <div className='filter-options'>
+
+                                    <div className="input">
+                                        <label htmlFor="listTitle">Título del listado</label>
+                                        <input id="listTitle" name="listTitle" type="text" placeholder="Ej: Socios activos" onChange={handleInputChange} />
+                                    </div>
+                                    <div className="input">
+                                        <label htmlFor="codeCDU">CDU de libro que ha sido retirado por los socios</label>
+                                        <div>
+
+                                            <input
+                                                id="codeCDU"
+                                                name="codeCDU"
+                                                type="text"
+                                                value={filters.codeCDU || ''}
+                                                onChange={handleInputChange}
+                                            />
                                         </div>
-                                        <div className="input">
-                                            <label htmlFor="codeCDU">CDU de libro que ha sido retirado por los socios</label>
-                                            <div>
-                                               
-                                              <input 
-                                                id="codeCDU" 
-                                                name="codeCDU" 
-                                                type="text" 
-                                                value={filters.codeCDU || ''} 
-                                                onChange={handleInputChange} 
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="input">
-                                           <div>
+                                    </div>
+                                    <div className="input">
+                                        <div>
                                             <label htmlFor="borrowedBooksMin">Mas de:</label>
                                             <input
                                                 type="number"
@@ -271,9 +271,9 @@ const getColumnKey =(col) =>
                                                 onChange={handleInputChange}
                                                 min={0}
                                             />
-                                            </div>
+                                        </div>
 
-                                            <div>
+                                        <div>
                                             <label htmlFor="borrowedBooksMax">Menos de:</label>
                                             <input
                                                 type="number"
@@ -282,31 +282,31 @@ const getColumnKey =(col) =>
                                                 onChange={handleInputChange}
                                                 min={0}
                                             />
-                                            </div>
-                                          
-                                        </div>
-                                        <div className="input">
-                                            <label htmlFor="sortBy">Ordenado por: </label>
-                                            <select 
-                                                id="sortBy" 
-                                                name="sortBy"
-                                                value={filters.sortBy}
-                                                onChange={handleInputChange}
-                                            >
-                                                <option value=''>Elegir</option>
-                                                {sortOptions.map((sortOption, index) => (
-                                                    <option key={index} value={sortOption.value}>
-                                                        {sortOption.label}
-                                                    </option>
-                                                ))}
-                                            </select>
                                         </div>
 
-                                {filters.sortBy && (
+                                    </div>
+                                    <div className="input">
+                                        <label htmlFor="sortBy">Ordenado por: </label>
+                                        <select
+                                            id="sortBy"
+                                            name="sortBy"
+                                            value={filters.sortBy}
+                                            onChange={handleInputChange}
+                                        >
+                                            <option value=''>Elegir</option>
+                                            {sortOptions.map((sortOption, index) => (
+                                                <option key={index} value={sortOption.value}>
+                                                    {sortOption.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    {filters.sortBy && (
                                         <div className="input">
                                             <label htmlFor="direction">Dirección</label>
-                                            <select 
-                                                id="direction" 
+                                            <select
+                                                id="direction"
                                                 name="direction"
                                                 value={filters.direction}
                                                 onChange={handleInputChange}
@@ -329,7 +329,7 @@ const getColumnKey =(col) =>
 
                                     
                             </div>
-                            
+
                         </form>
                     </div>
                 </div>
@@ -337,13 +337,13 @@ const getColumnKey =(col) =>
 
 
             <div className='preview-list-container'>
-                <GenerateListPopup 
+                <GenerateListPopup
                     dataByType={resultprint}
                     totalItems={totalItems}
                     columnsByType={dynamicColumns}
                     typeList={filters.listType}
                     title={filters.listTitle}
-                    loading={loading} 
+                    loading={loading}
                     rowsPerPage={rowsPerPage}
                     onPrint={handlePrint}
                 />

@@ -43,7 +43,6 @@ export const useEntityManagerAPI = (entityName, baseUrl = "http://localhost:4000
 
       const { rows, count, others } = await res.json();
 
-
       setTotalItems(count ?? 0);
 
       setItems(prev =>

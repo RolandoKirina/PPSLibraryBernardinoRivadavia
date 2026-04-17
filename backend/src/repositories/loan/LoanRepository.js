@@ -35,7 +35,6 @@ export const getAll = async (filters) => {
     offset
   } = filters;
 
-  // COUNT TOTAL (sin limit/offset)
   const count = await Loan.count({
     where: whereLoan,
     distinct: true,
@@ -453,56 +452,32 @@ export const create = async (loanData, transaction = null) => {
 
 
 export const update = async (id, updates) => {
-
   if (!updates.books || updates.books.length === 0) {
     throw new ValidationError("No se puede actualizar el préstamo sin libros");
-  }
-
-  if (!updates.employeeCode || updates.employeeCode.trim() === "") {
-    throw new ValidationError("El campo código de empleado no puede estar vacío");
-  }
-
-  if (updates.loanType === "retired") {
-    if (!updates.retiredDate || updates.retiredDate.trim() === "") {
-      throw new ValidationError("La fecha de retiro no puede estar vacía");
-    }
-  } else {
-    if (!updates.expectedDate || updates.expectedDate.trim() === "") {
-      throw new ValidationError("La fecha prevista de devolución no puede estar vacía");
-    }
-  }
-
-  if (updates.retiredDate && updates.expectedDate) {
-    const start = new Date(updates.retiredDate);
-    const end = new Date(updates.expectedDate);
-
-    if (start > end) {
-      throw new ValidationError("La fecha de retiro no puede ser posterior a la fecha prevista de devolución");
-    }
   }
 
   const transaction = await sequelize.transaction();
 
   try {
     const employee = await EmployeesRepository.getOneByCode(null, updates.employeeCode);
+    if (!employee) throw new ValidationError("Empleado no existe");
 
-    if (!employee) {
-      throw new ValidationError("Empleado no existe");
-    }
+    const currentLoan = await Loan.findByPk(id, {
+      include: [{ model: LoanBook, as: 'LoanBooks' }],
+      transaction
+    });
+    if (!currentLoan) throw new ValidationError("No existe el préstamo");
+
+    const partnerId = currentLoan.partnerId;
+
+    const oldPendingCount = currentLoan.LoanBooks.filter(lb => !lb.returned).length;
 
     const loanData = {
       retiredDate: updates.retiredDate,
       employeeId: employee.id,
     };
 
-    const [updatedCount] = await Loan.update(loanData, {
-      where: { id },
-      transaction,
-    });
-
-    if (updatedCount === 0) {
-      throw new ValidationError("No se pudo actualizar el préstamo");
-    }
+    await Loan.update(loanData, { where: { id }, transaction });
 
     await LoanBookRepository.removeAllLoanBooks(id, transaction);
 
@@ -513,12 +488,24 @@ export const update = async (id, updates) => {
       expectedDate: updates.expectedDate,
       reneweAmount: book.renewes || 0,
       returned: book.returned === "Sí" || book.returned === true,
-      returnedDate: book.returnedDate || null,
+      returnedDate: (book.returned === "Sí" || book.returned === true)
+        ? (book.returnedDate || new Date())
+        : null,
     }));
 
     await Promise.all(
       newLoanBooks.map((book) => LoanBookRepository.create(book, transaction))
     );
+
+    const newPendingCount = newLoanBooks.filter(lb => !lb.returned).length;
+
+    const diff = newPendingCount - oldPendingCount;
+
+    if (diff > 0) {
+      await PartnerRepository.changePendingBooks("increment", partnerId, diff, transaction);
+    } else if (diff < 0) {
+      await PartnerRepository.changePendingBooks("decrement", partnerId, Math.abs(diff), transaction);
+    }
 
     await transaction.commit();
 
@@ -527,7 +514,7 @@ export const update = async (id, updates) => {
       loanId: id,
     };
   } catch (err) {
-    await transaction.rollback();
+    if (transaction) await transaction.rollback();
     throw err;
   }
 };

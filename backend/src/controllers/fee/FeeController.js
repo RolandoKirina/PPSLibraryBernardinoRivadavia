@@ -1,6 +1,7 @@
 import * as FeeService from "../../services/fee/FeeService.js";
 import { HTTP_STATUS } from "../../https/httpsStatus.js";
 import { buildFeeFilters } from "../../utils/buildFeeFilters.js";
+import { ValidationError } from "../../utils/errors/ValidationError.js";
 
 
 export const getUnpaidFeesByPartner = async (req, res) => {
@@ -107,8 +108,9 @@ export const createFee = async (req, res) => {
 export const updateFee = async (req, res) => {
     try {
         const { id } = req.params;
+        const data = req.body;
 
-        const newFee = await FeeService.updateFee(id);
+        const newFee = await FeeService.updateFee(id, data);
         res.status(HTTP_STATUS.OK.code).json(newFee);
     }     
     catch (error) {
