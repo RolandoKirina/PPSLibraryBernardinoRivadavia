@@ -7,6 +7,8 @@ export const buildFeeFilters = (query) => {
     surname,
     paymentStartDate,
     paymentEndDate,
+    creationStartDate,
+    creationEndDate,
     status,
     limit,
     offset,
@@ -30,19 +32,97 @@ export const buildFeeFilters = (query) => {
     whereFees.status = true;
   }
 
-  if (paymentStartDate || paymentEndDate) {
-    const dateFilter = {};
+  if ((paymentStartDate || paymentEndDate)) {
+  
+  const dateFilter = {};
     
-    if (paymentStartDate) {
-      dateFilter[Op.gte] = new Date(`${paymentStartDate}T00:00:00Z`);
-    }
-    
-    if (paymentEndDate) {
-      dateFilter[Op.lte] = new Date(`${paymentEndDate}T23:59:59Z`);
-    }
-    
+  if (paymentStartDate) {
+    dateFilter[Op.gte] = new Date(paymentStartDate + "T00:00:00");
+  }
+
+  if (paymentEndDate) {
+    dateFilter[Op.lte] = new Date(paymentEndDate + "T23:59:59");
+  }
+  
+  if (Object.keys(dateFilter).length > 0) {
     whereFees.date_of_paid = dateFilter;
   }
+  }
+
+
+
+
+  const conditions = [];
+
+  if (creationStartDate && creationStartDate !== "undefined") {
+    const [year, month] = creationStartDate.split("-").map(Number);
+    conditions.push({
+      [Op.or]: [
+        { year: { [Op.gt]: year } },
+        { [Op.and]: [{ year: year }, { month: { [Op.gte]: month } }] }
+      ]
+    });
+  }
+
+  if (creationEndDate && creationEndDate !== "undefined") {
+    const [year, month] = creationEndDate.split("-").map(Number);
+    conditions.push({
+      [Op.or]: [
+        { year: { [Op.lt]: year } },
+        { [Op.and]: [{ year: year }, { month: { [Op.lte]: month } }] }
+      ]
+    });
+  }
+
+  // Si hay condiciones, las metemos en el objeto whereFees
+  if (conditions.length > 0) {
+    whereFees[Op.and] = conditions;
+  }
+
+  
+  if (creationStartDate || creationEndDate) {
+  const conditions = [];
+
+  // 🔹 DESDE
+  if (creationStartDate) {
+    const [year, month] = creationStartDate.split("-").map(Number);
+
+    conditions.push({
+      [Op.or]: [
+        { year: { [Op.gt]: year } },
+        {
+          [Op.and]: [
+            { year: year },
+            { month: { [Op.gte]: month } }
+          ]
+        }
+      ]
+    });
+  }
+
+  // 🔹 HASTA (ACÁ ESTABA EL BUG)
+  if (creationEndDate) {
+    const [year, month] = creationEndDate.split("-").map(Number);
+
+    conditions.push({
+      [Op.or]: [
+        { year: { [Op.lt]: year } },
+        {
+          [Op.and]: [
+            { year: year },
+            { month: { [Op.lte]: month } }
+          ]
+        }
+      ]
+    });
+  }
+
+  console.log("CONDITIONS:", conditions);
+
+  if (conditions.length > 0) {
+    whereFees[Op.and] = conditions;
+  }
+}
 
   if (partnerNumber) {
     const parsed = Number(partnerNumber);
@@ -52,6 +132,11 @@ export const buildFeeFilters = (query) => {
   if (name?.trim()) wherePartner.name = { [Op.iLike]: `%${name.trim()}%` };
   if (surname?.trim()) wherePartner.surname = { [Op.iLike]: `%${surname.trim()}%` };
 
+
+
+
+  console.log("creationStartDate RAW:", creationStartDate, typeof creationStartDate);
+console.log("creationEndDate RAW:", creationEndDate, typeof creationEndDate);
   return {
     wherePartner,
     whereFees,

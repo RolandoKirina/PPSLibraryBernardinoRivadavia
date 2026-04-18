@@ -8,11 +8,14 @@ import sequelize from "../../configs/database.js";
 export const getAll = async (filters = {}, listType = '') => {
   const { wherePartner, whereFees, limit, offset, order } = filters;
 
-  if (listType === 'TypeOneFees') {
-    return getAllFeesTypeOne(filters);
-  }
-  else if (listType == 'TypeTwoFees') {
-    return getAllFeesTypeTwo(filters);
+  // Función infalible para detectar si hay algo que filtrar
+  const hasFilters = (obj) => 
+    obj && (Object.keys(obj).length > 0 || Object.getOwnPropertySymbols(obj).length > 0);
+
+  // DEBUG PARA TU TRANQUILIDAD
+  if (hasFilters(whereFees)) {
+    console.log("--- FILTRANDO FEES CON: ---");
+    console.dir(whereFees, { depth: null }); 
   }
 
   const baseInclude = [
@@ -20,19 +23,21 @@ export const getAll = async (filters = {}, listType = '') => {
       model: Partner,
       as: "Partner",
       required: true,
-      where: wherePartner && Object.keys(wherePartner).length ? wherePartner : undefined
+      where: hasFilters(wherePartner) ? wherePartner : undefined
     }
   ];
 
+  // IMPORTANTE: Primera consulta para traer solo los IDs
   const idsResult = await Fees.findAll({
     attributes: ['id'],
-    where: whereFees && Object.keys(whereFees).length ? whereFees : undefined,
-    include: [
-      {
-        ...baseInclude[0],
+    where: hasFilters(whereFees) ? whereFees : undefined,
+    include: [{
+        model: Partner,
+        as: "Partner",
+        required: true,
+        where: hasFilters(wherePartner) ? wherePartner : undefined,
         attributes: []
-      }
-    ],
+    }],
     limit,
     offset,
     subQuery: false,
@@ -41,21 +46,26 @@ export const getAll = async (filters = {}, listType = '') => {
 
   const ids = idsResult.map(r => r.id);
 
-  if (!ids.length) {
-    return { items: [], count: 0 };
-  }
+  if (!ids.length) return { rows: [], count: 0 };
 
+  // Segunda consulta: Traer la data real de esos IDs
   const fees = await Fees.findAll({
     where: { id: ids },
-    include: baseInclude,
-    order
+    include: [
+      {
+        model: Partner,
+        as: "Partner"
+      }
+    ],
+    order: order || [['id', 'ASC']]
   });
 
+  // Conteo total
   const count = await Fees.count({
-    where: whereFees && Object.keys(whereFees).length ? whereFees : undefined,
+    where: hasFilters(whereFees) ? whereFees : undefined,
     include: baseInclude,
     distinct: true,
-    col: 'Id'
+    col: 'id'
   });
 
   return {
@@ -64,22 +74,16 @@ export const getAll = async (filters = {}, listType = '') => {
       month: fee.month,
       year: fee.year,
       amount: fee.amount,
-      observation: fee.observation,
       paid: fee.paid,
-      paidLabel: fee.paid ? "Pagada" : "Impaga",
-      date_of_paid: fee.date_of_paid
-        ? fee.date_of_paid.toISOString().substring(0, 10)
-        : "",
       partnerNumber: fee.Partner?.partnerNumber,
       name: fee.Partner ? `${fee.Partner.name} ${fee.Partner.surname}` : "",
-      surname: fee.Partner?.surname,
       status: fee.status,
       statusLabel: fee.status ? "Vigente" : "Anulada"
     })),
     count
   };
-
 };
+
 
 export const findExistingFees = async (month, year) => {
     try {

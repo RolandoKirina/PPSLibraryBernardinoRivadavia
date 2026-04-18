@@ -44,6 +44,8 @@ export const FeeSection = () => {
     surname: "",
     paymentdate: "",
     feeStatus: "",
+    creationStartDate: "",
+    creationEndDate: "",
   });
 
   const handleFilterChange = (e) => {
@@ -52,26 +54,29 @@ export const FeeSection = () => {
     setFormData(updated);
   };
 
-  useEffect(() => {
-    const delay = setTimeout(() => {
-      const activeFilters = Object.fromEntries(
-        Object.entries(formData).filter(([_, v]) => v !== "")
-      );
+useEffect(() => {
+  const delay = setTimeout(() => {
+    // Eliminamos solo los valores que son strings vacíos o null
+    const activeFilters = Object.fromEntries(
+      Object.entries(formData).filter(([_, v]) => v !== "" && v !== null)
+    );
 
-      setOffsetActual(0);
-      setResetPageTrigger(prev => prev + 1);
+    setOffsetActual(0);
+    setResetPageTrigger(prev => prev + 1);
 
-      getItems({
-        ...activeFilters,
-        sortBy: 'id',
-        direction: 'asc',
-        limit: chunkSize,
-        offset: 0
-      });
-    }, 500);
+    getItems({
+      ...activeFilters,
+      sortBy: 'id',
+      direction: 'asc',
+      limit: chunkSize,
+      offset: 0
+    });
+  }, 500);
 
-    return () => clearTimeout(delay);
-  }, [formData]);
+  return () => clearTimeout(delay);
+}, [formData]);
+
+
 
   async function handleChangePage(page) {
     const numberPage = Number(page);
