@@ -1426,18 +1426,44 @@ async function migrateAll() {
             console.log(Object.entries(feeNumeroToId).slice(0, 5));
 
             // -------------------------------------------------
-            // 4. Transformar cuotas usando id real
+            // 4. Transformar cuotas usando id real 
             // -------------------------------------------------
 
-            const transformedFees = feesRows.map(row => ({
-                month: row.Mes ?? null,
-                year: row.Anio ?? null,
-                amount: row.Monto ?? null,
-                idPartner: feeNumeroToId[Number(row.IdSocio)] ?? null,
-                paid: row.Paga ?? false,
-                observation: row.Observacion ?? null,
-                date_of_paid: row.FechaPago ?? null
-            }));
+            const transformedFees = feesRows.map(row => {
+                const year = Number(row.Anio);
+                const month = Number(row.Mes);
+
+                let createdAt = null;
+                let periodDate = null;
+
+                if (!isNaN(year) && !isNaN(month) && month >= 1 && month <= 12) {
+                    const d = new Date(Date.UTC(year, month - 1, 1));
+                    if (!isNaN(d.getTime())) {
+                        periodDate = d;
+                        createdAt = d;
+                    }
+                }
+
+                let dateOfPaid = null;
+                if (row.FechaPago) {
+                    const parsed = new Date(row.FechaPago);
+                    if (!isNaN(parsed.getTime())) {
+                        dateOfPaid = parsed;
+                    }
+                }
+
+                return {
+                    month: isNaN(month) ? null : month,
+                    year: isNaN(year) ? null : year,
+                    amount: row.Monto ?? null,
+                    idPartner: feeNumeroToId[Number(row.IdSocio)] ?? null,
+                    paid: row.Paga ?? false,
+                    observation: row.Observacion ?? null,
+                    date_of_paid: dateOfPaid,
+                    createdAt,
+                    periodDate
+                };
+            });
 
             // -------------------------------------------------
             // 5. Limpiar tabla e insertar

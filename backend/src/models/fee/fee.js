@@ -46,10 +46,20 @@ const Fees = sequelize.define("Fees",
         },
         status: {
             type: DataTypes.BOOLEAN,
-            field: "Activa", 
-            defaultValue: true, 
+            field: "Activa",
+            defaultValue: true,
             allowNull: false
         },
+        createdAt: {
+            type: DataTypes.DATE,
+            field: "FechaCreacion",
+            allowNull: true
+        },
+        periodDate: {
+            type: DataTypes.DATE,
+            field: "FechaPeriodo",
+            allowNull: true
+        }
     },
     {
         underscored: true,

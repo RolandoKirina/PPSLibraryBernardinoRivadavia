@@ -18,7 +18,8 @@ export const FeesDetail = [
         active: false,
         rows: [
             [
-                { label: 'Id de la cuota', value: 'informacion', attribute: 'feeid' }
+                { label: 'Id de la cuota', value: 'informacion', attribute: 'feeid' },
+                { label: 'Fecha creación', value: 'informacion', attribute: 'createdAt' },
             ],
             [
                 { label: 'Año', value: 'informacion', attribute: 'year' },

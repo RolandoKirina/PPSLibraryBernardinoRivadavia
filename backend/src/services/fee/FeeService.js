@@ -23,10 +23,10 @@ export const generateUnpaidFees = async (body) => {
     const { month_and_year, amount, observation } = body;
     const [year, month] = month_and_year.split("-").map(Number);
 
-    const activePartners = await getAll({ 
-        isActive: 1 
+    const activePartners = await getAll({
+        isActive: 1
     });
-    
+
     const partners = activePartners.rows;
 
     if (partners.length === 0) {
@@ -45,9 +45,11 @@ export const generateUnpaidFees = async (body) => {
             amount: amount,
             observation: observation || "",
             paid: false,
-            date_of_paid: null 
+            date_of_paid: null,
+            createdAt: new Date(),
+            periodDate: new Date(Date.UTC(year, month - 1, 1)) 
         }));
-
+        
     if (feesToCreate.length === 0) {
         return { message: "Todos los socios ya tienen su cuota generada para este periodo." };
     }
@@ -55,17 +57,14 @@ export const generateUnpaidFees = async (body) => {
     const generatedFees = await FeeRepository.bulkCreate(feesToCreate);
 
     const newFeePartnerIds = feesToCreate.map(f => f.idPartner);
-    
-    await changeUnpaidFees("increment", newFeePartnerIds);
 
-    console.log(typeof month, month);
-    console.log(typeof year, year);
+    await changeUnpaidFees("increment", newFeePartnerIds);
 
     if (generatedFees.length === 0) {
         throw new Error(`Ya existen cuotas generadas para el mes ${month} y año ${year}`);
     }
 
-    
+
     return {
         message: `Se generaron ${generatedFees.length} cuotas exitosamente`,
         detail: generatedFees

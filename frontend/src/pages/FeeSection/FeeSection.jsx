@@ -46,6 +46,8 @@ export const FeeSection = () => {
     feeStatus: "",
     creationStartDate: "",
     creationEndDate: "",
+    periodStartDate: "",
+    periodEndDate: ""
   });
 
   const handleFilterChange = (e) => {
