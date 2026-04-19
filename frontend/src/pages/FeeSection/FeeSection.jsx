@@ -56,27 +56,27 @@ export const FeeSection = () => {
     setFormData(updated);
   };
 
-useEffect(() => {
-  const delay = setTimeout(() => {
-    // Eliminamos solo los valores que son strings vacíos o null
-    const activeFilters = Object.fromEntries(
-      Object.entries(formData).filter(([_, v]) => v !== "" && v !== null)
-    );
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      // Eliminamos solo los valores que son strings vacíos o null
+      const activeFilters = Object.fromEntries(
+        Object.entries(formData).filter(([_, v]) => v !== "" && v !== null)
+      );
 
-    setOffsetActual(0);
-    setResetPageTrigger(prev => prev + 1);
+      setOffsetActual(0);
+      setResetPageTrigger(prev => prev + 1);
 
-    getItems({
-      ...activeFilters,
-      sortBy: 'id',
-      direction: 'asc',
-      limit: chunkSize,
-      offset: 0
-    });
-  }, 500);
+      getItems({
+        ...activeFilters,
+        sortBy: 'id',
+        direction: 'asc',
+        limit: chunkSize,
+        offset: 0
+      });
+    }, 500);
 
-  return () => clearTimeout(delay);
-}, [formData]);
+    return () => clearTimeout(delay);
+  }, [formData]);
 
 
 
@@ -124,18 +124,22 @@ useEffect(() => {
         },
         body: JSON.stringify(data)
       });
-      
+
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({ msg: "Error inesperado del servidor" }));
         setError(errorData.message);
         return;
       }
       else {
-        setError(null)
-        setSuccessMessage("Cuota actualizada exitosamente");
+        setError(null);
+        setSuccessMessage("Cuotas generadas exitosamente");
 
+        setTimeout(() => {
+          setSuccessMessage("");
+          setPopupAdd(false);
+        }, 3000);
       }
-      setPopupAdd(false);
+
       await getItems();
 
     } catch (err) {
@@ -299,7 +303,7 @@ useEffect(() => {
       key: 'AddPopup',
       title: 'Generar Cuotas',
       className: 'popup-container',
-      content: <GenericForm title={'Generar cuotas nuevas'} error={error}
+      content: <GenericForm title={'Generar cuotas nuevas'} error={error} successMessage={successMessage}
         onSubmit={handleAddItem}
         fields={addnewFeesForm} className="addfees" />,
       close: () => setPopupAdd(false),

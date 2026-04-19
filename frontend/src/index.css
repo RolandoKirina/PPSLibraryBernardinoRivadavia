@@ -166,7 +166,6 @@ input {
   justify-content: center;
   flex-direction: column;
   width: 35em;
-  height: 60%;
 }
 
 .btn-logout {
