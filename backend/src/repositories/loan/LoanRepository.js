@@ -5,7 +5,7 @@ import Loan from '../../models/loan/Loan.js';
 import LoanBook from '../../models/loan/LoanBook.js';
 import Book from '../../models/book/Book.js';
 import Employees from '../../models/options/Employees.js';
-import Partner from '../../models/partner/Partner.js';
+import Partner from '../../models/partner/partner.js';
 import LoanType from '../../models/loan/LoanType.js';
 import BookType from "../../models/options/BookType.js";
 

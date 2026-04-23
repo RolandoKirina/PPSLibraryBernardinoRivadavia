@@ -1,5 +1,5 @@
 import { Op } from "sequelize";
-import Partner from "../models/partner/Partner.js";
+import Partner from "../models/partner/partner.js";
 import { toStartOfDay,toEndOfDay } from "./date/formatDate.js";
 
 export const buildBookFilters = (query) => {

@@ -1,4 +1,4 @@
-import './BackviewBtn.css';
+import './BackViewBtn.css';
 import Btn from '../../common/btn/Btn';
 import LeftArrow from '../../../assets/img/left-arrow-secondary.svg';
 

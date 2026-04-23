@@ -1,5 +1,5 @@
-import Fees from "../../models/fee/Fee.js";
-import Partner from "../../models/partner/Partner.js";
+import Fees from "../../models/fee/fee.js";
+import Partner from "../../models/partner/partner.js";
 import { Op } from "sequelize";
 import { fn, col } from 'sequelize';
 import { QueryTypes } from "sequelize";

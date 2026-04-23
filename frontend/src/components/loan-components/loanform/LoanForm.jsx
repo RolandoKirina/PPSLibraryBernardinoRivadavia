@@ -19,7 +19,7 @@ import { useEntityLookup } from '../../../hooks/useEntityLookup.js';
 import ReturnIcon from '../../../assets/img/return-icon.svg';
 import ReneweIcon from '../../../assets/img/renewe-icon.svg';
 import { useAuth } from '../../../auth/AuthContext.jsx';
-import PendingBooks from '../pendingBooks/PendingBooks.jsx';
+import PendingBooks from '../pendingbooks/PendingBooks.jsx';
 import PartnerMemo from '../partnermemo/PartnerMemo.jsx';
 
 export default function LoanForm({ method, successMessage, createLoanItem, loanSelected, errorMessage }) {

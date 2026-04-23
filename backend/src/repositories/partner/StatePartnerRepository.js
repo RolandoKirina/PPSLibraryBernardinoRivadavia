@@ -1,4 +1,4 @@
-import StatePartner from '../../models/partner/StatePartner.js';
+import StatePartner from '../../models/partner/statePartner.js';
 
 export const getAll = async () => {
     return await StatePartner.findAll();

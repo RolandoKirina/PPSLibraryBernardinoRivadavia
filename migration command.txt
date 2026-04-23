@@ -1,0 +1,5 @@
+
+docker exec -it node_backend node legacy/script.js
+
+
+docker exec -it node_backend sh -c "npm run migrate && node legacy/script.js"

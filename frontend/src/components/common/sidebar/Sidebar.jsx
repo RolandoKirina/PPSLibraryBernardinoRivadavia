@@ -2,7 +2,7 @@ import './Sidebar.css';
 import loan from '../../../assets/img/loan-icon.svg';
 import book from '../../../assets/img/book-icon.svg';
 import fee from '../../../assets/img/fee-icon.svg';
-import author from '../../../assets/img/author-icon.svg';
+import author from '../../../assets/img/author-Icon.svg';
 import options from '../../../assets/img/options-icon.svg';
 import partner from '../../../assets/img/options-icon.svg';
 import { NavLink, useLocation } from 'react-router-dom';

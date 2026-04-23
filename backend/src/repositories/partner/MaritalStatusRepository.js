@@ -1,4 +1,4 @@
-import MaritalStatus from '../../models/partner/MaritalStatus.js';
+import MaritalStatus from '../../models/partner/maritalStatus.js';
 
 export const getAll = async () => {
     return await MaritalStatus.findAll();

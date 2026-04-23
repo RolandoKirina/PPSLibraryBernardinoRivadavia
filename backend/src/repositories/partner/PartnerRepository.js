@@ -1,11 +1,11 @@
-import Partner from '../../models/partner/Partner.js';
+import Partner from '../../models/partner/partner.js';
 import Book from "../../models/book/Book.js";
 import LoanBook from '../../models/loan/LoanBook.js';
 import Loan from '../../models/loan/Loan.js';
 import statePartner from '../../models/partner/statePartner.js';
 import Locality from '../../models/partner/locality.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
-import ReasonForWithdrawal from '../../models/partner/ReasonForWithDrawal.js';
+import ReasonForWithdrawal from '../../models/partner/reasonForWithDrawal.js';
 import { Sequelize, Op } from "sequelize";
 
 export const printList = async (filters) => {

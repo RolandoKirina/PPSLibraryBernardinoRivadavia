@@ -1,5 +1,5 @@
 
-import Locality from '../../models/partner/Locality.js';
+import Locality from '../../models/partner/locality.js';
 
 export const getAll = async () => {
     return await Locality.findAll();

@@ -13,7 +13,7 @@ import BookKey from './book/BookKey.js';
 import Signs from './book/Signs.js';
 
 // Fee
-import Fees from './fee/Fee.js';
+import Fees from './fee/fee.js';
 import LastGeneration from './fee/LastGeneration.js';
 
 // Loan
@@ -32,8 +32,8 @@ import BookType from './options/BookType.js';
 
 // Partner
 import Locality from './partner/locality.js';
-import MaritalStatus from './partner/MaritalStatus.js';
-import Partner from './partner/Partner.js';
+import MaritalStatus from './partner/maritalStatus.js';
+import Partner from './partner/partner.js';
 import PartnerCategory from './partner/partnerCategory.js';
 // import PartnerFeeWithDrawal from './partner/PartnerFeeWithDrawal.js';
 // import PartnerPass from './partner/PartnerPass.js';
@@ -42,8 +42,8 @@ import PartnerCategory from './partner/partnerCategory.js';
 import statePartner from './partner/statePartner.js';
 import Reader from './reader/reader.js';
 import ReaderBook from './reader/ReaderBook.js';
-import reasonForWithDrawal from './partner/reasonForWithdrawal.js';
-import typeDocument from './partner/TypeDocument.js';
+import reasonForWithDrawal from './partner/reasonForWithDrawal.js';
+import typeDocument from './partner/typeDocument.js';
 
 import User from './auth/User.js';
 import Role from './auth/Role.js';

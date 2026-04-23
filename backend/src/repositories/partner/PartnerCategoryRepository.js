@@ -1,4 +1,4 @@
-import PartnerCategory from '../../models/partner/PartnerCategory.js';
+import PartnerCategory from '../../models/partner/partnerCategory.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 
 export const getAll = async (filters = {}) => {

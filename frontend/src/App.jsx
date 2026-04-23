@@ -5,7 +5,7 @@ import ProtectedRoute from './auth/ProtectedRoute.jsx';
 import { HomePage } from './pages/HomeSection/HomePage.jsx';
 import LoginSection from './pages/LoginSection/LoginSection.jsx';
 import RegisterSection from './pages/RegisterSection/RegisterSection.jsx';
-import NotFound from './components/common/notfound/notfound.jsx';
+import NotFound from './components/common/notfound/NotFound.jsx';
 
 import EmployeeSection from './pages/OptionSection/EmployeeSection/EmployeeSection.jsx';
 import OptionSection from './pages/OptionSection/OptionSection.jsx';

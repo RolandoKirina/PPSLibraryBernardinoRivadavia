@@ -2,7 +2,7 @@ import Book from "../../models/book/Book.js";
 import Authors from "../../models/author/Authors.js";
 import BookAuthor from "../../models/author/BookAuthor.js";
 import LoanBook from "../../models/loan/LoanBook.js"
-import Partner from "../../models/partner/Partner.js";
+import Partner from "../../models/partner/partner.js";
 import Loan from "../../models/loan/Loan.js";
 import BookType from "../../models/options/BookType.js";
 import { fn, col, literal } from "sequelize";

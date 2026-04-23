@@ -11,7 +11,7 @@ import SaveIcon from '../../../assets/img/save-icon.svg';
 import { useAuth } from '../../../auth/AuthContext';
 import SearchPartner from '../searchpartner/SearchPartner';
 import UnpaidFees from '../unpaidfees/UnpaidFees';
-import PendingBooks from '../pendingBooks/PendingBooks';
+import PendingBooks from '../pendingbooks/PendingBooks.jsx';
 import PartnerMemo from '../partnermemo/PartnerMemo';
 
 export default function AddRenewe({ refreshItems, createReneweItem, errorMessage }) {

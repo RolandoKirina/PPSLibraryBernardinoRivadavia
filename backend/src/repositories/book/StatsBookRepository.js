@@ -1,6 +1,6 @@
 import sequelize  from "../../configs/database.js";
 import Book from "../../models/book/Book.js";
-import Partner from "../../models/partner/Partner.js";
+import Partner from "../../models/partner/partner.js";
 import Loan from "../../models/loan/Loan.js";
 import LoanBook from "../../models/loan/LoanBook.js";
 
