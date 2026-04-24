@@ -35,13 +35,11 @@ export const buildPartnerFilters = (query) => {
 
   if (idState) {
     idState = Number(idState);
-    
     wherePartner.isActive = idState;
   }
 
 
 
-  console.log(idState);
   if (pendingBooks !== undefined) {
     wherePartner.pendingBooks = Number(pendingBooks);
   }
