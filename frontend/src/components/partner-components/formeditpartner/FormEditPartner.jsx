@@ -130,6 +130,7 @@ export default function FormEditPartner({ selectedPartner }) {
         documentType: Number(formValues.documentType || existingPartner.documentType),
         MaritalStatusId: formValues.MaritalStatusId !== "" ? Number(formValues.MaritalStatusId) : null,
         idReason: Number(formValues.idReason || existingPartner.idReason),
+        idState: formValues.idState !== "" ? Number(formValues.idState) : existingPartner.idState ?? null,
         birthDate: formValues.birthDate || existingPartner.birthDate || null,
         resignationdate: formValues.resignationdate || existingPartner.resignationdate || null,
       };
@@ -176,7 +177,7 @@ export default function FormEditPartner({ selectedPartner }) {
             <div className="form-details">
               <label htmlFor="documentType">Tipo de documento <span className='required'>*</span></label>
               <select name="documentType" onChange={handleChange} value={formValues.documentType || ""}>
-                <option value="">Tipo documento</option>
+                <option value="" disabled>Tipo documento</option>
                 <option value="1">DNI</option>
                 <option value="2">LE</option>
                 <option value="3">LC</option>
@@ -206,7 +207,7 @@ export default function FormEditPartner({ selectedPartner }) {
 
               <label htmlFor="MaritalStatusId">Estado civil </label>
               <select name="MaritalStatusId" onChange={handleChange} value={formValues.MaritalStatusId || ""}>
-                <option value="">Estado civil</option>
+                <option value="" disabled>Estado civil</option>
                 {maritalStatuses.map(m => (
                   <option key={m.id} value={m.id}>{m.statusName}</option>
                 ))}
@@ -218,7 +219,7 @@ export default function FormEditPartner({ selectedPartner }) {
               <label htmlFor="idCategory">Categoria <span className='required'>*</span></label>
 
               <select name="idCategory" onChange={handleChange} value={formValues.idCategory || ""}>
-                <option value="">Categoría</option>
+                <option value="" disabled>Categoría</option>
                 <option value="1">Regular</option>
                 <option value="2">Honorario</option>
                 <option value="3">Protector</option>
@@ -249,7 +250,7 @@ export default function FormEditPartner({ selectedPartner }) {
             <div className="form-details">
               <label htmlFor="LocalityId">Localidad </label>
               <select name="LocalityId" onChange={handleChange} value={formValues.LocalityId || ""}  >
-                <option value="">Localidad</option>
+                <option value="" disabled >Localidad</option>
                 <option value="1">Tandil</option>
               </select>
             </div>
@@ -314,18 +315,24 @@ export default function FormEditPartner({ selectedPartner }) {
             <div className="form-details">
               <label htmlFor="idState">Estado</label>
               <select name="idState" onChange={handleChange} value={formValues.idState || ""}>
-                <option value="">Estado</option>
+                <option value="" disabled >Estado</option>
                 <option value="1">Activo</option>
                 <option value="2">Baja</option>
               </select>
             </div>
             <div className="form-details">
               <label htmlFor="idReason">Motivo de baja</label>
-              <select name="idReason" onChange={handleChange} value={formValues.idReason || ""} >
-                <option value="">Motivo de baja</option>
-                {idReason.map(r => (
-                  <option key={r.idReason} value={r.idReason}>{r.reason}</option>
-                ))}
+             <select name="idReason" onChange={handleChange} value={formValues.idReason || ""}>
+                <option value="" disabled>Motivo de baja</option>
+
+                {idReason
+                  .filter(r => r.reason !== "Desconocido")
+                  .map(r => (
+                    <option key={r.idReason} value={r.idReason}>                      
+                      {r.reason}
+                    </option>
+                  ))
+                }
               </select>
             </div>
           </div >

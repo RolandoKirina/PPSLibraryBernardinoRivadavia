@@ -33,10 +33,15 @@ export const buildPartnerFilters = (query) => {
     wherePartner.unpaidFees = Number(unpaidFees);
   }
 
-  if (idState && idState !== '0') {
-    wherePartner.isActive = Number(idState);
+  if (idState) {
+    idState = Number(idState);
+    
+    wherePartner.isActive = idState;
   }
 
+
+
+  console.log(idState);
   if (pendingBooks !== undefined) {
     wherePartner.pendingBooks = Number(pendingBooks);
   }
