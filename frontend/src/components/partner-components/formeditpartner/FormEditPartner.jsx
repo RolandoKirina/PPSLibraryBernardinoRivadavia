@@ -71,7 +71,7 @@ export default function FormEditPartner({ selectedPartner }) {
     workPostalCode: "",
     resignationdate: "",
     observations: "",
-    idState: "",
+    isActive: "",
     idReason: "",
     registrationDate: "",
   });
@@ -312,8 +312,8 @@ export default function FormEditPartner({ selectedPartner }) {
               <input name="observations" placeholder="Observaciones" onChange={handleChange} value={formValues.observations || ""} />
             </div>
             <div className="form-details">
-              <label htmlFor="idState">Estado</label>
-              <select name="idState" onChange={handleChange} value={formValues.idState || ""}>
+              <label htmlFor="isActive">Estado</label>
+              <select name="isActive" onChange={handleChange} value={formValues.isActive || ""}>
                 <option value="">Estado</option>
                 <option value="1">Activo</option>
                 <option value="2">Baja</option>
