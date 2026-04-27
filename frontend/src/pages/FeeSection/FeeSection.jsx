@@ -190,15 +190,20 @@ export const FeeSection = () => {
 
   if (auth.role === roles.admin) {
     columns = [
-      { header: 'Numero de cuota', accessor: 'feeid' },
-      { header: 'Nombre de socio', accessor: 'name' },
-      { header: 'Estado cuota', accessor: 'statusLabel' },
-      { header: 'valor', accessor: 'amount' },
-      { header: 'Numero de socio', accessor: 'partnerNumber' },
       {
-        header: "Fecha de pago",
-        accessor: 'date_of_paid',
-        render: (value) => formatDate(value)
+        header: 'Socio',
+        accessor: 'name',
+        render: (value, row) => `${value} (N° ${row.partnerNumber})`
+      },
+      {
+        header: 'Periodo',
+        accessor: 'month',
+        render: (_, row) => `${String(row.month).padStart(2, '0')}/${row.year}`
+      },
+      {
+        header: 'Importe',
+        accessor: 'amount',
+        render: (value) => `$${value}`
       },
       {
         header: 'Pagada',
@@ -206,18 +211,25 @@ export const FeeSection = () => {
         render: (value) => value ? '✅ Paga' : '❌ Impaga',
       },
       {
-        header: 'Habilitar/Deshabilitar',
-        accessor: 'delete',
+        // Cambiamos el nombre para que se entienda que es la gestión de la cuota
+        header: 'Gestión',
+        accessor: 'status',
         className: "action-buttons",
-        render: (_, row) => (
-          <button className="button-table"
-            onClick={() => {
-              setSelectedId(row.feeid);
-              setPopUpDelete(true)
-
+        render: (value, row) => (
+          <button
+            className="button-table"
+            title={value ? "Deshabilitar cuota" : "Habilitar cuota"}
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedId(row.feeid || row.id);
+              setPopUpDelete(true); // Este PopUp ahora debería manejar el "Toggle" de estado
             }}>
-
-            <img src={DeleteIcon} alt="Borrar" />
+            {/* Si value (status) es true, mostramos icono de borrar/deshabilitar, si es false, uno de recuperar/habilitar */}
+            <img
+              src={DeleteIcon}
+              alt="Estado"
+              style={{ filter: value ? 'none' : 'grayscale(1) opacity(0.5)' }}
+            />
           </button>
         )
       },
@@ -228,7 +240,8 @@ export const FeeSection = () => {
         render: (_, row) => (
           <button
             className="button-table"
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               setPopupEdit(true);
               setSelectedItem(row);
             }}
@@ -238,17 +251,18 @@ export const FeeSection = () => {
         )
       },
       {
-        header: 'Ver detalle',
+        header: 'Detalle',
         accessor: 'details',
         className: "action-buttons",
         render: (_, row) => (
-          <button className="button-table">
-            <img src={DetailsIcon} alt="Detalles"
-              onClick={() => {
-                setSelectedItem(row)
-                setPopUpDetail(true)
-              }}
-            />
+          <button className="button-table"
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedItem(row);
+              setPopUpDetail(true);
+            }}
+          >
+            <img src={DetailsIcon} alt="Detalles" />
           </button>
         )
       }
@@ -333,7 +347,7 @@ export const FeeSection = () => {
     title = 'Listado de cuotas';
 
     adminFeeActions = <div className='fees-actions'>
-      <Btn text="Agregar cuota" variant="primary" onClick={() => setPopupAdd(true)}></Btn>
+      <Btn text="Generar Cuotas" variant="primary" onClick={() => setPopupAdd(true)}></Btn>
       <Btn text="Cuotas entre fechas" variant="primary" onClick={() => setPopUpFeesBetweenDates(true)}></Btn>
 
     </div>;
@@ -341,7 +355,7 @@ export const FeeSection = () => {
 
   return (
     <>
-      <GenericSection title={title} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger} filters={
+      <GenericSection title={title} totalItems={totalItems} showCount={true} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger} showCount={true} filters={
         <FeeFilter formData={formData ||
           { partnerWithUnpaidFees: false, name: "", surname: "", PaymentDate: "", feeStatus: "" }}
           onChange={handleFilterChange} />}

@@ -1,7 +1,7 @@
 import Pagination from "../pagination/Pagination";
 import './Table.css';
 import { useState, useEffect } from "react";
-export const Table = ({ columns = [], data = [], children, popupLength, isPrintList, rowsPerPage = 5, totalItems, handleChangePage, loading, resetPageTrigger }) => {
+export const Table = ({ columns = [], data = [], children, popupLength, isPrintList, rowsPerPage = 5, totalItems, handleChangePage, loading, resetPageTrigger, showCount }) => {
 
   const actionAccessors = ["add", "delete", "edit", "details", "return", "renewe", "choose", "materials"];
   const [currentPage, setCurrentPage] = useState(1);
@@ -51,15 +51,24 @@ export const Table = ({ columns = [], data = [], children, popupLength, isPrintL
         </table>
       )}
 
-      {data.length >= rowsPerPage && (
-        <Pagination
-          totalItems={totalItems}
-          itemsPerPage={rowsPerPage}
-          currentPage={currentPage}
-          onPageChange={setCurrentPage}
-          handleChangePage={handleChangePage}
-        />
-      )}
+      <div className="pagination-items">
+        {data.length >= rowsPerPage && (
+          <Pagination
+            totalItems={totalItems}
+            itemsPerPage={rowsPerPage}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+            handleChangePage={handleChangePage}
+          />
+        )}
+
+        {showCount && (
+          <span style={{ color: 'black', fontWeight: 'bold'}}>
+            {data.length} {data.length === 1 ? 'Fila encontrada' : 'Filas encontradas'}
+          </span>
+        )}
+      </div>
+
 
       {children}
     </div>

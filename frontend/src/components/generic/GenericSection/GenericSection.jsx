@@ -13,7 +13,8 @@ export default function GenericSection({
     totalItems,
     handleChangePage,
     loading,
-    resetPageTrigger
+    resetPageTrigger,
+    showCount
 }) {
     return (
         <section className='genericsection'>
@@ -34,6 +35,7 @@ export default function GenericSection({
                         handleChangePage={handleChangePage}
                         loading={loading} 
                         resetPageTrigger={resetPageTrigger}
+                        showCount={showCount}
                     >
                         {popups && popups.map(({ condition, title, className, content, close, variant }, idx) =>
                             condition && (

@@ -306,7 +306,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
 
     return (
         <>
-            <GenericSection title={auth.role === roles.admin ? 'Listado de préstamos' : 'Listado de tus préstamos'} filters={<LoanFilter onFilterChange={setFilters} />} columns={columns} data={items} popups={loanPopups} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger}
+            <GenericSection title={auth.role === roles.admin ? 'Listado de préstamos' : 'Listado de tus préstamos'} filters={<LoanFilter onFilterChange={setFilters} />} columns={columns} data={items} popups={loanPopups} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger} showCount={true}
                 actions={
                     <LoanButtons
                         displayLoanform={() => setAddPopup(true)}

@@ -295,7 +295,7 @@ export default function AuthorSection() {
 
     return (
         <>
-            <GenericSection title={'Listado de autores'} columns={columns} data={items} popups={authorsPopups} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger}
+            <GenericSection title={'Listado de autores'} columns={columns} data={items} popups={authorsPopups} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger} showCount={true}
                 actions={
                     <>
                         <div className='author-actions'>

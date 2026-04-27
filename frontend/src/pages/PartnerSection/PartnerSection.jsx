@@ -390,7 +390,7 @@ export default function PartnerSection() {
   return (
     <>
       <GenericSection title="Listado socios" filters={<PartnerFilter formData={formData} onChange={handleFilterChange} />}
-        columns={columns} data={items} popups={partnersPopUp} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger}
+        columns={columns} data={items} popups={partnersPopUp} totalItems={totalItems} showCount={true} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger}
         actions={
           <div>
             <div className='partner-buttons'>
