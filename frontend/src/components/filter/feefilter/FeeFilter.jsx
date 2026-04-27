@@ -102,42 +102,7 @@ export default function FeeFilter({ formData, onChange }) {
               disabled={formData.status === "unpaid"}
             />
           </div>
-          <div className="book-form-input-group">
-            <h4>Fecha de creación de cuota</h4>
-            <label>Desde: </label>
-            <input
-              type="month"
-              name="creationStartDate"
-              value={formData.creationStartDate ?? ""}
-              onChange={onChange}
-            />
-            <label>Hasta: </label>
-            <input
-              type="month"
-              name="creationEndDate"
-              value={formData.creationEndDate ?? ""}
-              onChange={onChange}
-            />
-          </div>
-          <div className="book-form-input-group">
-            <h4>Periodo de la cuota</h4>
 
-            <label>Desde: </label>
-            <input
-              type="month"
-              name="periodStartDate"
-              value={formData.periodStartDate ?? ""}
-              onChange={onChange}
-            />
-
-            <label>Hasta: </label>
-            <input
-              type="month"
-              name="periodEndDate"
-              value={formData.periodEndDate ?? ""}
-              onChange={onChange}
-            />
-          </div>
           {auth.role === roles.admin && (
             <>
               <div className="book-form-input-group">
@@ -178,6 +143,44 @@ export default function FeeFilter({ formData, onChange }) {
               </div>
             </>
           )}
+          
+          <div className="book-form-input-group">
+            <h4>Periodo de la cuota</h4>
+
+            <label>Desde: </label>
+            <input
+              type="month"
+              name="periodStartDate"
+              value={formData.periodStartDate ?? ""}
+              onChange={onChange}
+            />
+
+            <label>Hasta: </label>
+            <input
+              type="month"
+              name="periodEndDate"
+              value={formData.periodEndDate ?? ""}
+              onChange={onChange}
+            />
+          </div>
+          <div className="book-form-input-group">
+            <h4>Fecha de creación de cuota</h4>
+            <label>Desde: </label>
+            <input
+              type="month"
+              name="creationStartDate"
+              value={formData.creationStartDate ?? ""}
+              onChange={onChange}
+            />
+            <label>Hasta: </label>
+            <input
+              type="month"
+              name="creationEndDate"
+              value={formData.creationEndDate ?? ""}
+              onChange={onChange}
+            />
+          </div>
+      
         </form>
       </div>
     </aside>

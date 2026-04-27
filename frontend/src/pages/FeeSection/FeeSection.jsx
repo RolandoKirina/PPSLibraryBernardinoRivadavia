@@ -17,6 +17,7 @@ import EditFees from '../../components/fees-components/formEditFee/EditFees.jsx'
 import { useAuth } from '../../auth/AuthContext.jsx';
 import { roles } from '../../auth/roles.js';
 import ConfirmMessage from '../../components/common/confirmMessage/ConfirmMessage.jsx';
+import UnpaidFees from '../../components/loan-components/unpaidfees/UnpaidFees.jsx';
 
 export const FeeSection = () => {
   const chunkSize = 100;
@@ -33,6 +34,8 @@ export const FeeSection = () => {
   const [popupdelete, setPopUpDelete] = useState(false);
   const [PopUpDetail, setPopUpDetail] = useState(false);
   const [PopUpFeesBetweenDates, setPopUpFeesBetweenDates] = useState(false);
+  const [PopupUnpaidFees, setPopupUnpaidFees] = useState(false);
+
   const [error, setError] = useState(false);
   const [successMessage, setSuccessMessage] = useState(false);
   const { items, loading, totalItems, getItems, getItem, createItem, updateItem, deleteItem } = useEntityManagerAPI("fees");
@@ -195,6 +198,21 @@ export const FeeSection = () => {
         render: (value, row) => `${value} (N° ${row.partnerNumber})`
       },
       {
+        header: 'Cuotas impagas',
+        accessor: 'unpaidFees',
+        render: (value, row) => (
+          <button
+            className="button-link"
+            onClick={() => {
+              setSelectedItem(row);
+              setPopupUnpaidFees(true);
+            }}
+          >
+            {value} {value === 1 ? 'cuota impaga' : 'cuotas impagas'}
+          </button>
+        )
+      },
+      {
         header: 'Periodo',
         accessor: 'month',
         render: (_, row) => `${String(row.month).padStart(2, '0')}/${row.year}`
@@ -210,7 +228,7 @@ export const FeeSection = () => {
         render: (value) => value ? '✅ Paga' : '❌ Impaga',
       },
       {
-        header: 'Gestión',
+        header: 'Eliminar',
         accessor: 'status',
         className: "action-buttons",
         render: (value, row) => (
@@ -220,7 +238,7 @@ export const FeeSection = () => {
             onClick={(e) => {
               e.stopPropagation();
               setSelectedId(row.feeid || row.id);
-              setPopUpDelete(true); 
+              setPopUpDelete(true);
             }}>
             <img
               src={DeleteIcon}
@@ -334,7 +352,15 @@ export const FeeSection = () => {
       className: 'print-partners-size',
       close: () => setPopUpFeesBetweenDates(false),
       condition: PopUpFeesBetweenDates
-    }
+    },
+    {
+      key: 'unpaidFees',
+      title: 'Cuotas Impagas',
+      classname: 'books-partners-amount-size',
+      content: <UnpaidFees />,
+      close: () => setPopupUnpaidFees(false),
+      condition: PopupUnpaidFees
+    },
   ]
 
   let adminFeeActions = null;

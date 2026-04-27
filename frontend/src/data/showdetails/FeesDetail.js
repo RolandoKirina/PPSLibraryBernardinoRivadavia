@@ -29,6 +29,9 @@ export const FeesDetail = [
             [
                 { label: 'Monto', value: 'informacion', attribute: 'amount' },
                 { label: 'Observaciones', value: 'informacion', attribute: 'observation' }
+            ],
+            [
+                { label: 'Estado', value: 'informacion', attribute: 'statusLabel' },
             ]
         ]
     },

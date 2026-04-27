@@ -92,6 +92,7 @@ export const getAll = async (filters = {}, listType = '') => {
         date_of_paid: formatDate(fee.date_of_paid),
         partnerNumber: fee.Partner?.partnerNumber,
         name: fee.Partner ? `${fee.Partner.name} ${fee.Partner.surname}` : "",
+        unpaidFees: fee.Partner?.unpaidFees,
         category: categoryName, 
         surname: fee.Partner?.surname,
         status: fee.status,
