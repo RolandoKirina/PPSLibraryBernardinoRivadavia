@@ -41,6 +41,7 @@ export const addnewFeesForm = [
       type: 'select',
       required: true,
       options: [
+        { value: '', label: 'Seleccione un mes...' },
         { value: 1, label: 'Enero' },
         { value: 2, label: 'Febrero' },
         { value: 3, label: 'Marzo' },
@@ -69,7 +70,6 @@ export const addnewFeesForm = [
       label: 'Observación',
       name: 'observation',
       type: 'text',
-      required: true
     }
   ]
 ];

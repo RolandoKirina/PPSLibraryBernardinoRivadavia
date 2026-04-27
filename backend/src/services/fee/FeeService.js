@@ -22,10 +22,9 @@ export const generateUnpaidFees = async (body) => {
 
     const { month, year, observation } = body;
 
-    // 🔹 Traer socios activos CON categoría
     const activePartners = await getAll({
         isActive: 1,
-        includeCategory: true // asegurate que esto funcione en tu repo
+        includeCategory: true 
     });
 
     const partners = activePartners.rows;
