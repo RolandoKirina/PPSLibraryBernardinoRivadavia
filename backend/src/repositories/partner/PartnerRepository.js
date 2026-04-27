@@ -233,7 +233,6 @@ export const create = async (data) => {
 };
 
 export const update = async (id, updates) => {
-  console.log(updates);
   await Partner.update(updates, { where: { id } });
   return await Partner.findByPk(id);
 };
@@ -279,7 +278,7 @@ export const changeUnpaidFees = async (change, values) => {
 
     if (change === 'decrement') {
         const foundIds = await getPartnerIdFromPartnerNumber(inputValues);
-        console.log(foundIds);
+
         targetIds = Array.isArray(foundIds) ? foundIds : [foundIds];
     } else {
         targetIds = inputValues;
