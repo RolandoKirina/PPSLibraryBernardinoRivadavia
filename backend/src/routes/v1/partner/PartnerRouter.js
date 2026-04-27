@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.get("/", authorizeRoles(['admin']), PartnerController.getAllPartners);
 router.get("/printlist", authorizeRoles(['admin']), PartnerController.printList)
+router.get("/next-number", authorizeRoles(['admin']), PartnerController.getNextNumber)
 
 router.get("/:id", authorizeRoles(['admin']), validateIdParam("id"), PartnerController.getPartner);
 router.get("/partner-number/:id", authorizeRoles(['admin']), validateIdParam("id"), PartnerController.getOneByPartnerNumber);

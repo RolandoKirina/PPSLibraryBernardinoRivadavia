@@ -5,6 +5,11 @@ export const printList = async (filters) => {
     return partners;
 };
 
+export const getNextNumber = async () => {
+    const lastNumber = await PartnerRepository.findMaxPartnerNumber();
+    return { nextNumber: lastNumber + 1 };
+};
+
 export const getAllPartners = async (filters) => {
     const partners = await PartnerRepository.getAll(filters);
     return partners;

@@ -18,6 +18,8 @@ import FormAddPartner from '../../components/partner-components/formaddpartner/F
 import FormEditPartner from '../../components/partner-components/formeditpartner/FormEditPartner.jsx';
 import { useEntityManagerAPI } from '../../hooks/useEntityManagerAPI.js';
 import { useAuth } from '../../auth/AuthContext.jsx';
+import PendingBooks from '../../components/loan-components/pendingbooks/PendingBooks.jsx';
+import UnpaidFees from '../../components/loan-components/unpaidfees/UnpaidFees.jsx';
 export default function PartnerSection() {
   const { auth } = useAuth();
   const chunkSize = 100;
@@ -37,8 +39,20 @@ export default function PartnerSection() {
   const [states, setStates] = useState([]);
   const [categories, setCategories] = useState([]);
   const [maritalStatuses, setMaritalStatuses] = useState([]);
+  const [PopUpUnpaidFees, setPopupUnpaidFees] = useState(false);
+  const [PopUpPendingBooks, setPopupPendingBooks] = useState(false);
 
-  const [formData, setFormData] = useState({ unpaidFees: "", pendingBooks: "", isActive: "all", partnerNumber: "", name: "", surname: "" });
+
+  const [formData, setFormData] = useState({
+    unpaidFees: "",
+    pendingBooks: "",
+    isActive: "all",
+    partnerNumber: "",
+    name: "",
+    surname: "",
+    sortBy: "name",
+    direction: "asc"
+  });
 
   useEffect(() => {
     async function loadCatalogs() {
@@ -86,8 +100,8 @@ export default function PartnerSection() {
 
       getItems({
         ...activeFilters,
-        sortBy: 'id',
-        direction: 'asc',
+        sortBy: formData.sortBy,      
+        direction: formData.direction,
         limit: chunkSize,
         offset: 0
       });
@@ -120,7 +134,88 @@ export default function PartnerSection() {
       setOffsetActual(newOffset);
     }
   }
+  const columns = [
+    { header: 'Numero de socio', accessor: 'partnerNumber' },
+    { header: 'Nombre', accessor: 'name' },
+    { header: 'Apellido', accessor: 'surname' },
+    {
+      header: 'Cuotas impagas',
+      accessor: 'unpaidFees',
+      render: (value, row) => (
+        <button
+          className="button-link" 
+          onClick={() => {
+            setSelectedItem(row);
+            setPopupUnpaidFees(true);
+          }}
+        >
+          {value} {value === 1 ? 'cuota impaga' : 'cuotas impagas'}
+        </button>
+      )
+    },
+    {
+      header: 'Libros pendientes',
+      accessor: 'pendingBooks',
+      render: (value, row) => (
+        <button
+          className="button-link"
+          onClick={() => {
+            setSelectedItem(row);
+            setPopupPendingBooks(true); 
+          }}
+        >
+          {value} {value === 1 ? 'libro pendiente' : 'libros pendientes'}
+        </button>
+      )
+    },
+    { header: 'Estado', accessor: 'status' },
+    {
+      header: 'Editar',
+      accessor: 'edit',
+      className: "action-buttons",
+      render: (_, row) => (
+        <button className="button-table"
+          onClick={() => {
+            setPopupEdit(true)
+            setSelectedItem(row)
+          }}>
+          <img src={EditIcon} alt="Editar" />
+        </button>
+      )
+    },
+    {
+      header: 'Ver detalle',
+      accessor: 'details',
+      className: "action-buttons",
+      render: (_, row) => (
+        <button className="button-table">
+          <img src={DetailsIcon} alt="Detalles" onClick={() => {
+            setPopUpDetail(true)
+            setSelectedItem(row)
+          }
+          }
+          />
+        </button>
+      )
+    },
+    {
+      header: 'Borrar',
+      accessor: 'delete',
+      className: "action-buttons",
+      render: (_, row) => (
+        <button className="button-table"
+          onClick={() => {
+            setSelectedItem(row);
+            setPopUpDelete(true);
+          }}>
+          <img src={DeleteIcon} alt="Borrar" />
+        </button>
+      )
+    },
+  ];
 
+  /*
+  
   const columns = [
     { header: 'Numero de socio', accessor: 'partnerNumber' },
     { header: 'Nombre', accessor: 'name' },
@@ -175,6 +270,7 @@ export default function PartnerSection() {
       )
     },
   ];
+  */
 
   const partnersPopUp = [
     {
@@ -272,6 +368,22 @@ export default function PartnerSection() {
       content: <PartnersBooks />,
       close: () => setPopUpBooksPartners(false),
       condition: PopUpBooksPartners
+    },
+    {
+      key: 'unpaidFees',
+      title: 'Cuotas Impagas',
+      classname: 'books-partners-amount-size',
+      content: <UnpaidFees />,
+      close: () => setPopupUnpaidFees(false),
+      condition: PopUpUnpaidFees
+    },
+    {
+      key: 'pendingBooks',
+      title: 'Libros pendientes',
+      classname: 'books-partners-amount-size',
+      content: <PendingBooks />,
+      close: () => setPopupPendingBooks(false),
+      condition: PopUpPendingBooks
     }
   ];
 

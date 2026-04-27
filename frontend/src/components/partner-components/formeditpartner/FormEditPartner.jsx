@@ -155,6 +155,9 @@ export default function FormEditPartner({ selectedPartner }) {
   return (
     <div className="form-edit-partner">
       <form onSubmit={handleSubmit}>
+        <div className="numberAssigned">
+          <h2> Socio N°: {formValues.partnerNumber} </h2>
+        </div>
 
         <Accordion title="Datos personales" isActive={activeAccordion === "personal"} onToggle={() => handleToggle("personal")}>
 

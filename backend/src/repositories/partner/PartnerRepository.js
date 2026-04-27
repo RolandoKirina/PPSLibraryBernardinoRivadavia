@@ -9,14 +9,14 @@ import ReasonForWithdrawal from '../../models/partner/reasonForWithDrawal.js';
 import { Sequelize, Op } from "sequelize";
 
 export const printList = async (filters) => {
-  const { 
-    order, 
-    wherePartner, 
-    borrowedBooksMax, 
-    borrowedBooksMin, 
-    whereBook, 
-    limit, 
-    offset 
+  const {
+    order,
+    wherePartner,
+    borrowedBooksMax,
+    borrowedBooksMin,
+    whereBook,
+    limit,
+    offset
   } = filters;
 
   let havingCondition = null;
@@ -90,7 +90,7 @@ export const printList = async (filters) => {
           INNER JOIN "Prestamo" AS l ON lb."IdPrestamo" = l."Id"
           INNER JOIN "Libros" AS b ON lb."BookId" = b."id"
           WHERE l."NumSocio" = "Partner"."id"
-          ${cduValue ? `AND b."Cod_rcdu" LIKE '${cduValue.toString().replace('%','')}%'` : ''}
+          ${cduValue ? `AND b."Cod_rcdu" LIKE '${cduValue.toString().replace('%', '')}%'` : ''}
         )`),
         'totalBorrowedBooks'
       ]]
@@ -107,7 +107,7 @@ export const printList = async (filters) => {
         attributes: ["status"],
       },
     ],
-    order 
+    order
   });
 
   const mappedRows = rows.map((p) => {
@@ -121,9 +121,9 @@ export const printList = async (filters) => {
     };
   });
 
-  return { 
-    rows: mappedRows, 
-    count: totalCount 
+  return {
+    rows: mappedRows,
+    count: totalCount
   };
 };
 
@@ -153,7 +153,6 @@ export const getUnpaidFeesByPartner = async (id) => {
   }
 
 };
-
 export const getAll = async (filters = {}) => {
   const { wherePartner, limit, offset, order } = filters;
 
@@ -195,9 +194,11 @@ export const getAll = async (filters = {}) => {
 
     return {
       ...p,
-      status: p.StatePartner?.status || null,
+      name: p.name?.trim() ? p.name : "Sin nombre",
+      surname: p.surname?.trim() ? p.surname : "Sin apellido",
+      status: p.StatePartner?.status || 'Desconocido',
       Locality: p.Locality?.name || 'No definida',
-      StatePartner: undefined // 
+      StatePartner: undefined
     };
   });
 
@@ -206,9 +207,14 @@ export const getAll = async (filters = {}) => {
     count
   };
 };
-
 export const getOne = async (id) => {
   return await Partner.findByPk(id);
+};
+
+export const findMaxPartnerNumber = async () => {
+  // Reemplaza 'number' por el nombre real de tu columna en la base de datos
+  const maxNumber = await Partner.max('partnerNumber');
+  return maxNumber || 0;
 };
 
 export const getOneByPartnerNumber = async (partnerNumber) => {
@@ -252,58 +258,58 @@ export const remove = async (id) => {
 };
 
 export const getPartnerIdFromPartnerNumber = async (partnerNumbers) => {
-    const isArray = Array.isArray(partnerNumbers);
-    const numbers = isArray ? partnerNumbers : [partnerNumbers];
+  const isArray = Array.isArray(partnerNumbers);
+  const numbers = isArray ? partnerNumbers : [partnerNumbers];
 
-    const partners = await Partner.findAll({
-        attributes: ['id'],
-        where: {
-            partnerNumber: numbers
-        },
-        raw: true
-    });
+  const partners = await Partner.findAll({
+    attributes: ['id'],
+    where: {
+      partnerNumber: numbers
+    },
+    raw: true
+  });
 
-    const ids = partners.map(p => p.id);
+  const ids = partners.map(p => p.id);
 
-    if (isArray) return ids;
+  if (isArray) return ids;
 
-    return ids.length > 0 ? ids[0] : null;
+  return ids.length > 0 ? ids[0] : null;
 };
 
 export const changeUnpaidFees = async (change, values) => {
-    if (!values || (Array.isArray(values) && values.length === 0)) return;
+  if (!values || (Array.isArray(values) && values.length === 0)) return;
 
-    const inputValues = Array.isArray(values) ? values : [values];
-    let targetIds = [];
+  const inputValues = Array.isArray(values) ? values : [values];
+  let targetIds = [];
 
-    if (change === 'decrement') {
-        const foundIds = await getPartnerIdFromPartnerNumber(inputValues);
+  if (change === 'decrement') {
+    const foundIds = await getPartnerIdFromPartnerNumber(inputValues);
 
-        targetIds = Array.isArray(foundIds) ? foundIds : [foundIds];
-    } else {
-        targetIds = inputValues;
-    }
+    targetIds = Array.isArray(foundIds) ? foundIds : [foundIds];
+  } else {
+    targetIds = inputValues;
+  }
 
-    if (targetIds.length === 0 || targetIds[0] === undefined) {
-        console.error("No se encontraron IDs válidos para actualizar unpaidFees");
-        return;
-    }
+  if (targetIds.length === 0 || targetIds[0] === undefined) {
+    console.error("No se encontraron IDs válidos para actualizar unpaidFees");
+    return;
+  }
 
-    if (change === 'increment') {
-        await Partner.increment('unpaidFees', {
-            by: 1,
-            where: { id: targetIds }
-        });
-    } 
-    else if (change === 'decrement') {
-        await Partner.decrement('unpaidFees', {
-            by: 1,
-            where: { 
-                id: targetIds,
-                unpaidFees: { [Op.gt]: 0 }
-            }
-        });
-    }
+  if (change === 'increment') {
+    await Partner.increment('unpaidFees', {
+      by: 1,
+      where: { id: targetIds }
+    });
+  }
+  else if (change === 'decrement') {
+    await Partner.decrement('unpaidFees', {
+      by: 1,
+      where: {
+        id: targetIds,
+        unpaidFees: { [Op.gt]: 0 }
+      }
+    });
+  }
 };
 
 export const changePendingBooks = async (change, partnerId, amount = 1, transaction = null) => {
@@ -312,18 +318,18 @@ export const changePendingBooks = async (change, partnerId, amount = 1, transact
   const options = {
     by: amount,
     where: { id: partnerId },
-    transaction 
+    transaction
   };
 
   if (change === 'increment') {
     await Partner.increment('pendingBooks', options);
-  } 
+  }
   else if (change === 'decrement') {
     await Partner.decrement('pendingBooks', {
       ...options,
-      where: { 
+      where: {
         ...options.where,
-        pendingBooks: { [Op.gt]: 0 } 
+        pendingBooks: { [Op.gt]: 0 }
       }
     });
   }

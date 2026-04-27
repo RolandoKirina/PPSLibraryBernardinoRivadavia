@@ -8,6 +8,32 @@ export default function PartnerFilter({ formData, onChange }) {
       <div className="filter-form">
         <form onSubmit={(e) => e.preventDefault()}>
           <h3 className="titleh3">Filtro de socios</h3>
+          <div className="form-input-group">
+            <label htmlFor="sortBy">Ordenar por</label>
+            <select
+              id="sortBy"
+              name="sortBy"
+              value={formData.sortBy}
+              onChange={onChange}
+            >
+              <option value="name">Nombre</option>
+              <option value="surname">Apellido</option>
+              <option value="partnerNumber">Número de Socio</option>
+            </select>
+          </div>
+
+          <div className="form-input-group">
+            <label htmlFor="direction">Dirección</label>
+            <select
+              id="direction"
+              name="direction"
+              value={formData.direction}
+              onChange={onChange}
+            >
+              <option value="asc">Ascendente</option>
+              <option value="desc">Descendente</option>
+            </select>
+          </div>
 
           <div className="form-input-group">
             <h4>Estado del socio</h4>
@@ -81,6 +107,6 @@ export default function PartnerFilter({ formData, onChange }) {
         </form>
       </div>
     </aside>
-    
+
   );
 }

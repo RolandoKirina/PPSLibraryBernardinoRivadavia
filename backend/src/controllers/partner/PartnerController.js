@@ -15,6 +15,17 @@ export const printList = async(req,res) =>{
     }
 }
 
+export const getNextNumber = async (req, res) => {
+    try {
+        const result = await PartnerService.getNextNumber();
+        res.status(HTTP_STATUS.OK.code).json(result);
+    }
+    catch (e) {
+        console.error(e);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+    }
+}
+
 export const getAllPartners = async (req, res) => {
     try {
         const queryOptions = buildPartnerFilters(req.query);
