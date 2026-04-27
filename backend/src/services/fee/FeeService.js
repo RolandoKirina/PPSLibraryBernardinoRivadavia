@@ -16,15 +16,16 @@ export const getAllFees = async (filters, listType) => {
 
 
 export const generateUnpaidFees = async (body) => {
-    if (!body || !body.month_and_year || !body.amount) {
-        throw new Error("Faltan datos obligatorios (fecha o monto)");
+    if (!body || !body.month || !body.year) {
+        throw new Error("Faltan datos obligatorios (mes o año)");
     }
 
-    const { month_and_year, amount, observation } = body;
-    const [year, month] = month_and_year.split("-").map(Number);
+    const { month, year, observation } = body;
 
+    // 🔹 Traer socios activos CON categoría
     const activePartners = await getAll({
-        isActive: 1
+        isActive: 1,
+        includeCategory: true // asegurate que esto funcione en tu repo
     });
 
     const partners = activePartners.rows;
@@ -38,18 +39,26 @@ export const generateUnpaidFees = async (body) => {
 
     const feesToCreate = partners
         .filter(partner => !partnersWithFee.has(partner.id))
-        .map(partner => ({
-            idPartner: partner.id,
-            month,
-            year,
-            amount: amount,
-            observation: observation || "",
-            paid: false,
-            date_of_paid: null,
-            createdAt: new Date(),
-            periodDate: new Date(Date.UTC(year, month - 1, 1)) 
-        }));
-        
+        .map(partner => {
+            const categoryAmount = partner.PartnerCategory?.amount;
+
+            if (!categoryAmount) {
+                throw new Error(`El socio ${partner.id} no tiene categoría o importe definido`);
+            }
+
+            return {
+                idPartner: partner.id,
+                month,
+                year,
+                amount: categoryAmount,
+                observation: observation || "",
+                paid: false,
+                date_of_paid: null,
+                createdAt: new Date(),
+                periodDate: new Date(Date.UTC(year, month - 1, 1))
+            };
+        });
+
     if (feesToCreate.length === 0) {
         return { message: "Todos los socios ya tienen su cuota generada para este periodo." };
     }
@@ -59,11 +68,6 @@ export const generateUnpaidFees = async (body) => {
     const newFeePartnerIds = feesToCreate.map(f => f.idPartner);
 
     await changeUnpaidFees("increment", newFeePartnerIds);
-
-    if (generatedFees.length === 0) {
-        throw new Error(`Ya existen cuotas generadas para el mes ${month} y año ${year}`);
-    }
-
 
     return {
         message: `Se generaron ${generatedFees.length} cuotas exitosamente`,

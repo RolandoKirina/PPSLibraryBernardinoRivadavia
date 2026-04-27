@@ -58,7 +58,6 @@ export const FeeSection = () => {
 
   useEffect(() => {
     const delay = setTimeout(() => {
-      // Eliminamos solo los valores que son strings vacíos o null
       const activeFilters = Object.fromEntries(
         Object.entries(formData).filter(([_, v]) => v !== "" && v !== null)
       );
@@ -211,7 +210,6 @@ export const FeeSection = () => {
         render: (value) => value ? '✅ Paga' : '❌ Impaga',
       },
       {
-        // Cambiamos el nombre para que se entienda que es la gestión de la cuota
         header: 'Gestión',
         accessor: 'status',
         className: "action-buttons",
@@ -222,9 +220,8 @@ export const FeeSection = () => {
             onClick={(e) => {
               e.stopPropagation();
               setSelectedId(row.feeid || row.id);
-              setPopUpDelete(true); // Este PopUp ahora debería manejar el "Toggle" de estado
+              setPopUpDelete(true); 
             }}>
-            {/* Si value (status) es true, mostramos icono de borrar/deshabilitar, si es false, uno de recuperar/habilitar */}
             <img
               src={DeleteIcon}
               alt="Estado"
@@ -349,6 +346,7 @@ export const FeeSection = () => {
     adminFeeActions = <div className='fees-actions'>
       <Btn text="Generar Cuotas" variant="primary" onClick={() => setPopupAdd(true)}></Btn>
       <Btn text="Cuotas entre fechas" variant="primary" onClick={() => setPopUpFeesBetweenDates(true)}></Btn>
+      <Btn text="Ingresar Fecha de pago" variant="primary" onClick={() => setPopUpFeesBetweenDates(true)}></Btn>
 
     </div>;
   }

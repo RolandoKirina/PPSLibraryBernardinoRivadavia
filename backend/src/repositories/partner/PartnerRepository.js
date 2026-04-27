@@ -7,6 +7,7 @@ import Locality from '../../models/partner/locality.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 import ReasonForWithdrawal from '../../models/partner/reasonForWithDrawal.js';
 import { Sequelize, Op } from "sequelize";
+import PartnerCategory from '../../models/partner/partnerCategory.js';
 
 export const printList = async (filters) => {
   const {
@@ -153,6 +154,7 @@ export const getUnpaidFeesByPartner = async (id) => {
   }
 
 };
+
 export const getAll = async (filters = {}) => {
   const { wherePartner, limit, offset, order } = filters;
 
@@ -167,6 +169,11 @@ export const getAll = async (filters = {}) => {
         model: Locality,
         as: 'Locality',
         attributes: ['name'],
+      },
+      {
+        model: PartnerCategory,
+        as: 'PartnerCategory',
+        attributes: ['idCategory', 'name', 'amount'] 
       }
     ]
   };
@@ -198,6 +205,10 @@ export const getAll = async (filters = {}) => {
       surname: p.surname?.trim() ? p.surname : "Sin apellido",
       status: p.StatePartner?.status || 'Desconocido',
       Locality: p.Locality?.name || 'No definida',
+
+      categoryName: p.PartnerCategory?.name || 'Sin categoría',
+      categoryAmount: p.PartnerCategory?.amount || 0,
+
       StatePartner: undefined
     };
   });
@@ -207,6 +218,8 @@ export const getAll = async (filters = {}) => {
     count
   };
 };
+
+
 export const getOne = async (id) => {
   return await Partner.findByPk(id);
 };

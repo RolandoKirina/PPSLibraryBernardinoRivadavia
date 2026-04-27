@@ -4,14 +4,14 @@ import { Op } from "sequelize";
 import { fn, col } from 'sequelize';
 import { QueryTypes } from "sequelize";
 import sequelize from "../../configs/database.js";
+import PartnerCategory from "../../models/partner/partnerCategory.js";
 
 export const getAll = async (filters = {}, listType = '') => {
   const { wherePartner, whereFees, limit, offset, order } = filters;
 
   if (listType === 'TypeOneFees') {
     return getAllFeesTypeOne(filters);
-  }
-  else if (listType == 'TypeTwoFees') {
+  } else if (listType == 'TypeTwoFees') {
     return getAllFeesTypeTwo(filters);
   }
 
@@ -20,7 +20,14 @@ export const getAll = async (filters = {}, listType = '') => {
       model: Partner,
       as: "Partner",
       required: true,
-      where: wherePartner && Object.keys(wherePartner).length ? wherePartner : undefined
+      where: wherePartner && Object.keys(wherePartner).length ? wherePartner : undefined,
+      include: [
+        {
+          model: PartnerCategory, 
+          as: "PartnerCategory",         
+          attributes: ['name', 'amount']    
+        }
+      ]
     }
   ];
 
@@ -29,7 +36,10 @@ export const getAll = async (filters = {}, listType = '') => {
     where: whereFees && Object.keys(whereFees).length ? whereFees : undefined,
     include: [
       {
-        ...baseInclude[0],
+        model: Partner,
+        as: "Partner",
+        required: true,
+        where: wherePartner && Object.keys(wherePartner).length ? wherePartner : undefined,
         attributes: []
       }
     ],
@@ -69,6 +79,8 @@ export const getAll = async (filters = {}, listType = '') => {
         return `${day}-${month}-${year}`;
       };
 
+      const categoryName = fee.Partner?.PartnerCategory?.name || "Sin Categoría";
+
       return {
         feeid: fee.id,
         month: fee.month,
@@ -80,6 +92,7 @@ export const getAll = async (filters = {}, listType = '') => {
         date_of_paid: formatDate(fee.date_of_paid),
         partnerNumber: fee.Partner?.partnerNumber,
         name: fee.Partner ? `${fee.Partner.name} ${fee.Partner.surname}` : "",
+        category: categoryName, 
         surname: fee.Partner?.surname,
         status: fee.status,
         statusLabel: fee.status ? "Vigente" : "Anulada",
@@ -88,7 +101,6 @@ export const getAll = async (filters = {}, listType = '') => {
     }),
     count
   };
-
 };
 
 export const findExistingFees = async (month, year) => {

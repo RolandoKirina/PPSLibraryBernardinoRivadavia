@@ -7,7 +7,8 @@ export const FeesDetail = [
         rows: [
             [
                 { label: 'Numero de socio', value: 'informacion', attribute:'partnerNumber' },
-                { label: 'Nombre del socio', value: 'informacion',  attribute: 'name' }
+                { label: 'Nombre del socio', value: 'informacion',  attribute: 'name' },
+                { label: 'Categoria del socio', value: 'informacion',  attribute: 'category' },
             ]
         ]
     },

@@ -5,42 +5,42 @@ import Btn from '../../common/btn/Btn';
 import { Table } from '../../common/table/Table';
 import UnpaidFees from '../../loan-components/unpaidfees/UnpaidFees';
 import BackviewBtn from '../../common/backviewbtn/BackviewBtn';
-export default function ShowDetails({ data, isPopup, detailsData, titleText,actions,catalogs }) {
+export default function ShowDetails({ data, isPopup, detailsData, titleText, actions, catalogs }) {
 
- const [popupView,setPopupView]= useState(null);
- const [unpaidFees, setUnpaidFees] = useState([]);
- const [pendingBooks,setPendingBooks] = useState([]);
+  const [popupView, setPopupView] = useState(null);
+  const [unpaidFees, setUnpaidFees] = useState([]);
+  const [pendingBooks, setPendingBooks] = useState([]);
 
- const [detailsMenus, setDetailsMenus] = useState(() =>
-  fillDetailsWithData(detailsData, data, catalogs)
-);
+  const [detailsMenus, setDetailsMenus] = useState(() =>
+    fillDetailsWithData(detailsData, data, catalogs)
+  );
 
-useEffect(() => {
-  if (!data) return;
+  useEffect(() => {
+    if (!data) return;
 
-  if (
-    !catalogs?.categories?.length ||
-    !catalogs?.states?.length ||
-    !catalogs?.maritalStatuses?.length
-  ) {
-    return;
-  }
+    if (
+      !catalogs?.categories?.length ||
+      !catalogs?.states?.length ||
+      !catalogs?.maritalStatuses?.length
+    ) {
+      return;
+    }
 
-  setDetailsMenus(fillDetailsWithData(detailsData, data, catalogs));
+    setDetailsMenus(fillDetailsWithData(detailsData, data, catalogs));
 
-}, [data, catalogs]);
+  }, [data, catalogs]);
   const normalizeFees = (fees) =>
     fees.map(fee => ({
       ...fee,
       partnerName: fee.Partner?.name ?? '—',
       partnerNumber: fee.Partner?.id ?? '—'
     }));
-  
+
   async function fetchUnpaidFees() {
     try {
 
       const res = await fetch(`http://localhost:4000/api/v1/fees/partners/${data.id}/unpaid-fees`);
-      
+
       const json = await res.json();
 
       setUnpaidFees(normalizeFees(json.rows));
@@ -48,7 +48,7 @@ useEffect(() => {
 
     } catch (error) {
       console.error("Error al cargar cuotas impagas", error);
-    } 
+    }
   }
 
   async function fetchPendingBooks() {
@@ -63,84 +63,84 @@ useEffect(() => {
     }
   }
 
-   const columnsPendingBooks = [
-     { header: 'Código de libro', accessor: 'bookCode' },
-     { header: 'Título', accessor: 'title' },
-     { header: 'Fecha de retiro', accessor: 'retiredDate' },
-     { header: 'Fecha prevista', accessor: 'expectedDate' },
-     { header: 'Fecha de devolución', accessor: 'returnedDate' },
-     { header: 'Renovaciones', accessor: 'renewes' }
-   ];
+  const columnsPendingBooks = [
+    { header: 'Código de libro', accessor: 'bookCode' },
+    { header: 'Título', accessor: 'title' },
+    { header: 'Fecha de retiro', accessor: 'retiredDate' },
+    { header: 'Fecha prevista', accessor: 'expectedDate' },
+    { header: 'Fecha de devolución', accessor: 'returnedDate' },
+    { header: 'Renovaciones', accessor: 'renewes' }
+  ];
 
- function renderView () {
+  function renderView() {
     if (!actions) {
-      return null; 
+      return null;
     }
 
     switch (popupView) {
-          case "unpaidfees":
-          return (
-            <div >
-              <UnpaidFees unpaidFees={unpaidFees} />
-              <BackviewBtn menu="default" changeView={setPopupView} />
-            </div>
-          );
+      case "unpaidfees":
+        return (
+          <div >
+            <UnpaidFees unpaidFees={unpaidFees} />
+            <BackviewBtn menu="default" changeView={setPopupView} />
+          </div>
+        );
 
-         case "pendingbooks":
-            return (
-              <>
-                {pendingBooks && pendingBooks.length > 0 ? (
-                  <Table
-                    columns={columnsPendingBooks}
-                    data={pendingBooks}
-                  />
-                ) : (
-                  <div className="msg-unpaidfees">
-                    <p>No hay libros pendientes</p>
-                  </div>
-                )}
+      case "pendingbooks":
+        return (
+          <>
+            {pendingBooks && pendingBooks.length > 0 ? (
+              <Table
+                columns={columnsPendingBooks}
+                data={pendingBooks}
+              />
+            ) : (
+              <div className="msg-unpaidfees">
+                <p>No hay libros pendientes</p>
+              </div>
+            )}
 
-                <BackviewBtn menu="default" changeView={setPopupView} />
-              </>
-            );
-      }
+            <BackviewBtn menu="default" changeView={setPopupView} />
+          </>
+        );
+    }
   }
 
 
-function fillDetailsWithData(detailsData, data, catalogs) {
+  function fillDetailsWithData(detailsData, data, catalogs) {
 
-  if (!data) return detailsData;
+    if (!data) return detailsData;
 
-  return detailsData.map(menu => ({
-    ...menu,
-    rows: menu.rows.map(row =>
-      row.map(item => {
-        let value = item.attribute ? data[item.attribute] ?? '—' : item.value;
+    return detailsData.map(menu => ({
+      ...menu,
+      rows: menu.rows.map(row =>
+        row.map(item => {
+          let value = item.attribute ? data[item.attribute] ?? '—' : item.value;
 
-      if (item.catalog && value !== '—' && catalogs?.[item.catalog]) {
-  const list = catalogs[item.catalog];
+          if (item.catalog && value !== '—' && catalogs?.[item.catalog]) {
+            const list = catalogs[item.catalog];
 
-        if (Array.isArray(list)) {
+            if (Array.isArray(list)) {
 
-          const found = list.find(obj =>
-            Object.values(obj).includes(value)
-          );
+              const found = list.find(obj =>
+                Object.values(obj).includes(value)
+              );
 
-          if (found) {
-            value =
-              found.name ??
-              found.status ??
-              found.statusName ??
-              value;
+              if (found) {
+                value =
+                  found.name ??
+                  found.status ??
+                  found.statusName ??
+                  value;
+              }
+            }
           }
-        }
-      }
 
-        return { ...item, value };
-      })
-    )
-  }));
-}
+          return { ...item, value };
+        })
+      )
+    }));
+  }
 
   function toggleDropdownMenu(id) {
     setDetailsMenus(menus =>
@@ -175,7 +175,7 @@ function fillDetailsWithData(detailsData, data, catalogs) {
     <div className="details-container">
       <div className="details-content">
         {!isPopup && (
-            <h1 className="titlepopuph1">{titleText}</h1>
+          <h1 className="titlepopuph1">{titleText}</h1>
         )}
 
         <div className="dropdown-details-menu">
@@ -200,17 +200,17 @@ function fillDetailsWithData(detailsData, data, catalogs) {
               ))}
             </Accordion>
 
-            
+
           ))}
           {actions && (
-          <div  className="partner-state-btns">
+            <div className="partner-state-btns">
               <div>
-                <Btn text="Cuotas impagas"variant="secondary" onClick={fetchUnpaidFees}/>                   
+                <Btn text="Cuotas impagas" variant="secondary" onClick={fetchUnpaidFees} />
                 <Btn text="Libros pendientes" variant="secondary" onClick={fetchPendingBooks} />
               </div>
-          </div>)}
+            </div>)}
           {renderView()}
-        
+
         </div>
       </div>
     </div>

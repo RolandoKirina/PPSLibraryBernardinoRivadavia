@@ -36,23 +36,40 @@ export const editnewFeesForm = [
 export const addnewFeesForm = [
   [
     {
-      label: 'Mes y año',
-      name: 'month_and_year',
-      type: 'date',
-      required: true
+      label: 'Mes',
+      name: 'month',
+      type: 'select',
+      required: true,
+      options: [
+        { value: 1, label: 'Enero' },
+        { value: 2, label: 'Febrero' },
+        { value: 3, label: 'Marzo' },
+        { value: 4, label: 'Abril' },
+        { value: 5, label: 'Mayo' },
+        { value: 6, label: 'Junio' },
+        { value: 7, label: 'Julio' },
+        { value: 8, label: 'Agosto' },
+        { value: 9, label: 'Septiembre' },
+        { value: 10, label: 'Octubre' },
+        { value: 11, label: 'Noviembre' },
+        { value: 12, label: 'Diciembre' }
+      ]
     },
     {
-      label: 'Monto',
-      name: 'amount',
+      label: 'Año',
+      name: 'year',
       type: 'number',
-      required: true
-    },
+      required: true,
+      min: 2000,
+      max: 2100
+    }
+  ],
+  [
     {
       label: 'Observación',
       name: 'observation',
       type: 'text',
       required: true
-
     }
   ]
 ];
