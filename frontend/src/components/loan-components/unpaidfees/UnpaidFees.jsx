@@ -2,7 +2,9 @@ import './UnpaidFees.css';
 import { Table } from '../../common/table/Table';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../../auth/AuthContext';
+import PopUp from '../../common/popup-table/PopUp.jsx';
 import MoneyIcon from '../../../assets/img/money-icon.svg';
+import PayPopup from '../../fees-components/paypopup/PayPopup.jsx';
 
 export default function UnpaidFees({ item = {}, section = "" }) {
   const chunkSize = 100;
@@ -182,6 +184,12 @@ export default function UnpaidFees({ item = {}, section = "" }) {
         showCount={true}
         rowsPerPage={rowsPerPage}
       />
+
+      {popUpPay && <>
+        <PopUp title={'Pagar Cuota'} className={'pay-popup'} onClick={() => setPopUpPay(false)}>
+            <PayPopup item={selectedItem} />
+        </PopUp>
+      </>}
 
     </div>
   );
