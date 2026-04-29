@@ -63,7 +63,7 @@ export const Table = ({ columns = [], data = [], children, popupLength, isPrintL
         )}
 
         {showCount && (
-          <span style={{ color: 'black', fontWeight: 'bold'}}>
+          <span>
             {data.length} {data.length === 1 ? 'Fila encontrada' : 'Filas encontradas'}
           </span>
         )}

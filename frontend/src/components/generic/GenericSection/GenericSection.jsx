@@ -14,7 +14,7 @@ export default function GenericSection({
     handleChangePage,
     loading,
     resetPageTrigger,
-    showCount
+    showCount,
 }) {
     return (
         <section className='genericsection'>

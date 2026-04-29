@@ -204,7 +204,7 @@ export const FeeSection = () => {
           <button
             className="button-link"
             onClick={() => {
-              setSelectedItem(row);
+              setSelectedItem(null);
               setPopupUnpaidFees(true);
             }}
           >
@@ -357,7 +357,7 @@ export const FeeSection = () => {
       key: 'unpaidFees',
       title: 'Cuotas Impagas',
       classname: 'books-partners-amount-size',
-      content: <UnpaidFees />,
+      content: <UnpaidFees item={selectedItem} section="Fee" />,
       close: () => setPopupUnpaidFees(false),
       condition: PopupUnpaidFees
     },
@@ -373,7 +373,7 @@ export const FeeSection = () => {
       <Btn text="Generar Cuotas" variant="primary" onClick={() => setPopupAdd(true)}></Btn>
       <Btn text="Cuotas entre fechas" variant="primary" onClick={() => setPopUpFeesBetweenDates(true)}></Btn>
       <Btn text="Ingresar Fecha de pago" variant="primary" onClick={() => setPopUpFeesBetweenDates(true)}></Btn>
-
+      <Btn text="Cuotas Impagas" variant="primary" onClick={() => setPopupUnpaidFees(true)}></Btn>
     </div>;
   }
 

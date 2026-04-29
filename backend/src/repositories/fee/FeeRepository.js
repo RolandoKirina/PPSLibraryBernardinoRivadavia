@@ -23,9 +23,9 @@ export const getAll = async (filters = {}, listType = '') => {
       where: wherePartner && Object.keys(wherePartner).length ? wherePartner : undefined,
       include: [
         {
-          model: PartnerCategory, 
-          as: "PartnerCategory",         
-          attributes: ['name', 'amount']    
+          model: PartnerCategory,
+          as: "PartnerCategory",
+          attributes: ['name', 'amount']
         }
       ]
     }
@@ -91,9 +91,10 @@ export const getAll = async (filters = {}, listType = '') => {
         paidLabel: fee.paid ? "Pagada" : "Impaga",
         date_of_paid: formatDate(fee.date_of_paid),
         partnerNumber: fee.Partner?.partnerNumber,
+        idPartner: fee.Partner?.id,
         name: fee.Partner ? `${fee.Partner.name} ${fee.Partner.surname}` : "",
         unpaidFees: fee.Partner?.unpaidFees,
-        category: categoryName, 
+        category: categoryName,
         surname: fee.Partner?.surname,
         status: fee.status,
         statusLabel: fee.status ? "Vigente" : "Anulada",
@@ -281,39 +282,60 @@ export const getAllFeesTypeTwo = async (filters = {}) => {
   }
 };
 
+export const getUnpaidFeesByPartner = async (identifier, filters = {}) => {
+  const { limit, offset, year, surname, status = 'unpaid', searchType = 'id' } = filters;
 
+  let actualId;
 
-export const getUnpaidFeesByPartner = async (idPartner, filters = {}) => {
-  const { limit, offset } = filters;
+  if (searchType === 'partnerNumber') {
+    const partner = await Partner.findOne({ 
+      where: { partnerNumber: identifier },
+      attributes: ['id'] 
+    });
+    
+    if (!partner) {
+      return { rows: [], count: 0 }; 
+    }
+    actualId = partner.id;
+  } else {
+    actualId = identifier;
+  }
+
+  const whereConditions = { idPartner: actualId };
+
+  if (status === 'paid') whereConditions.paid = true;
+  else if (status === 'unpaid') whereConditions.paid = false;
+
+  if (year) whereConditions.year = year;
+
+  const partnerIncludeWhere = {};
+  if (surname) partnerIncludeWhere.surname = { [Op.like]: `%${surname}%` };
 
   const { rows, count } = await Fees.findAndCountAll({
-    where: {
-      idPartner,
-      paid: false
-    },
-    include: [
-      {
-        model: Partner,
-        as: 'Partner',
-        attributes: ['id', 'name', 'surname', 'partnerNumber']
-      }
-    ],
-    limit,
-    offset,
-    order: [['id', 'ASC']]
+    where: whereConditions,
+    include: [{
+      model: Partner,
+      as: 'Partner',
+      where: partnerIncludeWhere,
+      attributes: ['id', 'name', 'surname', 'partnerNumber']
+    }],
+    limit: limit ? parseInt(limit) : undefined,
+    offset: offset ? parseInt(offset) : undefined,
+    order: [['year', 'ASC'], ['month', 'ASC']]
   });
+
+  const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
   return {
     rows: rows.map(fee => ({
-      id: fee.id,
-      partnerNumber: fee.Partner?.partnerNumber ?? '—',
-      name: fee.Partner
-        ? `${fee.Partner.name} ${fee.Partner.surname}`
-        : '—',
-      month: fee.month,
+      feeNumber: fee.month,             
+      amount: fee.amount,       
+      month: months[fee.month - 1],
+      idPartner: fee.Partner?.id,
+      partnerNumber: fee.Partner?.partnerNumber,
       year: fee.year,
-      amount: fee.amount,
-      date_of_paid: fee.date_of_paid
+      paid: fee.paid,
+      feeid: fee.id                                     
     })),
     count
   };

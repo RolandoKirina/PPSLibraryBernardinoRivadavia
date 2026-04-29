@@ -214,64 +214,6 @@ export default function PartnerSection() {
     },
   ];
 
-  /*
-  
-  const columns = [
-    { header: 'Numero de socio', accessor: 'partnerNumber' },
-    { header: 'Nombre', accessor: 'name' },
-    { header: 'Apellido', accessor: 'surname' },
-    { header: 'Cuotas impagas', accessor: 'unpaidFees' },
-    { header: 'Libros pendientes', accessor: 'pendingBooks' },
-    { header: 'Estado', accessor: 'status' },
-
-    {
-      header: 'Editar',
-      accessor: 'edit',
-      className: "action-buttons",
-      render: (_, row) => (
-        <button className="button-table"
-          onClick={() => {
-            setPopupEdit(true)
-            setSelectedItem(row)
-          }}>
-          <img src={EditIcon} alt="Editar" />
-        </button>
-      )
-    },
-    {
-      header: 'Ver detalle',
-      accessor: 'details',
-      className: "action-buttons",
-      render: (_, row) => (
-        <button className="button-table">
-          <img src={DetailsIcon} alt="Detalles" onClick={() => {
-            setPopUpDetail(true)
-            setSelectedItem(row)
-          }
-          }
-          />
-        </button>
-      )
-    },
-    {
-      header: 'Borrar',
-      accessor: 'delete',
-      className: "action-buttons",
-      render: (_, row) => (
-        <button className="button-table"
-          onClick={() => {
-
-            setSelectedItem(row);
-            setPopUpDelete(true);
-          }}>
-
-          <img src={DeleteIcon} alt="Borrar" />
-        </button>
-      )
-    },
-  ];
-  */
-
   const partnersPopUp = [
     {
 
@@ -336,7 +278,7 @@ export default function PartnerSection() {
         setPopUpAdd(false)
       },
       condition: PopUpAdd
-    },
+    }, 
     {
       key: 'detailsPopup',
       title: 'Detalles del socio',
@@ -372,8 +314,8 @@ export default function PartnerSection() {
     {
       key: 'unpaidFees',
       title: 'Cuotas Impagas',
-      classname: 'books-partners-amount-size',
-      content: <UnpaidFees />,
+      classname: 'unpaid-fees-content',
+      content: <UnpaidFees item={selectedItem} section="Partner" />,
       close: () => setPopupUnpaidFees(false),
       condition: PopUpUnpaidFees
     },
