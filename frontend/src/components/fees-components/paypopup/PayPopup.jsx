@@ -1,21 +1,20 @@
 import { useState, useEffect } from 'react';
+import Btn from '../../common/btn/Btn';
+import SaveIcon from '../../../assets/img/save-icon.svg';
 import './PayPopup.css';
 
 export default function PopUp({ item = {} }) {
-    // Inicializamos el estado vacío para evitar errores de "controlled vs uncontrolled"
     const [formData, setFormData] = useState({
         paymentDate: '',
         amount: ''
     });
 
-    // useEffect para cargar los datos del item cuando el componente se monta o cambia el item
     useEffect(() => {
         if (item && Object.keys(item).length > 0) {
-            // Seteamos la fecha de hoy por defecto para el pago y el importe que viene del item
             const today = new Date().toISOString().split('T')[0];
-            
+
             setFormData({
-                paymentDate: today, 
+                paymentDate: today,
                 amount: item.amount || ''
             });
         }
@@ -59,8 +58,17 @@ export default function PopUp({ item = {} }) {
                     />
                 </div>
             </div>
-            
-            {/* Aquí irían tus botones de Confirmar / Cancelar usando formData */}
-        </div>
+
+            <Btn
+                type={'button'}
+                variant={'primary'}
+                text={'Guardar'}
+                onClick={() => {
+                    console.log("confirmed");
+                }}
+                icon={<img src={SaveIcon} alt='saveIconButton' />}
+            />
+        
+        </div >
     );
 }
