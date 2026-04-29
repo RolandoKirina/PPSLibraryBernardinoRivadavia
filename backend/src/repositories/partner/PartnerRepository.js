@@ -159,6 +159,20 @@ export const getAll = async (filters = {}) => {
   const { wherePartner, limit, offset, order } = filters;
 
   const query = {
+    attributes: {
+      include: [
+        [
+          // Corregido: "IdSocio" con I mayúscula y "socio"."id" según el alias de la tabla
+          Sequelize.literal(`(
+            SELECT COUNT(*)
+            FROM "Cuotas" AS f
+            WHERE f."IdSocio" = "Partner"."id" 
+            AND f."Paga" = false
+          )`),
+          'unpaidFees' 
+        ]
+      ]
+    },
     include: [
       {
         model: statePartner,
@@ -175,24 +189,17 @@ export const getAll = async (filters = {}) => {
         as: 'PartnerCategory',
         attributes: ['idCategory', 'name', 'amount'] 
       }
-    ]
+    ],
+    distinct: true 
   };
 
   if (wherePartner && Object.keys(wherePartner).length) {
     query.where = wherePartner;
   }
 
-  if (Number.isInteger(limit)) {
-    query.limit = limit;
-  }
-
-  if (Number.isInteger(offset)) {
-    query.offset = offset;
-  }
-
-  if (Array.isArray(order) && order.length) {
-    query.order = order;
-  }
+  if (Number.isInteger(limit)) query.limit = limit;
+  if (Number.isInteger(offset)) query.offset = offset;
+  if (Array.isArray(order) && order.length) query.order = order;
 
   const { rows, count } = await Partner.findAndCountAll(query);
 
@@ -205,9 +212,11 @@ export const getAll = async (filters = {}) => {
       surname: p.surname?.trim() ? p.surname : "Sin apellido",
       status: p.StatePartner?.status || 'Desconocido',
       Locality: p.Locality?.name || 'No definida',
-
       categoryName: p.PartnerCategory?.name || 'Sin categoría',
       categoryAmount: p.PartnerCategory?.amount || 0,
+      
+      // Aseguramos que tome el valor de la subquery (literal)
+      unpaidFees: parseInt(p.unpaidFees) || 0,
 
       StatePartner: undefined
     };

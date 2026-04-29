@@ -9,11 +9,6 @@ export default function UnpaidFees({ item = {}, section = "" }) {
   const rowsPerPage = 5;
   const { auth } = useAuth();
 
-  /**
-   * Lógica de ID según sección:
-   * - Si viene de 'Fee', buscamos 'idPartner' (la FK en la tabla de cuotas).
-   * - Si viene de 'Partner' (o cualquier otra), buscamos 'id' (la PK de la tabla socios).
-   */
   const effectiveId = section === 'Fee' ? item?.idPartner : item?.id;
 
   const [unpaidFees, setUnpaidFees] = useState([]);
@@ -26,29 +21,34 @@ export default function UnpaidFees({ item = {}, section = "" }) {
 
   const [filters, setFilters] = useState({
     year: '',
-    paymentDate: ''
+    paymentDate: '',
+    status: 'unpaid'
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    
     setFilters(prev => ({ ...prev, [name]: value }));
   };
 
-  const fetchUnpaidFees = async ({ limit, offset }, append = false) => {
-    // Si no hay ID efectivo, no ejecutamos la consulta
+  // 1. Modifica la firma de la función para aceptar filtros actuales
+  const fetchUnpaidFees = async ({ limit, offset }, currentFilters = filters, append = false) => {
     if (!effectiveId) return;
 
     setLoading(true);
     setError(null);
 
     try {
-      /**
-       * Agregamos explícitamente searchType=id para que el backend 
-       * no intente buscar por partnerNumber.
-       */
-      let url = `http://localhost:4000/api/v1/fees/partners/${effectiveId}/unpaid-fees?limit=${limit}&offset=${offset}&searchType=id`;
-      
-      if (filters.year) url += `&year=${filters.year}`;
+      let url = `http://localhost:4000/api/v1/fees/partners/${effectiveId}/unpaid-fees?limit=${limit}&offset=${offset}`;
+
+      // Filtro de Año
+      if (currentFilters.year) url += `&year=${currentFilters.year}`;
+
+      // CORRECCIÓN: Usar el nombre de parámetro 'status' que espera tu backend
+      // y pasar el valor directamente (all, paid, unpaid)
+      if (currentFilters.status) {
+        url += `&status=${currentFilters.status}`;
+      }
 
       const res = await fetch(url, {
         method: 'GET',
@@ -61,6 +61,7 @@ export default function UnpaidFees({ item = {}, section = "" }) {
       if (!res.ok) throw new Error('Error al obtener cuotas');
 
       const { rows, count } = await res.json();
+
       setTotalItems(count);
       setUnpaidFees(prev => (append ? [...prev, ...rows] : rows));
     } catch (err) {
@@ -71,7 +72,6 @@ export default function UnpaidFees({ item = {}, section = "" }) {
     }
   };
 
-  // Re-ejecutar cuando cambie el ID o el filtro de año
   useEffect(() => {
     setUnpaidFees([]);
     setTotalItems(0);
@@ -79,18 +79,21 @@ export default function UnpaidFees({ item = {}, section = "" }) {
 
     if (effectiveId) {
       const delayDebounceFn = setTimeout(() => {
-        fetchUnpaidFees({ limit: chunkSize, offset: 0 });
+        fetchUnpaidFees({ limit: chunkSize, offset: 0 }, filters);
       }, 400);
       return () => clearTimeout(delayDebounceFn);
     }
-  }, [effectiveId, filters.year]);
+  }, [effectiveId, filters.year, filters.status]);
 
   async function handleChangePage(page) {
     const numberPage = Number(page);
     const lastItemIndex = numberPage * rowsPerPage;
-    if (lastItemIndex > unpaidFees.length) {
+
+    if (lastItemIndex > unpaidFees.length && unpaidFees.length < totalItems) {
       const newOffset = unpaidFees.length;
-      await fetchUnpaidFees({ limit: chunkSize, offset: newOffset }, true);
+      await fetchUnpaidFees({ limit: chunkSize, offset: newOffset }, filters, true);
+    } else {
+      console.log("Datos suficientes en memoria, no se requiere fetch.");
     }
   }
 
@@ -100,20 +103,27 @@ export default function UnpaidFees({ item = {}, section = "" }) {
     { header: 'Mes', accessor: 'month' },
     { header: 'Año', accessor: 'year' },
     {
+      header: 'Estado',
+      accessor: 'paid',
+      render: (paid) => paid ? <span className="status-paid">Paga</span> : <span className="status-unpaid">Impaga</span>
+    },
+    {
       header: 'Pagar',
       accessor: 'payment',
       className: "action-buttons",
       render: (_, row) => (
-        <button 
-          className="button-table" 
-          onClick={(e) => {
-            e.stopPropagation();
-            setSelectedItem(row);
-            setPopUpPay(true);
-          }}
-        >
-          <img src={MoneyIcon} alt="Pagar" />
-        </button>
+        !row.paid && ( // Solo mostrar botón si no está paga
+          <button
+            className="button-table"
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedItem(row);
+              setPopUpPay(true);
+            }}
+          >
+            <img src={MoneyIcon} alt="Pagar" />
+          </button>
+        )
       )
     },
   ];
@@ -124,53 +134,59 @@ export default function UnpaidFees({ item = {}, section = "" }) {
         <h2>
           Socio: {item?.name} {item?.surname} (N° {item?.partnerNumber})
         </h2>
-        
+
         <div className="unpaid-fees-grid">
           <div className='unpaid-fee-input'>
             <label>Filtrar por Año</label>
-            <input 
-              name="year" 
-              type='text' 
-              placeholder="Ej: 2026" 
-              value={filters.year} 
-              onChange={handleInputChange} 
+            <input
+              name="year"
+              type='text'
+              placeholder="Ej: 2026"
+              value={filters.year}
+              onChange={handleInputChange}
             />
           </div>
-          
+
+          <div className='unpaid-fee-input'>
+            <label>Estado de Cuota</label>
+            <select
+              name="status"
+              value={filters.status}
+              onChange={handleInputChange}
+              className="unpaid-fee-select"
+            >
+              <option value="all">Todas</option>
+              <option value="paid">Pagas</option>
+              <option value="unpaid">Impagas</option>
+            </select>
+          </div>
+
           <div className='unpaid-fee-input'>
             <label>Fecha de pago (Información)</label>
-            <input 
-              name="paymentDate" 
-              type='date' 
-              value={filters.paymentDate} 
-              onChange={handleInputChange} 
+            <input
+              name="paymentDate"
+              type='date'
+              value={filters.paymentDate}
+              onChange={handleInputChange}
             />
           </div>
         </div>
       </div>
 
-      <hr />
-
       {error && <div className="error-msg">{error}</div>}
 
-      {unpaidFees.length > 0 ? (
-        <Table 
-          columns={columns} 
-          data={unpaidFees} 
-          totalItems={totalItems} 
-          handleChangePage={handleChangePage} 
-          loading={loading} 
-          resetPageTrigger={resetPageTrigger} 
-          showCount={true} 
-          rowsPerPage={12}
-        />
-      ) : (
-        !loading && effectiveId && (
-          <div className="msg-unpaidfees">
-            <p>No hay cuotas impagas registradas para este socio.</p>
-          </div>
-        )
-      )}
+
+      <Table
+        columns={columns}
+        data={unpaidFees}
+        totalItems={totalItems}
+        handleChangePage={handleChangePage}
+        loading={loading}
+        resetPageTrigger={resetPageTrigger}
+        showCount={true}
+        rowsPerPage={rowsPerPage}
+      />
+
     </div>
   );
 }

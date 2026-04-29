@@ -282,63 +282,67 @@ export const getAllFeesTypeTwo = async (filters = {}) => {
   }
 };
 
-export const getUnpaidFeesByPartner = async (identifier, filters = {}) => {
-  const { limit, offset, year, surname, status = 'unpaid', searchType = 'id' } = filters;
 
-  let actualId;
+export const getUnpaidFeesByPartner = async (idPartner, filters = {}) => {
+  const { limit, offset, year, status = 'unpaid' } = filters;
 
-  if (searchType === 'partnerNumber') {
-    const partner = await Partner.findOne({ 
-      where: { partnerNumber: identifier },
-      attributes: ['id'] 
-    });
-    
-    if (!partner) {
-      return { rows: [], count: 0 }; 
-    }
-    actualId = partner.id;
-  } else {
-    actualId = identifier;
+
+  // 1. Condición base: Siempre filtrar por el socio
+  const whereConditions = { idPartner: idPartner };
+
+  // 2. Lógica de Filtro de Pago
+  // Si es 'all', no agregamos la propiedad 'paid', trayendo ambas.
+  if (status === 'paid') {
+    whereConditions.paid = true;
+  } else if (status === 'unpaid') {
+    whereConditions.paid = false;
   }
 
-  const whereConditions = { idPartner: actualId };
+  // 3. Filtro por año
+  if (year) {
+    whereConditions.year = year;
+  }
 
-  if (status === 'paid') whereConditions.paid = true;
-  else if (status === 'unpaid') whereConditions.paid = false;
+  try {
+    const { rows, count } = await Fees.findAndCountAll({
+      where: whereConditions,
+      include: [{
+        model: Partner,
+        as: 'Partner',
+        // El where aquí es redundante por el idPartner de arriba, 
+        // pero sirve como refuerzo de seguridad.
+        where: { id: idPartner },
+        attributes: ['id', 'name', 'surname', 'partnerNumber']
+      }],
+      distinct: true, // Importante para evitar duplicados en el count por el Include
+      limit: limit ? parseInt(limit) : undefined,
+      offset: offset ? parseInt(offset) : undefined,
+      // Ordenamos cronológicamente para que sea fácil de leer
+      order: [['year', 'DESC'], ['month', 'DESC']]
+    });
 
-  if (year) whereConditions.year = year;
+    const months = [
+      "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ];
 
-  const partnerIncludeWhere = {};
-  if (surname) partnerIncludeWhere.surname = { [Op.like]: `%${surname}%` };
-
-  const { rows, count } = await Fees.findAndCountAll({
-    where: whereConditions,
-    include: [{
-      model: Partner,
-      as: 'Partner',
-      where: partnerIncludeWhere,
-      attributes: ['id', 'name', 'surname', 'partnerNumber']
-    }],
-    limit: limit ? parseInt(limit) : undefined,
-    offset: offset ? parseInt(offset) : undefined,
-    order: [['year', 'ASC'], ['month', 'ASC']]
-  });
-
-  const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-
-  return {
-    rows: rows.map(fee => ({
-      feeNumber: fee.month,             
-      amount: fee.amount,       
-      month: months[fee.month - 1],
-      idPartner: fee.Partner?.id,
-      partnerNumber: fee.Partner?.partnerNumber,
-      year: fee.year,
-      paid: fee.paid,
-      feeid: fee.id                                     
-    })),
-    count
-  };
+    return {
+      rows: rows.map(fee => ({
+        feeid: fee.id, // ID real de la cuota para acciones (pagar/editar)
+        feeNumber: fee.month, // Usado como referencia visual
+        amount: fee.amount,
+        month: months[fee.month - 1] || "Mes inválido",
+        year: fee.year,
+        paid: fee.paid, // Crucial para el renderizado condicional en el front
+        idPartner: fee.Partner?.id,
+        partnerNumber: fee.Partner?.partnerNumber,
+      })),
+      count: count
+    };
+  } catch (error) {
+    console.error("Error en getUnpaidFeesByPartner:", error);
+    return { rows: [], count: 0 };
+  }
 };
 
 export const getQuantityPaidFees = async (partnerNumber) => {

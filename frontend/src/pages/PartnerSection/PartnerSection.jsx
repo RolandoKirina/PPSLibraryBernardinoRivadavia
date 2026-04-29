@@ -149,7 +149,7 @@ export default function PartnerSection() {
             setPopupUnpaidFees(true);
           }}
         >
-          {value} {value === 1 ? 'cuota impaga' : 'cuotas impagas'}
+          {value} Cuotas Impagas
         </button>
       )
     },

@@ -3,15 +3,17 @@ import { HTTP_STATUS } from "../../https/httpsStatus.js";
 import { buildFeeFilters } from "../../utils/buildFeeFilters.js";
 import { ValidationError } from "../../utils/errors/ValidationError.js";
 
-
 export const getUnpaidFeesByPartner = async (req, res) => {
     try {
         const { partnerId } = req.params;
-        const { limit, offset } = req.query;
+
+        const { limit, offset, status, year } = req.query;
 
         const filters = {
             limit: limit ? Number(limit) : undefined,
-            offset: offset ? Number(offset) : undefined
+            offset: offset ? Number(offset) : undefined,
+            status: status, 
+            year: year      
         };
 
         const result = await FeeService.getUnpaidFeesByPartner(partnerId, filters);
@@ -88,8 +90,8 @@ export const createFee = async (req, res) => {
         }
         const newFee = await FeeService.createFee(fee);
         res.status(HTTP_STATUS.CREATED.code).json(newFee);
-    } 
-    
+    }
+
     catch (error) {
 
         if (error instanceof ValidationError) {
@@ -102,7 +104,7 @@ export const createFee = async (req, res) => {
             .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
             .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
-    
+
 };
 
 export const updateFee = async (req, res) => {
@@ -112,7 +114,7 @@ export const updateFee = async (req, res) => {
 
         const newFee = await FeeService.updateFee(id, data);
         res.status(HTTP_STATUS.OK.code).json(newFee);
-    }     
+    }
     catch (error) {
 
         if (error instanceof ValidationError) {
@@ -137,7 +139,7 @@ export const changeState = async (req, res) => {
         }
         const newFee = await FeeService.changeState(id, update);
         res.status(HTTP_STATUS.OK.code).json(newFee);
-    }     
+    }
     catch (error) {
 
         if (error instanceof ValidationError) {
