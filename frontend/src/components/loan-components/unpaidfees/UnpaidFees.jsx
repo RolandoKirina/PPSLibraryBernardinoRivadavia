@@ -27,11 +27,10 @@ export default function UnpaidFees({ item = {}, section = "" }) {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    
+
     setFilters(prev => ({ ...prev, [name]: value }));
   };
 
-  // 1. Modifica la firma de la función para aceptar filtros actuales
   const fetchUnpaidFees = async ({ limit, offset }, currentFilters = filters, append = false) => {
     if (!effectiveId) return;
 
@@ -41,11 +40,8 @@ export default function UnpaidFees({ item = {}, section = "" }) {
     try {
       let url = `http://localhost:4000/api/v1/fees/partners/${effectiveId}/unpaid-fees?limit=${limit}&offset=${offset}`;
 
-      // Filtro de Año
       if (currentFilters.year) url += `&year=${currentFilters.year}`;
 
-      // CORRECCIÓN: Usar el nombre de parámetro 'status' que espera tu backend
-      // y pasar el valor directamente (all, paid, unpaid)
       if (currentFilters.status) {
         url += `&status=${currentFilters.status}`;
       }
