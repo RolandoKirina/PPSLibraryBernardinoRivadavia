@@ -6,7 +6,7 @@ import Partner from "../../models/partner/partner.js";
 import Loan from "../../models/loan/Loan.js";
 import BookType from "../../models/options/BookType.js";
 import { fn, col, literal } from "sequelize";
-import Op from "sequelize";
+import { Op } from "sequelize";
 import sequelize from "../../configs/database.js";
 import * as BookAuthorRepository from '../author/BookAuthorRepository.js';
 import { formatDate } from "../../utils/date/formatDate.js";
@@ -242,17 +242,27 @@ export const getAllPendingBooks = async (partnerNumber, filters = {}) => {
   return { rows, count };
 };
 
-
-
 export const getAllWithFields = async (filters) => {
-  const { whereBookTitle, limit, offset } = filters;
+  const {
+    whereCodeInventory = {},
+    whereBookTitle = {},
+    limit,
+    offset
+  } = filters;
 
+  const where = {
+    ...whereBookTitle,
+    ...(whereCodeInventory?.codeInventory && {
+      codeInventory: {
+        [Op.like]: `%${whereCodeInventory.codeInventory}`
+      }
+    })
+  };
 
+  
   const { rows: ids, count } = await Book.findAndCountAll({
     attributes: ['BookId'],
-    where: {
-      ...whereBookTitle
-    },
+    where,
     limit,
     offset,
     distinct: true
@@ -269,8 +279,9 @@ export const getAllWithFields = async (filters) => {
 
   const books = await Book.findAll({
     where: {
-      BookId: bookIds,
-      ...whereBookTitle
+      BookId: {
+        [Op.in]: bookIds
+      }
     },
     attributes: [
       "BookId",
@@ -301,13 +312,8 @@ export const getAllWithFields = async (filters) => {
     order: [['BookId', 'ASC']]
   });
 
-  const mappedBooks = books.map(book => ({
-    ...book.toJSON(),
-    isBorrowed: book.BookLoans?.length > 0
-  }));
-
   return {
-    rows: mappedBooks,
+    rows: books,
     total: count
   };
 };

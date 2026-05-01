@@ -19,7 +19,6 @@ import { formatDate } from '../../utils/date/formatDate.js';
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 
 import { Op } from 'sequelize';
-import { fn, col, literal } from 'sequelize';
 
 export const getAll = async (filters) => {
   const {
@@ -81,7 +80,6 @@ export const getAll = async (filters) => {
     ]
   });
 
-  // IDs paginados (para que limit funcione bien)
   const loanIds = await Loan.findAll({
     attributes: ['Id'],
     where: whereLoan,
@@ -182,6 +180,7 @@ export const getAll = async (filters) => {
       typeName: book.Book.BookType?.typeName || ''
     }))
   }));
+
 
   return {
     rows,

@@ -7,7 +7,6 @@ export const getAllBooks = async (req, res) => {
     try {
 
         const queryOptions = buildBookFilters(req.query);
-
         const books = await BookService.getAllBooks(queryOptions);
 
         res.status(HTTP_STATUS.OK.code).send(books);
@@ -24,6 +23,7 @@ export const getAllBooksWithFields = async (req, res) => {
     try {
 
         const queryOptions = buildBookFilters(req.query);
+        console.log(queryOptions);
 
         const books = await BookService.getAllBooksWithFields(queryOptions);
 

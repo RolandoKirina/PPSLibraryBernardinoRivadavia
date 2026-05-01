@@ -38,8 +38,6 @@ export const buildPartnerFilters = (query) => {
     wherePartner.isActive = idState;
   }
 
-
-
   if (pendingBooks !== undefined) {
     wherePartner.pendingBooks = Number(pendingBooks);
   }
