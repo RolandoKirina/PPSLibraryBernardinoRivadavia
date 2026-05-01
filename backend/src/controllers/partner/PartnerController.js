@@ -91,6 +91,10 @@ export const updatePartner = async (req, res) => {
         const { id } = req.params;
         const updates = req.body;
 
+        console.log(updates);
+
+
+
         if (!updates) {
             return res.status(HTTP_STATUS.BAD_REQUEST.code).json({ msg: "Invalid partner body" });
         }
