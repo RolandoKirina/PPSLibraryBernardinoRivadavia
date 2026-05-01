@@ -18,6 +18,7 @@ import { useAuth } from '../../auth/AuthContext.jsx';
 import { roles } from '../../auth/roles.js';
 import ConfirmMessage from '../../components/common/confirmMessage/ConfirmMessage.jsx';
 import UnpaidFees from '../../components/loan-components/unpaidfees/UnpaidFees.jsx';
+import PaymentDate from '../../components/fees-components/paymentDate/PaymentDate.jsx';
 
 export const FeeSection = () => {
   const chunkSize = 100;
@@ -35,6 +36,7 @@ export const FeeSection = () => {
   const [PopUpDetail, setPopUpDetail] = useState(false);
   const [PopUpFeesBetweenDates, setPopUpFeesBetweenDates] = useState(false);
   const [PopupUnpaidFees, setPopupUnpaidFees] = useState(false);
+  const [PopupPaymentDate, setPopupPaymentDate] = useState(false);
 
   const [error, setError] = useState(false);
   const [successMessage, setSuccessMessage] = useState(false);
@@ -361,6 +363,14 @@ export const FeeSection = () => {
       close: () => setPopupUnpaidFees(false),
       condition: PopupUnpaidFees
     },
+    {
+      key: 'paymentDate',
+      title: 'Fecha de pago',
+      classname: 'books-partners-amount-size',
+      content: <PaymentDate />,
+      close: () => setPopupPaymentDate(false),
+      condition: PopupPaymentDate
+    },
   ]
 
   let adminFeeActions = null;
@@ -372,7 +382,7 @@ export const FeeSection = () => {
     adminFeeActions = <div className='fees-actions'>
       <Btn text="Generar Cuotas" variant="primary" onClick={() => setPopupAdd(true)}></Btn>
       <Btn text="Cuotas entre fechas" variant="primary" onClick={() => setPopUpFeesBetweenDates(true)}></Btn>
-      <Btn text="Ingresar Fecha de pago" variant="primary" onClick={() => setPopUpFeesBetweenDates(true)}></Btn>
+      <Btn text="Ingresar Fecha de pago" variant="primary" onClick={() => setPopupPaymentDate(true)}></Btn>
       <Btn text="Cuotas Impagas" variant="primary" onClick={() => setPopupUnpaidFees(true)}></Btn>
     </div>;
   }

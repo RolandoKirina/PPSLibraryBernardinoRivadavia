@@ -52,6 +52,7 @@ import UserRoutes from './routes/v1/auth/UserRoutes.js';
 import RoleRoutes from './routes/v1/auth/RoleRoutes.js';
 import UserRoleRoutes from './routes/v1/auth/UserRoleRoutes.js';
 
+import FeeConfigRoutes from './routes/v1/fee/FeeConfigRoutes.js';
 
 import cors from "cors";
 
@@ -68,6 +69,8 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerData));
 sequelize.sync({ alter: true }).then(() => {
   console.log("Se sincronizó la base de datos");
 });
+
+app.use("/api/v1/fee-configs", FeeConfigRoutes);
 
 app.use("/api/v1/books", BookRoutes);
 app.use("/api/v1/books/ranking", BookRoutes);

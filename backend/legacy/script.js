@@ -30,6 +30,7 @@ import bcrypt from "bcrypt";
 import Role from "../src/models/auth/Role.js";
 import UserRole from "../src/models/auth/UserRole.js";
 import User from "../src/models/auth/User.js";
+import FeeConfig from "../src/models/fee/FeeConfig.js";
 
 async function migrateAll() {
     try {
@@ -40,6 +41,32 @@ async function migrateAll() {
         const reader = new MDBReader(buffer);
 
         await sequelize.transaction(async (t) => {
+
+            /*
+            =========================
+            CONFIGURACIÓN DE CUOTAS
+            =========================
+            */
+            console.log("Estableciendo configuración de cuotas inicial...");
+
+            // Limpiamos la configuración previa
+            await FeeConfig.destroy({
+                truncate: true,
+                restartIdentity: true,
+                cascade: true,
+                transaction: t
+            });
+
+            // Creamos el registro semilla (Seed)
+            await FeeConfig.create({
+                id: 1, // Forzamos el ID 1 para que el front lo encuentre siempre
+                defaultPaymentDate: '2026-06-30', // Fecha sugerida inicial
+                currentFeeAmount: 0.00,           // Valor inicial (se puede ajustar luego)
+                lastUpdatedBy: null               // Sistema
+            }, { transaction: t });
+
+            console.log("Configuración de cuotas establecida (ID: 1, Fecha: 2026-06-30).");
+
             /*
             =========================
             IMPORTAR AUTORES
