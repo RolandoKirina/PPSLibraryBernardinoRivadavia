@@ -1,6 +1,6 @@
 import Fees from "../../models/fee/fee.js";
 import Partner from "../../models/partner/partner.js";
-import { Op } from "sequelize";
+import { Sequelize, Op } from "sequelize";
 import { fn, col } from 'sequelize';
 import { QueryTypes } from "sequelize";
 import sequelize from "../../configs/database.js";
@@ -21,6 +21,19 @@ export const getAll = async (filters = {}, listType = '') => {
       as: "Partner",
       required: true,
       where: wherePartner && Object.keys(wherePartner).length ? wherePartner : undefined,
+      attributes: {
+        include: [
+          [
+            Sequelize.literal(`(
+              SELECT COUNT(*)
+              FROM "Cuotas" AS f
+              WHERE f."IdSocio" = "Partner"."id"
+              AND f."Paga" = false
+            )`),
+            'unpaidFeesReal'
+          ]
+        ]
+      },
       include: [
         {
           model: PartnerCategory,
@@ -52,18 +65,26 @@ export const getAll = async (filters = {}, listType = '') => {
   const ids = idsResult.map(r => r.id);
 
   if (!ids.length) {
-    return { items: [], count: 0 };
+    return { rows: [], count: 0 };
   }
 
   const fees = await Fees.findAll({
     where: { id: ids },
     include: baseInclude,
-    order
+    order,
+    subQuery: false
   });
 
   const count = await Fees.count({
     where: whereFees && Object.keys(whereFees).length ? whereFees : undefined,
-    include: baseInclude,
+    include: [
+      {
+        model: Partner,
+        as: "Partner",
+        required: true,
+        where: wherePartner && Object.keys(wherePartner).length ? wherePartner : undefined
+      }
+    ],
     distinct: true,
     col: 'Id'
   });
@@ -90,10 +111,13 @@ export const getAll = async (filters = {}, listType = '') => {
         paid: fee.paid,
         paidLabel: fee.paid ? "Pagada" : "Impaga",
         date_of_paid: formatDate(fee.date_of_paid),
+
         partnerNumber: fee.Partner?.partnerNumber,
         idPartner: fee.Partner?.id,
         name: fee.Partner ? `${fee.Partner.name} ${fee.Partner.surname}` : "",
-        unpaidFees: fee.Partner?.unpaidFees,
+
+        unpaidFees: parseInt(fee.Partner?.unpaidFeesReal) || 0,
+
         category: categoryName,
         surname: fee.Partner?.surname,
         status: fee.status,
@@ -343,6 +367,66 @@ export const getUnpaidFeesByPartner = async (idPartner, filters = {}) => {
     console.error("Error en getUnpaidFeesByPartner:", error);
     return { rows: [], count: 0 };
   }
+};
+
+export const searchGlobalUnpaidFees = async (filters = {}) => {
+    const { 
+        limit, offset, year, status, 
+        partnerNumber, name, surname 
+    } = filters;
+
+    // Filtros para la tabla Fees
+    const feeConditions = {};
+    if (status === 'paid') feeConditions.paid = true;
+    else if (status === 'unpaid') feeConditions.paid = false;
+    
+    if (year) feeConditions.year = year;
+
+    // Filtros para la tabla Partner
+    const partnerConditions = {};
+    if (partnerNumber) partnerConditions.partnerNumber = partnerNumber;
+    if (name) partnerConditions.name = { [Op.like]: `%${name}%` };
+    if (surname) partnerConditions.surname = { [Op.like]: `%${surname}%` };
+
+    try {
+        const { rows, count } = await Fees.findAndCountAll({
+            where: feeConditions,
+            include: [{
+                model: Partner,
+                as: 'Partner',
+                where: Object.keys(partnerConditions).length > 0 ? partnerConditions : undefined,
+                required: Object.keys(partnerConditions).length > 0, // Inner join si hay filtros de socio
+                attributes: ['id', 'name', 'surname', 'partnerNumber']
+            }],
+            distinct: true,
+            limit: limit,
+            offset: offset,
+            order: [['year', 'DESC'], ['month', 'DESC']]
+        });
+
+        const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
+                        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+        return {
+            rows: rows.map(fee => ({
+                feeid: fee.id,
+                feeNumber: fee.month,
+                amount: fee.amount,
+                month: months[fee.month - 1] || "Mes inválido",
+                year: fee.year,
+                paid: fee.paid,
+                Partner: fee.Partner ? {
+                    id: fee.Partner.id,
+                    name: fee.Partner.name,
+                    surname: fee.Partner.surname,
+                    partnerNumber: fee.Partner.partnerNumber
+                } : null
+            })),
+            count: count
+        };
+    } catch (error) {
+        throw error;
+    }
 };
 
 export const getQuantityPaidFees = async (partnerNumber) => {

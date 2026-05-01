@@ -2,30 +2,93 @@ import { useState, useEffect } from 'react';
 import Btn from '../../common/btn/Btn';
 import SaveIcon from '../../../assets/img/save-icon.svg';
 import './PayPopup.css';
+import { useAuth } from '../../../auth/AuthContext';
 
-export default function PopUp({ item = {} }) {
+export default function PayPopup({ item = {}, onSuccess }) {
+    console.log(item);
+    console.log(item);
+    console.log(item);
+    const { auth } = useAuth();
     const [formData, setFormData] = useState({
         paymentDate: '',
         amount: ''
     });
+    const [loading, setLoading] = useState(false);
+    const [status, setStatus] = useState({ type: '', msg: '' });
 
     useEffect(() => {
-        if (item && Object.keys(item).length > 0) {
-            const today = new Date().toISOString().split('T')[0];
+        const fetchData = async () => {
+            let initialDate = new Date().toISOString().split('T')[0];
 
-            setFormData({
-                paymentDate: today,
-                amount: item.amount || ''
-            });
-        }
-    }, [item]);
+            try {
+                const response = await fetch('http://localhost:4000/api/v1/fee-configs/1', {
+                    method: 'GET',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${auth.token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.defaultPaymentDate) {
+                        initialDate = data.defaultPaymentDate.split('T')[0];
+                    }
+                }
+
+            } catch (error) {
+                console.error("Error cargando configuración:", error);
+            }
+
+            if (item && Object.keys(item).length > 0) {
+                setFormData({
+                    paymentDate: initialDate,
+                    amount: item.amount || ''
+                });
+            }
+        };
+
+        fetchData();
+    }, [item, auth.token]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handlePayment = async () => {
+        setLoading(true);
+        setStatus({ type: '', msg: '' });
+
+        try {
+
+            const response = await fetch(`http://localhost:4000/api/v1/fees/${item.feeid}`, {
+                method: 'PUT',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${auth.token}`
+                },
+                body: JSON.stringify({
+                    date_of_paid: formData.paymentDate,
+                    amount: formData.amount,
+                    paid: true
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setStatus({ type: 'success', msg: 'Pago registrado con éxito' });
+
+                if (onSuccess) setTimeout(() => onSuccess(), 1500);
+            } else {
+                setStatus({ type: 'error', msg: data.msg || 'Error al procesar el pago' });
+            }
+        } catch (error) {
+            setStatus({ type: 'error', msg: 'Error de conexión con el servidor' });
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -59,16 +122,26 @@ export default function PopUp({ item = {} }) {
                 </div>
             </div>
 
+            {status.msg && (
+                <p className={`status-msg ${status.type}`} style={{ 
+                    color: status.type === 'success' ? '#2ecc71' : '#e74c3c',
+                    textAlign: 'center',
+                    fontSize: '0.9rem',
+                    fontWeight: 'bold',
+                    margin: '10px 0'
+                }}>
+                    {status.msg}
+                </p>
+            )}
+
             <Btn
                 type={'button'}
                 variant={'primary'}
-                text={'Guardar'}
-                onClick={() => {
-                    console.log("confirmed");
-                }}
+                text={loading ? 'Procesando...' : 'Guardar Pago'}
+                onClick={handlePayment}
+                disabled={loading}
                 icon={<img src={SaveIcon} alt='saveIconButton' />}
             />
-        
-        </div >
+        </div>
     );
 }

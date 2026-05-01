@@ -1,4 +1,4 @@
-import './UnpaidFees.css';
+import './GlobalUnpaidFees.css';
 import { Table } from '../../common/table/Table';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../../auth/AuthContext';
@@ -6,12 +6,10 @@ import PopUp from '../../common/popup-table/PopUp.jsx';
 import MoneyIcon from '../../../assets/img/money-icon.svg';
 import PayPopup from '../../fees-components/paypopup/PayPopup.jsx';
 
-export default function UnpaidFees({ item = {}, section = "" }) {
+export default function GlobalUnpaidFees() {
   const chunkSize = 100;
   const rowsPerPage = 5;
   const { auth } = useAuth();
-
-  const effectiveId = section === 'Fee' ? item?.idPartner : item?.id;
 
   const [unpaidFees, setUnpaidFees] = useState([]);
   const [totalItems, setTotalItems] = useState(0);
@@ -21,32 +19,33 @@ export default function UnpaidFees({ item = {}, section = "" }) {
   const [resetPageTrigger, setResetPageTrigger] = useState(0);
   const [popUpPay, setPopUpPay] = useState(false);
 
+  // Filtros extendidos
   const [filters, setFilters] = useState({
+    partnerNumber: '',
+    name: '',
+    surname: '',
     year: '',
-    paymentDate: '',
     status: 'unpaid'
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
     setFilters(prev => ({ ...prev, [name]: value }));
   };
 
   const fetchUnpaidFees = async ({ limit, offset }, currentFilters = filters, append = false) => {
-    if (!effectiveId) return;
-
     setLoading(true);
     setError(null);
 
     try {
-      let url = `http://localhost:4000/api/v1/fees/partners/${effectiveId}/unpaid-fees?limit=${limit}&offset=${offset}`;
+      // Endpoint global de cuotas (ajustar si tu API tiene una ruta distinta para búsqueda global)
+      let url = `http://localhost:4000/api/v1/fees/search?limit=${limit}&offset=${offset}`;
 
+      if (currentFilters.partnerNumber) url += `&partnerNumber=${currentFilters.partnerNumber}`;
+      if (currentFilters.name) url += `&name=${currentFilters.name}`;
+      if (currentFilters.surname) url += `&surname=${currentFilters.surname}`;
       if (currentFilters.year) url += `&year=${currentFilters.year}`;
-
-      if (currentFilters.status) {
-        url += `&status=${currentFilters.status}`;
-      }
+      if (currentFilters.status) url += `&status=${currentFilters.status}`;
 
       const res = await fetch(url, {
         method: 'GET',
@@ -75,13 +74,12 @@ export default function UnpaidFees({ item = {}, section = "" }) {
     setTotalItems(0);
     setResetPageTrigger(prev => prev + 1);
 
-    if (effectiveId) {
-      const delayDebounceFn = setTimeout(() => {
-        fetchUnpaidFees({ limit: chunkSize, offset: 0 }, filters);
-      }, 400);
-      return () => clearTimeout(delayDebounceFn);
-    }
-  }, [effectiveId, filters.year, filters.status]);
+    const delayDebounceFn = setTimeout(() => {
+      fetchUnpaidFees({ limit: chunkSize, offset: 0 }, filters);
+    }, 500); // Un poco más de delay por ser búsqueda global
+    
+    return () => clearTimeout(delayDebounceFn);
+  }, [filters.partnerNumber, filters.name, filters.surname, filters.year, filters.status]);
 
   async function handleChangePage(page) {
     const numberPage = Number(page);
@@ -90,12 +88,19 @@ export default function UnpaidFees({ item = {}, section = "" }) {
     if (lastItemIndex > unpaidFees.length && unpaidFees.length < totalItems) {
       const newOffset = unpaidFees.length;
       await fetchUnpaidFees({ limit: chunkSize, offset: newOffset }, filters, true);
-    } else {
-      console.log("Datos suficientes en memoria, no se requiere fetch.");
     }
   }
 
+  // Función para refrescar después del pago exitoso
+  const handleRefresh = () => {
+    setPopUpPay(false);
+    setUnpaidFees([]);
+    setResetPageTrigger(prev => prev + 1);
+    fetchUnpaidFees({ limit: chunkSize, offset: 0 }, filters);
+  };
+
   const columns = [
+    { header: 'Socio', accessor: 'partnerNumber', render: (_, row) => `${row.Partner?.name} ${row.Partner?.surname} (${row.Partner?.partnerNumber})` },
     { header: 'N° Cuota', accessor: 'feeNumber' },
     { header: 'Importe', accessor: 'amount', render: (v) => `$${v}` },
     { header: 'Mes', accessor: 'month' },
@@ -110,12 +115,20 @@ export default function UnpaidFees({ item = {}, section = "" }) {
       accessor: 'payment',
       className: "action-buttons",
       render: (_, row) => (
-        !row.paid && ( // Solo mostrar botón si no está paga
+        !row.paid && (
           <button
             className="button-table"
             onClick={(e) => {
               e.stopPropagation();
-              setSelectedItem(row);
+              // Mapeamos los datos necesarios para el PayPopup
+              console.log(row);
+
+              setSelectedItem({
+                ...row,
+                partnerNumber: row.Partner?.partnerNumber,
+                name: row.Partner?.name,
+                surname: row.Partner?.surname
+              });
               setPopUpPay(true);
             }}
           >
@@ -129,13 +142,44 @@ export default function UnpaidFees({ item = {}, section = "" }) {
   return (
     <div className="unpaid-quotes-container">
       <div className='unpaid-fees-info-inputs'>
-        <h2>
-          Socio: {item?.name} {item?.surname} (N° {item?.partnerNumber})
-        </h2>
+        <h2>Gestión Global de Cuotas</h2>
 
-        <div className="unpaid-fees-grid">
+        <div className="unpaid-fees-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))' }}>
           <div className='unpaid-fee-input'>
-            <label>Filtrar por Año</label>
+            <label>N° Socio</label>
+            <input
+              name="partnerNumber"
+              type='text'
+              placeholder="Buscar por N°..."
+              value={filters.partnerNumber}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          <div className='unpaid-fee-input'>
+            <label>Nombre</label>
+            <input
+              name="name"
+              type='text'
+              placeholder="Nombre..."
+              value={filters.name}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          <div className='unpaid-fee-input'>
+            <label>Apellido</label>
+            <input
+              name="surname"
+              type='text'
+              placeholder="Apellido..."
+              value={filters.surname}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          <div className='unpaid-fee-input'>
+            <label>Año</label>
             <input
               name="year"
               type='text'
@@ -146,7 +190,7 @@ export default function UnpaidFees({ item = {}, section = "" }) {
           </div>
 
           <div className='unpaid-fee-input'>
-            <label>Estado de Cuota</label>
+            <label>Estado</label>
             <select
               name="status"
               value={filters.status}
@@ -157,16 +201,6 @@ export default function UnpaidFees({ item = {}, section = "" }) {
               <option value="paid">Pagas</option>
               <option value="unpaid">Impagas</option>
             </select>
-          </div>
-
-          <div className='unpaid-fee-input'>
-            <label>Fecha de pago (Información)</label>
-            <input
-              name="paymentDate"
-              type='date'
-              value={filters.paymentDate}
-              onChange={handleInputChange}
-            />
           </div>
         </div>
       </div>
@@ -184,12 +218,14 @@ export default function UnpaidFees({ item = {}, section = "" }) {
         rowsPerPage={rowsPerPage}
       />
 
-      {popUpPay && <>
+      {popUpPay && (
         <PopUp title={'Pagar Cuota'} className={'pay-popup'} onClick={() => setPopUpPay(false)}>
-            <PayPopup item={selectedItem} />
+          <PayPopup 
+            item={selectedItem} 
+            onSuccess={handleRefresh}
+          />
         </PopUp>
-      </>}
-
+      )}
     </div>
   );
 }

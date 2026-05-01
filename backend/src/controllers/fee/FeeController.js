@@ -27,6 +27,38 @@ export const getUnpaidFeesByPartner = async (req, res) => {
     }
 };
 
+export const searchGlobalUnpaidFees = async (req, res) => {
+    try {
+        const { 
+            limit, 
+            offset, 
+            status, 
+            year, 
+            partnerNumber, 
+            name, 
+            surname 
+        } = req.query;
+
+        const filters = {
+            limit: limit ? Number(limit) : undefined,
+            offset: offset ? Number(offset) : undefined,
+            status: status || 'unpaid',
+            year: year,
+            partnerNumber: partnerNumber,
+            name: name,
+            surname: surname
+        };
+
+        const result = await FeeService.searchGlobalUnpaidFees(filters);
+
+        res.status(HTTP_STATUS.OK.code).json(result);
+    } catch (e) {
+        console.error("Error en searchGlobalUnpaidFees Controller:", e);
+        res
+            .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
+            .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+    }
+};
 
 export const getAllFees = async (req, res) => {
     try {

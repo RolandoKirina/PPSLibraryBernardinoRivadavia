@@ -13,6 +13,10 @@
 
 }
 
+.unpaid-quotes-container .table-data-info {
+    color: var(--white);
+}
+
 .unpaid-quotes-container .pagination-items span {
     color: var(--white);
 }

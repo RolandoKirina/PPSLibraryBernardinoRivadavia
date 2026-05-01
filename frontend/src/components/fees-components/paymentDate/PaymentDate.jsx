@@ -11,7 +11,6 @@ export default function PaymentDate() {
         paymentDate: '',
     });
     const [loading, setLoading] = useState(false);
-    // Cambiamos a string para guardar el texto del error o éxito
     const [error, setError] = useState(null);
     const [message, setMessage] = useState(null);
 
@@ -25,16 +24,23 @@ export default function PaymentDate() {
                         "Authorization": `Bearer ${auth.token}`
                     }
                 });
+
                 const data = await response.json();
+
                 if (data.defaultPaymentDate) {
-                    setFormData({ paymentDate: data.defaultPaymentDate });
+                    const formattedDate = data.defaultPaymentDate.split('T')[0];
+                    setFormData({ paymentDate: formattedDate });
                 }
+                
             } catch (error) {
                 console.error("Error cargando configuración:", error);
                 setError("No se pudo cargar la configuración inicial.");
             }
         };
-        fetchCurrentConfig();
+
+        if (auth.token) {
+            fetchCurrentConfig();
+        }
     }, [auth.token]);
 
     const handleInputChange = (e) => {
@@ -54,7 +60,6 @@ export default function PaymentDate() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${auth.token}`
                 },
-                // Enviamos la clave que el backend espera (defaultPaymentDate)
                 body: JSON.stringify({ defaultPaymentDate: formData.paymentDate })
             });
 
@@ -63,7 +68,6 @@ export default function PaymentDate() {
             if (response.ok) {
                 setMessage("Configuración actualizada con éxito.");
             } else {
-                // Si el backend manda un { msg: "..." }, lo usamos
                 setError(data.msg || "Error al intentar actualizar.");
             }
         } catch (err) {
@@ -82,7 +86,8 @@ export default function PaymentDate() {
                     <input
                         name="paymentDate"
                         type='date'
-                        value={formData.paymentDate}
+                        // Aseguramos que el valor nunca sea null para evitar el warning de "uncontrolled component"
+                        value={formData.paymentDate || ''}
                         onChange={handleInputChange}
                     />
                 </div>
@@ -97,7 +102,6 @@ export default function PaymentDate() {
                 icon={<img src={SaveIcon} alt='saveIconButton' />}
             />
 
-            {/* Mensajes de feedback dinámicos */}
             <div className="feedback-container" style={{ marginTop: '1rem', textAlign: 'center' }}>
                 {error && (
                     <p style={{ color: '#ff4d4d', fontSize: '0.9rem', fontWeight: 'bold' }}>

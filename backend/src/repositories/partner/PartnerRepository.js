@@ -162,7 +162,6 @@ export const getAll = async (filters = {}) => {
     attributes: {
       include: [
         [
-          // Corregido: "IdSocio" con I mayúscula y "socio"."id" según el alias de la tabla
           Sequelize.literal(`(
             SELECT COUNT(*)
             FROM "Cuotas" AS f
@@ -215,7 +214,6 @@ export const getAll = async (filters = {}) => {
       categoryName: p.PartnerCategory?.name || 'Sin categoría',
       categoryAmount: p.PartnerCategory?.amount || 0,
       
-      // Aseguramos que tome el valor de la subquery (literal)
       unpaidFees: parseInt(p.unpaidFees) || 0,
 
       StatePartner: undefined

@@ -19,6 +19,7 @@ import { roles } from '../../auth/roles.js';
 import ConfirmMessage from '../../components/common/confirmMessage/ConfirmMessage.jsx';
 import UnpaidFees from '../../components/loan-components/unpaidfees/UnpaidFees.jsx';
 import PaymentDate from '../../components/fees-components/paymentDate/PaymentDate.jsx';
+import GlobalUnpaidFees from '../../components/fees-components/globalunpaidfees/GlobalUnpaidFees.jsx';
 
 export const FeeSection = () => {
   const chunkSize = 100;
@@ -36,6 +37,7 @@ export const FeeSection = () => {
   const [PopUpDetail, setPopUpDetail] = useState(false);
   const [PopUpFeesBetweenDates, setPopUpFeesBetweenDates] = useState(false);
   const [PopupUnpaidFees, setPopupUnpaidFees] = useState(false);
+  const [PopupGlobalUnpaidFees, setPopupGlobalUnpaidFees] = useState(false);
   const [PopupPaymentDate, setPopupPaymentDate] = useState(false);
 
   const [error, setError] = useState(false);
@@ -206,7 +208,7 @@ export const FeeSection = () => {
           <button
             className="button-link"
             onClick={() => {
-              setSelectedItem(null);
+              setSelectedItem(row);
               setPopupUnpaidFees(true);
             }}
           >
@@ -371,6 +373,15 @@ export const FeeSection = () => {
       close: () => setPopupPaymentDate(false),
       condition: PopupPaymentDate
     },
+    ,
+    {
+      key: 'globalUnpaidFees',
+      title: 'Cuotas Impagas Global',
+      classname: 'books-partners-amount-size',
+      content: <GlobalUnpaidFees />,
+      close: () => setPopupGlobalUnpaidFees(false),
+      condition: PopupGlobalUnpaidFees
+    },
   ]
 
   let adminFeeActions = null;
@@ -383,7 +394,7 @@ export const FeeSection = () => {
       <Btn text="Generar Cuotas" variant="primary" onClick={() => setPopupAdd(true)}></Btn>
       <Btn text="Cuotas entre fechas" variant="primary" onClick={() => setPopUpFeesBetweenDates(true)}></Btn>
       <Btn text="Ingresar Fecha de pago" variant="primary" onClick={() => setPopupPaymentDate(true)}></Btn>
-      <Btn text="Cuotas Impagas" variant="primary" onClick={() => setPopupUnpaidFees(true)}></Btn>
+      <Btn text="Cuotas Impagas" variant="primary" onClick={() => setPopupGlobalUnpaidFees(true)}></Btn>
     </div>;
   }
 
@@ -400,7 +411,6 @@ export const FeeSection = () => {
         }
 
       ></GenericSection>
-
     </>
   );
 }
