@@ -301,6 +301,7 @@ const BookSection = () => {
         handleChangePage={handleChangePage}
         loading={loading}
         resetPageTrigger={resetPageTrigger}
+        showCount={true}
         actions={
           auth.role === roles.admin ? (
             <div className="listbtns">

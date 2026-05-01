@@ -12,3 +12,22 @@
     max-height: 85vh;
     overflow-y: auto;
 }
+
+.numberAssigned {
+    display: flex;
+    justify-content: center;
+    margin: 0.5em 0;
+}
+
+.button-link {
+    padding: 0.2em;
+    background-color: var(--primary-light-2);
+    border-radius: 0.5em;
+    border: 0;
+    color: var(--white);
+    font-size: medium;
+}
+
+.unpaid-fees-content {
+    background-color: var(--primary-dark-2);
+}

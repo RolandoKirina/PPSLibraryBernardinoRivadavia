@@ -18,6 +18,7 @@ export default function FormAddPartner({ onPartnerCreated, employees }) {
   const [states, setStates] = useState([]);
   const [maritalStatuses, setMaritalStatuses] = useState([]);
   const [localities, setLocalities] = useState([]);
+  const [partnerNumberAssigned, setPartnerNumberAssigned] = useState("");
 
   const submittingRef = useRef(false);
 
@@ -25,6 +26,8 @@ export default function FormAddPartner({ onPartnerCreated, employees }) {
   const statepartners = "http://localhost:4000/api/v1/state-partners";
   const partnerCategory = "http://localhost:4000/api/v1/partner-categories"
   const locality = "http://localhost:4000/api/v1/localities";
+  const nextNumberUrl = "http://localhost:4000/api/v1/partners/next-number";
+
   useEffect(() => {
     async function loadOptions() {
       try {
@@ -36,21 +39,25 @@ export default function FormAddPartner({ onPartnerCreated, employees }) {
           }
         };
 
-        const [catRes, stateRes, maritalRes, localityres] = await Promise.all([
+        const [catRes, stateRes, maritalRes, localityres, numberRes] = await Promise.all([
           fetch(partnerCategory, fetchOptions),
           fetch(statepartners, fetchOptions),
           fetch(maritalstatus, fetchOptions),
-          fetch(locality, fetchOptions)
+          fetch(locality, fetchOptions),
+          fetch(nextNumberUrl, fetchOptions)
         ]);
 
         const catJson = await catRes.json();
         const stateJson = await stateRes.json();
         const maritalJson = await maritalRes.json();
         const localityJson = await localityres.json();
+        const numberJson = await numberRes.json();
+
         setCategories(catJson.rows);
         setStates(stateJson.rows);
         setMaritalStatuses(maritalJson);
         setLocalities(localityJson);
+        setPartnerNumberAssigned(numberJson.nextNumber);
       } catch (err) {
         console.error("Error cargando opciones", err);
       }
@@ -124,7 +131,6 @@ export default function FormAddPartner({ onPartnerCreated, employees }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // BLOQUEO 1: Si ya se está enviando, abortamos cualquier clic extra
     if (submittingRef.current) return;
 
     submittingRef.current = true;
@@ -132,7 +138,6 @@ export default function FormAddPartner({ onPartnerCreated, employees }) {
     setError("");
     setSuccess("");
 
-    // Validación de campos
     const missingFields = requiredFields.filter(
       field => !formValues[field] || formValues[field] === ""
     );
@@ -140,7 +145,7 @@ export default function FormAddPartner({ onPartnerCreated, employees }) {
     if (missingFields.length > 0) {
       const missingLabels = missingFields.map(field => fieldLabels[field] || field);
       setError("Faltan completar: " + missingLabels.join(", "));
-      
+
       submittingRef.current = false;
       setLoading(false);
       return;
@@ -173,7 +178,9 @@ export default function FormAddPartner({ onPartnerCreated, employees }) {
   return (
     <div className="form-edit-partner">
       <form onSubmit={handleSubmit}>
-
+        <div className="numberAssigned">
+          <h2> Socio N°: {partnerNumberAssigned}</h2>
+        </div>
         <Accordion title="Datos personales" isActive={activeAccordion === "personal"} onToggle={() => handleToggle("personal")}>
           <div className="row">
             <div className="form-details">
@@ -216,8 +223,8 @@ export default function FormAddPartner({ onPartnerCreated, employees }) {
               >
                 <option value="">Estado civil</option>
                 {maritalStatuses?.map(ms => (
-                  <option key={ms.id} value={ms.id}> { }
-                    {ms.statusName} { }
+                  <option key={ms.id} value={ms.id}>
+                    {ms.statusName}
                   </option>
                 ))}
               </select>
@@ -256,9 +263,9 @@ export default function FormAddPartner({ onPartnerCreated, employees }) {
             </div>
             <div className="form-details" >
               <label>Localidad <span className='required'>*</span></label>
-              <select 
-                name="LocalityId" 
-                value={formValues.LocalityId} 
+              <select
+                name="LocalityId"
+                value={formValues.LocalityId}
                 onChange={handleChange}
               >
                 <option value="">Localidad</option>
@@ -269,7 +276,7 @@ export default function FormAddPartner({ onPartnerCreated, employees }) {
                   </option>
                 ))}
               </select>
-              </div>
+            </div>
             <div className="form-details" >
               <label>Código postal <span className='required'>*</span></label>
               <input name="homePostalCode" value={formValues.homePostalCode} onChange={handleChange} placeholder="Código postal" />

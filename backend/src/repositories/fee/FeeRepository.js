@@ -4,14 +4,14 @@ import { Op } from "sequelize";
 import { fn, col } from 'sequelize';
 import { QueryTypes } from "sequelize";
 import sequelize from "../../configs/database.js";
+import PartnerCategory from "../../models/partner/partnerCategory.js";
 
 export const getAll = async (filters = {}, listType = '') => {
   const { wherePartner, whereFees, limit, offset, order } = filters;
 
   if (listType === 'TypeOneFees') {
     return getAllFeesTypeOne(filters);
-  }
-  else if (listType == 'TypeTwoFees') {
+  } else if (listType == 'TypeTwoFees') {
     return getAllFeesTypeTwo(filters);
   }
 
@@ -20,7 +20,14 @@ export const getAll = async (filters = {}, listType = '') => {
       model: Partner,
       as: "Partner",
       required: true,
-      where: wherePartner && Object.keys(wherePartner).length ? wherePartner : undefined
+      where: wherePartner && Object.keys(wherePartner).length ? wherePartner : undefined,
+      include: [
+        {
+          model: PartnerCategory,
+          as: "PartnerCategory",
+          attributes: ['name', 'amount']
+        }
+      ]
     }
   ];
 
@@ -29,7 +36,10 @@ export const getAll = async (filters = {}, listType = '') => {
     where: whereFees && Object.keys(whereFees).length ? whereFees : undefined,
     include: [
       {
-        ...baseInclude[0],
+        model: Partner,
+        as: "Partner",
+        required: true,
+        where: wherePartner && Object.keys(wherePartner).length ? wherePartner : undefined,
         attributes: []
       }
     ],
@@ -69,6 +79,8 @@ export const getAll = async (filters = {}, listType = '') => {
         return `${day}-${month}-${year}`;
       };
 
+      const categoryName = fee.Partner?.PartnerCategory?.name || "Sin Categoría";
+
       return {
         feeid: fee.id,
         month: fee.month,
@@ -79,7 +91,10 @@ export const getAll = async (filters = {}, listType = '') => {
         paidLabel: fee.paid ? "Pagada" : "Impaga",
         date_of_paid: formatDate(fee.date_of_paid),
         partnerNumber: fee.Partner?.partnerNumber,
+        idPartner: fee.Partner?.id,
         name: fee.Partner ? `${fee.Partner.name} ${fee.Partner.surname}` : "",
+        unpaidFees: fee.Partner?.unpaidFees,
+        category: categoryName,
         surname: fee.Partner?.surname,
         status: fee.status,
         statusLabel: fee.status ? "Vigente" : "Anulada",
@@ -88,7 +103,6 @@ export const getAll = async (filters = {}, listType = '') => {
     }),
     count
   };
-
 };
 
 export const findExistingFees = async (month, year) => {
@@ -269,41 +283,66 @@ export const getAllFeesTypeTwo = async (filters = {}) => {
 };
 
 
-
 export const getUnpaidFeesByPartner = async (idPartner, filters = {}) => {
-  const { limit, offset } = filters;
+  const { limit, offset, year, status = 'unpaid' } = filters;
 
-  const { rows, count } = await Fees.findAndCountAll({
-    where: {
-      idPartner,
-      paid: false
-    },
-    include: [
-      {
+
+  // 1. Condición base: Siempre filtrar por el socio
+  const whereConditions = { idPartner: idPartner };
+
+  // 2. Lógica de Filtro de Pago
+  // Si es 'all', no agregamos la propiedad 'paid', trayendo ambas.
+  if (status === 'paid') {
+    whereConditions.paid = true;
+  } else if (status === 'unpaid') {
+    whereConditions.paid = false;
+  }
+
+  // 3. Filtro por año
+  if (year) {
+    whereConditions.year = year;
+  }
+
+  try {
+    const { rows, count } = await Fees.findAndCountAll({
+      where: whereConditions,
+      include: [{
         model: Partner,
         as: 'Partner',
+        // El where aquí es redundante por el idPartner de arriba, 
+        // pero sirve como refuerzo de seguridad.
+        where: { id: idPartner },
         attributes: ['id', 'name', 'surname', 'partnerNumber']
-      }
-    ],
-    limit,
-    offset,
-    order: [['id', 'ASC']]
-  });
+      }],
+      distinct: true, // Importante para evitar duplicados en el count por el Include
+      limit: limit ? parseInt(limit) : undefined,
+      offset: offset ? parseInt(offset) : undefined,
+      // Ordenamos cronológicamente para que sea fácil de leer
+      order: [['year', 'DESC'], ['month', 'DESC']]
+    });
 
-  return {
-    rows: rows.map(fee => ({
-      id: fee.id,
-      partnerNumber: fee.Partner?.partnerNumber ?? '—',
-      name: fee.Partner
-        ? `${fee.Partner.name} ${fee.Partner.surname}`
-        : '—',
-      month: fee.month,
-      year: fee.year,
-      amount: fee.amount,
-      date_of_paid: fee.date_of_paid
-    })),
-    count
-  };
+    const months = [
+      "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ];
+
+    return {
+      rows: rows.map(fee => ({
+        feeid: fee.id, // ID real de la cuota para acciones (pagar/editar)
+        feeNumber: fee.month, // Usado como referencia visual
+        amount: fee.amount,
+        month: months[fee.month - 1] || "Mes inválido",
+        year: fee.year,
+        paid: fee.paid, // Crucial para el renderizado condicional en el front
+        idPartner: fee.Partner?.id,
+        partnerNumber: fee.Partner?.partnerNumber,
+      })),
+      count: count
+    };
+  } catch (error) {
+    console.error("Error en getUnpaidFeesByPartner:", error);
+    return { rows: [], count: 0 };
+  }
 };
 
 export const getQuantityPaidFees = async (partnerNumber) => {

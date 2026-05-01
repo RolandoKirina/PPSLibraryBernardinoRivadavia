@@ -2,18 +2,56 @@
     text-align: center;
 }
 
+.unpaid-quotes-container {
+    background-color: var(--primary-dark-2);
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.unpaid-fees-content {
+    background-color: var(--primary-dark-2);
+
+}
+
+.unpaid-quotes-container .pagination-items span {
+    color: var(--white);
+}
+
+.unpaid-quotes-container .table td {
+    padding: 0.5em;
+}
+
 .unpaid-quotes-container h3 {
     text-align: center;
 }
 
-.msg-unpaidfees{
+.msg-unpaidfees {
     display: flex;
     justify-content: center;
     border-radius: 2px;
     width: 50%;
-    margin: 1.3em auto;    
+    margin: 1.3em auto;
     background-color: var(--primary);
     text-align: center;
-   text-decoration: underline;
-   font-size:larger;
+    text-decoration: underline;
+    font-size: larger;
 }
+
+.unpaid-fees-info-inputs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 0.5em;
+    margin-top: 0.5em;
+}
+
+.unpaid-fee-input {
+    width: 10em;
+    margin-right: 0.5em;
+}
+
+.unpaid-fees-grid {
+    display: flex;
+}
+
+

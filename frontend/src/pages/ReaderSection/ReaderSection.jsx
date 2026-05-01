@@ -334,6 +334,7 @@ export default function ReaderSection() {
                 totalItems={totalItems}
                 handleChangePage={handleChangePage}
                 loading={loading}
+                showCount={true}
                 filters={
                     <ReaderFilter
                         onFilterChange={setFilters}

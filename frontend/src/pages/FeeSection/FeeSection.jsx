@@ -17,6 +17,8 @@ import EditFees from '../../components/fees-components/formEditFee/EditFees.jsx'
 import { useAuth } from '../../auth/AuthContext.jsx';
 import { roles } from '../../auth/roles.js';
 import ConfirmMessage from '../../components/common/confirmMessage/ConfirmMessage.jsx';
+import UnpaidFees from '../../components/loan-components/unpaidfees/UnpaidFees.jsx';
+import PaymentDate from '../../components/fees-components/paymentDate/PaymentDate.jsx';
 
 export const FeeSection = () => {
   const chunkSize = 100;
@@ -33,6 +35,9 @@ export const FeeSection = () => {
   const [popupdelete, setPopUpDelete] = useState(false);
   const [PopUpDetail, setPopUpDetail] = useState(false);
   const [PopUpFeesBetweenDates, setPopUpFeesBetweenDates] = useState(false);
+  const [PopupUnpaidFees, setPopupUnpaidFees] = useState(false);
+  const [PopupPaymentDate, setPopupPaymentDate] = useState(false);
+
   const [error, setError] = useState(false);
   const [successMessage, setSuccessMessage] = useState(false);
   const { items, loading, totalItems, getItems, getItem, createItem, updateItem, deleteItem } = useEntityManagerAPI("fees");
@@ -58,7 +63,6 @@ export const FeeSection = () => {
 
   useEffect(() => {
     const delay = setTimeout(() => {
-      // Eliminamos solo los valores que son strings vacíos o null
       const activeFilters = Object.fromEntries(
         Object.entries(formData).filter(([_, v]) => v !== "" && v !== null)
       );
@@ -190,15 +194,35 @@ export const FeeSection = () => {
 
   if (auth.role === roles.admin) {
     columns = [
-      { header: 'Numero de cuota', accessor: 'feeid' },
-      { header: 'Nombre de socio', accessor: 'name' },
-      { header: 'Estado cuota', accessor: 'statusLabel' },
-      { header: 'valor', accessor: 'amount' },
-      { header: 'Numero de socio', accessor: 'partnerNumber' },
       {
-        header: "Fecha de pago",
-        accessor: 'date_of_paid',
-        render: (value) => formatDate(value)
+        header: 'Socio',
+        accessor: 'name',
+        render: (value, row) => `${value} (N° ${row.partnerNumber})`
+      },
+      {
+        header: 'Cuotas impagas',
+        accessor: 'unpaidFees',
+        render: (value, row) => (
+          <button
+            className="button-link"
+            onClick={() => {
+              setSelectedItem(null);
+              setPopupUnpaidFees(true);
+            }}
+          >
+            {value} {value === 1 ? 'cuota impaga' : 'cuotas impagas'}
+          </button>
+        )
+      },
+      {
+        header: 'Periodo',
+        accessor: 'month',
+        render: (_, row) => `${String(row.month).padStart(2, '0')}/${row.year}`
+      },
+      {
+        header: 'Importe',
+        accessor: 'amount',
+        render: (value) => `$${value}`
       },
       {
         header: 'Pagada',
@@ -206,18 +230,23 @@ export const FeeSection = () => {
         render: (value) => value ? '✅ Paga' : '❌ Impaga',
       },
       {
-        header: 'Habilitar/Deshabilitar',
-        accessor: 'delete',
+        header: 'Eliminar',
+        accessor: 'status',
         className: "action-buttons",
-        render: (_, row) => (
-          <button className="button-table"
-            onClick={() => {
-              setSelectedId(row.feeid);
-              setPopUpDelete(true)
-
+        render: (value, row) => (
+          <button
+            className="button-table"
+            title={value ? "Deshabilitar cuota" : "Habilitar cuota"}
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedId(row.feeid || row.id);
+              setPopUpDelete(true);
             }}>
-
-            <img src={DeleteIcon} alt="Borrar" />
+            <img
+              src={DeleteIcon}
+              alt="Estado"
+              style={{ filter: value ? 'none' : 'grayscale(1) opacity(0.5)' }}
+            />
           </button>
         )
       },
@@ -228,7 +257,8 @@ export const FeeSection = () => {
         render: (_, row) => (
           <button
             className="button-table"
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               setPopupEdit(true);
               setSelectedItem(row);
             }}
@@ -238,17 +268,18 @@ export const FeeSection = () => {
         )
       },
       {
-        header: 'Ver detalle',
+        header: 'Detalle',
         accessor: 'details',
         className: "action-buttons",
         render: (_, row) => (
-          <button className="button-table">
-            <img src={DetailsIcon} alt="Detalles"
-              onClick={() => {
-                setSelectedItem(row)
-                setPopUpDetail(true)
-              }}
-            />
+          <button className="button-table"
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedItem(row);
+              setPopUpDetail(true);
+            }}
+          >
+            <img src={DetailsIcon} alt="Detalles" />
           </button>
         )
       }
@@ -323,7 +354,23 @@ export const FeeSection = () => {
       className: 'print-partners-size',
       close: () => setPopUpFeesBetweenDates(false),
       condition: PopUpFeesBetweenDates
-    }
+    },
+    {
+      key: 'unpaidFees',
+      title: 'Cuotas Impagas',
+      classname: 'books-partners-amount-size',
+      content: <UnpaidFees item={selectedItem} section="Fee" />,
+      close: () => setPopupUnpaidFees(false),
+      condition: PopupUnpaidFees
+    },
+    {
+      key: 'paymentDate',
+      title: 'Fecha de pago',
+      classname: 'books-partners-amount-size',
+      content: <PaymentDate />,
+      close: () => setPopupPaymentDate(false),
+      condition: PopupPaymentDate
+    },
   ]
 
   let adminFeeActions = null;
@@ -333,15 +380,16 @@ export const FeeSection = () => {
     title = 'Listado de cuotas';
 
     adminFeeActions = <div className='fees-actions'>
-      <Btn text="Agregar cuota" variant="primary" onClick={() => setPopupAdd(true)}></Btn>
+      <Btn text="Generar Cuotas" variant="primary" onClick={() => setPopupAdd(true)}></Btn>
       <Btn text="Cuotas entre fechas" variant="primary" onClick={() => setPopUpFeesBetweenDates(true)}></Btn>
-
+      <Btn text="Ingresar Fecha de pago" variant="primary" onClick={() => setPopupPaymentDate(true)}></Btn>
+      <Btn text="Cuotas Impagas" variant="primary" onClick={() => setPopupUnpaidFees(true)}></Btn>
     </div>;
   }
 
   return (
     <>
-      <GenericSection title={title} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger} filters={
+      <GenericSection title={title} totalItems={totalItems} showCount={true} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger} showCount={true} filters={
         <FeeFilter formData={formData ||
           { partnerWithUnpaidFees: false, name: "", surname: "", PaymentDate: "", feeStatus: "" }}
           onChange={handleFilterChange} />}

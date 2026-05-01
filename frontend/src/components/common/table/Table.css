@@ -112,3 +112,19 @@ td {
   color: var(--black);
 }
 
+.pagination-items {
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.pagination-items .pagination {
+  width: auto;
+  margin-right: 1em;
+}
+
+.pagination-items span {
+  color: var(--black);
+  font-weight: 800;
+}

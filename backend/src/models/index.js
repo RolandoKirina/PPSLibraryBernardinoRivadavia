@@ -1,6 +1,7 @@
 import sequelize from '../configs/database.js';
 import applyRelationships from './relationships.js';
 
+import FeeConfig from './fee/FeeConfig.js';
 
 // Author
 import Author from './author/Authors.js';
@@ -49,9 +50,10 @@ import User from './auth/User.js';
 import Role from './auth/Role.js';
 import UserRole from './auth/UserRole.js';
 
+
 // Construir objeto de modelos con nombres tal cual están definidos
 const models = {
-
+  FeeConfig,
   Author,
   BookAuthor,
   Book,
