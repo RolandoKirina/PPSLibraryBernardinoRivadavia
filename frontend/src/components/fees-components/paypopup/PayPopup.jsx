@@ -5,14 +5,40 @@ import './PayPopup.css';
 import { useAuth } from '../../../auth/AuthContext';
 
 export default function PayPopup({ item = {}, onSuccess }) {
-    console.log(item);
-    console.log(item);
-    console.log(item);
     const { auth } = useAuth();
+
+    const parseMonth = (month) => {
+        if (!month) return '';
+
+        if (typeof month === 'number') return month;
+
+        const months = {
+            enero: 1,
+            febrero: 2,
+            marzo: 3,
+            abril: 4,
+            mayo: 5,
+            junio: 6,
+            julio: 7,
+            agosto: 8,
+            septiembre: 9,
+            setiembre: 9,
+            octubre: 10,
+            noviembre: 11,
+            diciembre: 12
+        };
+
+        return months[month.toLowerCase()] || '';
+    };
+
     const [formData, setFormData] = useState({
         paymentDate: '',
-        amount: ''
+        amount: '',
+        month: '',
+        year: '',
+        observation: ''
     });
+
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState({ type: '', msg: '' });
 
@@ -35,7 +61,6 @@ export default function PayPopup({ item = {}, onSuccess }) {
                         initialDate = data.defaultPaymentDate.split('T')[0];
                     }
                 }
-
             } catch (error) {
                 console.error("Error cargando configuración:", error);
             }
@@ -43,7 +68,10 @@ export default function PayPopup({ item = {}, onSuccess }) {
             if (item && Object.keys(item).length > 0) {
                 setFormData({
                     paymentDate: initialDate,
-                    amount: item.amount || ''
+                    amount: item.amount || '',
+                    month: parseMonth(item.month),
+                    year: item.year || '',
+                    observation: ''
                 });
             }
         };
@@ -61,7 +89,6 @@ export default function PayPopup({ item = {}, onSuccess }) {
         setStatus({ type: '', msg: '' });
 
         try {
-
             const response = await fetch(`http://localhost:4000/api/v1/fees/${item.feeid}`, {
                 method: 'PUT',
                 headers: {
@@ -71,7 +98,10 @@ export default function PayPopup({ item = {}, onSuccess }) {
                 body: JSON.stringify({
                     date_of_paid: formData.paymentDate,
                     amount: formData.amount,
-                    paid: true
+                    paid: true,
+                    month: formData.month,
+                    year: formData.year,
+                    observation: formData.observation
                 })
             });
 
@@ -79,7 +109,6 @@ export default function PayPopup({ item = {}, onSuccess }) {
 
             if (response.ok) {
                 setStatus({ type: 'success', msg: 'Pago registrado con éxito' });
-
                 if (onSuccess) setTimeout(() => onSuccess(), 1500);
             } else {
                 setStatus({ type: 'error', msg: data.msg || 'Error al procesar el pago' });
@@ -99,6 +128,26 @@ export default function PayPopup({ item = {}, onSuccess }) {
             </div>
 
             <div className='unpaid-fees-grid'>
+                <div className='unpaid-fee-input'>
+                    <label>Mes</label>
+                    <input
+                        name="month"
+                        type='number'
+                        value={formData.month}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className='unpaid-fee-input'>
+                    <label>Año</label>
+                    <input
+                        name="year"
+                        type='number'
+                        value={formData.year}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
                 <div className='unpaid-fee-input'>
                     <label>Fecha de pago</label>
                     <input
@@ -120,10 +169,21 @@ export default function PayPopup({ item = {}, onSuccess }) {
                         onChange={handleInputChange}
                     />
                 </div>
+
+                <div className='unpaid-fee-input'>
+                    <label>Observación</label>
+                    <input
+                        name="observation"
+                        type='text'
+                        placeholder="Opcional..."
+                        value={formData.observation}
+                        onChange={handleInputChange}
+                    />
+                </div>
             </div>
 
             {status.msg && (
-                <p className={`status-msg ${status.type}`} style={{ 
+                <p className={`status-msg ${status.type}`} style={{
                     color: status.type === 'success' ? '#2ecc71' : '#e74c3c',
                     textAlign: 'center',
                     fontSize: '0.9rem',

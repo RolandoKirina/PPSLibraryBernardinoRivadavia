@@ -116,7 +116,8 @@ export const getAll = async (filters = {}, listType = '') => {
         idPartner: fee.Partner?.id,
         name: fee.Partner ? `${fee.Partner.name} ${fee.Partner.surname}` : "",
 
-        unpaidFees: parseInt(fee.Partner?.unpaidFeesReal) || 0,
+       unpaidFees: parseInt(fee.Partner?.dataValues?.unpaidFeesReal) || 0,
+
 
         category: categoryName,
         surname: fee.Partner?.surname,

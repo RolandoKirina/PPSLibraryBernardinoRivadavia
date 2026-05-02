@@ -120,8 +120,6 @@ export default function GlobalUnpaidFees() {
             className="button-table"
             onClick={(e) => {
               e.stopPropagation();
-              // Mapeamos los datos necesarios para el PayPopup
-              console.log(row);
 
               setSelectedItem({
                 ...row,
