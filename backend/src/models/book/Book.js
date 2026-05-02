@@ -49,6 +49,10 @@ const Book = sequelize.define("Book",
       type: DataTypes.TEXT,
       field: "Notas"
     },
+    notesText: {
+      type: DataTypes.TEXT,
+       field: "NotasLimpio"
+    },
     type: {
       type: DataTypes.INTEGER,
       field: "Tipo"

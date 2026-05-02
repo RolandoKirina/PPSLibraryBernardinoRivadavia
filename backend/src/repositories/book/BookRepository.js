@@ -21,6 +21,7 @@ export const getAll = async (filters) => {
     whereEdition,
     whereYearEdition,
     whereNumberEdition,
+    whereNotes,
     order,
     limit,
     offset
@@ -28,6 +29,7 @@ export const getAll = async (filters) => {
 
   const hasAuthorFilter =
     whereAuthor && Object.keys(whereAuthor).length > 0;
+
 
   const count = await Book.count({
     where: {
@@ -38,9 +40,10 @@ export const getAll = async (filters) => {
       ...whereEdition,
       ...whereYearEdition,
       ...whereNumberEdition,
+      ...whereNotes,
     },
     include: [
-      {
+      { 
         model: BookAuthor,
         as: 'BookAuthors',
         required: hasAuthorFilter,
@@ -69,6 +72,7 @@ export const getAll = async (filters) => {
       ...whereEdition,
       ...whereYearEdition,
       ...whereNumberEdition,
+      ...whereNotes,
     },
     include: [
       {

@@ -44,7 +44,8 @@ export const BookDetail = [
               3:"Divorciado",
               4:"Viudo"
           } },
-        { label: 'COD_RCDU', value: 'información', attribute: 'codeCDU' }
+        { label: 'COD_RCDU', value: 'información', attribute: 'codeCDU' },
+        {label: 'Notas', value: 'información', attribute: 'notes'}
       ]
     ]
   }
