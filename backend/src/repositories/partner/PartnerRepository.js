@@ -168,7 +168,17 @@ export const getAll = async (filters = {}) => {
             WHERE f."IdSocio" = "Partner"."id" 
             AND f."Paga" = false
           )`),
-          'unpaidFees' 
+          'unpaidFees'
+        ],
+        [
+          Sequelize.literal(`(
+            SELECT COUNT(*)
+            FROM "PrestamoLibro" AS lb
+            INNER JOIN "Prestamo" AS l ON lb."IdPrestamo" = l."Id"
+            WHERE l."NumSocio" = "Partner"."id" 
+            AND lb."FechaDevolucion" IS NULL
+          )`),
+          'pendingBooks'
         ]
       ]
     },
@@ -186,10 +196,10 @@ export const getAll = async (filters = {}) => {
       {
         model: PartnerCategory,
         as: 'PartnerCategory',
-        attributes: ['idCategory', 'name', 'amount'] 
+        attributes: ['idCategory', 'name', 'amount']
       }
     ],
-    distinct: true 
+    distinct: true
   };
 
   if (wherePartner && Object.keys(wherePartner).length) {
@@ -213,8 +223,9 @@ export const getAll = async (filters = {}) => {
       Locality: p.Locality?.name || 'No definida',
       categoryName: p.PartnerCategory?.name || 'Sin categoría',
       categoryAmount: p.PartnerCategory?.amount || 0,
-      
+
       unpaidFees: parseInt(p.unpaidFees) || 0,
+      pendingBooks: parseInt(p.pendingBooks) || 0,
 
       StatePartner: undefined
     };

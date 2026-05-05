@@ -25,6 +25,10 @@ export const getAllPendingBooks = async (partnerNumber, filters) => {
     return books;
 }
 
+export const getGlobalPendingBooks = async (filters) => {
+    let books = await BookRepository.getGlobalPendingBooks(filters);
+    return books;
+}
 
 export const getRanking = async (filters) => {
     let ranking = await BookRepository.getRanking(filters);

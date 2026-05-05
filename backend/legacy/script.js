@@ -31,7 +31,7 @@ import Role from "../src/models/auth/Role.js";
 import UserRole from "../src/models/auth/UserRole.js";
 import User from "../src/models/auth/User.js";
 import FeeConfig from "../src/models/fee/FeeConfig.js";
-
+import { parseRTFSmart} from "../src/utils/text/ParseRtf.js"
 async function migrateAll() {
     try {
         console.log("Iniciando migración...");
@@ -226,6 +226,13 @@ async function migrateAll() {
                     console.warn(`⚠ No se encontró bookTypeId para libro ${row.Titulo} (legacy Tipo: ${row.Tipo})`);
                 }
 
+
+                let notesText = null;
+
+                if (row.Notas) {
+                notesText = parseRTFSmart(row.Notas);
+                }
+
                 return {
                     codeInventory: row.Codigo || null,
                     codeCDU: row.Cod_rcdu || null,
@@ -237,7 +244,9 @@ async function migrateAll() {
                     codeClasification: row.Cod_clas || null,
                     numberOfCopies: row.Cant_ejemplar || null,
                     notes: row.Notas || null,
-                    type: newBookTypeId,  // <- acá ya mapeás al bookTypeId real
+                    type: newBookTypeId,
+                    notes: row.Notas || null,
+                    notesText: notesText,
                     codeLing: row.Cod_Ling || null,
                     codeSignature: row.Autores || null,
                     idSupplier: row.IdProveedor || null,

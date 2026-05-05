@@ -1,6 +1,5 @@
 import { Op } from "sequelize";
 import Partner from "../models/partner/partner.js";
-import { toStartOfDay,toEndOfDay } from "./date/formatDate.js";
 
 export const buildBookFilters = (query) => {
   const {
@@ -11,6 +10,7 @@ export const buildBookFilters = (query) => {
     yearEdition,
     numberEdition,
     bookTitle,
+    notes,
     limit,
     offset,
     sortBy,
@@ -24,10 +24,17 @@ export const buildBookFilters = (query) => {
   const whereCodeSignature = {};
   const whereYearEdition = {};
   const whereNumberEdition = {};
+  const whereNotes = {};
 
   if (author && author.trim() !== '') {
     whereAuthor.name = {
       [Op.iLike]: `%${author.trim()}%`
+    };
+  }
+
+  if (notes && notes.trim() !== '') {
+    whereNotes.notesText = {
+      [Op.iLike]: `%${notes.trim()}%`
     };
   }
 
@@ -66,6 +73,8 @@ export const buildBookFilters = (query) => {
     ? [[sortBy, direction === 'asc' ? 'ASC' : 'DESC']]
     : undefined;
 
+
+
   return {
     whereAuthor,
     whereCodeInventory,
@@ -74,6 +83,7 @@ export const buildBookFilters = (query) => {
     whereBookTitle,
     whereYearEdition,
     whereNumberEdition,
+    whereNotes,
     limit: isNaN(parsedLimit) ? 40 : parsedLimit,
     offset: isNaN(parsedOffset) ? 0 : parsedOffset,
     order

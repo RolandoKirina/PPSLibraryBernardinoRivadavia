@@ -23,6 +23,7 @@ import LostBooks from '../../components/book-components/lostbooks/LostBooks.jsx'
 import BookRanking from '../../components/book-components/bookranking/BookRanking.jsx';
 import { useAuth } from '../../auth/AuthContext';
 import roles from '../../auth/roles';
+import GlobalPendingBooks from '../../components/book-components/globalpendingbooks/GlobalPendingBooks.jsx';
 
 const BookSection = () => {
   const chunkSize = 100;
@@ -39,6 +40,8 @@ const BookSection = () => {
   const [PopUpRanking, setPopUpRanking] = useState(false);
   const [PopUpBooksPartners, setPopUpBooksPartners] = useState(false);
   const [PopUpLostBooks, setPopUpLostBooks] = useState(false);
+  const [popupGlobalPendingBooks, setPopupGlobalPendingBooks] = useState(false);
+
   const [error, setError] = useState(null);
   const [filters, setFilters] = useState({});
   const BASE_URL = "http://localhost:4000/api/v1/books";
@@ -55,7 +58,8 @@ const BookSection = () => {
     codeSignature: "",
     bookTitle: "",
     yearEdition: "",
-    numberEdition: ""
+    numberEdition: "",
+    notes: ""
   });
 
   const handleFilterChange = (e) => {
@@ -252,7 +256,15 @@ const BookSection = () => {
       content: <LostBooks />,
       close: () => setPopUpLostBooks(false),
       condition: PopUpLostBooks
-    }
+    },
+    {
+      key: 'globalPendingBooks',
+      title: 'Libros Pendientes Global',
+      classname: 'books-partners-amount-size',
+      content: <GlobalPendingBooks />,
+      close: () => setPopupGlobalPendingBooks(false),
+      condition: popupGlobalPendingBooks
+    },
   ]
 
   async function duplicateBooks(data) {
@@ -310,6 +322,7 @@ const BookSection = () => {
               <Btn icon={<img src={BookIcon} />} onClick={() => setPopUpRanking(true)} text="Ranking de libros" variant="primary" />
               <Btn icon={<img src={ReaderIcon} />} onClick={() => setPopUpBooksPartners(true)} text="Libros y socios" variant="primary" />
               <Btn icon={<img src={LostBookIcon} />} onClick={() => setPopUpLostBooks(true)} text="Libros perdidos" variant="primary" />
+              <Btn text="Libros Pendientes" variant="primary" onClick={() => setPopupGlobalPendingBooks(true)}/>
             </div>
           ) : null
         }

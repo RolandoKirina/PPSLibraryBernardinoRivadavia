@@ -6,7 +6,7 @@ import Partner from "../../models/partner/partner.js";
 import Loan from "../../models/loan/Loan.js";
 import BookType from "../../models/options/BookType.js";
 import { fn, col, literal } from "sequelize";
-import Op from "sequelize";
+import { Op } from "sequelize";
 import sequelize from "../../configs/database.js";
 import * as BookAuthorRepository from '../author/BookAuthorRepository.js';
 import { formatDate } from "../../utils/date/formatDate.js";
@@ -21,6 +21,7 @@ export const getAll = async (filters) => {
     whereEdition,
     whereYearEdition,
     whereNumberEdition,
+    whereNotes,
     order,
     limit,
     offset
@@ -28,6 +29,7 @@ export const getAll = async (filters) => {
 
   const hasAuthorFilter =
     whereAuthor && Object.keys(whereAuthor).length > 0;
+
 
   const count = await Book.count({
     where: {
@@ -38,6 +40,7 @@ export const getAll = async (filters) => {
       ...whereEdition,
       ...whereYearEdition,
       ...whereNumberEdition,
+      ...whereNotes,
     },
     include: [
       {
@@ -69,6 +72,7 @@ export const getAll = async (filters) => {
       ...whereEdition,
       ...whereYearEdition,
       ...whereNumberEdition,
+      ...whereNotes,
     },
     include: [
       {
@@ -141,118 +145,206 @@ export const getAll = async (filters) => {
 };
 
 export const getAllPendingBooks = async (partnerNumber, filters = {}) => {
-  const { limit, offset } = filters;
+  const { limit, offset, title, code, status } = filters;
+
+  const bookWhere = {};
+  if (title) bookWhere.title = { [Op.like]: `%${title}%` };
+  if (code) bookWhere.codeInventory = { [Op.like]: `%${code}%` };
+
+  let loanBookWhere = {};
+  if (status === 'pending') loanBookWhere.returnedDate = null;
+  else if (status === 'returned') loanBookWhere.returnedDate = { [Op.ne]: null };
 
   const { rows: idRows, count } = await Book.findAndCountAll({
     attributes: ['BookId'],
     distinct: true,
     subQuery: false,
-    col: ['id'],
-    include: [
-      {
-        model: LoanBook,
-        as: 'BookLoans',
+    where: bookWhere,
+    include: [{
+      model: LoanBook,
+      as: 'BookLoans',
+      required: true,
+      where: loanBookWhere,
+      include: [{
+        model: Loan,
+        as: 'Loan',
         required: true,
-        where: { returnedDate: null },
-        include: [
-          {
-            model: Loan,
-            as: 'Loan',
-            required: true,
-            include: [
-              {
-                model: Partner,
-                as: 'Partner',
-                required: true,
-                where: { partnerNumber }
-              }
-            ]
-          }
-        ]
-      }
-    ],
+        include: [{
+          model: Partner,
+          as: 'Partner',
+          required: true,
+          where: { partnerNumber }
+        }]
+      }]
+    }],
     limit,
     offset
   });
 
   const bookIds = idRows.map(b => b.BookId);
-
-  if (bookIds.length === 0) {
-    return { rows: [], count };
-  }
+  if (bookIds.length === 0) return { rows: [], count };
 
   const books = await Book.findAll({
     where: { BookId: bookIds },
-    attributes: [
-      'BookId',
-      'title',
-      'codeInventory',
-      'codeCDU',
-      'codeLing',
-      'codeClasification'
-    ],
     include: [
       {
         model: LoanBook,
         as: 'BookLoans',
-        attributes: ['reneweAmount', 'returnedDate'],
         required: true,
-        where: { returnedDate: null },
-        include: [
-          {
-            model: Loan,
-            as: 'Loan',
-            attributes: ['id'],
-            include: [
-              {
-                model: Partner,
-                as: 'Partner',
-                attributes: ['partnerNumber']
-              }
-            ]
-          }
-        ]
+        where: loanBookWhere,
+        attributes: ['reneweAmount', 'returnedDate', 'expectedDate', 'LoanBookId'], 
+        include: [{
+          model: Loan,
+          as: 'Loan',
+          attributes: ['id', 'retiredDate'], 
+          include: [{ 
+            model: Partner, 
+            as: 'Partner',
+            attributes: ['partnerNumber'] 
+          }]
+        }]
       },
-      {
-        model: BookType,
-        as: 'BookType',
-        attributes: ['bookTypeId', 'typeName'],
-        required: true
-      }
+      { model: BookType, as: 'BookType', required: true }
     ]
   });
 
-  const rows = books.map(book => ({
-    partnerNumber: book.BookLoans?.[0]?.Loan?.Partner?.partnerNumber ?? null,
-    BookId: book.BookId,
-    title: book.title,
-    codeInventory: book.codeInventory,
-    codeCDU: book.codeCDU,
-    codeLing: book.codeLing,
-    codeClasification: book.codeClasification,
-    bookTypeId: book.BookType?.bookTypeId ?? null,
-    typeName: book.BookType?.typeName ?? '',
-    loanId: book.BookLoans?.[0]?.Loan?.id ?? null,
-    renewes: book.BookLoans?.[0]?.reneweAmount ?? 0,
-    returnedDate: formatDate(book.BookLoans?.[0]?.returnedDate),
-    returned: book.BookLoans?.[0]?.returnedDate ? 'Si' : 'No',
-    returnDateText: book.BookLoans?.[0]?.returnedDate || 'Sin fecha'
-  }));
+  const rows = books.map(book => {
+    const loanDetail = book.BookLoans?.[0];
+
+    return {
+      partnerNumber: loanDetail?.Loan?.Partner?.partnerNumber,
+      BookId: book.BookId,
+      bookCode: book.codeInventory,
+      loanBookId: loanDetail?.LoanBookId,
+      title: book.title,
+      retiredDate: loanDetail?.Loan?.retiredDate ? formatDate(loanDetail.Loan.retiredDate) : null,
+      dueDate: loanDetail?.expectedDate ? formatDate(loanDetail.expectedDate) : 'Sin fecha',
+      renewalCount: loanDetail?.reneweAmount ?? 0,
+      returnedDate: loanDetail?.returnedDate ? formatDate(loanDetail.returnedDate) : 'Sin fecha',
+      isReturned: !!loanDetail?.returnedDate,
+      loanId: loanDetail?.Loan?.id
+    };
+  });
 
   return { rows, count };
 };
 
 
+export const getGlobalPendingBooks = async (filters = {}) => {
+  const { limit, offset, title, code, status, partnerNumber } = filters;
+
+  const bookWhere = {};
+  if (title) bookWhere.title = { [Op.like]: `%${title}%` };
+  if (code) bookWhere.codeInventory = { [Op.like]: `%${code}%` };
+
+  const loanBookWhere = {};
+  if (status === 'pending') {
+    loanBookWhere.returnedDate = null;
+  } else if (status === 'returned') {
+    loanBookWhere.returnedDate = { [Op.ne]: null };
+  }
+
+  const partnerWhere = (partnerNumber && partnerNumber.trim() !== "") 
+    ? { partnerNumber } 
+    : null;
+
+  const { rows: idRows, count } = await Book.findAndCountAll({
+    attributes: ['BookId'],
+    distinct: true,
+    subQuery: false,
+    where: bookWhere,
+    include: [{
+      model: LoanBook,
+      as: 'BookLoans',
+      required: true,
+      where: loanBookWhere,
+      include: [{
+        model: Loan,
+        as: 'Loan',
+        required: true,
+        include: [{
+          model: Partner,
+          as: 'Partner',
+          required: !!partnerWhere, 
+          where: partnerWhere || {}
+        }]
+      }]
+    }],
+    limit: limit ? Number(limit) : undefined,
+    offset: offset ? Number(offset) : undefined
+  });
+
+  const bookIds = idRows.map(b => b.BookId);
+  
+  if (bookIds.length === 0) return { rows: [], count: 0 };
+
+  const books = await Book.findAll({
+    where: { BookId: bookIds },
+    include: [
+      {
+        model: LoanBook,
+        as: 'BookLoans',
+        required: true,
+        where: loanBookWhere,
+        attributes: ['LoanBookId', 'reneweAmount', 'returnedDate', 'expectedDate'],
+        include: [{
+          model: Loan,
+          as: 'Loan',
+          include: [{ 
+            model: Partner, 
+            as: 'Partner', 
+            attributes: ['partnerNumber', 'name', 'surname'] 
+          }]
+        }]
+      },
+      { model: BookType, as: 'BookType', required: false }
+    ]
+  });
+
+  const rows = books.map(book => {
+    const loanDetail = book.BookLoans?.[0];
+    const partner = loanDetail?.Loan?.Partner;
+
+    return {
+      partnerNumber: partner?.partnerNumber,
+      partnerName: partner ? `${partner.name} ${partner.surname}` : 'N/A',
+      BookId: book.BookId,
+      bookCode: book.codeInventory,
+      loanBookId: loanDetail?.LoanBookId,
+      title: book.title,
+      retiredDate: loanDetail?.Loan?.retiredDate ? formatDate(loanDetail.Loan.retiredDate) : null,
+      dueDate: loanDetail?.expectedDate ? formatDate(loanDetail.expectedDate) : 'Sin fecha',
+      renewalCount: loanDetail?.reneweAmount ?? 0,
+      returnedDate: loanDetail?.returnedDate ? formatDate(loanDetail.returnedDate) : 'Sin fecha',
+      isReturned: !!loanDetail?.returnedDate,
+      loanId: loanDetail?.Loan?.id
+    };
+  });
+
+  return { rows, count };
+};
 
 export const getAllWithFields = async (filters) => {
-  const { whereBookTitle, limit, offset } = filters;
+  const {
+    whereCodeInventory = {},
+    whereBookTitle = {},
+    limit,
+    offset
+  } = filters;
+
+  const where = {
+    ...whereBookTitle,
+    ...(whereCodeInventory?.codeInventory && {
+      codeInventory: {
+        [Op.like]: `%${whereCodeInventory.codeInventory}`
+      }
+    })
+  };
 
 
   const { rows: ids, count } = await Book.findAndCountAll({
     attributes: ['BookId'],
-    where: {
-      ...whereBookTitle
-    },
+    where,
     limit,
     offset,
     distinct: true
@@ -269,8 +361,9 @@ export const getAllWithFields = async (filters) => {
 
   const books = await Book.findAll({
     where: {
-      BookId: bookIds,
-      ...whereBookTitle
+      BookId: {
+        [Op.in]: bookIds
+      }
     },
     attributes: [
       "BookId",
@@ -301,13 +394,8 @@ export const getAllWithFields = async (filters) => {
     order: [['BookId', 'ASC']]
   });
 
-  const mappedBooks = books.map(book => ({
-    ...book.toJSON(),
-    isBorrowed: book.BookLoans?.length > 0
-  }));
-
   return {
-    rows: mappedBooks,
+    rows: books,
     total: count
   };
 };
@@ -400,7 +488,7 @@ export const getAllBooksOfLoan = async (id, filters = {}) => {
     rows,
     count
   };
-}; 
+};
 
 export const getLostBooks = async ({ whereBooks, order, limit, offset }) => {
   try {

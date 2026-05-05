@@ -19,6 +19,8 @@ router.get("/withFields/author/:id", BookController.getAllBooksOfAuthor);
 
 router.get("/withFields/loan/:id", authorizeRoles(['admin', 'partner']), BookController.getAllBooksOfLoan);
 
+router.get('/loans/global', authorizeRoles(['admin']), BookController.getGlobalPendingBooks);
+
 router.get("/pendingBooks/:partnerNumber", authorizeRoles(['admin']), BookController.getAllPendingBooks);
 
 router.get('/ranking', authorizeRoles(['admin']), BookController.getRanking);

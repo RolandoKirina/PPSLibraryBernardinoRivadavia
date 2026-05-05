@@ -7,7 +7,6 @@ export const getAllBooks = async (req, res) => {
     try {
 
         const queryOptions = buildBookFilters(req.query);
-
         const books = await BookService.getAllBooks(queryOptions);
 
         res.status(HTTP_STATUS.OK.code).send(books);
@@ -24,6 +23,7 @@ export const getAllBooksWithFields = async (req, res) => {
     try {
 
         const queryOptions = buildBookFilters(req.query);
+        console.log(queryOptions);
 
         const books = await BookService.getAllBooksWithFields(queryOptions);
 
@@ -75,21 +75,51 @@ export const getAllBooksOfAuthor = async (req, res) => {
 
 export const getAllPendingBooks = async (req, res) => {
     try {
-        const limit = req.query.limit ? Number(req.query.limit) : undefined;
-        const offset = req.query.offset ? Number(req.query.offset) : undefined;
         const { partnerNumber } = req.params;
 
-        const books = await BookService.getAllPendingBooks(partnerNumber, { limit, offset });
+        const limit = req.query.limit ? Number(req.query.limit) : undefined;
+        const offset = req.query.offset ? Number(req.query.offset) : undefined;
+
+        const title = req.query.title || '';
+        const code = req.query.code || '';
+        const status = req.query.status || 'pending';
+
+        console.log(title);
+
+        const books = await BookService.getAllPendingBooks(partnerNumber, {
+            limit,
+            offset,
+            title,
+            code,
+            status
+        });
 
         res.status(HTTP_STATUS.OK.code).send(books);
-
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
 }
 
+export const getGlobalPendingBooks = async (req, res) => {
+  try {
+    const filters = {
+      limit: req.query.limit ? Number(req.query.limit) : 100,
+      offset: req.query.offset ? Number(req.query.offset) : 0,
+      partnerNumber: req.query.partnerNumber || null,
+      title: req.query.title || '',
+      code: req.query.code || '',
+      status: req.query.status || 'pending'
+    };
+
+    const result = await BookService.getGlobalPendingBooks(filters);
+    
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("Error en getGlobalLoans Controller:", error);
+    return res.status(500).json({ msg: "Error al procesar la búsqueda global de préstamos" });
+  }
+};
 
 export const getRanking = async (req, res) => {
     try {
@@ -179,7 +209,7 @@ export const createBook = async (req, res) => {
         const newBook = await BookService.createBook(book);
         res.status(HTTP_STATUS.CREATED.code).json(newBook);
     }
-       
+
     catch (error) {
 
         if (error instanceof ValidationError) {
@@ -205,7 +235,7 @@ export const updateBook = async (req, res) => {
         const newBook = await BookService.updateBook(id, updates);
         res.status(HTTP_STATUS.OK.code).json(newBook);
     }
-       
+
     catch (error) {
 
         if (error instanceof ValidationError) {

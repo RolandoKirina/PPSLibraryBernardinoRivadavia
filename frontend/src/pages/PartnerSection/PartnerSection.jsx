@@ -323,7 +323,7 @@ export default function PartnerSection() {
       key: 'pendingBooks',
       title: 'Libros pendientes',
       classname: 'books-partners-amount-size',
-      content: <PendingBooks />,
+      content: <PendingBooks item={selectedItem}/>,
       close: () => setPopupPendingBooks(false),
       condition: PopUpPendingBooks
     }

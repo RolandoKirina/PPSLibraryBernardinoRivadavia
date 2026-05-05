@@ -71,7 +71,7 @@ export const create = async (loanbook, transaction = null) => {
 
 export const update = async (id, updates, transaction = null) => {
   await LoanBook.update(updates, {
-    where: { id },
+    where: { LoanBookId: id },
     transaction
   });
 

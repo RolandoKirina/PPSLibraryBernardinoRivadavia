@@ -373,7 +373,6 @@ export const FeeSection = () => {
       close: () => setPopupPaymentDate(false),
       condition: PopupPaymentDate
     },
-    ,
     {
       key: 'globalUnpaidFees',
       title: 'Cuotas Impagas Global',

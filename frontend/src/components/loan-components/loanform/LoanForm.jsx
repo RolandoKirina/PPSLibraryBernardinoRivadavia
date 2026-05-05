@@ -70,7 +70,7 @@ export default function LoanForm({ method, successMessage, createLoanItem, loanS
 
   const [loadingBooks, setLoadingBooks] = useState(false);
 
-  const [bookTitleSearch, setBookTitleSearch] = useState('');
+  const [bookCodeSearch, setBookCodeSearch] = useState('');
 
   useEffect(() => {
     getLibraryBooks({ limit: chunkSize, offset: 0 });
@@ -90,8 +90,8 @@ export default function LoanForm({ method, successMessage, createLoanItem, loanS
   }, []);
 
   useEffect(() => {
-    getLibraryBooks({ bookTitle: bookTitleSearch, limit: chunkSize, offset: 0 }, false);
-  }, [bookTitleSearch]);
+    getLibraryBooks({ codeInventory: bookCodeSearch, limit: chunkSize, offset: 0 }, false);
+  }, [bookCodeSearch]);
 
 
   const getLibraryBooks = async (filters = {}, append = false) => {
@@ -597,10 +597,10 @@ export default function LoanForm({ method, successMessage, createLoanItem, loanS
               </div>
               <input
                 type='text'
-                name='searchBookTitle'
-                value={bookTitleSearch}
-                onChange={(e) => setBookTitleSearch(e.target.value)}
-                placeholder="Buscar libro..."
+                name='searchBookCode'
+                value={bookCodeSearch}
+                onChange={(e) => setBookCodeSearch(e.target.value)}
+                placeholder="Buscar libro por codigo..."
               />
               <Table columns={bookshelfBooksColumns} data={libraryBooks} totalItems={totalLibraryBooks} handleChangePage={handleChangePage} loading={loadingBooks} resetPageTrigger={resetPageTrigger} />
             </div>

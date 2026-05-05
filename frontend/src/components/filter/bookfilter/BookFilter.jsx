@@ -64,6 +64,17 @@ export default function BookFilter({ formData, onChange }) {
             </>
           )}
 
+          {auth.role === roles.admin && (
+            <>
+              <h3 className='titleh3'>Notas</h3>
+
+              <div className="book-form-input-group">
+                <label>Notas</label>
+                <input type="text" name="notes" value={formData.notes} onChange={onChange} />
+              </div>
+            </>
+          )}
+
         </form>
       </div>
     </aside>
