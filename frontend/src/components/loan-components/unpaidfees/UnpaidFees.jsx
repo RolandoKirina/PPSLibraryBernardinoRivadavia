@@ -126,6 +126,14 @@ export default function UnpaidFees({ item = {}, section = "" }) {
     },
   ];
 
+  const refreshData = () => {
+    setPopUpPay(false); // Cerramos el popup
+    // Resetear el estado local y disparar el fetch (el useEffect se encargará)
+    // O llamar directamente a fetchUnpaidFees:
+    fetchUnpaidFees({ limit: chunkSize, offset: 0 }, filters);
+    setResetPageTrigger(prev => prev + 1); // Esto vuelve la tabla a la página 1
+  };
+
   return (
     <div className="unpaid-quotes-container">
       <div className='unpaid-fees-info-inputs'>
@@ -184,11 +192,14 @@ export default function UnpaidFees({ item = {}, section = "" }) {
         rowsPerPage={rowsPerPage}
       />
 
-      {popUpPay && <>
+      {popUpPay && (
         <PopUp title={'Pagar Cuota'} className={'pay-popup'} onClick={() => setPopUpPay(false)}>
-            <PayPopup item={selectedItem} />
+          <PayPopup
+            item={selectedItem}
+            onSuccess={refreshData} // 2. Pasamos la función aquí
+          />
         </PopUp>
-      </>}
+      )}
 
     </div>
   );

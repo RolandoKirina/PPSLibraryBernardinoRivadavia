@@ -63,7 +63,7 @@
 
     4- Acceso: Abre el navegador en http://localhost:5173
 
-📁 Estructura del Repositorio - CORREGIR
+📁 Estructura del Repositorio
 
 PPSLibrary/
 ├── backend/               # Servidor Node.js + Express

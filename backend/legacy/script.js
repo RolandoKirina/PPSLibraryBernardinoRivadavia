@@ -32,6 +32,8 @@ import UserRole from "../src/models/auth/UserRole.js";
 import User from "../src/models/auth/User.js";
 import FeeConfig from "../src/models/fee/FeeConfig.js";
 import { parseRTFSmart} from "../src/utils/text/ParseRtf.js"
+import { execSync } from "child_process";
+
 async function migrateAll() {
     try {
         console.log("Iniciando migración...");
@@ -222,9 +224,9 @@ async function migrateAll() {
             const transformedBooks = bookRows.map(row => {
                 const newBookTypeId = legacyBookTypeToNewId[row.Tipo] ?? null;
 
-                if (!newBookTypeId) {
+               /* if (!newBookTypeId) {
                     console.warn(`⚠ No se encontró bookTypeId para libro ${row.Titulo} (legacy Tipo: ${row.Tipo})`);
-                }
+                }*/
 
 
                 let notesText = null;
@@ -263,9 +265,9 @@ async function migrateAll() {
             // 🔹 2. Filtrar libros sin tipo válido
             const filteredBooks = transformedBooks.filter(b => b.type !== null);
 
-            console.log(`Libros válidos: ${filteredBooks.length}`);
+          /*  console.log(`Libros válidos: ${filteredBooks.length}`);
             console.log(`Libros descartados (sin tipo válido): ${transformedBooks.length - filteredBooks.length}`);
-
+*/
             // 🔹 3. Limpiar tabla y bulk insert
             await Book.destroy({
                 truncate: true,
@@ -727,7 +729,7 @@ async function migrateAll() {
             console.log(`Importando ${partnerRows.length} socios...`);
 
             // Mostrar solo algunos campos para inspección
-            console.table(
+           /* console.table(
                 partnerRows.slice(0, 5).map(r => ({
                     id: r.id,
                     numero: r.numero,
@@ -738,7 +740,7 @@ async function migrateAll() {
                     MaritalStatusId: r.est_civil
                 }))
             );
-
+*/
             // ---------------------------
             // 1. Verificar Localidades usadas por socios
             // ---------------------------
@@ -785,7 +787,7 @@ async function migrateAll() {
             // 3. Verificar Motivos de Baja usados por socios
             // ---------------------------
             const reasonIdsUsed = [...new Set(partnerRows.map(r => r.Motivo_Baj).filter(v => v != null))];
-            console.log("Motivos de baja usados por socios:", reasonIdsUsed);
+            //console.log("Motivos de baja usados por socios:", reasonIdsUsed);
 
             const existingReasons = await RemoveReason.findAll({
                 where: { id: reasonIdsUsed },
@@ -953,8 +955,8 @@ async function migrateAll() {
                 transaction: t
             });
 
-            console.log("existingPartners RAW (primeros 5):");
-            console.log(existingPartners.slice(0, 5));
+          //  console.log("existingPartners RAW (primeros 5):");
+            //console.log(existingPartners.slice(0, 5));
 
             const existingPartnerNumbers = existingPartners.map(r => Number(r.partnerNumber));
 
@@ -1787,10 +1789,6 @@ async function migrateAll() {
 
             console.log("TipoLibroGrupo importado correctamente.");
         });
-
-
-
-
 
         console.log("Migración completa ✅");
         process.exit(0);

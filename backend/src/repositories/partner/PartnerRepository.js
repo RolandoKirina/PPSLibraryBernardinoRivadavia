@@ -155,88 +155,201 @@ export const getUnpaidFeesByPartner = async (id) => {
 
 };
 
+// export const getAll = async (filters = {}) => {
+//   const { wherePartner, limit, offset, order } = filters;
+
+//   const query = {
+//     attributes: {
+//       include: [
+//         [
+//           Sequelize.literal(`(
+//             SELECT COUNT(*)
+//             FROM "Cuotas" AS f
+//             WHERE f."IdSocio" = "Partner"."id" 
+//             AND f."Paga" = false
+//           )`),
+//           'unpaidFees'
+//         ],
+//         [
+//           Sequelize.literal(`(
+//             SELECT COUNT(*)
+//             FROM "PrestamoLibro" AS lb
+//             INNER JOIN "Prestamo" AS l ON lb."IdPrestamo" = l."Id"
+//             WHERE l."NumSocio" = "Partner"."id" 
+//             AND lb."FechaDevolucion" IS NULL
+//           )`),
+//           'pendingBooks'
+//         ]
+//       ]
+//     },
+//     include: [
+//       {
+//         model: statePartner,
+//         as: 'StatePartner',
+//         attributes: ['status'],
+//       },
+//       {
+//         model: Locality,
+//         as: 'Locality',
+//         attributes: ['name'],
+//       },
+//       {
+//         model: PartnerCategory,
+//         as: 'PartnerCategory',
+//         attributes: ['idCategory', 'name', 'amount']
+//       }
+//     ],
+//     distinct: true
+//   };
+
+//   if (wherePartner && Object.keys(wherePartner).length) {
+//     query.where = wherePartner;
+//   }
+
+//   if (Number.isInteger(limit)) query.limit = limit;
+//   if (Number.isInteger(offset)) query.offset = offset;
+//   if (Array.isArray(order) && order.length) query.order = order;
+
+//   const { rows, count } = await Partner.findAndCountAll(query);
+
+//   const flattenedRows = rows.map(partner => {
+//     const p = partner.get({ plain: true });
+
+//     return {
+//       ...p,
+//       name: p.name?.trim() ? p.name : "Sin nombre",
+//       surname: p.surname?.trim() ? p.surname : "Sin apellido",
+//       status: p.StatePartner?.status || 'Desconocido',
+//       Locality: p.Locality?.name || 'No definida',
+//       categoryName: p.PartnerCategory?.name || 'Sin categoría',
+//       categoryAmount: p.PartnerCategory?.amount || 0,
+
+//       unpaidFees: parseInt(p.unpaidFees) || 0,
+//       pendingBooks: parseInt(p.pendingBooks) || 0,
+
+//       StatePartner: undefined
+//     };
+//   });
+
+//   return {
+//     rows: flattenedRows,
+//     count
+//   };
+// };
+
+
 export const getAll = async (filters = {}) => {
-  const { wherePartner, limit, offset, order } = filters;
+    const { wherePartner, limit, offset, order } = filters;
 
-  const query = {
-    attributes: {
-      include: [
-        [
-          Sequelize.literal(`(
-            SELECT COUNT(*)
-            FROM "Cuotas" AS f
-            WHERE f."IdSocio" = "Partner"."id" 
-            AND f."Paga" = false
-          )`),
-          'unpaidFees'
+    // --- DEFINICIÓN DE SUBCONSULTAS (Lógica Centralizada) ---
+    // Usamos exactamente la lógica que confirmaste que funciona
+    const sqlUnpaidFees = `(
+        SELECT COUNT(*)
+        FROM "Cuotas" AS f
+        WHERE f."IdSocio" = "Partner"."id" 
+        AND f."Paga" = false
+    )`;
+
+    const sqlPendingBooks = `(
+        SELECT COUNT(*)
+        FROM "PrestamoLibro" AS lb
+        INNER JOIN "Prestamo" AS l ON lb."IdPrestamo" = l."Id"
+        WHERE l."NumSocio" = "Partner"."id" 
+        AND lb."FechaDevolucion" IS NULL
+    )`;
+
+    // --- CONSTRUCCIÓN DE LA QUERY ---
+    const query = {
+        attributes: {
+            include: [
+                // Inyectamos las columnas virtuales en el SELECT
+                [Sequelize.literal(sqlUnpaidFees), 'unpaidFees'],
+                [Sequelize.literal(sqlPendingBooks), 'pendingBooks']
+            ]
+        },
+        include: [
+            {
+                model: statePartner,
+                as: 'StatePartner',
+                attributes: ['status'],
+            },
+            {
+                model: Locality,
+                as: 'Locality',
+                attributes: ['name'],
+            },
+            {
+                model: PartnerCategory,
+                as: 'PartnerCategory',
+                attributes: ['idCategory', 'name', 'amount']
+            }
         ],
-        [
-          Sequelize.literal(`(
-            SELECT COUNT(*)
-            FROM "PrestamoLibro" AS lb
-            INNER JOIN "Prestamo" AS l ON lb."IdPrestamo" = l."Id"
-            WHERE l."NumSocio" = "Partner"."id" 
-            AND lb."FechaDevolucion" IS NULL
-          )`),
-          'pendingBooks'
-        ]
-      ]
-    },
-    include: [
-      {
-        model: statePartner,
-        as: 'StatePartner',
-        attributes: ['status'],
-      },
-      {
-        model: Locality,
-        as: 'Locality',
-        attributes: ['name'],
-      },
-      {
-        model: PartnerCategory,
-        as: 'PartnerCategory',
-        attributes: ['idCategory', 'name', 'amount']
-      }
-    ],
-    distinct: true
-  };
+        where: {}, // Inicializamos el objeto where
+        distinct: true
+    };
 
-  if (wherePartner && Object.keys(wherePartner).length) {
-    query.where = wherePartner;
-  }
+    // --- LÓGICA DE FILTRADO DINÁMICO ---
+    if (wherePartner && Object.keys(wherePartner).length) {
+        const { unpaidFees, pendingBooks, ...rest } = wherePartner;
 
-  if (Number.isInteger(limit)) query.limit = limit;
-  if (Number.isInteger(offset)) query.offset = offset;
-  if (Array.isArray(order) && order.length) query.order = order;
+        // Aplicamos los filtros comunes (nombre, id, etc.)
+        query.where = { ...rest };
 
-  const { rows, count } = await Partner.findAndCountAll(query);
+        // Filtro especial para Cuotas Impagas
+        if (unpaidFees !== undefined && unpaidFees !== "") {
+            // Sequelize.where permite comparar un literal SQL con un valor
+            const filterValue = parseInt(unpaidFees);
+            query.where[Op.and] = query.where[Op.and] || [];
+            query.where[Op.and].push(
+                Sequelize.where(Sequelize.literal(sqlUnpaidFees), filterValue)
+            );
+        }
 
-  const flattenedRows = rows.map(partner => {
-    const p = partner.get({ plain: true });
+        // Filtro especial para Libros Pendientes
+        if (pendingBooks !== undefined && pendingBooks !== "") {
+            const filterValue = parseInt(pendingBooks);
+            query.where[Op.and] = query.where[Op.and] || [];
+            query.where[Op.and].push(
+                Sequelize.where(Sequelize.literal(sqlPendingBooks), filterValue)
+            );
+        }
+    }
+
+    // --- PAGINACIÓN Y ORDEN ---
+    if (Number.isInteger(limit)) query.limit = limit;
+    if (Number.isInteger(offset)) query.offset = offset;
+    if (Array.isArray(order) && order.length) query.order = order;
+
+    // --- EJECUCIÓN ---
+    const { rows, count } = await Partner.findAndCountAll(query);
+
+    // --- FORMATEO DE RESPUESTA ---
+    const flattenedRows = rows.map(partner => {
+        const p = partner.get({ plain: true });
+
+        return {
+            ...p,
+            name: p.name?.trim() ? p.name : "Sin nombre",
+            surname: p.surname?.trim() ? p.surname : "Sin apellido",
+            status: p.StatePartner?.status || 'Desconocido',
+            Locality: p.Locality?.name || 'No definida',
+            categoryName: p.PartnerCategory?.name || 'Sin categoría',
+            categoryAmount: p.PartnerCategory?.amount || 0,
+
+            // Nos aseguramos de que sean números
+            unpaidFees: parseInt(p.unpaidFees) || 0,
+            pendingBooks: parseInt(p.pendingBooks) || 0,
+
+            // Limpiamos objetos anidados si no los necesitas
+            StatePartner: undefined
+        };
+    });
 
     return {
-      ...p,
-      name: p.name?.trim() ? p.name : "Sin nombre",
-      surname: p.surname?.trim() ? p.surname : "Sin apellido",
-      status: p.StatePartner?.status || 'Desconocido',
-      Locality: p.Locality?.name || 'No definida',
-      categoryName: p.PartnerCategory?.name || 'Sin categoría',
-      categoryAmount: p.PartnerCategory?.amount || 0,
-
-      unpaidFees: parseInt(p.unpaidFees) || 0,
-      pendingBooks: parseInt(p.pendingBooks) || 0,
-
-      StatePartner: undefined
+        rows: flattenedRows,
+        count
     };
-  });
-
-  return {
-    rows: flattenedRows,
-    count
-  };
 };
-
 
 export const getOne = async (id) => {
   return await Partner.findByPk(id);
