@@ -36,6 +36,7 @@ export default function LoanForm({ method, successMessage, createLoanItem, loanS
   const [confirmReturnAllPopup, setConfirmReturnAllPopup] = useState(false);
   const [confirmReturnPopup, setConfirmReturnPopup] = useState(false);
   const [confirmRenewePopup, setConfirmRenewePopup] = useState(false);
+  const [bookTypeConfig, setBookTypeConfig] = useState(null);
 
   const { auth } = useAuth();
 
@@ -88,6 +89,28 @@ export default function LoanForm({ method, successMessage, createLoanItem, loanS
         });
     }
   }, []);
+
+  useEffect(() => {
+    const fetchBookType = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/book-types/type-name/Libro`, {
+          method: 'GET',
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${auth.token}`
+          }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setBookTypeConfig(data);
+        }
+      } catch (error) {
+        console.error("Error al obtener BookType:", error);
+      }
+    };
+
+    fetchBookType();
+  }, [auth.token]);
 
   useEffect(() => {
     getLibraryBooks({ codeInventory: bookCodeSearch, limit: chunkSize, offset: 0 }, false);
@@ -186,7 +209,7 @@ export default function LoanForm({ method, successMessage, createLoanItem, loanS
         renewes: b.renewes || 0,
         BookCode: b.codeInventory,
         returned: isReturned,
-        returnedDate: finalReturnedDate 
+        returnedDate: finalReturnedDate
       };
     });
 
@@ -320,8 +343,6 @@ export default function LoanForm({ method, successMessage, createLoanItem, loanS
       )
     }));
 
-    console.log(loanData);
-
   }
 
 
@@ -428,17 +449,24 @@ export default function LoanForm({ method, successMessage, createLoanItem, loanS
 
     setLoanData(prev => {
       const updated = { ...prev, [name]: value };
-      if (name === 'retiredDate' || name === 'expectedDate') {
-        // Validar inmediatamente fechas para mostrar mensaje rápido
-        if (updated.retiredDate && updated.expectedDate && new Date(updated.expectedDate) < new Date(updated.retiredDate)) {
-          setValidateError('La fecha prevista no puede ser anterior a la fecha de retiro.');
-        } else {
-          setValidateError('');
-        }
+
+      if (name === 'retiredDate' && value && bookTypeConfig) {
+        const loanDays = bookTypeConfig.loanDays || 14; 
+
+        const date = new Date(value + 'T00:00:00');
+        date.setDate(date.getDate() + loanDays);
+
+        updated.expectedDate = date.toISOString().split('T')[0];
       }
+
+      if (updated.retiredDate && updated.expectedDate && new Date(updated.expectedDate) < new Date(updated.retiredDate)) {
+        setValidateError('La fecha prevista no puede ser anterior a la fecha de retiro.');
+      } else {
+        setValidateError('');
+      }
+
       return updated;
     });
-
   };
 
   const handleExtraData = (newData) => {

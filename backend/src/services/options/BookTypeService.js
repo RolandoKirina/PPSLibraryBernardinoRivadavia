@@ -9,6 +9,10 @@ export const getBookType = async (id) => {
     return await BookTypeRepository.getById(id);
 };
 
+export const getBookTypeByTypeName = async (typeName) => {
+    return await BookTypeRepository.getBookTypeByTypeName(typeName);
+};
+
 export const createBookType = async (bookType) => {
     return await BookTypeRepository.create(bookType);
 };

@@ -31,6 +31,23 @@ export const getBookType = async (req, res) => {
     }
 };
 
+export const getBookTypeByTypeName = async (req, res) => {
+    try {
+        const bookType = await BookTypeService.getBookTypeByTypeName(req.params.typeName);
+
+        if (!bookType) {
+            return res
+                .status(HTTP_STATUS.NOT_FOUND.code)
+                .json({ msg: HTTP_STATUS.NOT_FOUND.msg });
+        }
+
+        res.status(HTTP_STATUS.OK.code).json(bookType);
+    } catch (error) {
+        console.error(error);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+    }
+};
+
 export const createBookType = async (req, res) => {
     try {
         const bookType = req.body;

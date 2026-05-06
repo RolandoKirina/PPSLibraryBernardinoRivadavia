@@ -6,6 +6,7 @@ import { authorizeRoles } from "../../../middlewares/authorizeRoles.js";
 const router = express.Router();
 
 router.get("/", authorizeRoles(['admin']), BookTypeController.getAllBookTypes);
+router.get("/type-name/:typeName", authorizeRoles(['admin']), BookTypeController.getBookTypeByTypeName);
 router.get("/:id", authorizeRoles(['admin']), validateIdParam("id"), BookTypeController.getBookType);
 router.post("/", authorizeRoles(['admin']), BookTypeController.createBookType);
 router.put("/:id", authorizeRoles(['admin']), validateIdParam("id"), BookTypeController.updateBookType);
