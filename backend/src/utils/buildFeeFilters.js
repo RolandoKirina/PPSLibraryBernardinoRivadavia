@@ -6,6 +6,7 @@ export const buildFeeFilters = (query) => {
     name,
     surname,
     observation,
+    registrationDate,
     paymentStartDate,
     paymentEndDate,
     periodStartDate,
@@ -35,6 +36,12 @@ export const buildFeeFilters = (query) => {
     whereFees.status = true;
   }
 
+
+  console.log(registrationDate);
+  if(registrationDate){
+      wherePartner.registrationDate = registrationDate;
+  }
+  
   if (paymentStartDate || paymentEndDate) {
     const dateFilter = {};
 
