@@ -136,6 +136,15 @@ export default function FeeFilter({ formData, onChange }) {
                 />
               </div>
 
+                <div className="book-form-input-group">
+                  <label>Buscar por observación</label>
+                  <input
+                    type="text"
+                    name="observation"
+                    value={formData.observation ?? ""}
+                    onChange={onChange}
+                  />
+                </div>
               <div className="book-form-input-group">
                 <label className="color-secondary">
                   Total de cuotas pagas del socio N° {formData.partnerNumber} = {paidFeeCount ?? 0}

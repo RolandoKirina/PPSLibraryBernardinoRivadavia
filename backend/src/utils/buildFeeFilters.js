@@ -5,6 +5,7 @@ export const buildFeeFilters = (query) => {
     partnerNumber,
     name,
     surname,
+    observation,
     paymentStartDate,
     paymentEndDate,
     periodStartDate,
@@ -91,6 +92,10 @@ export const buildFeeFilters = (query) => {
 
   if (name?.trim()) wherePartner.name = { [Op.iLike]: `%${name.trim()}%` };
   if (surname?.trim()) wherePartner.surname = { [Op.iLike]: `%${surname.trim()}%` };
+
+  if (observation?.trim()) whereFees.observation = { [Op.iLike]: `%${observation.trim()}%` };
+
+  
 
   return {
     wherePartner,
