@@ -36,8 +36,6 @@ export const buildFeeFilters = (query) => {
     whereFees.status = true;
   }
 
-
-  console.log(registrationDate);
   if(registrationDate){
       wherePartner.registrationDate = registrationDate;
   }

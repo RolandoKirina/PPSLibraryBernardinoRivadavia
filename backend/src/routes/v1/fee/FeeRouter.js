@@ -4,6 +4,7 @@ import validateIdParam from "../../../middlewares/ValidateId.js";
 import { authorizeRoles } from "../../../middlewares/authorizeRoles.js";
 
 const router = express.Router();
+router.get("/reports/yearly-report", authorizeRoles(['admin']), FeeController.getYearlyReport);
 router.get("/search", authorizeRoles(['admin']), FeeController.searchGlobalUnpaidFees);
 router.get("/partners/:partnerId/unpaid-fees",  authorizeRoles(['admin']), validateIdParam("partnerId"), FeeController.getUnpaidFeesByPartner);
 router.post("/generate-unpaid-fees", authorizeRoles(['admin']), FeeController.generateUnpaidFees);

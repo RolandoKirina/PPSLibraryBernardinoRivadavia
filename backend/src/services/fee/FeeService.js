@@ -4,6 +4,34 @@ import { ValidationError } from "../../utils/errors/ValidationError.js";
 import { changeUnpaidFees } from "../../repositories/partner/PartnerRepository.js";
 import Partner from "../../models/partner/partner.js";
 
+const MONTH_NAMES = [
+  "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO",
+  "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"
+];
+
+export const getYearlyReport = async (partnerNumber, year, semester) => {
+  const fees = await FeeRepository.getYearlyReport(partnerNumber, year, semester);
+
+  if (!fees || fees.length === 0) return null;
+
+  // Tomamos los datos del socio del primer registro encontrado
+  const partnerInfo = fees[0].Partner;
+
+  return {
+    Partner: {
+      // Concatenamos Apellido y Nombre como pediste
+      fullName: `${partnerInfo.surname} ${partnerInfo.name}`,
+      partnerNumber: partnerInfo.partnerNumber
+    },
+    // Formateamos las cuotas para el front
+    Fees: fees.map(f => ({
+      month: MONTH_NAMES[f.month - 1],
+      year: f.year,
+      amount: f.amount
+    }))
+  };
+};
+
 export const getUnpaidFeesByPartner = async (id, filters) => {
     const fees = await FeeRepository.getUnpaidFeesByPartner(id, filters);
     return fees;

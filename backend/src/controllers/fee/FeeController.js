@@ -3,6 +3,27 @@ import { HTTP_STATUS } from "../../https/httpsStatus.js";
 import { buildFeeFilters } from "../../utils/buildFeeFilters.js";
 import { ValidationError } from "../../utils/errors/ValidationError.js";
 
+export const getYearlyReport = async (req, res) => {
+  try {
+    const { partnerNumber, year, semester } = req.query;
+
+    if (!partnerNumber || !year || !semester) {
+      return res.status(400).json({ msg: "Faltan parámetros (partnerNumber, year o semester)" });
+    }
+
+    const result = await FeeService.getYearlyReport(partnerNumber, year, semester);
+
+    if (!result) {
+      return res.status(404).json({ msg: "No se encontraron cuotas para los criterios especificados" });
+    }
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Error interno del servidor" });
+  }
+};
+
 export const getUnpaidFeesByPartner = async (req, res) => {
     try {
         const { partnerId } = req.params;
@@ -12,8 +33,8 @@ export const getUnpaidFeesByPartner = async (req, res) => {
         const filters = {
             limit: limit ? Number(limit) : undefined,
             offset: offset ? Number(offset) : undefined,
-            status: status, 
-            year: year      
+            status: status,
+            year: year
         };
 
         const result = await FeeService.getUnpaidFeesByPartner(partnerId, filters);
@@ -29,14 +50,14 @@ export const getUnpaidFeesByPartner = async (req, res) => {
 
 export const searchGlobalUnpaidFees = async (req, res) => {
     try {
-        const { 
-            limit, 
-            offset, 
-            status, 
-            year, 
-            partnerNumber, 
-            name, 
-            surname 
+        const {
+            limit,
+            offset,
+            status,
+            year,
+            partnerNumber,
+            name,
+            surname
         } = req.query;
 
         const filters = {

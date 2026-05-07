@@ -6,6 +6,29 @@ import { QueryTypes } from "sequelize";
 import sequelize from "../../configs/database.js";
 import PartnerCategory from "../../models/partner/partnerCategory.js";
 
+export const getYearlyReport = async (partnerNumber, year, semester) => {
+  // Definimos el rango de meses según el semestre
+  const startMonth = semester === "1" ? 1 : 7;
+  const endMonth = semester === "1" ? 6 : 12;
+
+  return await Fees.findAll({
+    where: {
+      year: year,
+      month: { [Op.between]: [startMonth, endMonth] },
+      date_of_paid: null,
+      paid: false,
+      status: true
+    },
+    include: [{
+      model: Partner,
+      as: 'Partner',
+      where: { partnerNumber: partnerNumber }, // Filtro clave
+      attributes: ['name', 'surname', 'partnerNumber']
+    }],
+    order: [['month', 'ASC']]
+  });
+};
+
 export const getAll = async (filters = {}, listType = '') => {
   const { wherePartner, whereFees, limit, offset, order } = filters;
   

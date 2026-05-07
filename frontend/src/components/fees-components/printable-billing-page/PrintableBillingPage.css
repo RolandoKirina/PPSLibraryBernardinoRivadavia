@@ -104,8 +104,8 @@
 }
 
 .fee-card:nth-child(12) .name-field {
-    top: 28mm;
-    left: 3mm;
+    top: 27mm;
+    left: 0mm;
 }
 
 
@@ -127,7 +127,7 @@
 
 .fee-card:nth-child(11) .name-field {
     top: 28mm;
-    left: 10mm;
+    left: 7mm;
 }
 
 
@@ -149,8 +149,8 @@
 }
 
 .fee-card:nth-child(10) .name-field {
-    top: 28mm;
-    left: 2mm;
+    top: 27mm;
+    left: -1mm;
 }
 
 /* Selecciona el troquel número 9 */
@@ -172,7 +172,7 @@
 
 .fee-card:nth-child(9) .name-field {
     top: 28mm;
-    left: 20mm;
+    left: 6mm;
 }
 
 /* Selecciona el troquel número 8 */
@@ -194,7 +194,7 @@
 
 .fee-card:nth-child(8) .name-field {
     top: 24mm;
-    left: 3mm;
+    left: -1mm;
 }
 
 /* Selecciona el troquel número 7 */
@@ -216,7 +216,7 @@
 
 .fee-card:nth-child(7) .name-field {
     top: 24mm;
-    left: 10mm;
+    left: 7mm;
 }
 
 /* Selecciona el troquel número 6 */
@@ -238,7 +238,7 @@
 
 .fee-card:nth-child(6) .name-field {
     top: 24mm;
-    left: 10mm;
+    left: -1mm;
 }
 
 /* Selecciona el troquel número 5 */
@@ -260,7 +260,7 @@
 
 .fee-card:nth-child(5) .name-field {
     top: 24mm;
-    left: 10mm;
+    left: 6mm;
 }
 
 /* Selecciona el troquel número 4 */
@@ -282,7 +282,7 @@
 
 .fee-card:nth-child(4) .name-field {
     top: 19mm;
-    left: 3mm;
+    left: -1mm;
 }
 
 /* Selecciona el troquel número 3 */
@@ -304,7 +304,7 @@
 
 .fee-card:nth-child(3) .name-field {
     top: 19mm;
-    left: 11mm;
+    left: 7mm;
 }
 
 /* Selecciona el troquel número 2 */
@@ -321,12 +321,12 @@
 
 .fee-card:nth-child(2) .partner-num-field {
     top: 29mm;
-    left: 10mm;
+    left: 8mm;
 }
 
 .fee-card:nth-child(2) .name-field {
     top: 19mm;
-    left: 1mm;
+    left: -1mm;
 }
 
 /* Selecciona el troquel número 1 */
@@ -348,7 +348,7 @@
 
 .fee-card:nth-child(1) .name-field {
     top: 19mm;
-    left: 9mm;
+    left: 5mm;
 }
 
 
