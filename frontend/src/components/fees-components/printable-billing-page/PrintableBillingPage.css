@@ -1,0 +1,415 @@
+/* =============================================
+   CONFIGURACIÓN DE PÁGINA (A4 FÍSICO)
+   ============================================= */
+@page {
+    size: A4;
+    margin: 0;
+    /* Elimina márgenes físicos de la impresora */
+}
+
+/* =============================================
+   ESTILOS DE PANTALLA (LO QUE VES EN EL NAVEGADOR)
+   ============================================= */
+.print-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #525659;
+    /* Fondo gris tipo visualizador de PDF */
+    min-height: 100vh;
+    padding: 20px 0;
+}
+
+.billing-grid-container {
+    width: 210mm;
+    height: 297mm;
+    background-color: white;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    display: grid;
+    /* 4 columnas por fila y 3 filas de meses */
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    position: relative;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+
+    /* Forzar impresión de fondos */
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+
+    box-sizing: border-box;
+    padding-top: 44mm;
+    /* Empuja las cards hacia abajo para saltar el encabezado de la hoja */
+}
+
+/* Cada troquel individual */
+.fee-card {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    /* border: 1px dashed rgba(255,0,0,0.3); */
+    /* Descomenta para calibrar visualmente */
+}
+
+/* Campos de texto superpuestos */
+.field {
+    position: absolute;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 10pt;
+    font-weight: bold;
+    color: #000;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* POSICIONAMIENTO DENTRO DE CADA RECUADRO */
+.name-field {
+    top: 19mm;
+    left: 10mm;
+}
+
+.partner-num-field {
+    top: 31mm;
+    left: 16mm;
+    font-size: 12pt;
+}
+
+.month-field {
+    top: 49mm;
+    left: 14mm;
+    font-size: 9pt;
+    letter-spacing: -0.5px;
+}
+
+.amount-field {
+    top: 56mm;
+    left: 16mm;
+    font-size: 12pt;
+
+}
+
+/* Selecciona el troquel número 12 */
+.fee-card:nth-child(12) .month-field {
+    top: 59mm;
+    left: 1mm;
+}
+
+.fee-card:nth-child(12) .amount-field {
+    top: 66mm;
+    left: 5mm;
+}
+
+.fee-card:nth-child(12) .partner-num-field {
+    top: 39mm;
+    left: 12mm;
+}
+
+.fee-card:nth-child(12) .name-field {
+    top: 28mm;
+    left: 3mm;
+}
+
+
+/* Selecciona el troquel número 11 */
+.fee-card:nth-child(11) .month-field {
+    top: 54mm;
+    left: 15mm;
+}
+
+.fee-card:nth-child(11) .amount-field {
+    top: 66mm;
+    left: 20mm;
+}
+
+.fee-card:nth-child(11) .partner-num-field {
+    top: 41mm;
+    left: 20mm;
+}
+
+.fee-card:nth-child(11) .name-field {
+    top: 28mm;
+    left: 10mm;
+}
+
+
+/* Selecciona el troquel número 10 */
+
+.fee-card:nth-child(10) .amount-field {
+    top: 66mm;
+    left: 5mm;
+}
+
+.fee-card:nth-child(10) .month-field {
+    top: 59mm;
+    left: -4mm;
+}
+
+.fee-card:nth-child(10) .partner-num-field {
+    top: 39mm;
+    left: 10mm;
+}
+
+.fee-card:nth-child(10) .name-field {
+    top: 28mm;
+    left: 2mm;
+}
+
+/* Selecciona el troquel número 9 */
+
+.fee-card:nth-child(9) .amount-field {
+    top: 66mm;
+    left: 20mm;
+}
+
+.fee-card:nth-child(9) .month-field {
+    top: 54mm;
+    left: 12mm;
+}
+
+.fee-card:nth-child(9) .partner-num-field {
+    top: 41mm;
+    left: 20mm;
+}
+
+.fee-card:nth-child(9) .name-field {
+    top: 28mm;
+    left: 20mm;
+}
+
+/* Selecciona el troquel número 8 */
+
+.fee-card:nth-child(8) .amount-field {
+    top: 62mm;
+    left: 5mm;
+}
+
+.fee-card:nth-child(8) .month-field {
+    top: 50mm;
+    left: 5mm;
+}
+
+.fee-card:nth-child(8) .partner-num-field {
+    top: 35mm;
+    left: 12mm;
+}
+
+.fee-card:nth-child(8) .name-field {
+    top: 24mm;
+    left: 3mm;
+}
+
+/* Selecciona el troquel número 7 */
+
+.fee-card:nth-child(7) .amount-field {
+    top: 62mm;
+    left: 18mm;
+}
+
+.fee-card:nth-child(7) .month-field {
+    top: 50mm;
+    left: 13mm;
+}
+
+.fee-card:nth-child(7) .partner-num-field {
+    top: 37mm;
+    left: 20mm;
+}
+
+.fee-card:nth-child(7) .name-field {
+    top: 24mm;
+    left: 10mm;
+}
+
+/* Selecciona el troquel número 6 */
+
+.fee-card:nth-child(6) .amount-field {
+    top: 62mm;
+    left: 7mm;
+}
+
+.fee-card:nth-child(6) .month-field {
+    top: 55mm;
+    left: -4mm;
+}
+
+.fee-card:nth-child(6) .partner-num-field {
+    top: 35mm;
+    left: 12mm;
+}
+
+.fee-card:nth-child(6) .name-field {
+    top: 24mm;
+    left: 10mm;
+}
+
+/* Selecciona el troquel número 5 */
+
+.fee-card:nth-child(5) .amount-field {
+    top: 62mm;
+    left: 16mm;
+}
+
+.fee-card:nth-child(5) .month-field {
+    top: 50mm;
+    left: 12mm;
+}
+
+.fee-card:nth-child(5) .partner-num-field {
+    top: 37mm;
+    left: 17mm;
+}
+
+.fee-card:nth-child(5) .name-field {
+    top: 24mm;
+    left: 10mm;
+}
+
+/* Selecciona el troquel número 4 */
+
+.fee-card:nth-child(4) .amount-field {
+    top: 55mm;
+    left: 8mm;
+}
+
+.fee-card:nth-child(4) .month-field {
+    top: 44mm;
+    left: 7mm;
+}
+
+.fee-card:nth-child(4) .partner-num-field {
+    top: 29mm;
+    left: 12mm;
+}
+
+.fee-card:nth-child(4) .name-field {
+    top: 19mm;
+    left: 3mm;
+}
+
+/* Selecciona el troquel número 3 */
+
+.fee-card:nth-child(3) .amount-field {
+    top: 56mm;
+    left: 18mm;
+}
+
+.fee-card:nth-child(3) .month-field {
+    top: 45mm;
+    left: 15mm;
+}
+
+.fee-card:nth-child(3) .partner-num-field {
+    top: 31mm;
+    left: 19mm;
+}
+
+.fee-card:nth-child(3) .name-field {
+    top: 19mm;
+    left: 11mm;
+}
+
+/* Selecciona el troquel número 2 */
+
+.fee-card:nth-child(2) .amount-field {
+    top: 55mm;
+    left: 6mm;
+}
+
+.fee-card:nth-child(2) .month-field {
+    top: 44mm;
+    left: 5mm;
+}
+
+.fee-card:nth-child(2) .partner-num-field {
+    top: 29mm;
+    left: 10mm;
+}
+
+.fee-card:nth-child(2) .name-field {
+    top: 19mm;
+    left: 1mm;
+}
+
+/* Selecciona el troquel número 1 */
+
+.fee-card:nth-child(1) .amount-field {
+    top: 56mm;
+    left: 16mm;
+}
+
+.fee-card:nth-child(1) .month-field {
+    top: 45mm;
+    left: 12mm;
+}
+
+.fee-card:nth-child(1) .partner-num-field {
+    top: 31mm;
+    left: 17mm;
+}
+
+.fee-card:nth-child(1) .name-field {
+    top: 19mm;
+    left: 9mm;
+}
+
+
+/* Botón flotante */
+.print-button {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    padding: 15px 25px;
+    background-color: #62094c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+/* =============================================
+   REGLAS ESPECÍFICAS PARA IMPRESIÓN (EL PAPEL)
+   ============================================= */
+@media print {
+
+    /* 1. OCULTAR INTERFAZ COMPLETA */
+    nav,
+    footer,
+    header,
+    .navbar,
+    .sidebar,
+    .no-print,
+    .print-button {
+        display: none !important;
+    }
+
+    /* 2. LIMPIEZA DE MÁRGENES DEL BODY */
+    body,
+    html {
+        margin: 0 !important;
+        padding: 0 !important;
+        background-color: white;
+        overflow: hidden;
+        /* Evita que se cree una segunda página */
+    }
+
+    .print-page {
+        padding: 0 !important;
+        margin: 0 !important;
+        display: block;
+        /* Quita el flex para que no desplace la grilla */
+    }
+
+    .billing-grid-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 210mm;
+        height: 297mm;
+        box-shadow: none;
+        margin: 0 !important;
+        padding-top: 44mm;
+        /* Mantiene el ajuste para bajar las cards */
+    }
+
+}
