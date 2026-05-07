@@ -1,24 +1,42 @@
-import { useEffect } from "react";
 import "./PartnerFilter.css"
 
 export default function PartnerFilter({ formData, onChange }) {
+  const handleLocalChange = (e) => {
+    const { name, value } = e.target;
+
+    if (name === "sortBy" && value === "recent") {
+      onChange({
+        target: {
+          name: "multiple",
+          values: {
+            sortBy: "partnerNumber",
+            direction: "desc"
+          }
+        }
+      });
+    } else {
+      onChange(e);
+    }
+  };
 
   return (
     <aside className="filter-aside">
       <div className="filter-form">
         <form onSubmit={(e) => e.preventDefault()}>
           <h3 className="titleh3">Filtro de socios</h3>
+          
           <div className="form-input-group">
             <label htmlFor="sortBy">Ordenar por</label>
             <select
               id="sortBy"
               name="sortBy"
               value={formData.sortBy}
-              onChange={onChange}
+              onChange={handleLocalChange}
             >
               <option value="name">Nombre</option>
               <option value="surname">Apellido</option>
               <option value="partnerNumber">Número de Socio</option>
+              <option value="recent">-- Más reciente --</option>
             </select>
           </div>
 
@@ -107,6 +125,5 @@ export default function PartnerFilter({ formData, onChange }) {
         </form>
       </div>
     </aside>
-
   );
 }

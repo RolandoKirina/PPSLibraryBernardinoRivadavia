@@ -54,17 +54,34 @@ export const FeeSection = () => {
     creationStartDate: "",
     creationEndDate: "",
     periodStartDate: "",
-    periodEndDate: ""
+    periodEndDate: "",
+    sortBy: 'id',
+    direction: 'asc'
   });
 
   const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    const updated = { ...formData, [name]: value };
-    setFormData(updated);
+    const { name, value, values } = e.target;
+
+    // Caso para actualizaciones múltiples (ej: al elegir "Más reciente")
+    if (name === "multiple") {
+      setFormData((prev) => ({
+        ...prev,
+        ...values,
+      }));
+      return;
+    }
+
+    // Caso para actualizaciones individuales estándar
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
+
 
   useEffect(() => {
     const delay = setTimeout(() => {
+      // Filtramos los valores vacíos para la API
       const activeFilters = Object.fromEntries(
         Object.entries(formData).filter(([_, v]) => v !== "" && v !== null)
       );
@@ -72,17 +89,18 @@ export const FeeSection = () => {
       setOffsetActual(0);
       setResetPageTrigger(prev => prev + 1);
 
+      // USAR los valores de formData, no strings fijos
       getItems({
         ...activeFilters,
-        sortBy: 'id',
-        direction: 'asc',
+        sortBy: formData.sortBy,
+        direction: formData.direction,
         limit: chunkSize,
         offset: 0
       });
     }, 500);
 
     return () => clearTimeout(delay);
-  }, [formData]);
+  }, [formData]); // Este está bien porque observa todo el objeto
 
 
 
@@ -92,13 +110,25 @@ export const FeeSection = () => {
 
     if (items.length < totalItems && lastItemIndex > items.length) {
       const newOffset = items.length;
-      await getItems({ ...formData, sortBy: 'id', direction: 'asc', limit: chunkSize, offset: newOffset }, true);
+      await getItems({
+        ...formData,
+        sortBy: formData.sortBy,
+        direction: formData.direction,
+        limit: chunkSize,
+        offset: newOffset
+      }, true);
       setOffsetActual(newOffset);
     }
   }
 
   async function refreshFees() {
-    await getItems({ ...formData, sortBy: 'id', direction: 'asc', limit: chunkSize, offset: 0 }, true);
+    await getItems({
+      ...formData,
+      sortBy: formData.sortBy,
+      direction: formData.direction,
+      limit: chunkSize,
+      offset: 0
+    }, true);
     setPopupEdit(false);
   }
 

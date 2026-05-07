@@ -7,6 +7,25 @@ export default function FeeFilter({ formData, onChange }) {
   const { auth } = useAuth();
   const [paidFeeCount, setPaidFeeCount] = useState(null);
 
+  const handleLocalChange = (e) => {
+    const { name, value } = e.target;
+
+    if (name === "sortBy" && value === "recent") {
+      // Enviamos el comando para ordenar por año y mes desc
+      onChange({
+        target: {
+          name: "multiple",
+          values: {
+            sortBy: "periodDate", // O el nombre que manejes en el backend para el periodo
+            direction: "desc"
+          }
+        }
+      });
+    } else {
+      onChange(e);
+    }
+  };
+
   const fetchPaidFees = async () => {
     try {
       const response = await fetch(`http://localhost:4000/api/v1/fees/paid-count?partnerNumber=${formData.partnerNumber}`, {
@@ -38,8 +57,24 @@ export default function FeeFilter({ formData, onChange }) {
   return (
     <aside className="book-filter-aside">
       <div className="book-filter-form">
-        <form>
+        <form onSubmit={(e) => e.preventDefault()}>
           <h3 className="titleh3">Filtro de cuotas</h3>
+
+          {/* Nuevo Grupo de Ordenamiento */}
+          <div className="book-form-input-group">
+            <label htmlFor="sortBy">Ordenar por</label>
+            <select
+              id="sortBy"
+              name="sortBy"
+              value={formData.sortBy ?? ""}
+              onChange={handleLocalChange}
+              className="feefiltercheckbox-select"
+            >
+              <option value="">Seleccionar...</option>
+              <option value="recent">Más recientes (Año/Mes)</option>
+              <option value="idPartner">Número de Socio</option>
+            </select>
+          </div>
 
           <div className="book-form-input-group">
             {auth.role === roles.admin && (
@@ -48,7 +83,6 @@ export default function FeeFilter({ formData, onChange }) {
                   <label htmlFor="status" className="feefiltercheckbox-label">
                     Socios con cuotas
                   </label>
-
                   <select
                     id="status"
                     name="status"
@@ -66,7 +100,6 @@ export default function FeeFilter({ formData, onChange }) {
                   <label htmlFor="feeStatus" className="feefiltercheckbox-label">
                     Estado cuotas
                   </label>
-
                   <select
                     id="feeStatus"
                     name="feeStatus"
@@ -83,6 +116,8 @@ export default function FeeFilter({ formData, onChange }) {
             )}
           </div>
 
+          {/* ... resto de tus inputs de fecha y búsqueda ... */}
+          
           <div className="book-form-input-group">
             <h4>Fecha de pago</h4>
             <label>Mayor a: </label>
@@ -146,7 +181,6 @@ export default function FeeFilter({ formData, onChange }) {
           
           <div className="book-form-input-group">
             <h4>Periodo de la cuota</h4>
-
             <label>Desde: </label>
             <input
               type="month"
@@ -154,7 +188,6 @@ export default function FeeFilter({ formData, onChange }) {
               value={formData.periodStartDate ?? ""}
               onChange={onChange}
             />
-
             <label>Hasta: </label>
             <input
               type="month"
@@ -163,6 +196,7 @@ export default function FeeFilter({ formData, onChange }) {
               onChange={onChange}
             />
           </div>
+          
           <div className="book-form-input-group">
             <h4>Fecha de creación de cuota</h4>
             <label>Desde: </label>
@@ -180,7 +214,6 @@ export default function FeeFilter({ formData, onChange }) {
               onChange={onChange}
             />
           </div>
-      
         </form>
       </div>
     </aside>

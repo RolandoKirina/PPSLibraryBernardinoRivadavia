@@ -111,18 +111,28 @@ export default function PartnerSection() {
   }, [formData]);
 
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
+const handleFilterChange = (e) => {
+  const { name, value, values } = e.target;
 
-    let parsedValue = value;
+  if (name === "multiple") {
+    setFormData((prev) => ({
+      ...prev,
+      ...values,
+    }));
+    return;
+  }
 
-    if (["idState", "unpaidFees", "pendingBooks"].includes(name)) {
-      parsedValue = value === "" ? "" : Number(value);
-    }
+  let parsedValue = value;
+  if (["idState", "unpaidFees", "pendingBooks", "partnerNumber"].includes(name)) {
+    parsedValue = value === "" ? "" : Number(value);
+  }
 
-    const updated = { ...formData, [name]: parsedValue };
-    setFormData(updated);
-  };
+  setFormData((prev) => ({
+    ...prev,
+    [name]: parsedValue,
+  }));
+};
+
 
   async function handleChangePage(page) {
     const numberPage = Number(page);
