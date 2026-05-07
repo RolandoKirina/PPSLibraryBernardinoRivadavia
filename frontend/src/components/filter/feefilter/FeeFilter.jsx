@@ -146,6 +146,7 @@ export default function FeeFilter({ formData, onChange }) {
                   type="number"
                   name="partnerNumber"
                   min="0"
+                  placeholder="Número socio"
                   value={formData.partnerNumber ?? ""}
                   onChange={onChange}
                 />
@@ -156,6 +157,7 @@ export default function FeeFilter({ formData, onChange }) {
                 <input
                   type="text"
                   name="name"
+                  placeholder="Nombre"
                   value={formData.name ?? ""}
                   onChange={onChange}
                 />
@@ -166,11 +168,34 @@ export default function FeeFilter({ formData, onChange }) {
                 <input
                   type="text"
                   name="surname"
+                  placeholder="Apellido"
                   value={formData.surname ?? ""}
                   onChange={onChange}
                 />
               </div>
 
+
+                <div className="book-form-input-group">
+                <label>Buscar por fecha de inscripción de socio</label>
+                <input
+                  type="Date"
+                  name="registrationDate"
+                  placeholder="Fecha"
+                  value={formData.registrationDate ?? ""}
+                  onChange={onChange}
+                />
+              </div>
+
+                <div className="book-form-input-group">
+                  <label>Buscar por observación de cuota</label>
+                  <input
+                    type="text"
+                    name="observation"
+                    placeholder="Observación"
+                    value={formData.observation ?? ""}
+                    onChange={onChange}
+                  />
+                </div>
               <div className="book-form-input-group">
                 <label className="color-secondary">
                   Total de cuotas pagas del socio N° {formData.partnerNumber} = {paidFeeCount ?? 0}

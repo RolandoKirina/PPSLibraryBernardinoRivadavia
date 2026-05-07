@@ -335,7 +335,7 @@ export const getAll = async (filters = {}) => {
             Locality: p.Locality?.name || 'No definida',
             categoryName: p.PartnerCategory?.name || 'Sin categoría',
             categoryAmount: p.PartnerCategory?.amount || 0,
-
+            registrationDate: p.registrationDate || null,
             // Nos aseguramos de que sean números
             unpaidFees: parseInt(p.unpaidFees) || 0,
             pendingBooks: parseInt(p.pendingBooks) || 0,

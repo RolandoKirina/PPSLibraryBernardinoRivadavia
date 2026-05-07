@@ -5,6 +5,8 @@ export const buildFeeFilters = (query) => {
     partnerNumber,
     name,
     surname,
+    observation,
+    registrationDate,
     paymentStartDate,
     paymentEndDate,
     periodStartDate,
@@ -34,6 +36,12 @@ export const buildFeeFilters = (query) => {
     whereFees.status = true;
   }
 
+
+  console.log(registrationDate);
+  if(registrationDate){
+      wherePartner.registrationDate = registrationDate;
+  }
+  
   if (paymentStartDate || paymentEndDate) {
     const dateFilter = {};
 
@@ -91,6 +99,10 @@ export const buildFeeFilters = (query) => {
 
   if (name?.trim()) wherePartner.name = { [Op.iLike]: `%${name.trim()}%` };
   if (surname?.trim()) wherePartner.surname = { [Op.iLike]: `%${surname.trim()}%` };
+
+  if (observation?.trim()) whereFees.observation = { [Op.iLike]: `%${observation.trim()}%` };
+
+  
 
   return {
     wherePartner,
