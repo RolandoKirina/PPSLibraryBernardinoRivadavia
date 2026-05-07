@@ -24,12 +24,12 @@ export default function BookFilter({ formData, onChange }) {
           {auth.role === roles.admin && (
             <>
               <div className="book-form-input-group">
-                <label>Código de inventario</label>
+                <label>Código de inventario(Ejemplo 0000057512)</label>
                 <input type="text" name="codeInventory" value={formData.codeInventory} onChange={onChange} />
               </div>
 
               <div className="book-form-input-group cdu">
-                <label className='labelinput'>Código de CDU</label>
+                <label className='labelinput'>Código de CDU (Cod_rcdu-Ejemplo: -31(82))</label>
 
                 <input type="text" name="codeCDU" value={formData.codeCDU} onChange={onChange} />
 

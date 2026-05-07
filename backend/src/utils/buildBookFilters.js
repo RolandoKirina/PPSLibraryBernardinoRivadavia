@@ -1,7 +1,7 @@
 import { Op } from "sequelize";
 import Partner from "../models/partner/partner.js";
 
-export const buildBookFilters = (query) => {
+/*export const buildBookFilters = (query) => {
   const {
     author,
     codeInventory,
@@ -89,7 +89,108 @@ export const buildBookFilters = (query) => {
     order
   };
 }
+*/
 
+export const buildBookFilters = (query) => {
+  const {
+    author,
+    codeInventory,
+    codeCDU,
+    codeSignature,
+    yearEdition,
+    numberEdition,
+    bookTitle,
+    notes,
+    limit,
+    offset,
+    sortBy,
+    direction,
+  } = query;
+
+  const whereAuthor = {};
+  const whereCodeInventory = {};
+  const whereCodeCDU = {};
+  const whereBookTitle = {};
+  const whereCodeSignature = {};
+  const whereYearEdition = {};
+  const whereNumberEdition = {};
+  const whereNotes = {};
+
+  if (author && author.trim() !== '') {
+    whereAuthor.name = {
+      [Op.iLike]: `%${author.trim()}%`
+    };
+  }
+
+  if (notes && notes.trim() !== '') {
+    whereNotes.notesText = {
+      [Op.iLike]: `%${notes.trim()}%`
+    };
+  }
+
+  if (codeInventory && codeInventory.trim() !== '') {
+    const cleanCode = codeInventory.trim();
+    whereCodeInventory.codeInventory = {
+      [Op.iLike]: `%${cleanCode}`
+    };
+  }
+
+  if (codeCDU && codeCDU.trim() !== '') {
+    const searchTerms = codeCDU.trim()
+      .replace(/[()]/g, ' ')
+      .split(/[- ]+/)
+      .filter(term => term.length > 0);
+
+    if (searchTerms.length > 0) {
+      whereCodeCDU.codeCDU = {
+        [Op.and]: searchTerms.map(term => ({
+          [Op.iLike]: `%${term}%`
+        }))
+      };
+    }
+  }
+
+  if (codeSignature && codeSignature.trim() !== '') {
+    whereCodeSignature.codeSignature = {
+      [Op.iLike]: `%${codeSignature.trim()}%`
+    };
+  }
+
+  if (bookTitle && bookTitle.trim() !== '') {
+    whereBookTitle.title = {
+      [Op.iLike]: `%${bookTitle.trim()}%`
+    };
+  }
+
+  if (yearEdition) {
+    whereYearEdition.yearEdition = parseInt(yearEdition);
+  }
+
+  if (numberEdition) {
+    whereNumberEdition.numberEdition = numberEdition;
+  }
+
+  const parsedLimit = parseInt(limit);
+  const parsedOffset = parseInt(offset);
+
+  const order = sortBy
+    ? [[sortBy, direction === 'asc' ? 'ASC' : 'DESC']]
+    : undefined;
+
+  return {
+    whereAuthor,
+    whereCodeInventory,
+    whereCodeCDU,
+    whereBookTitle,
+    whereCodeSignature,
+    whereYearEdition,
+    whereNumberEdition,
+    whereNotes,
+    limit: isNaN(parsedLimit) ? 40 : parsedLimit,
+    offset: isNaN(parsedOffset) ? 0 : parsedOffset,
+    order
+  };
+}
 
 export const buildFilterRanking = (query) => {
   const {
@@ -167,11 +268,11 @@ export const buildFilterLostBook = (query) => {
 
   const whereBooks = {
     lost: true,
-    lossDate: { [Op.ne]: null } 
+    lossDate: { [Op.ne]: null }
   };
 
   if (lossStartDate || lossEndDate) {
-    const conditions = { [Op.ne]: null }; 
+    const conditions = { [Op.ne]: null };
 
     if (lossStartDate) {
       const start = new Date(lossStartDate);
