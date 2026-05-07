@@ -20,6 +20,7 @@ import ConfirmMessage from '../../components/common/confirmMessage/ConfirmMessag
 import UnpaidFees from '../../components/loan-components/unpaidfees/UnpaidFees.jsx';
 import PaymentDate from '../../components/fees-components/paymentDate/PaymentDate.jsx';
 import GlobalUnpaidFees from '../../components/fees-components/globalunpaidfees/GlobalUnpaidFees.jsx';
+import BillingForm from '../../components/fees-components/bilingform/BillingForm.jsx';
 
 export const FeeSection = () => {
   const chunkSize = 100;
@@ -39,6 +40,7 @@ export const FeeSection = () => {
   const [PopupUnpaidFees, setPopupUnpaidFees] = useState(false);
   const [PopupGlobalUnpaidFees, setPopupGlobalUnpaidFees] = useState(false);
   const [PopupPaymentDate, setPopupPaymentDate] = useState(false);
+  const [PopupBillingForm, setPopupBillingForm] = useState(false);
 
   const [error, setError] = useState(false);
   const [successMessage, setSuccessMessage] = useState(false);
@@ -411,6 +413,14 @@ export const FeeSection = () => {
       close: () => setPopupGlobalUnpaidFees(false),
       condition: PopupGlobalUnpaidFees
     },
+    {
+      key: 'billingForm',
+      title: 'Generar Planilla de Cobro',
+      classname: 'books-partners-amount-size',
+      content: <BillingForm />,
+      close: () => setPopupBillingForm(false),
+      condition: PopupBillingForm
+    },
   ]
 
   let adminFeeActions = null;
@@ -424,6 +434,7 @@ export const FeeSection = () => {
       <Btn text="Cuotas entre fechas" variant="primary" onClick={() => setPopUpFeesBetweenDates(true)}></Btn>
       <Btn text="Ingresar Fecha de pago" variant="primary" onClick={() => setPopupPaymentDate(true)}></Btn>
       <Btn text="Cuotas Impagas" variant="primary" onClick={() => setPopupGlobalUnpaidFees(true)}></Btn>
+      <Btn text="Planilla de Cobro" variant="primary" onClick={() => setPopupBillingForm(true)}></Btn>
     </div>;
   }
 

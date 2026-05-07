@@ -22,6 +22,7 @@ import FeeSection from './pages/FeeSection/FeeSection.jsx';
 import ReaderSection from "./pages/ReaderSection/ReaderSection.jsx";
 import { routePermissions } from "./auth/permissions.js";
 import BookAuthors from "./components/book-components/BooksAuthor/BookAuthors.jsx";
+import PrintableBillingPage from "./components/fees-components/printable-billing-page/PrintableBillingPage.jsx";
 function App() {
   return (
     <BrowserRouter>
@@ -53,6 +54,9 @@ function App() {
             <Route path='loans' element={<LoanSection openRenewes={false} />} />
           </Route>
 
+          <Route element={<ProtectedRoute requiredRoles={routePermissions.management} />}>
+            <Route path='fees/generate-billing-form' element={<PrintableBillingPage />} />
+          </Route>
 
           <Route element={<ProtectedRoute requiredRoles={routePermissions.loggedAccess} />}>
 
