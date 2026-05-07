@@ -16,12 +16,24 @@ export default function FeeFilter({ formData, onChange }) {
         target: {
           name: "multiple",
           values: {
-            sortBy: "periodDate", // O el nombre que manejes en el backend para el periodo
+            sortBy: "createdAt",
             direction: "desc"
           }
         }
       });
-    } else {
+    }
+    else if (name === "sortBy" && value === "idPartner") {
+      onChange({
+        target: {
+          name: "multiple",
+          values: {
+            sortBy: "idPartner",
+            direction: "desc"
+          }
+        }
+      });
+    }
+    else {
       onChange(e);
     }
   };
@@ -117,7 +129,7 @@ export default function FeeFilter({ formData, onChange }) {
           </div>
 
           {/* ... resto de tus inputs de fecha y búsqueda ... */}
-          
+
           <div className="book-form-input-group">
             <h4>Fecha de pago</h4>
             <label>Mayor a: </label>
@@ -175,7 +187,7 @@ export default function FeeFilter({ formData, onChange }) {
               </div>
 
 
-                <div className="book-form-input-group">
+              <div className="book-form-input-group">
                 <label>Buscar por fecha de inscripción de socio</label>
                 <input
                   type="Date"
@@ -186,16 +198,16 @@ export default function FeeFilter({ formData, onChange }) {
                 />
               </div>
 
-                <div className="book-form-input-group">
-                  <label>Buscar por observación de cuota</label>
-                  <input
-                    type="text"
-                    name="observation"
-                    placeholder="Observación"
-                    value={formData.observation ?? ""}
-                    onChange={onChange}
-                  />
-                </div>
+              <div className="book-form-input-group">
+                <label>Buscar por observación de cuota</label>
+                <input
+                  type="text"
+                  name="observation"
+                  placeholder="Observación"
+                  value={formData.observation ?? ""}
+                  onChange={onChange}
+                />
+              </div>
               <div className="book-form-input-group">
                 <label className="color-secondary">
                   Total de cuotas pagas del socio N° {formData.partnerNumber} = {paidFeeCount ?? 0}
@@ -203,7 +215,7 @@ export default function FeeFilter({ formData, onChange }) {
               </div>
             </>
           )}
-          
+
           <div className="book-form-input-group">
             <h4>Periodo de la cuota</h4>
             <label>Desde: </label>
@@ -221,7 +233,7 @@ export default function FeeFilter({ formData, onChange }) {
               onChange={onChange}
             />
           </div>
-          
+
           <div className="book-form-input-group">
             <h4>Fecha de creación de cuota</h4>
             <label>Desde: </label>
