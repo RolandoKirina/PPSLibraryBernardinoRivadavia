@@ -89,8 +89,8 @@
 
 /* Selecciona el troquel número 12 */
 .fee-card:nth-child(12) .month-field {
-    top: 54mm;
-    left: 6mm;
+    top: 59mm;
+    left: 1mm;
 }
 
 .fee-card:nth-child(12) .amount-field {
@@ -139,8 +139,8 @@
 }
 
 .fee-card:nth-child(10) .month-field {
-    top: 54mm;
-    left: 5mm;
+    top: 59mm;
+    left: -4mm;
 }
 
 .fee-card:nth-child(10) .partner-num-field {
@@ -162,7 +162,7 @@
 
 .fee-card:nth-child(9) .month-field {
     top: 54mm;
-    left: 20mm;
+    left: 12mm;
 }
 
 .fee-card:nth-child(9) .partner-num-field {
@@ -227,8 +227,8 @@
 }
 
 .fee-card:nth-child(6) .month-field {
-    top: 50mm;
-    left: 4mm;
+    top: 55mm;
+    left: -4mm;
 }
 
 .fee-card:nth-child(6) .partner-num-field {

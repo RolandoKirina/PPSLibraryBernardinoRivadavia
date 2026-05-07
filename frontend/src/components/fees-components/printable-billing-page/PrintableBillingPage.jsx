@@ -14,23 +14,23 @@ export default function PrintableBillingPage() {
     const year = searchParams.get('year') || new Date().getFullYear();
     const semester = searchParams.get('semester') || "1";
 
-    // --- MOCK DATA PARA 12 TROQUELES (6 meses duplicados) ---
-    const generateMockFees = () => {
-        // En 3 filas de 4 columnas entran 3 meses.
-        // Si es semestre 1: Ene, Feb, Mar. Si es semestre 2: Jul, Ago, Sep.
-        // (O puedes ajustar a 6 meses si la hoja es más larga, pero basándonos en la imagen son 3 filas)
-        const months = semester === "1" 
-            ? ["ENERO", "FEBRERO", "MARZO"]
-            : ["JULIO", "AGOSTO", "SEPTIEMBRE"];
-        
-        const fees = [];
-        months.forEach(m => {
-            // Repetimos 4 veces el mismo mes para llenar la fila de la planilla física
-            for(let i = 0; i < 4; i++) {
-                fees.push({ month: m, amount: 1500 });
+    // --- LÓGICA DE DISTRIBUCIÓN: 2 meses por fila, cada uno duplicado ---
+    const generateFeesArray = (baseFees) => {
+        const expanded = [];
+        // Iteramos de a 2 meses para llenar cada fila de 4 columnas
+        for (let i = 0; i < baseFees.length; i += 2) {
+            const mesA = baseFees[i];
+            const mesB = baseFees[i + 1];
+
+            // Fila X: [Mes A][Mes A][Mes B][Mes B]
+            if (mesA) {
+                expanded.push(mesA); expanded.push(mesA);
             }
-        });
-        return fees;
+            if (mesB) {
+                expanded.push(mesB); expanded.push(mesB);
+            }
+        }
+        return expanded;
     };
 
     const mockData = {
@@ -39,7 +39,11 @@ export default function PrintableBillingPage() {
             surname: "PÉREZ",
             partnerNumber: partnerNumber || "0000"
         },
-        Fees: generateMockFees()
+        Fees: generateFeesArray(
+            semester === "1" 
+            ? [{month: "ENERO", amount: 1500}, {month: "FEBRERO", amount: 1500}, {month: "MARZO", amount: 1500}, {month: "ABRIL", amount: 1500}, {month: "MAYO", amount: 1500}, {month: "JUNIO", amount: 1500}]
+            : [{month: "JULIO", amount: 1500}, {month: "AGOSTO", amount: 1500}, {month: "SEPTIEMBRE", amount: 1500}, {month: "OCTUBRE", amount: 1500}, {month: "NOVIEMBRE", amount: 1500}, {month: "DICIEMBRE", amount: 1500}]
+        )
     };
 
     useEffect(() => {
@@ -48,64 +52,36 @@ export default function PrintableBillingPage() {
                 const res = await fetch(`http://localhost:4000/api/v1/fees/yearly-report?partnerNumber=${partnerNumber}&year=${year}&semester=${semester}`, {
                     headers: { "Authorization": `Bearer ${auth.token}` }
                 });
-                
-                if (!res.ok) throw new Error("No se pudo conectar");
-                
+                if (!res.ok) throw new Error("Error API");
                 const result = await res.json();
                 
-                // IMPORTANTE: Si la API solo te manda 6 meses, aquí los duplicamos 
-                // para que llenen las 2 columnas de la planilla
-                const duplicatedFees = [];
-                result.Fees.forEach(f => {
-                    duplicatedFees.push(f);
-                    duplicatedFees.push(f);
+                setData({ 
+                    ...result, 
+                    Fees: generateFeesArray(result.Fees) 
                 });
-                
-                setData({ ...result, Fees: duplicatedFees });
             } catch (err) {
-                console.warn("Usando Mock Data para visualización");
+                console.warn("Cargando Mock Data");
                 setData(mockData);
             } finally {
                 setLoading(false);
             }
         };
 
-        if (partnerNumber && year) {
-            fetchBillingData();
-        } else {
-            setData(mockData);
-            setLoading(false);
-        }
-    }, [partnerNumber, year, auth.token]);
+        if (partnerNumber) fetchBillingData();
+        else { setData(mockData); setLoading(false); }
+    }, [partnerNumber, year, semester]);
 
-    if (loading) return <p>Generando vista de impresión...</p>;
-
-    // Ahora mapeamos exactamente 12 espacios (6 filas x 2 columnas)
-    const feesToRender = new Array(12).fill(null).map((_, i) => {
-        return data?.Fees && data.Fees[i] ? data.Fees[i] : { empty: true };
-    });
+    if (loading) return <p>Cargando planilla...</p>;
 
     return (
         <div className="print-page">
             <div className="billing-grid-container" style={{ backgroundImage: `url(${billingImage})` }}>
-                {feesToRender.map((fee, index) => (
+                {data?.Fees.map((fee, index) => (
                     <div key={index} className="fee-card">
-                        {!fee.empty && (
-                            <>
-                                <div className="field name-field">
-                                    {data.Partner?.name} {data.Partner?.surname}
-                                </div>
-                                <div className="field partner-num-field">
-                                    {data.Partner?.partnerNumber}
-                                </div>
-                                <div className="field month-field">
-                                    {fee.month} - {year}
-                                </div>
-                                <div className="field amount-field">
-                                    ${fee.amount}
-                                </div>
-                            </>
-                        )}
+                        <div className="field name-field">{data.Partner?.name} {data.Partner?.surname}</div>
+                        <div className="field partner-num-field">{data.Partner?.partnerNumber}</div>
+                        <div className="field month-field">{fee.month} / {year}</div>
+                        <div className="field amount-field">${fee.amount}</div>
                     </div>
                 ))}
             </div>
