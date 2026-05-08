@@ -108,6 +108,7 @@ const BookSection = () => {
       { header: 'Título', accessor: 'title' },
       { header: 'Código de inventario', accessor: 'codeInventory' },
       { header: 'Codigo de CDU', accessor: 'codeCDU' },
+      { header: 'Índice/Notas', accessor: 'notesText' },
       {
         header: 'Borrar',
         accessor: 'delete',

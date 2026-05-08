@@ -180,7 +180,7 @@ export default function GlobalPendingBooks() {
                     </div>
                     <div className='unpaid-fee-input'>
                         <label>Código Inv.</label>
-                        <input name="code" type='text' placeholder="Ej: INV-001" value={filters.code} onChange={handleInputChange} />
+                        <input name="code" type='text' placeholder="Ej: 26379" value={filters.code} onChange={handleInputChange} />
                     </div>
                     <div className='unpaid-fee-input'>
                         <label>Estado</label>

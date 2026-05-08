@@ -25,6 +25,7 @@ export default function AuthorBooks({ authorSelected, successMessage, method, cr
     const [selected, setSelected] = useState(null);
     const BASE_URL = "http://localhost:4000/api/v1";
     const [popupView, setPopupView] = useState('default');
+    const [bookCodeSearch, setBookCodeSearch] = useState('');
 
     const chunkSize = 100;
     const rowsPerPage = 5;
@@ -67,8 +68,8 @@ export default function AuthorBooks({ authorSelected, successMessage, method, cr
     }, []);
 
     useEffect(() => {
-        getLibraryBooks({ bookTitle: bookTitleSearch, limit: chunkSize, offset: 0 }, false);
-    }, [bookTitleSearch]);
+        getLibraryBooks({ codeInventory: bookCodeSearch, limit: chunkSize, offset: 0 }, false);
+    }, [bookCodeSearch]);
 
     const getLibraryBooks = async (filters = {}, append = false) => {
         setLoadingBooks(true);
@@ -401,10 +402,10 @@ export default function AuthorBooks({ authorSelected, successMessage, method, cr
                             </div>
                             <input
                                 type='text'
-                                name='searchBookTitle'
-                                value={bookTitleSearch}
-                                onChange={(e) => setBookTitleSearch(e.target.value)}
-                                placeholder="Buscar libro..."
+                                name='searchBookCode'
+                                value={bookCodeSearch}
+                                onChange={(e) => setBookCodeSearch(e.target.value)}
+                                placeholder="Buscar libro por codigo..."
                             />
                             <Table columns={bookshelfBooksColumns} data={libraryBooks} totalItems={totalLibraryBooks} handleChangePage={handleChangePage} loading={loadingBooks} resetPageTrigger={resetPageTrigger} />
                         </div>

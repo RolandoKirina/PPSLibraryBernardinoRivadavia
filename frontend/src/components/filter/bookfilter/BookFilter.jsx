@@ -29,7 +29,7 @@ export default function BookFilter({ formData, onChange }) {
               </div>
 
               <div className="book-form-input-group cdu">
-                <label className='labelinput'>Código de CDU (Cod_rcdu-Ejemplo: -31(82))</label>
+                <label className='labelinput'>Código de CDU (Cod_rcdu-Ejemplo: -31(82) )</label>
 
                 <input type="text" name="codeCDU" value={formData.codeCDU} onChange={onChange} />
 
@@ -47,6 +47,16 @@ export default function BookFilter({ formData, onChange }) {
             <input type="text" name="bookTitle" value={formData.bookTitle} onChange={onChange} />
           </div>
 
+          {auth.role === roles.admin && (
+            <>
+              <h3 className='titleh3'>Notas</h3>
+
+              <div className="book-form-input-group">
+                <label>Notas</label>
+                <input type="text" name="notes" value={formData.notes} onChange={onChange} />
+              </div>
+            </>
+          )}
 
           {auth.role === roles.admin && (
             <>
@@ -60,17 +70,6 @@ export default function BookFilter({ formData, onChange }) {
               <div className="book-form-input-group">
                 <label>Número</label>
                 <input type="number" name="numberEdition" value={formData.numberEdition} onChange={onChange} />
-              </div>
-            </>
-          )}
-
-          {auth.role === roles.admin && (
-            <>
-              <h3 className='titleh3'>Notas</h3>
-
-              <div className="book-form-input-group">
-                <label>Notas</label>
-                <input type="text" name="notes" value={formData.notes} onChange={onChange} />
               </div>
             </>
           )}
