@@ -142,31 +142,53 @@ export default function PendingBooks({ item = {} }) {
         : <span className="status-unpaid">No</span>
     },
     {
-      header: 'Acciones',
-      accessor: 'actions',
+      header: 'Devolver',
+      accessor: 'returnAction',
       className: "action-buttons",
       render: (_, row) => (
-        <div style={{ display: 'flex', gap: '5px' }}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
           {!row.isReturned && (
-            <>
-              <button className="button-table return-btn" title="Devolver Libro"
-                onClick={(e) => { e.stopPropagation(); setSelectedItem(row); setPopUpReturn(true); }}>
-                <img src={ReturnIcon} alt="Devolver" />
-              </button>
-              <button className="button-table renew-btn" title="Renovar Préstamo"
-                onClick={(e) => { e.stopPropagation(); setSelectedItem(row); setPopUpRenew(true); }}>
-                <img src={RenewIcon} alt="Renovar" />
-              </button>
-            </>
+            <button
+              className="button-table return-btn"
+              title="Devolver Libro"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedItem(row);
+                setPopUpReturn(true);
+              }}
+            >
+              <img src={ReturnIcon} alt="Devolver" />
+            </button>
           )}
         </div>
       )
     },
+    {
+      header: 'Renovar',
+      accessor: 'renewAction',
+      className: "action-buttons",
+      render: (_, row) => (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          {!row.isReturned && (
+            <button
+              className="button-table renew-btn"
+              title="Renovar Préstamo"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedItem(row);
+                setPopUpRenew(true);
+              }}
+            >
+              <img src={RenewIcon} alt="Renovar" />
+            </button>
+          )}
+        </div>
+      )
+    }
   ];
 
   return (
     <div className="unpaid-quotes-container">
-      {/* ... (Sección de títulos e inputs igual) ... */}
       <div className='unpaid-fees-info-inputs'>
         <h2>Libros de: {item?.name} {item?.surname} (Socio N° {partnerNumber})</h2>
         <div className="unpaid-fees-grid">
@@ -203,7 +225,6 @@ export default function PendingBooks({ item = {} }) {
               <Btn variant={'primary'} onClick={() => setPopUpReturn(false)} text={'Cancelar'} />
             </div>
           </div>
-          
         </PopUp>
       )}
 

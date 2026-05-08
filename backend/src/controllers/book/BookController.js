@@ -71,30 +71,45 @@ export const getAllBooksOfAuthor = async (req, res) => {
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
     }
 }
-
 export const getAllPendingBooks = async (req, res) => {
     try {
         const { partnerNumber } = req.params;
 
+        // Captura de parámetros de paginación
         const limit = req.query.limit ? Number(req.query.limit) : undefined;
         const offset = req.query.offset ? Number(req.query.offset) : undefined;
 
+        // Captura de filtros básicos
         const title = req.query.title || '';
         const code = req.query.code || '';
         const status = req.query.status || 'pending';
 
-        const books = await BookService.getAllPendingBooks(partnerNumber, {
+        // Captura de los nuevos filtros de fecha (Añadidos)
+        const retiredDate = req.query.retiredDate || null;
+        const expectedDate = req.query.expectedDate || null;
+        const returnedDate = req.query.returnedDate || null;
+
+        // Construcción del objeto de filtros para el Service
+        const filters = {
             limit,
             offset,
             title,
             code,
-            status
-        });
+            status,
+            retiredDate,   // Fecha de Retiro (en Loan)
+            expectedDate,  // Fecha Prevista (en LoanBook)
+            returnedDate   // Fecha de Devolución (en LoanBook)
+        };
+
+        // Pasamos partnerNumber como primer argumento y el objeto de filtros como segundo
+        const books = await BookService.getAllPendingBooks(partnerNumber, filters);
 
         res.status(HTTP_STATUS.OK.code).send(books);
     } catch (e) {
-        console.error(e);
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+        console.error("Error en getAllPendingBooks Controller:", e);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ 
+            msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg 
+        });
     }
 }
 

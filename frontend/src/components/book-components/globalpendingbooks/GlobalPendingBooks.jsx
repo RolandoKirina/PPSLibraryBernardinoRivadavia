@@ -33,7 +33,7 @@ export default function GlobalPendingBooks() {
 
         setFilters(prev => ({ ...prev, [name]: value }));
     };
-    
+
     const fetchGlobalBooks = async ({ limit, offset }, currentFilters = filters, append = false) => {
         setLoading(true);
         setError(null);
@@ -129,19 +129,35 @@ export default function GlobalPendingBooks() {
             render: (ret) => ret ? <span className="status-paid">Devuelto</span> : <span className="status-unpaid">Pendiente</span>
         },
         {
-            header: 'Acciones',
-            accessor: 'actions',
+            header: 'Devolver',
+            accessor: 'returnAction',
             render: (_, row) => (
-                <div style={{ display: 'flex', gap: '5px' }}>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
                     {!row.isReturned && (
-                        <>
-                            <button className="button-table" onClick={() => { setSelectedItem(row); setPopUpReturn(true); }}>
-                                <img src={ReturnIcon} alt="Devolver" />
-                            </button>
-                            <button className="button-table" onClick={() => { setSelectedItem(row); setPopUpRenew(true); }}>
-                                <img src={RenewIcon} alt="Renovar" />
-                            </button>
-                        </>
+                        <button
+                            className="button-table"
+                            onClick={() => { setSelectedItem(row); setPopUpReturn(true); }}
+                            title="Devolver Libro"
+                        >
+                            <img src={ReturnIcon} alt="Devolver" />
+                        </button>
+                    )}
+                </div>
+            )
+        },
+        {
+            header: 'Renovar',
+            accessor: 'renewAction',
+            render: (_, row) => (
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    {!row.isReturned && (
+                        <button
+                            className="button-table"
+                            onClick={() => { setSelectedItem(row); setPopUpRenew(true); }}
+                            title="Renovar Préstamo"
+                        >
+                            <img src={RenewIcon} alt="Renovar" />
+                        </button>
                     )}
                 </div>
             )

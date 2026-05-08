@@ -229,6 +229,103 @@ export const getAllPendingBooks = async (partnerNumber, filters = {}) => {
   return { rows, count };
 };
 
+
+// export const getGlobalPendingBooks = async (filters = {}) => {
+//   const { limit, offset, title, code, status, partnerNumber } = filters;
+
+//   console.log(filters);
+
+//   const bookWhere = {};
+//   if (title) bookWhere.title = { [Op.like]: `%${title}%` };
+//   if (code) bookWhere.codeInventory = { [Op.like]: `%${code}%` };
+
+//   const loanBookWhere = {};
+//   if (status === 'pending') {
+//     loanBookWhere.returnedDate = null;
+//   } else if (status === 'returned') {
+//     loanBookWhere.returnedDate = { [Op.ne]: null };
+//   }
+
+//   const partnerWhere = (partnerNumber && partnerNumber.trim() !== "") 
+//     ? { partnerNumber } 
+//     : null;
+
+//   const { rows: idRows, count } = await Book.findAndCountAll({
+//     attributes: ['BookId'],
+//     distinct: true,
+//     subQuery: false,
+//     where: bookWhere,
+//     include: [{
+//       model: LoanBook,
+//       as: 'BookLoans',
+//       required: true,
+//       where: loanBookWhere,
+//       include: [{
+//         model: Loan,
+//         as: 'Loan',
+//         required: true,
+//         include: [{
+//           model: Partner,
+//           as: 'Partner',
+//           required: !!partnerWhere, 
+//           where: partnerWhere || {}
+//         }]
+//       }]
+//     }],
+//     limit: limit ? Number(limit) : undefined,
+//     offset: offset ? Number(offset) : undefined
+//   });
+
+//   const bookIds = idRows.map(b => b.BookId);
+  
+//   if (bookIds.length === 0) return { rows: [], count: 0 };
+
+//   const books = await Book.findAll({
+//     where: { BookId: bookIds },
+//     include: [
+//       {
+//         model: LoanBook,
+//         as: 'BookLoans',
+//         required: true,
+//         where: loanBookWhere,
+//         attributes: ['LoanBookId', 'reneweAmount', 'returnedDate', 'expectedDate'],
+//         include: [{
+//           model: Loan,
+//           as: 'Loan',
+//           include: [{ 
+//             model: Partner, 
+//             as: 'Partner', 
+//             attributes: ['partnerNumber', 'name', 'surname'] 
+//           }]
+//         }]
+//       },
+//       { model: BookType, as: 'BookType', required: false }
+//     ]
+//   });
+
+//   const rows = books.map(book => {
+//     const loanDetail = book.BookLoans?.[0];
+//     const partner = loanDetail?.Loan?.Partner;
+
+//     return {
+//       partnerNumber: partner?.partnerNumber,
+//       partnerName: partner ? `${partner.name} ${partner.surname}` : 'N/A',
+//       BookId: book.BookId,
+//       bookCode: book.codeInventory,
+//       loanBookId: loanDetail?.LoanBookId,
+//       title: book.title,
+//       retiredDate: loanDetail?.Loan?.retiredDate ? formatDate(loanDetail.Loan.retiredDate) : null,
+//       dueDate: loanDetail?.expectedDate ? formatDate(loanDetail.expectedDate) : 'Sin fecha',
+//       renewalCount: loanDetail?.reneweAmount ?? 0,
+//       returnedDate: loanDetail?.returnedDate ? formatDate(loanDetail.returnedDate) : 'Sin fecha',
+//       isReturned: !!loanDetail?.returnedDate,
+//       loanId: loanDetail?.Loan?.id
+//     };
+//   });
+
+//   return { rows, count };
+// };
+
 export const getGlobalPendingBooks = async (filters = {}) => {
   const { limit, offset, title, code, status, partnerNumber } = filters;
 
