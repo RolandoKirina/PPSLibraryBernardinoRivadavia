@@ -83,8 +83,6 @@ export const getAllPendingBooks = async (req, res) => {
         const code = req.query.code || '';
         const status = req.query.status || 'pending';
 
-        console.log(title);
-
         const books = await BookService.getAllPendingBooks(partnerNumber, {
             limit,
             offset,

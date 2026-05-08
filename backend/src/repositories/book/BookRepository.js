@@ -229,14 +229,15 @@ export const getAllPendingBooks = async (partnerNumber, filters = {}) => {
   return { rows, count };
 };
 
-
 export const getGlobalPendingBooks = async (filters = {}) => {
   const { limit, offset, title, code, status, partnerNumber } = filters;
 
+  // 1. Condiciones para el Libro
   const bookWhere = {};
   if (title) bookWhere.title = { [Op.like]: `%${title}%` };
   if (code) bookWhere.codeInventory = { [Op.like]: `%${code}%` };
 
+  // 2. Condiciones para el Préstamo (LoanBook)
   const loanBookWhere = {};
   if (status === 'pending') {
     loanBookWhere.returnedDate = null;
@@ -244,29 +245,31 @@ export const getGlobalPendingBooks = async (filters = {}) => {
     loanBookWhere.returnedDate = { [Op.ne]: null };
   }
 
-  const partnerWhere = (partnerNumber && partnerNumber.trim() !== "") 
-    ? { partnerNumber } 
-    : null;
+  // 3. Condición para el Socio (Importante: trim y validación)
+  const hasPartnerFilter = partnerNumber && partnerNumber.toString().trim() !== "";
+  const partnerWhere = hasPartnerFilter ? { partnerNumber: partnerNumber.toString().trim() } : {};
 
+  // PRIMERA CONSULTA: Obtener los IDs de los libros que cumplen TODO
   const { rows: idRows, count } = await Book.findAndCountAll({
     attributes: ['BookId'],
     distinct: true,
-    subQuery: false,
+    subQuery: false, // Evita problemas de limit/offset con includes
     where: bookWhere,
     include: [{
       model: LoanBook,
       as: 'BookLoans',
-      required: true,
+      required: true, // Obligatorio: debe tener un préstamo
       where: loanBookWhere,
       include: [{
         model: Loan,
         as: 'Loan',
-        required: true,
+        required: true, // Obligatorio: el préstamo debe existir
         include: [{
           model: Partner,
           as: 'Partner',
-          required: !!partnerWhere, 
-          where: partnerWhere || {}
+          // CRÍTICO: Si hay filtro de socio, required debe ser true
+          required: hasPartnerFilter, 
+          where: partnerWhere
         }]
       }]
     }],
@@ -275,9 +278,9 @@ export const getGlobalPendingBooks = async (filters = {}) => {
   });
 
   const bookIds = idRows.map(b => b.BookId);
-  
   if (bookIds.length === 0) return { rows: [], count: 0 };
 
+  // SEGUNDA CONSULTA: Traer la data completa de esos IDs
   const books = await Book.findAll({
     where: { BookId: bookIds },
     include: [
@@ -285,14 +288,17 @@ export const getGlobalPendingBooks = async (filters = {}) => {
         model: LoanBook,
         as: 'BookLoans',
         required: true,
-        where: loanBookWhere,
-        attributes: ['LoanBookId', 'reneweAmount', 'returnedDate', 'expectedDate'],
+        where: loanBookWhere, // Mantenemos el filtro de estado (pending/returned)
         include: [{
           model: Loan,
           as: 'Loan',
+          required: true,
           include: [{ 
             model: Partner, 
-            as: 'Partner', 
+            as: 'Partner',
+            // Volvemos a aplicar el filtro aquí para que el map no tome el primer socio que encuentre
+            required: hasPartnerFilter,
+            where: partnerWhere,
             attributes: ['partnerNumber', 'name', 'surname'] 
           }]
         }]
@@ -301,8 +307,13 @@ export const getGlobalPendingBooks = async (filters = {}) => {
     ]
   });
 
+  // Mapeo de resultados
   const rows = books.map(book => {
-    const loanDetail = book.BookLoans?.[0];
+    // Buscamos el préstamo que coincide con el filtro de socio (si existe)
+    const loanDetail = hasPartnerFilter 
+      ? book.BookLoans.find(bl => bl.Loan?.Partner?.partnerNumber == partnerNumber)
+      : book.BookLoans?.[0];
+
     const partner = loanDetail?.Loan?.Partner;
 
     return {

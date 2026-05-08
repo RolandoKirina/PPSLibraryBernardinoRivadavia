@@ -4,6 +4,7 @@ import { useAuth } from '../../../auth/AuthContext';
 import PopUp from '../../common/popup-table/PopUp.jsx';
 import ReturnIcon from '../../../assets/img/return-icon.svg';
 import RenewIcon from '../../../assets/img/renewe-icon.svg';
+import Btn from '../../common/btn/Btn.jsx';
 
 export default function GlobalPendingBooks() {
     const chunkSize = 100;
@@ -32,6 +33,7 @@ export default function GlobalPendingBooks() {
 
         setFilters(prev => ({ ...prev, [name]: value }));
     };
+    
     const fetchGlobalBooks = async ({ limit, offset }, currentFilters = filters, append = false) => {
         setLoading(true);
         setError(null);
@@ -194,19 +196,27 @@ export default function GlobalPendingBooks() {
             {/* Popups de Confirmación */}
             {popUpReturn && (
                 <PopUp title={'Confirmar Devolución'} onClick={() => setPopUpReturn(false)}>
-                    <div className="p-4">
+                    <div className="p-4 popup-action-content">
                         <p>Socio: <strong>{selectedItem?.partnerNumber}</strong></p>
-                        <p>Libro: <strong>{selectedItem?.title}</strong></p>
-                        <button className="btn-confirm" onClick={handleReturn}>Confirmar</button>
+                        <p>¿Confirma la devolución del libro: <strong>{selectedItem?.title}</strong>?</p>
+                        <div className="buttons-actions">
+                            <Btn variant={'primary'} onClick={handleReturn} text={'Confirmar Devolución'} />
+                            <Btn variant={'primary'} onClick={() => setPopUpReturn(false)} text={'Cancelar'} />
+                        </div>
                     </div>
                 </PopUp>
             )}
 
             {popUpRenew && (
                 <PopUp title={'Renovar Préstamo'} onClick={() => setPopUpRenew(false)}>
-                    <div className="p-4">
-                        <p>¿Renovar préstamo de <strong>{selectedItem?.title}</strong>?</p>
-                        <button className="btn-confirm" onClick={handleRenew}>Renovar ahora</button>
+                    <div className="p-4 popup-action-content">
+                        <p>Socio: <strong>{selectedItem?.partnerNumber}</strong></p>
+                        <p>¿Desea renovar el préstamo de: <strong>{selectedItem?.title}</strong>?</p>
+                        <p>La cantidad de renovaciones actual es: {selectedItem?.renewalCount || 0}</p>
+                        <div className="buttons-actions">
+                            <Btn variant={'primary'} onClick={handleRenew} text={'Confirmar Renovación'} />
+                            <Btn variant={'primary'} onClick={() => setPopUpRenew(false)} text={'Cancelar'} />
+                        </div>
                     </div>
                 </PopUp>
             )}

@@ -3,8 +3,9 @@ import { Table } from '../../common/table/Table';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../../auth/AuthContext';
 import PopUp from '../../common/popup-table/PopUp.jsx';
-import ReturnIcon from '../../../assets/img/return-icon.svg'; 
+import ReturnIcon from '../../../assets/img/return-icon.svg';
 import RenewIcon from '../../../assets/img/renewe-icon.svg';
+import Btn from '../../../components/common/btn/Btn.jsx';
 
 export default function PendingBooks({ item = {} }) {
   const chunkSize = 100;
@@ -65,14 +66,14 @@ export default function PendingBooks({ item = {} }) {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${auth.token}`
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           returnedDate: new Date().toISOString(),
-          returned: true 
+          returned: true
         })
       });
 
       if (!res.ok) throw new Error('Error al procesar la devolución');
-      
+
       setPopUpReturn(false);
 
       fetchPendingBooks({ limit: chunkSize, offset: 0 }, filters);
@@ -90,14 +91,14 @@ export default function PendingBooks({ item = {} }) {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${auth.token}`
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           // Incrementamos el valor actual en 1
-          reneweAmount: (selectedItem.renewalCount || 0) + 1 
+          reneweAmount: (selectedItem.renewalCount || 0) + 1
         })
       });
 
       if (!res.ok) throw new Error('Error al procesar la renovación');
-      
+
       setPopUpRenew(false);
       // Refrescar datos
       fetchPendingBooks({ limit: chunkSize, offset: 0 }, filters);
@@ -136,8 +137,8 @@ export default function PendingBooks({ item = {} }) {
     {
       header: 'Devuelto',
       accessor: 'isReturned',
-      render: (returned) => returned 
-        ? <span className="status-paid">Sí</span> 
+      render: (returned) => returned
+        ? <span className="status-paid">Sí</span>
         : <span className="status-unpaid">No</span>
     },
     {
@@ -188,8 +189,8 @@ export default function PendingBooks({ item = {} }) {
         </div>
       </div>
 
-      <Table columns={columns} data={pendingBooks} totalItems={totalItems} 
-        handleChangePage={handleChangePage} loading={loading} 
+      <Table columns={columns} data={pendingBooks} totalItems={totalItems}
+        handleChangePage={handleChangePage} loading={loading}
         resetPageTrigger={resetPageTrigger} showCount={true} rowsPerPage={rowsPerPage} />
 
       {/* PopUp para Devolución */}
@@ -198,10 +199,11 @@ export default function PendingBooks({ item = {} }) {
           <div className="p-4 popup-action-content">
             <p>¿Confirma la devolución del libro: <strong>{selectedItem?.title}</strong>?</p>
             <div className="buttons-actions">
-                <button className="btn-confirm" onClick={handleReturn}>Confirmar Devolución</button>
-                <button className="btn-cancel" onClick={() => setPopUpReturn(false)}>Cancelar</button>
+              <Btn variant={'primary'} onClick={handleReturn} text={'Confirmar Devolución'} />
+              <Btn variant={'primary'} onClick={() => setPopUpReturn(false)} text={'Cancelar'} />
             </div>
           </div>
+          
         </PopUp>
       )}
 
@@ -210,10 +212,10 @@ export default function PendingBooks({ item = {} }) {
         <PopUp title={'Renovar Préstamo'} onClick={() => setPopUpRenew(false)}>
           <div className="p-4 popup-action-content">
             <p>¿Desea renovar el préstamo de: <strong>{selectedItem?.title}</strong>?</p>
-            <p><small>La cantidad de renovaciones actual es: {selectedItem?.renewalCount || 0}</small></p>
+            <p>La cantidad de renovaciones actual es: {selectedItem?.renewalCount || 0}</p>
             <div className="buttons-actions">
-                <button className="btn-confirm" onClick={handleRenew}>Confirmar Renovación</button>
-                <button className="btn-cancel" onClick={() => setPopUpRenew(false)}>Cancelar</button>
+              <Btn variant={'primary'} onClick={handleRenew} text={'Confirmar Renovación'} />
+              <Btn variant={'primary'} onClick={() => setPopUpRenew(false)} text={'Cancelar'} />
             </div>
           </div>
         </PopUp>
