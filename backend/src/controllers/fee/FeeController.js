@@ -4,24 +4,28 @@ import { buildFeeFilters } from "../../utils/buildFeeFilters.js";
 import { ValidationError } from "../../utils/errors/ValidationError.js";
 
 export const getYearlyReport = async (req, res) => {
-  try {
-    const { partnerNumber, year, semester } = req.query;
+    try {
+        const { partnerNumber, year, semester } = req.query;
 
-    if (!partnerNumber || !year || !semester) {
-      return res.status(400).json({ msg: "Faltan parámetros (partnerNumber, year o semester)" });
+        if (!partnerNumber || !year || !semester) {
+            return res.status(400).json({ msg: "Faltan parámetros (partnerNumber, year o semester)" });
+        }
+
+        const result = await FeeService.getYearlyReport(partnerNumber, year, semester);
+
+        // Si result es null, significa que el SOCIO no existe en la DB
+        if (!result) {
+            return res.status(404).json({ msg: "Socio no encontrado" });
+        }
+
+        // Si result tiene datos pero Fees está vacío, devolvemos 200 igual
+        // Esto permite que el front vea el nombre del socio y la planilla vacía
+        res.status(200).json(result);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error interno del servidor" });
     }
-
-    const result = await FeeService.getYearlyReport(partnerNumber, year, semester);
-
-    if (!result) {
-      return res.status(404).json({ msg: "No se encontraron cuotas para los criterios especificados" });
-    }
-
-    res.status(200).json(result);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ msg: "Error interno del servidor" });
-  }
 };
 
 export const getUnpaidFeesByPartner = async (req, res) => {

@@ -53,6 +53,7 @@ export const FeeSection = () => {
     surname: "",
     paymentdate: "",
     feeStatus: "",
+    unpaidFees: "",
     creationStartDate: "",
     creationEndDate: "",
     periodStartDate: "",

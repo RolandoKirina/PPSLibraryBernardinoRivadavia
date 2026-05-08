@@ -5,31 +5,42 @@ import { changeUnpaidFees } from "../../repositories/partner/PartnerRepository.j
 import Partner from "../../models/partner/partner.js";
 
 const MONTH_NAMES = [
-  "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO",
-  "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"
+    "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO",
+    "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"
 ];
 
 export const getYearlyReport = async (partnerNumber, year, semester) => {
-  const fees = await FeeRepository.getYearlyReport(partnerNumber, year, semester);
+    const fees = await FeeRepository.getYearlyReport(partnerNumber, year, semester);
 
-  if (!fees || fees.length === 0) return null;
+    // Si no hay cuotas, buscamos al socio para no devolver null
+    if (!fees || fees.length === 0) {
+        // Buscamos al socio por su número para devolver su nombre al menos
+        const partner = await Partner.findOne({ where: { partnerNumber } });
+        if (!partner) return null; // Si ni el socio existe, ahí sí devolvemos null
 
-  // Tomamos los datos del socio del primer registro encontrado
-  const partnerInfo = fees[0].Partner;
+        return {
+            Partner: {
+                fullName: `${partner.surname} ${partner.name}`,
+                partnerNumber: partner.partnerNumber
+            },
+            Fees: [] // Array vacío porque está al día
+        };
+    }
 
-  return {
-    Partner: {
-      // Concatenamos Apellido y Nombre como pediste
-      fullName: `${partnerInfo.surname} ${partnerInfo.name}`,
-      partnerNumber: partnerInfo.partnerNumber
-    },
-    // Formateamos las cuotas para el front
-    Fees: fees.map(f => ({
-      month: MONTH_NAMES[f.month - 1],
-      year: f.year,
-      amount: f.amount
-    }))
-  };
+    const partnerInfo = fees[0].Partner;
+
+    return {
+        Partner: {
+            fullName: `${partnerInfo.surname} ${partnerInfo.name}`,
+            partnerNumber: partnerInfo.partnerNumber
+        },
+        Fees: fees.map(f => ({
+            month: MONTH_NAMES[f.month - 1],
+            monthNumber: f.month, // <--- CRUCIAL para el filtro del frontend
+            year: f.year,
+            amount: f.amount
+        }))
+    };
 };
 
 export const getUnpaidFeesByPartner = async (id, filters) => {
@@ -57,7 +68,7 @@ export const generateUnpaidFees = async (body) => {
 
     const activePartners = await getAll({
         isActive: 1,
-        includeCategory: true 
+        includeCategory: true
     });
 
     const partners = activePartners.rows;

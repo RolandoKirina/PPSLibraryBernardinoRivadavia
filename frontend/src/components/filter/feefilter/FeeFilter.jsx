@@ -93,7 +93,7 @@ export default function FeeFilter({ formData, onChange }) {
               <>
                 <div className="feefiltercheckbox">
                   <label htmlFor="status" className="feefiltercheckbox-label">
-                    Socios con cuotas
+                    Socios con cuotas (Pagas, impagas o todas)
                   </label>
                   <select
                     id="status"

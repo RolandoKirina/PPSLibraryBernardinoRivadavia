@@ -14,6 +14,8 @@ export default function PrintableBillingPage() {
     const partnerNumber = searchParams.get('partnerNumber');
     const year = searchParams.get('year') || new Date().getFullYear();
     const semester = searchParams.get('semester') || "1";
+    // CAPTURAMOS EL MES ESPECÍFICO (opcional)
+    const targetMonth = searchParams.get('month');
 
     const generateFeesArray = (baseFees) => {
         const expectedMonths = semester === "1" 
@@ -25,8 +27,16 @@ export default function PrintableBillingPage() {
             const monthNameA = expectedMonths[i];
             const monthNameB = expectedMonths[i + 1];
 
-            const dataA = baseFees?.find(f => f.month?.toUpperCase() === monthNameA);
-            const dataB = baseFees?.find(f => f.month?.toUpperCase() === monthNameB);
+            // Filtro: Si hay un targetMonth, solo permitimos ese mes. 
+            // Si no hay targetMonth, permitimos todos los que vengan en baseFees.
+            const dataA = baseFees?.find(f => 
+                f.month?.toUpperCase() === monthNameA && 
+                (!targetMonth || f.monthNumber === parseInt(targetMonth))
+            );
+            const dataB = baseFees?.find(f => 
+                f.month?.toUpperCase() === monthNameB && 
+                (!targetMonth || f.monthNumber === parseInt(targetMonth))
+            );
 
             if (dataA) { expanded.push(dataA); expanded.push(dataA); }
             else { expanded.push({ empty: true }); expanded.push({ empty: true }); }
@@ -48,19 +58,16 @@ export default function PrintableBillingPage() {
                 
                 const result = await res.json();
 
-                // Si el socio no existe (404 real de "no existe el recurso")
                 if (res.status === 404 && !result.Partner) {
                     setErrorMessage("El socio no existe en la base de datos.");
                     setData(null);
                     return;
                 }
 
-                // Si hay un error de servidor
                 if (!res.ok && res.status !== 404) {
                     throw new Error(result.msg || "Error de servidor");
                 }
                 
-                // Si llegamos acá, aunque sea 404, si hay Partner o el result es exitoso, mostramos
                 setData({ 
                     Partner: result.Partner || { fullName: "Socio " + partnerNumber, partnerNumber }, 
                     Fees: generateFeesArray(result.Fees || []) 
@@ -75,16 +82,10 @@ export default function PrintableBillingPage() {
         };
 
         if (partnerNumber) fetchBillingData();
-    }, [partnerNumber, year, semester, auth.token]);
+    }, [partnerNumber, year, semester, targetMonth, auth.token]); // Agregamos targetMonth a las dependencias
 
     if (loading) return <div className="no-print loading-msg">Cargando...</div>;
-    
-    // Solo mostramos error si realmente no pudimos obtener ni el nombre del socio
-    if (errorMessage && !data) return (
-        <div className="no-print error-box">
-            <p>{errorMessage}</p>
-        </div>
-    );
+    if (errorMessage && !data) return <div className="no-print error-box"><p>{errorMessage}</p></div>;
 
     return (
         <div className="print-page">
@@ -105,10 +106,10 @@ export default function PrintableBillingPage() {
 
             <div className="no-print footer-controls">
                 {data?.Fees.every(f => f.empty) ? (
-                    <p className="info-msg">No hay cuotas impagas para este periodo.</p>
+                    <p className="info-msg">No hay cuotas para mostrar en este periodo.</p>
                 ) : (
                     <button className="print-button" onClick={() => window.print()}>
-                        Imprimir
+                        Imprimir {targetMonth ? "Cuota Seleccionada" : "Semestre"}
                     </button>
                 )}
             </div>
