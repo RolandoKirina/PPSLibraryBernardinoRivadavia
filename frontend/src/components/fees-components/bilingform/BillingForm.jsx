@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './BillingForm.css';
+import Btn from '../../common/btn/Btn';
 
 export default function BillingForm() {
   const [filters, setFilters] = useState({
@@ -41,7 +42,7 @@ export default function BillingForm() {
   };
 
   return (
-    <div className="billing-form-container">
+    <div className="billing-form-container billing-form-style">
       <div className='billing-form-info-inputs'>
         <h2>Generar Planilla de Cobro</h2>
         <p>Selecciona el socio y el periodo para visualizar los troqueles.</p>
@@ -119,9 +120,7 @@ export default function BillingForm() {
           </div>
 
           <div className='billing-form-actions'>
-            <button type="submit" className="button-generate">
-              Visualizar Planilla
-            </button>
+             <Btn text="Visualizar Planilla" type="submit" variant="primary"/>
           </div>
         </form>
       </div>

@@ -85,53 +85,53 @@ export default function PayPopup({ item = {}, onSuccess }) {
     };
 
     const handlePayment = async () => {
-    setLoading(true);
-    setStatus({ type: '', msg: '' });
+        setLoading(true);
+        setStatus({ type: '', msg: '' });
 
-    try {
-        const response = await fetch(`http://localhost:4000/api/v1/fees/${item.feeid}`, {
-            method: 'PUT',
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${auth.token}`
-            },
-            body: JSON.stringify({
-                date_of_paid: formData.paymentDate,
-                amount: formData.amount,
-                paid: true,
-                month: formData.month,
-                year: formData.year,
-                observation: formData.observation
-            })
-        });
+        try {
+            const response = await fetch(`http://localhost:4000/api/v1/fees/${item.feeid}`, {
+                method: 'PUT',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${auth.token}`
+                },
+                body: JSON.stringify({
+                    date_of_paid: formData.paymentDate,
+                    amount: formData.amount,
+                    paid: true,
+                    month: formData.month,
+                    year: formData.year,
+                    observation: formData.observation
+                })
+            });
 
-        const data = await response.json();
+            const data = await response.json();
 
-        if (response.ok) {
-            setStatus({ type: 'success', msg: 'Pago registrado con éxito' });
-            
-            // IMPORTANTE: Ejecutar el callback que definimos en el padre
-            if (onSuccess) {
-                // Damos un breve respiro para que el usuario vea el mensaje de éxito
-                setTimeout(() => {
-                    onSuccess(); 
-                }, 1000);
+            if (response.ok) {
+                setStatus({ type: 'success', msg: 'Pago registrado con éxito' });
+
+                // IMPORTANTE: Ejecutar el callback que definimos en el padre
+                if (onSuccess) {
+                    // Damos un breve respiro para que el usuario vea el mensaje de éxito
+                    setTimeout(() => {
+                        onSuccess();
+                    }, 1000);
+                }
+            } else {
+                setStatus({ type: 'error', msg: data.msg || 'Error al procesar el pago' });
             }
-        } else {
-            setStatus({ type: 'error', msg: data.msg || 'Error al procesar el pago' });
+        } catch (error) {
+            setStatus({ type: 'error', msg: 'Error de conexión con el servidor' });
+        } finally {
+            setLoading(false);
         }
-    } catch (error) {
-        setStatus({ type: 'error', msg: 'Error de conexión con el servidor' });
-    } finally {
-        setLoading(false);
-    }
-};
+    };
 
     return (
         <div className="pay-popup-content">
             <div className="pay-fee-info">
-                <p><strong>Cuota:</strong> {item.month} {item.year}</p>
-                <p><strong>Socio N°:</strong> {item.partnerNumber}</p>
+                <p><span>Cuota:</span> {item.month} {item.year}</p>
+                <p><span>Socio N°:</span> {item.partnerNumber}</p>
             </div>
 
             <div className='unpaid-fees-grid'>
@@ -201,14 +201,16 @@ export default function PayPopup({ item = {}, onSuccess }) {
                 </p>
             )}
 
-            <Btn
-                type={'button'}
-                variant={'primary'}
-                text={loading ? 'Procesando...' : 'Guardar Pago'}
-                onClick={handlePayment}
-                disabled={loading}
-                icon={<img src={SaveIcon} alt='saveIconButton' />}
-            />
+            <div className='pay-popup-button'>
+                <Btn
+                    type={'button'}
+                    variant={'primary'}
+                    text={loading ? 'Procesando...' : 'Guardar Pago'}
+                    onClick={handlePayment}
+                    disabled={loading}
+                    icon={<img src={SaveIcon} alt='saveIconButton' />}
+                />
+            </div>
         </div>
     );
 }

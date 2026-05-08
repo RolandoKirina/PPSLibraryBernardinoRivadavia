@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../../auth/AuthContext';
 import './PrintableBillingPage.css';
 import billingImage from '../../../assets/img/billing-form.jpg';
+import Btn from '../../common/btn/Btn';
 
 export default function PrintableBillingPage() {
     const [searchParams] = useSearchParams();
@@ -18,7 +19,7 @@ export default function PrintableBillingPage() {
     const targetMonth = searchParams.get('month');
 
     const generateFeesArray = (baseFees) => {
-        const expectedMonths = semester === "1" 
+        const expectedMonths = semester === "1"
             ? ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO"]
             : ["JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];
 
@@ -29,12 +30,12 @@ export default function PrintableBillingPage() {
 
             // Filtro: Si hay un targetMonth, solo permitimos ese mes. 
             // Si no hay targetMonth, permitimos todos los que vengan en baseFees.
-            const dataA = baseFees?.find(f => 
-                f.month?.toUpperCase() === monthNameA && 
+            const dataA = baseFees?.find(f =>
+                f.month?.toUpperCase() === monthNameA &&
                 (!targetMonth || f.monthNumber === parseInt(targetMonth))
             );
-            const dataB = baseFees?.find(f => 
-                f.month?.toUpperCase() === monthNameB && 
+            const dataB = baseFees?.find(f =>
+                f.month?.toUpperCase() === monthNameB &&
                 (!targetMonth || f.monthNumber === parseInt(targetMonth))
             );
 
@@ -55,7 +56,7 @@ export default function PrintableBillingPage() {
                 const res = await fetch(`http://localhost:4000/api/v1/fees/reports/yearly-report?partnerNumber=${partnerNumber}&year=${year}&semester=${semester}`, {
                     headers: { "Authorization": `Bearer ${auth.token}` }
                 });
-                
+
                 const result = await res.json();
 
                 if (res.status === 404 && !result.Partner) {
@@ -67,10 +68,10 @@ export default function PrintableBillingPage() {
                 if (!res.ok && res.status !== 404) {
                     throw new Error(result.msg || "Error de servidor");
                 }
-                
-                setData({ 
-                    Partner: result.Partner || { fullName: "Socio " + partnerNumber, partnerNumber }, 
-                    Fees: generateFeesArray(result.Fees || []) 
+
+                setData({
+                    Partner: result.Partner || { fullName: "Socio " + partnerNumber, partnerNumber },
+                    Fees: generateFeesArray(result.Fees || [])
                 });
 
             } catch (err) {

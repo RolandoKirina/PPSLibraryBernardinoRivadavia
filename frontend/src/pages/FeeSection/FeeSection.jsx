@@ -417,7 +417,7 @@ export const FeeSection = () => {
     {
       key: 'billingForm',
       title: 'Generar Planilla de Cobro',
-      classname: 'books-partners-amount-size',
+      classname: 'books-partners-amount-size billing-form-style',
       content: <BillingForm />,
       close: () => setPopupBillingForm(false),
       condition: PopupBillingForm

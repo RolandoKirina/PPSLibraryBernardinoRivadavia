@@ -1,6 +1,33 @@
 .pay-popup {
-    width: 30em;
-    height: 20em;
+    width: 50em;
     background-color: var(--primary-dark-2);
+}
 
+.pay-popup-content {
+    margin: 1em;
+}
+
+.pay-popup-content .unpaid-fee-input {
+    color: var(--secondary-light-2);
+}
+
+.pay-popup-button {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 1em;
+}
+
+.pay-fee-info {
+    margin-bottom: 1em;
+}
+
+.pay-fee-info p {
+    font-size: large;
+}
+
+.pay-fee-info span {
+    font-size: large;
+    margin-right: 0.2em;
+    font-weight: 800;
 }
