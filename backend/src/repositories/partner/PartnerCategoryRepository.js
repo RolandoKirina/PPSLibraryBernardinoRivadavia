@@ -40,19 +40,19 @@ export const create = async (data) => {
 
 
 export const update = async (id, updates) => {
-    if (!updates.name || updates.name.trim() === "") {
-        throw new ValidationError("El campo Categoria no puede estar vacío");
-    }
+    // if (!updates.name || updates.name.trim() === "") {
+    //     throw new ValidationError("El campo Categoria no puede estar vacío");
+    // }
 
-    updates.amount = Number(updates.amount);
+    // updates.amount = Number(updates.amount);
 
-    if (
-        typeof updates.amount !== "number" ||
-        isNaN(updates.amount) ||
-        updates.amount <= 0
-    ) {
-        throw new ValidationError("El campo Cantidad debe ser un número mayor que 0");
-    }
+    // if (
+    //     typeof updates.amount !== "number" ||
+    //     isNaN(updates.amount) ||
+    //     updates.amount <= 0
+    // ) {
+    //     throw new ValidationError("El campo Cantidad debe ser un número mayor que 0");
+    // }
 
     await PartnerCategory.update(updates, { where: { idCategory: id } });
     return await PartnerCategory.findByPk(id);

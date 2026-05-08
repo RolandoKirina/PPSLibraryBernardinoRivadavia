@@ -401,7 +401,7 @@ export const FeeSection = () => {
     {
       key: 'paymentDate',
       title: 'Fecha de pago',
-      classname: 'books-partners-amount-size',
+      classname: 'pay-popup-content-background',
       content: <PaymentDate />,
       close: () => setPopupPaymentDate(false),
       condition: PopupPaymentDate

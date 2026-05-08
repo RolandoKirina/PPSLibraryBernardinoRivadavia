@@ -1,0 +1,39 @@
+.pay-popup-content-background {
+    background-color: var(--primary-dark-2);
+}
+
+.pay-popup-content {
+    margin: 0;
+    background-color: var(--primary-dark-2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.unpaid-fee-input {
+    margin-bottom: 1em;
+    margin-top: 1em;
+}
+
+.unpaid-fees-grid {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 0 0.5em;
+}
+
+.unpaid-fee-input label {
+    margin-bottom: 1em;
+}
+
+.pay-popup-content .feedback-container {
+    margin-bottom: 1em;
+}
+
+.pay-popup-content .pay-popup-button {
+    margin-bottom: 1em;
+}
+
+.pay-popup-content .pay-fee-info {
+    margin-top: 1em;
+}
