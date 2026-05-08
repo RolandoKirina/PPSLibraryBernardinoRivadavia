@@ -329,25 +329,36 @@ export const getAllFeesTypeTwo = async (filters = {}) => {
   }
 };
 
-
 export const getUnpaidFeesByPartner = async (idPartner, filters = {}) => {
-  const { limit, offset, year, status = 'unpaid' } = filters;
+  const { limit, offset, year, month, status = 'unpaid', date_of_paid } = filters;
 
+  const monthsArray = [
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+  ];
 
-  // 1. Condición base: Siempre filtrar por el socio
   const whereConditions = { idPartner: idPartner };
 
-  // 2. Lógica de Filtro de Pago
-  // Si es 'all', no agregamos la propiedad 'paid', trayendo ambas.
-  if (status === 'paid') {
-    whereConditions.paid = true;
-  } else if (status === 'unpaid') {
-    whereConditions.paid = false;
+  if (status === 'paid') whereConditions.paid = true;
+  else if (status === 'unpaid') whereConditions.paid = false;
+
+  if (year) whereConditions.year = year;
+
+  if (month) {
+    const monthIndex = monthsArray.indexOf(month);
+    if (monthIndex !== -1) whereConditions.month = monthIndex + 1;
   }
 
-  // 3. Filtro por año
-  if (year) {
-    whereConditions.year = year;
+  // --- SOLUCIÓN AL FORMATO DE FECHA ---
+  if (date_of_paid) {
+    // Creamos el inicio y fin del día para que la búsqueda sea inclusiva
+    // Esto evita problemas si la base de datos tiene guardada la hora
+    const startOfDay = `${date_of_paid} 00:00:00`;
+    const endOfDay = `${date_of_paid} 23:59:59`;
+
+    whereConditions.date_of_paid = {
+      [Op.between]: [startOfDay, endOfDay]
+    };
   }
 
   try {
@@ -356,56 +367,70 @@ export const getUnpaidFeesByPartner = async (idPartner, filters = {}) => {
       include: [{
         model: Partner,
         as: 'Partner',
-        // El where aquí es redundante por el idPartner de arriba, 
-        // pero sirve como refuerzo de seguridad.
         where: { id: idPartner },
         attributes: ['id', 'name', 'surname', 'partnerNumber']
       }],
-      distinct: true, // Importante para evitar duplicados en el count por el Include
+      distinct: true, 
       limit: limit ? parseInt(limit) : undefined,
       offset: offset ? parseInt(offset) : undefined,
-      // Ordenamos cronológicamente para que sea fácil de leer
       order: [['year', 'DESC'], ['month', 'DESC']]
     });
 
-    const months = [
-      "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-    ];
-
     return {
       rows: rows.map(fee => ({
-        feeid: fee.id, // ID real de la cuota para acciones (pagar/editar)
-        feeNumber: fee.month, // Usado como referencia visual
+        feeid: fee.id,
+        feeNumber: fee.month, 
         amount: fee.amount,
-        month: months[fee.month - 1] || "Mes inválido",
+        month: monthsArray[fee.month - 1] || "Mes inválido",
         year: fee.year,
-        paid: fee.paid, // Crucial para el renderizado condicional en el front
+        paid: fee.paid, 
         idPartner: fee.Partner?.id,
         partnerNumber: fee.Partner?.partnerNumber,
+        date_of_paid: fee.date_of_paid 
       })),
       count: count
     };
   } catch (error) {
-    console.error("Error en getUnpaidFeesByPartner:", error);
+    console.error("Error en getUnpaidFeesByPartner Repository:", error);
     return { rows: [], count: 0 };
   }
 };
 
 export const searchGlobalUnpaidFees = async (filters = {}) => {
   const {
-    limit, offset, year, status,
-    partnerNumber, name, surname
+    limit, offset, year, month, status,
+    partnerNumber, name, surname, date_of_paid // <-- Añadido
   } = filters;
 
-  // Filtros para la tabla Fees
+  const monthsArray = [
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+  ];
+
+  // --- FILTROS PARA LA TABLA FEES ---
   const feeConditions = {};
+  
   if (status === 'paid') feeConditions.paid = true;
   else if (status === 'unpaid') feeConditions.paid = false;
 
   if (year) feeConditions.year = year;
 
-  // Filtros para la tabla Partner
+  if (month) {
+    const monthIndex = monthsArray.indexOf(month);
+    if (monthIndex !== -1) {
+      feeConditions.month = monthIndex + 1;
+    }
+  }
+
+  // Lógica para Fecha de Pago (date_of_paid)
+  if (date_of_paid) {
+    // Definimos el rango desde las 00:00:00 hasta las 23:59:59
+    feeConditions.date_of_paid = {
+      [Op.between]: [`${date_of_paid} 00:00:00`, `${date_of_paid} 23:59:59`]
+    };
+  }
+
+  // --- FILTROS PARA LA TABLA PARTNER ---
   const partnerConditions = {};
   if (partnerNumber) partnerConditions.partnerNumber = partnerNumber;
   if (name) partnerConditions.name = { [Op.like]: `%${name}%` };
@@ -418,7 +443,7 @@ export const searchGlobalUnpaidFees = async (filters = {}) => {
         model: Partner,
         as: 'Partner',
         where: Object.keys(partnerConditions).length > 0 ? partnerConditions : undefined,
-        required: Object.keys(partnerConditions).length > 0, // Inner join si hay filtros de socio
+        required: Object.keys(partnerConditions).length > 0, 
         attributes: ['id', 'name', 'surname', 'partnerNumber']
       }],
       distinct: true,
@@ -427,17 +452,15 @@ export const searchGlobalUnpaidFees = async (filters = {}) => {
       order: [['year', 'DESC'], ['month', 'DESC']]
     });
 
-    const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-
     return {
       rows: rows.map(fee => ({
         feeid: fee.id,
         feeNumber: fee.month,
         amount: fee.amount,
-        month: months[fee.month - 1] || "Mes inválido",
+        month: monthsArray[fee.month - 1] || "Mes inválido",
         year: fee.year,
         paid: fee.paid,
+        date_of_paid: fee.date_of_paid, // <-- Importante devolverlo
         Partner: fee.Partner ? {
           id: fee.Partner.id,
           name: fee.Partner.name,
@@ -448,6 +471,7 @@ export const searchGlobalUnpaidFees = async (filters = {}) => {
       count: count
     };
   } catch (error) {
+    console.error("Error en FeeRepository:", error);
     throw error;
   }
 };

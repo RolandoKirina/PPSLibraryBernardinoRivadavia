@@ -31,21 +31,22 @@ export const getYearlyReport = async (req, res) => {
 export const getUnpaidFeesByPartner = async (req, res) => {
     try {
         const { partnerId } = req.params;
-
-        const { limit, offset, status, year } = req.query;
+        const { limit, offset, status, year, month, date_of_paid } = req.query; 
 
         const filters = {
             limit: limit ? Number(limit) : undefined,
             offset: offset ? Number(offset) : undefined,
             status: status,
-            year: year
+            year: year,
+            month: month,
+            date_of_paid: date_of_paid 
         };
 
         const result = await FeeService.getUnpaidFeesByPartner(partnerId, filters);
 
         res.status(HTTP_STATUS.OK.code).json(result);
     } catch (e) {
-        console.error(e);
+        console.error("Error en getUnpaidFeesByPartner Controller:", e);
         res
             .status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code)
             .json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
@@ -59,9 +60,11 @@ export const searchGlobalUnpaidFees = async (req, res) => {
             offset,
             status,
             year,
+            month,
             partnerNumber,
             name,
-            surname
+            surname,
+            date_of_paid
         } = req.query;
 
         const filters = {
@@ -69,9 +72,11 @@ export const searchGlobalUnpaidFees = async (req, res) => {
             offset: offset ? Number(offset) : undefined,
             status: status || 'unpaid',
             year: year,
+            month: month,
             partnerNumber: partnerNumber,
             name: name,
-            surname: surname
+            surname: surname,
+            date_of_paid: date_of_paid // <-- Añadido
         };
 
         const result = await FeeService.searchGlobalUnpaidFees(filters);

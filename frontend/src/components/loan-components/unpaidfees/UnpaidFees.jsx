@@ -11,6 +11,7 @@ export default function UnpaidFees({ item = {}, section = "" }) {
   const rowsPerPage = 5;
   const { auth } = useAuth();
 
+  // Determinamos el ID del socio dependiendo de si venimos de la sección "Cuotas" o "Socios"
   const effectiveId = section === 'Fee' ? item?.idPartner : item?.id;
 
   const [unpaidFees, setUnpaidFees] = useState([]);
@@ -21,15 +22,21 @@ export default function UnpaidFees({ item = {}, section = "" }) {
   const [resetPageTrigger, setResetPageTrigger] = useState(0);
   const [popUpPay, setPopUpPay] = useState(false);
 
+  // Lista de meses para el selector
+  const meses = [
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+  ];
+
   const [filters, setFilters] = useState({
     year: '',
-    paymentDate: '',
-    status: 'unpaid'
+    month: '',
+    status: 'unpaid',
+    date_of_paid: '' 
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
     setFilters(prev => ({ ...prev, [name]: value }));
   };
 
@@ -43,10 +50,9 @@ export default function UnpaidFees({ item = {}, section = "" }) {
       let url = `http://localhost:4000/api/v1/fees/partners/${effectiveId}/unpaid-fees?limit=${limit}&offset=${offset}`;
 
       if (currentFilters.year) url += `&year=${currentFilters.year}`;
-
-      if (currentFilters.status) {
-        url += `&status=${currentFilters.status}`;
-      }
+      if (currentFilters.month) url += `&month=${currentFilters.month}`;
+      if (currentFilters.status) url += `&status=${currentFilters.status}`;
+      if (currentFilters.date_of_paid) url += `&date_of_paid=${currentFilters.date_of_paid}`; // <-- Enviado al backend
 
       const res = await fetch(url, {
         method: 'GET',
@@ -81,7 +87,8 @@ export default function UnpaidFees({ item = {}, section = "" }) {
       }, 400);
       return () => clearTimeout(delayDebounceFn);
     }
-  }, [effectiveId, filters.year, filters.status]);
+    // Añadida la dependencia de paymentDate
+  }, [effectiveId, filters.year, filters.month, filters.status, filters.date_of_paid]);
 
   async function handleChangePage(page) {
     const numberPage = Number(page);
@@ -90,10 +97,14 @@ export default function UnpaidFees({ item = {}, section = "" }) {
     if (lastItemIndex > unpaidFees.length && unpaidFees.length < totalItems) {
       const newOffset = unpaidFees.length;
       await fetchUnpaidFees({ limit: chunkSize, offset: newOffset }, filters, true);
-    } else {
-      console.log("Datos suficientes en memoria, no se requiere fetch.");
     }
   }
+
+  const refreshData = () => {
+    setPopUpPay(false);
+    fetchUnpaidFees({ limit: chunkSize, offset: 0 }, filters);
+    setResetPageTrigger(prev => prev + 1);
+  };
 
   const columns = [
     { header: 'N° Cuota', accessor: 'feeNumber' },
@@ -106,16 +117,26 @@ export default function UnpaidFees({ item = {}, section = "" }) {
       render: (paid) => paid ? <span className="status-paid">Paga</span> : <span className="status-unpaid">Impaga</span>
     },
     {
+      header: 'F. Pago',
+      accessor: 'date_of_paid',
+      render: (date) => date ? new Date(date).toLocaleDateString() : '-'
+    },
+    {
       header: 'Pagar',
       accessor: 'payment',
       className: "action-buttons",
       render: (_, row) => (
-        !row.paid && ( // Solo mostrar botón si no está paga
+        !row.paid && (
           <button
             className="button-table"
             onClick={(e) => {
               e.stopPropagation();
-              setSelectedItem(row);
+              setSelectedItem({
+                ...row,
+                partnerNumber: item?.partnerNumber,
+                name: item?.name,
+                surname: item?.surname
+              });
               setPopUpPay(true);
             }}
           >
@@ -125,14 +146,6 @@ export default function UnpaidFees({ item = {}, section = "" }) {
       )
     },
   ];
-
-  const refreshData = () => {
-    setPopUpPay(false); // Cerramos el popup
-    // Resetear el estado local y disparar el fetch (el useEffect se encargará)
-    // O llamar directamente a fetchUnpaidFees:
-    fetchUnpaidFees({ limit: chunkSize, offset: 0 }, filters);
-    setResetPageTrigger(prev => prev + 1); // Esto vuelve la tabla a la página 1
-  };
 
   return (
     <div className="unpaid-quotes-container">
@@ -154,7 +167,22 @@ export default function UnpaidFees({ item = {}, section = "" }) {
           </div>
 
           <div className='unpaid-fee-input'>
-            <label>Estado de Cuota</label>
+            <label>Filtrar por Mes</label>
+            <select
+              name="month"
+              value={filters.month}
+              onChange={handleInputChange}
+              className="unpaid-fee-select"
+            >
+              <option value="">Todos los meses</option>
+              {meses.map(m => (
+                <option key={m} value={m}>{m}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className='unpaid-fee-input'>
+            <label>Estado</label>
             <select
               name="status"
               value={filters.status}
@@ -168,11 +196,11 @@ export default function UnpaidFees({ item = {}, section = "" }) {
           </div>
 
           <div className='unpaid-fee-input'>
-            <label>Fecha de pago (Información)</label>
+            <label>Fecha de pago</label>
             <input
-              name="paymentDate"
+              name="date_of_paid"
               type='date'
-              value={filters.paymentDate}
+              value={filters.date_of_paid}
               onChange={handleInputChange}
             />
           </div>
@@ -196,11 +224,10 @@ export default function UnpaidFees({ item = {}, section = "" }) {
         <PopUp title={'Pagar Cuota'} className={'pay-popup'} onClick={() => setPopUpPay(false)}>
           <PayPopup
             item={selectedItem}
-            onSuccess={refreshData} // 2. Pasamos la función aquí
+            onSuccess={refreshData}
           />
         </PopUp>
       )}
-
     </div>
   );
 }
