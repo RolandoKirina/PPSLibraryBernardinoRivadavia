@@ -5,6 +5,7 @@ export const buildFeeFilters = (query) => {
     partnerNumber,
     name,
     surname,
+    idState,
     observation,
     registrationDate,
     paymentStartDate,
@@ -100,7 +101,9 @@ export const buildFeeFilters = (query) => {
 
   if (observation?.trim()) whereFees.observation = { [Op.iLike]: `%${observation.trim()}%` };
 
-  
+  if (idState != null && Number(idState) != 0) {
+    wherePartner.isActive = Number(idState);
+  }
 
   return {
     wherePartner,

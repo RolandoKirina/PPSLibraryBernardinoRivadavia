@@ -270,6 +270,11 @@ export const FeeSection = () => {
         render: (value) => value ? value : 'Sin Fecha',
       },
       {
+        header: 'Estado',
+        accessor: 'idState',
+        render: (value) => value ? value : 'Sin Fecha',
+      },
+      {
         header: 'Eliminar',
         accessor: 'status',
         className: "action-buttons",

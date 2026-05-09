@@ -9,7 +9,10 @@ export const FeesDetail = [
                 { label: 'Numero de socio', value: 'informacion', attribute:'partnerNumber' },
                 { label: 'Nombre del socio', value: 'informacion',  attribute: 'name' },
                 { label: 'Categoria del socio', value: 'informacion',  attribute: 'category' },
+            ],[
                 { label: 'Fecha de inscripción del socio', value: 'informacion',  attribute: 'registrationDate' },
+                { label: 'Estado del socio', value: 'informacion',  attribute: 'idState' },
+
             ]
         ]
     },

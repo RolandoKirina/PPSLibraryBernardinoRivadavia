@@ -134,6 +134,8 @@ export const getAll = async (filters = {}) => {
         idPartner: fee.Partner?.id,
         name: fee.Partner ? `${fee.Partner.name} ${fee.Partner.surname}` : "",
         registrationDate: fee.Partner?.registrationDate,
+        idState:fee.Partner?.isActive === 1 ? "Activo" 
+        : fee.Partner?.isActive === 2? "Inactivo" : "Desconocido",        
         unpaidFees: parseInt(fee.Partner?.dataValues?.unpaidFeesReal) || 0,
         category: categoryName,
         surname: fee.Partner?.surname,

@@ -86,7 +86,19 @@ export default function FeeFilter({ formData, onChange }) {
               onChange={onChange}
             />
           </div>
-
+          <div className="form-input-group">
+            <h4>Estado del socio</h4>
+            <select
+              name="idState"
+              value={formData.isActive}
+              onChange={onChange}
+              className="feefiltercheckbox-select"
+            >
+              <option value="0">Todos</option>
+              <option value="1">Activos</option>
+              <option value="2">Inactivos</option>
+            </select>
+          </div>
           <div className="book-form-input-group">
             <label>Buscar por apellido</label>
             <input
