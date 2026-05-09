@@ -265,6 +265,11 @@ export const FeeSection = () => {
         render: (value) => value ? '✅ Paga' : '❌ Impaga',
       },
       {
+        header: 'Fecha de Pago',
+        accessor: 'date_of_paid',
+        render: (value) => value ? value : 'Sin Fecha',
+      },
+      {
         header: 'Eliminar',
         accessor: 'status',
         className: "action-buttons",

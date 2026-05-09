@@ -142,8 +142,9 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
 
     if (auth.role === roles.admin) {
         columns = [
-            { header: 'CodigoPrestamo', accessor: 'loanId' },
             { header: 'Nombre Socio', accessor: 'name' },
+            { header: 'Numero Socio', accessor: 'partnerNumber' },
+            { header: 'Empleado', accessor: 'employee' },
             { header: 'Fecha retiro', accessor: 'retiredDate' },
             {
                 header: 'Borrar',

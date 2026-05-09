@@ -8,7 +8,7 @@ import PayPopup from '../../fees-components/paypopup/PayPopup.jsx';
 
 export default function GlobalUnpaidFees() {
   const chunkSize = 100;
-  const rowsPerPage = 5;
+  const rowsPerPage = 12;
   const { auth } = useAuth();
 
   const [unpaidFees, setUnpaidFees] = useState([]);

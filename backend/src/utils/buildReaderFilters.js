@@ -72,8 +72,11 @@ export const buildReaderFilters = (query) => {
     whereBook.title = { [Op.iLike]: `%${bookTitle.trim()}%` };
   }
 
-  if (isbn?.trim()) {
-    whereBook.isbn = { [Op.iLike]: `%${isbn.trim()}%` }; // o igualdad exacta si lo preferís
+  if (isbn && isbn.trim() !== '') {
+    const cleanCode = isbn.trim();
+    whereBook.codeInventory = {
+      [Op.iLike]: `%${cleanCode}`
+    };
   }
 
   const parsedLimit = parseInt(limit);

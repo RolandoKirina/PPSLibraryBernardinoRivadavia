@@ -7,8 +7,8 @@ import MoneyIcon from '../../../assets/img/money-icon.svg';
 import PayPopup from '../../fees-components/paypopup/PayPopup.jsx';
 
 export default function UnpaidFees({ item = {}, section = "" }) {
-  const chunkSize = 100;
-  const rowsPerPage = 5;
+  const chunkSize = 10000;
+  const rowsPerPage = 12;
   const { auth } = useAuth();
 
   // Determinamos el ID del socio dependiendo de si venimos de la sección "Cuotas" o "Socios"
