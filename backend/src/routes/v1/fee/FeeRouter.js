@@ -5,6 +5,8 @@ import { authorizeRoles } from "../../../middlewares/authorizeRoles.js";
 
 const router = express.Router();
 router.get("/reports/yearly-report", authorizeRoles(['admin']), FeeController.getYearlyReport);
+router.get('/type-one', authorizeRoles(['admin']), FeeController.getFeesTypeOne);
+router.get('/type-two', authorizeRoles(['admin']), FeeController.getFeesTypeTwo);
 router.get("/search", authorizeRoles(['admin']), FeeController.searchGlobalUnpaidFees);
 router.get("/partners/:partnerId/unpaid-fees",  authorizeRoles(['admin']), validateIdParam("partnerId"), FeeController.getUnpaidFeesByPartner);
 router.post("/generate-unpaid-fees", authorizeRoles(['admin']), FeeController.generateUnpaidFees);

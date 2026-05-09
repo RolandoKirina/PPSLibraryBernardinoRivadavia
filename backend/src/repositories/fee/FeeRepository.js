@@ -29,14 +29,8 @@ export const getYearlyReport = async (partnerNumber, year, semester) => {
   });
 };
 
-export const getAll = async (filters = {}, listType = '') => {
+export const getAll = async (filters = {}) => {
   const { wherePartner, whereFees, limit, offset, order } = filters;
-  
-  if (listType === 'TypeOneFees') {
-    return getAllFeesTypeOne(filters);
-  } else if (listType == 'TypeTwoFees') {
-    return getAllFeesTypeTwo(filters);
-  }
 
   const baseInclude = [
     {
@@ -95,7 +89,7 @@ export const getAll = async (filters = {}, listType = '') => {
   const fees = await Fees.findAll({
     where: { id: ids },
     include: baseInclude,
-    order: order || [['id', 'DESC']], 
+    order: order || [['id', 'DESC']],
     subQuery: false
   });
 
@@ -152,27 +146,8 @@ export const getAll = async (filters = {}, listType = '') => {
   };
 };
 
-export const findExistingFees = async (month, year) => {
-  try {
-    const existingFees = await Fees.findAll({
-      where: {
-        month,
-        year
-      },
-      attributes: ['idPartner'], // Solo traemos el ID del socio
-      raw: true // Devuelve objetos planos de JS, no instancias de Sequelize
-    });
-    return existingFees;
-  } catch (error) {
-    console.error("Error en FeeRepository.findExistingFees:", error);
-    throw error;
-  }
-};
-
 export const getAllFeesTypeOne = async (filters = {}) => {
-  const { limit, offset } = filters;
-  const beforeDate = filters.whereFees?.beforeDate;
-  const afterDate = filters.whereFees?.afterDate;
+  const { beforeDate, afterDate, limit, offset } = filters;
 
   let whereConditions = ['c."Paga" = true'];
   const replacements = {
@@ -192,7 +167,6 @@ export const getAllFeesTypeOne = async (filters = {}) => {
 
   const whereClause = `WHERE ${whereConditions.join(' AND ')}`;
 
-  // 1. Query Principal (Lista de socios)
   const query = `
     SELECT 
       s."numero" AS "partnerNumber",
@@ -208,7 +182,6 @@ export const getAllFeesTypeOne = async (filters = {}) => {
     LIMIT :limit OFFSET :offset
   `;
 
-  // 2. Query de Totales (Pie de página)
   const totalsQuery = `
     SELECT 
       SUM(c."Monto")::float AS "totalAmount",
@@ -226,13 +199,11 @@ export const getAllFeesTypeOne = async (filters = {}) => {
 
     const totals = totalsResult[0];
 
-    // 3. INYECCIÓN DE LA FILA DE TOTALES
-    // Creamos una fila extra que coincida con los accessors de tu tabla
     if (rows.length > 0) {
       rows.push({
-        partnerNumber: 'TOTALES', // Texto en la columna del número
-        surname: '-',             // Guion en el apellido
-        name: '-',                // Guion en el nombre
+        partnerNumber: 'TOTALES',
+        surname: '-',
+        name: '-',
         amountFeesPerPartner: totals?.totalFees || 0,
         amount: totals?.totalAmount || 0
       });
@@ -240,22 +211,20 @@ export const getAllFeesTypeOne = async (filters = {}) => {
 
     return {
       rows,
-      count: rows.length > 0 ? rows.length - 1 : 0, // Restamos la fila de totales del contador
+      count: rows.length > 0 ? rows.length - 1 : 0,
       others: {
         totalAmount: totals?.totalAmount || 0,
         totalFees: totals?.totalFees || 0
       }
     };
   } catch (error) {
-    console.error("Error en Query Nativa Postgres:", error);
+    console.error("Error TypeOne:", error);
     throw error;
   }
 };
 
 export const getAllFeesTypeTwo = async (filters = {}) => {
-  const { limit, offset } = filters;
-  const beforeDate = filters.whereFees?.beforeDate;
-  const afterDate = filters.whereFees?.afterDate;
+  const { beforeDate, afterDate, limit, offset } = filters;
 
   let whereConditions = ['c."Paga" = true'];
   const replacements = {
@@ -267,6 +236,7 @@ export const getAllFeesTypeTwo = async (filters = {}) => {
     whereConditions.push('c."FechaPago"::date <= :before::date');
     replacements.before = beforeDate;
   }
+
   if (afterDate) {
     whereConditions.push('c."FechaPago"::date >= :after::date');
     replacements.after = afterDate;
@@ -294,9 +264,9 @@ export const getAllFeesTypeTwo = async (filters = {}) => {
     LIMIT :limit OFFSET :offset
   `;
 
-  const categoryTotalsQuery = `
+  const totalsQuery = `
     SELECT 
-      'TOTALES' AS "letter", -- Esto hará que aparezca debajo de la Z
+      'TOTALES' AS "letter",
       COUNT(CASE WHEN cat."Categoria" = 'Regular' THEN c."Id" END)::integer AS "regularCount",
       SUM(CASE WHEN cat."Categoria" = 'Regular' THEN c."Monto" ELSE 0 END)::float AS "regular",
       COUNT(CASE WHEN cat."Categoria" = 'Honorario' THEN c."Id" END)::integer AS "honoraryCount",
@@ -312,19 +282,35 @@ export const getAllFeesTypeTwo = async (filters = {}) => {
   `;
 
   try {
-    const [rows, catTotals] = await Promise.all([
+    const [rows, totals] = await Promise.all([
       sequelize.query(query, { replacements, type: QueryTypes.SELECT }),
-      sequelize.query(categoryTotalsQuery, { replacements, type: QueryTypes.SELECT })
+      sequelize.query(totalsQuery, { replacements, type: QueryTypes.SELECT })
     ]);
 
-    const finalRows = rows.length > 0 ? [...rows, catTotals[0]] : [];
-
     return {
-      rows: finalRows,
+      rows: rows.length > 0 ? [...rows, totals[0]] : [],
       count: rows.length
     };
   } catch (error) {
-    console.error("Error en Reporte Tipo Dos:", error);
+    console.error("Error TypeTwo:", error);
+    throw error;
+  }
+};
+
+
+export const findExistingFees = async (month, year) => {
+  try {
+    const existingFees = await Fees.findAll({
+      where: {
+        month,
+        year
+      },
+      attributes: ['idPartner'], // Solo traemos el ID del socio
+      raw: true // Devuelve objetos planos de JS, no instancias de Sequelize
+    });
+    return existingFees;
+  } catch (error) {
+    console.error("Error en FeeRepository.findExistingFees:", error);
     throw error;
   }
 };
@@ -370,7 +356,7 @@ export const getUnpaidFeesByPartner = async (idPartner, filters = {}) => {
         where: { id: idPartner },
         attributes: ['id', 'name', 'surname', 'partnerNumber']
       }],
-      distinct: true, 
+      distinct: true,
       limit: limit ? parseInt(limit) : undefined,
       offset: offset ? parseInt(offset) : undefined,
       order: [['year', 'DESC'], ['month', 'DESC']]
@@ -379,14 +365,14 @@ export const getUnpaidFeesByPartner = async (idPartner, filters = {}) => {
     return {
       rows: rows.map(fee => ({
         feeid: fee.id,
-        feeNumber: fee.month, 
+        feeNumber: fee.month,
         amount: fee.amount,
         month: monthsArray[fee.month - 1] || "Mes inválido",
         year: fee.year,
-        paid: fee.paid, 
+        paid: fee.paid,
         idPartner: fee.Partner?.id,
         partnerNumber: fee.Partner?.partnerNumber,
-        date_of_paid: fee.date_of_paid 
+        date_of_paid: fee.date_of_paid
       })),
       count: count
     };
@@ -409,7 +395,7 @@ export const searchGlobalUnpaidFees = async (filters = {}) => {
 
   // --- FILTROS PARA LA TABLA FEES ---
   const feeConditions = {};
-  
+
   if (status === 'paid') feeConditions.paid = true;
   else if (status === 'unpaid') feeConditions.paid = false;
 
@@ -443,7 +429,7 @@ export const searchGlobalUnpaidFees = async (filters = {}) => {
         model: Partner,
         as: 'Partner',
         where: Object.keys(partnerConditions).length > 0 ? partnerConditions : undefined,
-        required: Object.keys(partnerConditions).length > 0, 
+        required: Object.keys(partnerConditions).length > 0,
         attributes: ['id', 'name', 'surname', 'partnerNumber']
       }],
       distinct: true,

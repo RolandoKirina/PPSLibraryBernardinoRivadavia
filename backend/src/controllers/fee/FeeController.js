@@ -93,11 +93,50 @@ export const searchGlobalUnpaidFees = async (req, res) => {
 export const getAllFees = async (req, res) => {
     try {
         const queryOptions = buildFeeFilters(req.query);
-        const listType = req.query.listType;
-        const fees = await FeeService.getAllFees(queryOptions, listType);
+        const fees = await FeeService.getAllFees(queryOptions);
         res.status(HTTP_STATUS.OK.code).json(fees);
     } catch (e) {
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({ msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg });
+    }
+};
+
+export const getFeesTypeOne = async (req, res) => {
+    try {
+        const { beforeDate, afterDate, limit, offset } = req.query;
+
+        const result = await FeeService.getFeesTypeOne({
+            beforeDate,
+            afterDate,
+            limit: Number(limit),
+            offset: Number(offset)
+        });
+
+        res.status(HTTP_STATUS.OK.code).json(result);
+    } catch (e) {
+        console.error("Error getFeesTypeOne:", e);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({
+            msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg
+        });
+    }
+};
+
+export const getFeesTypeTwo = async (req, res) => {
+    try {
+        const { beforeDate, afterDate, limit, offset } = req.query;
+
+        const result = await FeeService.getFeesTypeTwo({
+            beforeDate,
+            afterDate,
+            limit: Number(limit),
+            offset: Number(offset)
+        });
+
+        res.status(HTTP_STATUS.OK.code).json(result);
+    } catch (e) {
+        console.error("Error getFeesTypeTwo:", e);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR.code).json({
+            msg: HTTP_STATUS.INTERNAL_SERVER_ERROR.msg
+        });
     }
 };
 

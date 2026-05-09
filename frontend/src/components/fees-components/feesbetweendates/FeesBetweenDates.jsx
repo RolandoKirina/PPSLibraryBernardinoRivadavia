@@ -4,8 +4,11 @@ import { useState, useEffect } from 'react';
 import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
 import { generateUniversalPDF } from '../../../utils/pdfGenerator';
 import GenerateListPopup from '../../common/generatelistpopup/GenerateListPopup';
+import { useAuth } from '../../../auth/AuthContext';
 
 export default function FeesBetweenDates() {
+
+    const { auth } = useAuth();
 
     const [formValues, setFormValues] = useState({
         listType: 'TypeOneFees',
@@ -17,8 +20,10 @@ export default function FeesBetweenDates() {
     const rowsPerPage = 35;
     const [resetPageTrigger, setResetPageTrigger] = useState(0);
     const [loading, setLoading] = useState(false);
-
-    const { items, getItems, others, totalItems } = useEntityManagerAPI("fees");
+    const [items, setItems] = useState([]);
+    const [totalItems, setTotalItems] = useState(0);
+    const [others, setOthers] = useState({});
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -29,18 +34,45 @@ export default function FeesBetweenDates() {
         return () => clearTimeout(timer);
     }, [formValues.afterDate, formValues.beforeDate, formValues.listType]);
 
-    const fetchFees = async (values, offset, append = false) => {
+    const fetchFees = async (values, offset = 0, append = false) => {
         try {
             setLoading(true);
-            await getItems({
-                beforeDate: values.beforeDate,
-                afterDate: values.afterDate,
-                listType: values.listType || 'TypeOneFees',
+            setError(null);
+
+            const params = new URLSearchParams({
+                beforeDate: values.beforeDate || '',
+                afterDate: values.afterDate || '',
                 limit: chunkSize,
-                offset: offset
-            }, append);
+                offset
+            });
+
+            let endpoint = '';
+
+            if (values.listType === 'TypeOneFees') {
+                endpoint = `http://localhost:4000/api/v1/fees/type-one?${params}`;
+            } else {
+                endpoint = `http://localhost:4000/api/v1/fees/type-two?${params}`;
+            }
+
+            const res = await fetch(endpoint, {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${auth.token}`
+                }
+            });
+            
+            const data = await res.json();
+
+            if (!res.ok) throw new Error(data?.msg || "Error al obtener datos");
+
+            setItems(prev => append ? [...prev, ...data.rows] : data.rows);
+            setTotalItems(data.count || 0);
+            setOthers(data.others || {});
+
         } catch (err) {
-            console.error("Error al traer cuotas:", err);
+            console.error(err);
+            setError(err.message);
         } finally {
             setLoading(false);
         }
@@ -134,10 +166,10 @@ export default function FeesBetweenDates() {
                             <div className='filter-options'>
                                 <div className="input">
                                     <label htmlFor="listType">Tipo de listado</label>
-                                    <select 
-                                        id="listType" 
-                                        name='listType' 
-                                        value={formValues.listType} 
+                                    <select
+                                        id="listType"
+                                        name='listType'
+                                        value={formValues.listType}
                                         onChange={handleInputChange}
                                     >
                                         {feesBetweenDatesListOptions.map((listOption, index) => (
@@ -154,6 +186,8 @@ export default function FeesBetweenDates() {
             </div>
 
             <div className='preview-list-container'>
+                {error && <div className="error">{error}</div>}
+
                 <GenerateListPopup
                     dataByType={items}
                     totalItems={totalItems}

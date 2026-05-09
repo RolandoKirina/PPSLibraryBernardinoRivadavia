@@ -53,11 +53,18 @@ export const searchGlobalUnpaidFees = async (filters) => {
     return result;
 };
 
-export const getAllFees = async (filters, listType) => {
-    const fees = await FeeRepository.getAll(filters, listType);
+export const getAllFees = async (filters) => {
+    const fees = await FeeRepository.getAll(filters);
     return fees;
 };
 
+export const getFeesTypeOne = async (filters) => {
+    return await FeeRepository.getAllFeesTypeOne(filters);
+};
+
+export const getFeesTypeTwo = async (filters) => {
+    return await FeeRepository.getAllFeesTypeTwo(filters);
+};
 
 export const generateUnpaidFees = async (body) => {
     if (!body || !body.month || !body.year) {
