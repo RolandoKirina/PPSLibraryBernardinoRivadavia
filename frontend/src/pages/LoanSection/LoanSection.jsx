@@ -19,6 +19,7 @@ import { useAuth } from "../../auth/AuthContext";
 import { useEntityManagerAPI } from "../../hooks/useEntityManagerAPI";
 import LoanBooks from "../../components/loan-components/loanbooks/LoanBooks";
 import roles from "../../auth/roles";
+import GlobalPendingBooks from "../../components/book-components/globalpendingbooks/GlobalPendingBooks";
 
 export default function LoanSection({ openRenewes, pendientBooks }) {
     const chunkSize = 100;
@@ -35,6 +36,8 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
     const [listingsPopup, setListingsPopup] = useState(false);
     const [renewePopup, setRenewePopup] = useState(false);
     const [booksPopup, setBooksPopup] = useState(false);
+    const [PopupGlobalPendingBooks, setPopupGlobalPendingBooks] = useState(false);
+
 
     const [filters, setFilters] = useState({});
 
@@ -90,7 +93,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
 
             if (res) {
                 setSuccessMessage("Prestamo creado exitosamente");
-                
+
                 setTimeout(() => {
                     setAddPopup(false);
 
@@ -301,7 +304,15 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
             content: <Renewe isPopup={true} />,
             close: () => setRenewePopup(false),
             condition: renewePopup
-        }
+        },
+        {
+            key: 'globalPendingBooks',
+            title: 'Libros Pendientes Global',
+            classname: 'books-partners-amount-size',
+            content: <GlobalPendingBooks />,
+            close: () => setPopupGlobalPendingBooks(false),
+            condition: PopupGlobalPendingBooks
+        },
     ];
 
     return (
@@ -313,6 +324,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
                         displayReturnForm={() => setReturnsPopup(true)}
                         displayListingsPopup={() => setListingsPopup(true)}
                         displayRenewe={() => setRenewePopup(true)}
+                        displayPendingBooks={() => setPopupGlobalPendingBooks(true)}
                     />
                 } />
         </>

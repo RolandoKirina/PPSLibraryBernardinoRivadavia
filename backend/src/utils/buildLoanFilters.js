@@ -88,13 +88,19 @@ export const buildLoanFilters = (query) => {
   }
 
   if (onlyActiveMembers === 'true') {
-    wherePartner.isActive = 1; 
+    wherePartner.isActive = 1;
   } else if (onlyActiveMembers === 'false') {
-    wherePartner.isActive = 2; 
+    wherePartner.isActive = 2;
   }
-  
+
   if (bookTitle) whereBook.title = { [Op.iLike]: `%${bookTitle}%` };
-  if (bookCode) whereBook.codeInventory = bookCode;
+
+  if (bookCode && bookCode.trim() !== '') {
+    const cleanCode = bookCode.trim();
+    whereBook.codeInventory = {
+      [Op.iLike]: `%${cleanCode}`
+    };
+  }
 
   if (employeeCode !== undefined && employeeCode !== null && employeeCode !== "") {
     whereEmployee.code = employeeCode;

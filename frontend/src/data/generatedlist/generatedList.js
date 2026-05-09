@@ -149,10 +149,9 @@ export const columnsByType = {
   ],
   partner: [
     { header: 'Numero Socio', accessor: 'partnerNumber' },
-    { header: 'Nombre', accessor: 'name' },
-    { header: 'Apellido', accessor: 'surname'},
-    { header: 'Direccion', accessor: 'homeAddress' },
-    { header: 'Telefono', accessor: 'homePhone' },    
+    { header: 'Nombre Completo', accessor: 'partnerName' },
+    { header: 'Direccion', accessor: 'partnerAddress' },
+    { header: 'Telefono', accessor: 'partnerPhone' },    
     { header: 'Estado',accessor:'isActive'},
     { header: 'Libros prestados', accessor: 'totalBorrowedBooks' },
     { header: 'Cuotas impagas', accessor:'unpaidFees'},

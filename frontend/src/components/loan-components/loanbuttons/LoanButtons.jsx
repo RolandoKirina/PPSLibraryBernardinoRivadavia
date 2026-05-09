@@ -7,7 +7,7 @@ import Btn from '../../common/btn/Btn';
 import { useAuth } from '../../../auth/AuthContext';
 import roles from '../../../auth/roles';
 
-export default function LoanButtons({ displayLoanform, displayReturnForm, displayListingsPopup, displayRenewe }) {
+export default function LoanButtons({ displayLoanform, displayReturnForm, displayListingsPopup, displayRenewe, displayPendingBooks }) {
     const { auth } = useAuth();
 
     return (
@@ -21,6 +21,8 @@ export default function LoanButtons({ displayLoanform, displayReturnForm, displa
                             <Btn icon={<img src={ReturnIcon} />} onClick={displayReturnForm} text={'Devoluciones'} variant="primary" />
 
                             <Btn icon={<img src={PrintIcon} />} onClick={displayListingsPopup} text={'Listados'} variant="primary" />
+
+                            <Btn text="Libros Pendientes"onClick={displayPendingBooks}  variant="primary" text={'Libros pendientes'} />
                         </>
 
                     )}

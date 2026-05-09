@@ -32,7 +32,7 @@ export default function LoanListings() {
             {popupView === 'listing' && (
                 <>
                 <BackviewBtn menu={'default'} changeView={setPopupView}/>
-                <div className='loan-listing-size'>
+                <div className='loan-listing-size extra'>
                     <Listing type={type}/>
                 </div>
                 </>

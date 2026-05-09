@@ -8,17 +8,31 @@ import Employees from '../../models/options/Employees.js';
 import Partner from '../../models/partner/partner.js';
 import LoanType from '../../models/loan/LoanType.js';
 import BookType from "../../models/options/BookType.js";
+import { formatDate } from '../../utils/date/formatDate.js';
+
+import reasonForWithDrawal from '../../models/partner/reasonForWithDrawal.js';
 
 import * as EmployeesRepository from '../../repositories/options/EmployeesRepository.js';
 import * as PartnerRepository from '../../repositories/partner/PartnerRepository.js';
 import * as LoanBookRepository from '../../repositories/loan/LoanBookRepository.js';
 import * as LoanTypeRepository from '../../repositories/loan/LoanTypeRepository.js';
 
-import { formatDate } from '../../utils/date/formatDate.js';
 
 import { ValidationError } from '../../utils/errors/ValidationError.js';
 
 import { Op } from 'sequelize';
+
+const formatDateLoan = (date) => {
+  if (!date) return '';
+
+  const d = new Date(date);
+
+  const day = String(d.getUTCDate()).padStart(2, '0');
+  const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const year = d.getUTCFullYear();
+
+  return `${day}-${month}-${year}`;
+};
 
 export const getAll = async (filters) => {
   const {
@@ -333,9 +347,9 @@ export const getReturnPrintList = async (filters = {}) => {
     partnerNumber: r.partnerNumber || '',
     partnerName: `${r.partnerSurname || ''} ${r.partnerName || ''}`,
     partnerAddress: r.homeAddress || '',
-    retiredDate: formatDate(r.retiredDate),
-    expectedDate: formatDate(r.expectedDate),
-    returnedDate: formatDate(r.returnedDate)
+    retiredDate: formatDateLoan(r.retiredDate),
+    expectedDate: formatDateLoan(r.expectedDate),
+    returnedDate: formatDateLoan(r.returnedDate)
   }));
 
   return { rows: formattedRows, count };
@@ -389,12 +403,13 @@ export const getPhonePrintList = async (filters = {}) => {
     partnerNumber: r.partnerNumber || '',
     partnerName: `${r.partnerSurname || ''} ${r.partnerName || ''}`,
     partnerPhone: r.partnerPhone || '',
-    retiredDate: formatDate(r.retiredDate),
-    expectedDate: formatDate(r.expectedDate)
+    retiredDate: formatDateLoan(r.retiredDate),
+    expectedDate: formatDateLoan(r.expectedDate)
   }));
 
   return { rows: formattedRows, count };
 };
+
 
 export const getPartnerPrintList = async (filters = {}) => {
   const { limit, offset } = filters;
@@ -406,43 +421,91 @@ export const getPartnerPrintList = async (filters = {}) => {
       'name',
       'homeAddress',
       'homePhone',
-      [Sequelize.fn('COUNT', Sequelize.col('Loans.LoanBooks.LoanBookId')), 'bookAmount']
-    ],
-    include: [{
-      model: Loan,
-      as: 'Loans',
-      attributes: [],
-      required: true,
-      include: [{
-        model: LoanBook,
-        as: 'LoanBooks',
-        attributes: [],
-        required: true
-      }]
-    }],
+      'isActive',
+      'withdrawalDate',
+      'idReason',
+      'presentedBy',
+      'registrationDate',
 
-    group: ['Partner.id'],
+      // 🔹 Motivo de baja (texto)
+      [Sequelize.col('ReasonForWithdrawal.Motivo'), 'reason'],
+
+      // 🔹 TOTAL libros prestados (histórico)
+      [
+        Sequelize.literal(`(
+          SELECT COUNT(*)
+          FROM "PrestamoLibro" AS lb
+          INNER JOIN "Prestamo" AS l ON lb."IdPrestamo" = l."Id"
+          WHERE l."NumSocio" = "Partner"."id"
+        )`),
+        'totalBorrowedBooks'
+      ],
+
+      // 🔹 CUOTAS IMPAGAS
+      [
+        Sequelize.literal(`(
+          SELECT COUNT(*)
+          FROM "Cuotas" AS f
+          WHERE f."IdSocio" = "Partner"."id"
+          AND f."Paga" = false
+        )`),
+        'unpaidFees'
+      ],
+
+      // 🔹 LIBROS PENDIENTES (no devueltos)
+      [
+        Sequelize.literal(`(
+          SELECT COUNT(*)
+          FROM "PrestamoLibro" AS lb
+          INNER JOIN "Prestamo" AS l ON lb."IdPrestamo" = l."Id"
+          WHERE l."NumSocio" = "Partner"."id"
+          AND lb."FechaDevolucion" IS NULL
+        )`),
+        'pendingBooks'
+      ]
+    ],
+
+    include: [
+      {
+        model: reasonForWithDrawal,
+        as: "ReasonForWithdrawal",
+        attributes: ["reason"],
+      },
+    ],
 
     order: [['partnerNumber', 'ASC']],
 
-    subQuery: false,
-    distinct: true,
     limit,
     offset,
-    raw: true
+
+    raw: true,
+    subQuery: false
   });
 
   const formattedRows = rows.map(p => ({
     partnerNumber: p.partnerNumber || '',
-    partnerName: `${p.surname || ''} ${p.name || ''}`,
+    partnerName: `${p.surname || ''} ${p.name || ''}`.trim(),
+
     partnerAddress: p.homeAddress || '',
     partnerPhone: p.homePhone || '',
-    bookAmount: parseInt(p.bookAmount, 10) || 0
+
+    isActive: p.isActive === 1 ? 'Activo' : 'Inactivo',
+
+    totalBorrowedBooks: parseInt(p.totalBorrowedBooks, 10) || 0,
+    unpaidFees: parseInt(p.unpaidFees, 10) || 0,
+    pendingBooks: parseInt(p.pendingBooks, 10) || 0,
+
+    withdrawalDate: formatDateLoan(p.withdrawalDate),
+    idReason: p.reason || '', // 🔥 ahora muestra el motivo real
+
+    presentedBy: p.presentedBy || '',
+    registrationDate: formatDateLoan(p.registrationDate),
   }));
 
-  const totalCount = Array.isArray(count) ? count.length : count;
-
-  return { rows: formattedRows, count: totalCount };
+  return {
+    rows: formattedRows,
+    count
+  };
 };
 
 export const create = async (loanData, transaction = null) => {
