@@ -129,7 +129,6 @@ export const getAll = async (filters = {}) => {
         paid: fee.paid,
         paidLabel: fee.paid ? "Pagada" : "Impaga",
         date_of_paid: formatDate(fee.date_of_paid),
-
         partnerNumber: fee.Partner?.partnerNumber,
         idPartner: fee.Partner?.id,
         name: fee.Partner ? `${fee.Partner.name} ${fee.Partner.surname}` : "",

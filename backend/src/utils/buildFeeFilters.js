@@ -10,6 +10,7 @@ export const buildFeeFilters = (query) => {
     registrationDate,
     paymentStartDate,
     paymentEndDate,
+    paymentDate,
     periodStartDate,
     periodEndDate,
     creationStartDate,
@@ -53,6 +54,14 @@ export const buildFeeFilters = (query) => {
     }
 
     whereFees.date_of_paid = dateFilter;
+  }
+
+
+  if(paymentDate){
+    whereFees.date_of_paid = {
+        [Op.gte]: new Date(`${paymentDate}T00:00:00Z`),
+        [Op.lte]: new Date(`${paymentDate}T23:59:59Z`)
+      };
   }
 
   if (periodStartDate || periodEndDate) {

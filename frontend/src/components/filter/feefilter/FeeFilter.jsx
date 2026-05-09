@@ -207,6 +207,18 @@ export default function FeeFilter({ formData, onChange }) {
             />
           </div>
 
+              <div className="book-form-input-group">
+            <label>Fecha de pago exacta </label>
+            <input
+              type="date"
+              name="paymentDate"
+              value={formData.paymentDate ?? ""}
+              onChange={onChange}
+              disabled={formData.status === "unpaid"}
+            />
+
+          </div>
+
           <div className="book-form-input-group">
             <h4>Periodo de la cuota</h4>
             <hr />
