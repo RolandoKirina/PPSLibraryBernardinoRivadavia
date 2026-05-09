@@ -32,6 +32,8 @@ export default function PartnerFilter({ formData, onChange }) {
               name="sortBy"
               value={formData.sortBy}
               onChange={handleLocalChange}
+              className="feefiltercheckbox-select"
+
             >
               <option value="name">Nombre</option>
               <option value="surname">Apellido</option>
@@ -47,6 +49,8 @@ export default function PartnerFilter({ formData, onChange }) {
               name="direction"
               value={formData.direction}
               onChange={onChange}
+              className="feefiltercheckbox-select"
+
             >
               <option value="asc">Ascendente</option>
               <option value="desc">Descendente</option>
@@ -59,6 +63,8 @@ export default function PartnerFilter({ formData, onChange }) {
               name="idState"
               value={formData.idState}
               onChange={onChange}
+              className="feefiltercheckbox-select"
+
             >
               <option value="0">Todos</option>
               <option value="1">Activos</option>
