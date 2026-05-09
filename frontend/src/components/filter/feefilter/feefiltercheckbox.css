@@ -27,6 +27,8 @@ input:disabled {
   width: 100%;
   font-size: 0.95rem;
   color: var(--text);
+  margin-bottom: 0.5em;
+  margin-top: 1em;
 }
 
 .feefiltercheckbox-select {
@@ -34,4 +36,13 @@ input:disabled {
   border-radius: 8px;
   font-size: 0.95rem;
   cursor: pointer;
+}
+
+.fee-filter-form-new h4 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+.fee-filter-form-new hr {
+  margin-bottom: 0.5em;
 }
