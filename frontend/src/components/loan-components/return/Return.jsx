@@ -22,6 +22,7 @@ import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI.js';
 import { useEffect } from 'react';
 import PartnerMemo from '../partnermemo/PartnerMemo.jsx';
 import PendingBooks from '../pendingbooks/PendingBooks.jsx';
+import GlobalPendingBooks from '../../book-components/globalpendingbooks/GlobalPendingBooks.jsx';
 
 export default function Return() {
     //cuando se usan los inputs de partner se filtran las devoluciones y se pueden renovar, devolver o devolver todos

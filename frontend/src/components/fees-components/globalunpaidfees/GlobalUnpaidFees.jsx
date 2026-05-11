@@ -6,7 +6,7 @@ import PopUp from '../../common/popup-table/PopUp.jsx';
 import MoneyIcon from '../../../assets/img/money-icon.svg';
 import PayPopup from '../../fees-components/paypopup/PayPopup.jsx';
 
-export default function GlobalUnpaidFees() {
+export default function GlobalUnpaidFees({ partnerNumber }) {
   const chunkSize = 100;
   const rowsPerPage = 12;
   const { auth } = useAuth();
@@ -23,6 +23,15 @@ export default function GlobalUnpaidFees() {
     "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
     "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
   ];
+
+  useEffect(() => {
+    if (partnerNumber) {
+      setFilters(prev => ({
+        ...prev,
+        partnerNumber: partnerNumber
+      }));
+    }
+  }, [partnerNumber]);
 
   // 1. Filtros extendidos (Incluye date_of_paid)
   const [filters, setFilters] = useState({
@@ -54,7 +63,7 @@ export default function GlobalUnpaidFees() {
       if (currentFilters.year) url += `&year=${currentFilters.year}`;
       if (currentFilters.month) url += `&month=${currentFilters.month}`;
       if (currentFilters.status) url += `&status=${currentFilters.status}`;
-      
+
       // Enviamos el valor de date_of_paid al backend
       // Nota: Si tu backend recibe el objeto filters completo, asegúrate que la propiedad se llame date_of_paid
       if (currentFilters.date_of_paid) url += `&date_of_paid=${currentFilters.date_of_paid}`;
@@ -90,15 +99,15 @@ export default function GlobalUnpaidFees() {
     const delayDebounceFn = setTimeout(() => {
       fetchUnpaidFees({ limit: chunkSize, offset: 0 }, filters);
     }, 500);
-    
+
     return () => clearTimeout(delayDebounceFn);
   }, [
-    filters.partnerNumber, 
-    filters.name, 
-    filters.surname, 
-    filters.year, 
-    filters.month, 
-    filters.status, 
+    filters.partnerNumber,
+    filters.name,
+    filters.surname,
+    filters.year,
+    filters.month,
+    filters.status,
     filters.date_of_paid // <-- Dependencia añadida
   ]);
 
@@ -120,10 +129,10 @@ export default function GlobalUnpaidFees() {
   };
 
   const columns = [
-    { 
-        header: 'Socio', 
-        accessor: 'partnerNumber', 
-        render: (_, row) => `${row.Partner?.name || ''} ${row.Partner?.surname || ''} (${row.Partner?.partnerNumber || 'N/A'})` 
+    {
+      header: 'Socio',
+      accessor: 'partnerNumber',
+      render: (_, row) => `${row.Partner?.name || ''} ${row.Partner?.surname || ''} (${row.Partner?.partnerNumber || 'N/A'})`
     },
     { header: 'Importe', accessor: 'amount', render: (v) => `$${v}` },
     { header: 'Mes', accessor: 'month' },
@@ -221,7 +230,7 @@ export default function GlobalUnpaidFees() {
         </div>
       </div>
 
-      {error && <div className="error-msg" style={{color: 'red', margin: '10px 0'}}>{error}</div>}
+      {error && <div className="error-msg" style={{ color: 'red', margin: '10px 0' }}>{error}</div>}
 
       <Table
         columns={columns}
@@ -236,8 +245,8 @@ export default function GlobalUnpaidFees() {
 
       {popUpPay && (
         <PopUp title={'Pagar Cuota'} className={'pay-popup'} onClick={() => setPopUpPay(false)}>
-          <PayPopup 
-            item={selectedItem} 
+          <PayPopup
+            item={selectedItem}
             onSuccess={handleRefresh}
           />
         </PopUp>

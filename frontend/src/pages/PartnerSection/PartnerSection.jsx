@@ -50,6 +50,7 @@ export default function PartnerSection() {
     partnerNumber: "",
     name: "",
     surname: "",
+    observations: "",
     sortBy: "name",
     direction: "asc"
   });
@@ -148,6 +149,7 @@ const handleFilterChange = (e) => {
     { header: 'Numero de socio', accessor: 'partnerNumber' },
     { header: 'Nombre', accessor: 'name' },
     { header: 'Apellido', accessor: 'surname' },
+    { header: 'Observaciones', accessor: 'observations' },
     {
       header: 'Cuotas impagas',
       accessor: 'unpaidFees',

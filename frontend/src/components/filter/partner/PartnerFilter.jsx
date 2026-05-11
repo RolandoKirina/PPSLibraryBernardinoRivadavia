@@ -24,7 +24,7 @@ export default function PartnerFilter({ formData, onChange }) {
       <div className="filter-form">
         <form onSubmit={(e) => e.preventDefault()}>
           <h3 className="titleh3">Filtro de socios</h3>
-          
+
           <div className="form-input-group">
             <label htmlFor="sortBy">Ordenar por</label>
             <select
@@ -126,6 +126,17 @@ export default function PartnerFilter({ formData, onChange }) {
               max="15"
               value={formData.pendingBooks}
               onChange={onChange}
+            />
+          </div>
+
+          <div className="form-input-group">
+            <label>Observaciones</label>
+            <input
+              type="text"
+              name="observations"
+              value={formData.observations}
+              onChange={onChange}
+              placeholder="Ej: PAGO PROMOCION 2025..."
             />
           </div>
         </form>

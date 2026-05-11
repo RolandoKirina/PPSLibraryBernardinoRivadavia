@@ -24,6 +24,7 @@ import BookRanking from '../../components/book-components/bookranking/BookRankin
 import { useAuth } from '../../auth/AuthContext';
 import roles from '../../auth/roles';
 import GlobalPendingBooks from '../../components/book-components/globalpendingbooks/GlobalPendingBooks.jsx';
+import { useLocation } from 'react-router-dom';
 
 const BookSection = () => {
     const chunkSize = 100;
@@ -32,7 +33,8 @@ const BookSection = () => {
     const [resetPageTrigger, setResetPageTrigger] = useState(0);
     const [selectedItem, setSelectedItem] = useState(null);
     const [selectedId, setSelectedId] = useState(null);
-    
+    const location = useLocation();
+
     // Estados de Popups
     const [PopUpEdit, setPopupEdit] = useState(false);
     const [PopUpAdd, setPopupAdd] = useState(false);
@@ -59,10 +61,28 @@ const BookSection = () => {
         bookTitle: "",
         yearEdition: "",
         numberEdition: "",
+        partnerNumber: "",
         notes: "",
         sortBy: "title", // Valor por defecto
         direction: "asc"  // Valor por defecto
     });
+
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const partnerFromUrl = queryParams.get('partnerNumber');
+        const statusFromUrl = queryParams.get('status'); // <-- Agregamos esta línea
+
+        // Ahora validamos que al menos uno exista
+        if (partnerFromUrl || statusFromUrl) {
+            setFormData(prev => ({
+                ...prev,
+                partnerNumber: partnerFromUrl || prev.partnerNumber,
+            }));
+
+            // Abrimos el popup automáticamente
+            setPopupGlobalPendingBooks(true);
+        }
+    }, [location.search]);
 
     const [filters, setFilters] = useState({});
 
@@ -84,7 +104,7 @@ const BookSection = () => {
         const delay = setTimeout(() => {
             // Limpiamos los filtros para la búsqueda (excluyendo parámetros de orden)
             const activeFilters = Object.fromEntries(
-                Object.entries(formData).filter(([key, v]) => 
+                Object.entries(formData).filter(([key, v]) =>
                     v !== "" && key !== 'sortBy' && key !== 'direction'
                 )
             );
@@ -113,10 +133,10 @@ const BookSection = () => {
         if (items.length < totalItems && lastItemIndex > items.length) {
             const newOffset = items.length;
             // Mantenemos el orden actual al paginar
-            await getItems({ 
-                ...formData, 
-                limit: chunkSize, 
-                offset: newOffset 
+            await getItems({
+                ...formData,
+                limit: chunkSize,
+                offset: newOffset
             }, true);
             setOffsetActual(newOffset);
         }
@@ -196,10 +216,10 @@ const BookSection = () => {
             key: 'editPopup',
             title: 'Editar Libro',
             className: 'popup-container-book-form editsize',
-            content: <FormEditBook 
-                closeOnExit={() => setPopupEdit(false)} 
-                selectedBook={selectedItem} 
-                getItems={() => getItems({ ...formData, limit: chunkSize, offset: 0 })} 
+            content: <FormEditBook
+                closeOnExit={() => setPopupEdit(false)}
+                selectedBook={selectedItem}
+                getItems={() => getItems({ ...formData, limit: chunkSize, offset: 0 })}
             />,
             close: () => setPopupEdit(false),
             condition: PopUpEdit
@@ -208,9 +228,9 @@ const BookSection = () => {
             key: 'AddPopup',
             title: 'Agregar Libro',
             className: 'popup-container-book-form editsize',
-            content: <FormAddBook 
-                closeOnExit={() => setPopupAdd(false)} 
-                getItems={() => getItems({ ...formData, limit: chunkSize, offset: 0 })} 
+            content: <FormAddBook
+                closeOnExit={() => setPopupAdd(false)}
+                getItems={() => getItems({ ...formData, limit: chunkSize, offset: 0 })}
             />,
             close: () => setPopupAdd(false),
             condition: PopUpAdd
@@ -265,8 +285,8 @@ const BookSection = () => {
         {
             key: 'globalPendingBooks',
             title: 'Libros Pendientes Global',
-            className: 'books-partners-amount-size',
-            content: <GlobalPendingBooks />,
+            className: '',
+            content: <GlobalPendingBooks partnerNumber={formData.partnerNumber} />,
             close: () => setPopupGlobalPendingBooks(false),
             condition: popupGlobalPendingBooks
         },

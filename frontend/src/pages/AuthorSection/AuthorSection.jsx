@@ -16,7 +16,7 @@ import roles from '../../auth/roles';
 export default function AuthorSection() {
     const { auth } = useAuth();
     const BASE_URL = "http://localhost:4000/api/v1";
-    
+
     // Estado de filtros incluyendo sortBy y direction
     const [filters, setFilters] = useState({
         authorName: "",
@@ -51,17 +51,17 @@ export default function AuthorSection() {
 
             // Filtramos solo los campos de búsqueda de texto para el objeto activeFilters
             const activeFilters = Object.fromEntries(
-                Object.entries(filters).filter(([key, v]) => 
+                Object.entries(filters).filter(([key, v]) =>
                     v !== "" && v !== null && v !== undefined && key !== 'sortBy' && key !== 'direction'
                 )
             );
 
-            getItems({ 
-                ...activeFilters, 
-                sortBy: filters.sortBy, 
-                direction: filters.direction, 
-                limit: chunkSize, 
-                offset: 0 
+            getItems({
+                ...activeFilters,
+                sortBy: filters.sortBy,
+                direction: filters.direction,
+                limit: chunkSize,
+                offset: 0
             });
         }, 300);
 
@@ -74,10 +74,10 @@ export default function AuthorSection() {
 
         if (items.length < totalItems && lastItemIndex > items.length) {
             const newOffset = items.length;
-            await getItems({ 
-                ...filters, 
-                limit: chunkSize, 
-                offset: newOffset 
+            await getItems({
+                ...filters,
+                limit: chunkSize,
+                offset: newOffset
             }, true);
             setOffsetActual(newOffset);
         }
@@ -91,7 +91,7 @@ export default function AuthorSection() {
 
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
-        
+
         // Lógica especial para el selector de orden combinado
         if (name === "sortGroup") {
             const [sortBy, direction] = value.split('-');
@@ -237,15 +237,15 @@ export default function AuthorSection() {
     });
 
     return (
-        <GenericSection 
-            title={'Listado de autores'} 
-            columns={columns} 
-            data={items} 
-            popups={authorsPopups} 
-            totalItems={totalItems} 
-            handleChangePage={handleChangePage} 
-            loading={loading} 
-            resetPageTrigger={resetPageTrigger} 
+        <GenericSection
+            title={'Listado de autores'}
+            columns={columns}
+            data={items}
+            popups={authorsPopups}
+            totalItems={totalItems}
+            handleChangePage={handleChangePage}
+            loading={loading}
+            resetPageTrigger={resetPageTrigger}
             showCount={true}
             actions={
                 <div className='author-actions'>
@@ -257,12 +257,13 @@ export default function AuthorSection() {
 
                     <div className='author-filter'>
                         <label>Ordenar por: </label>
-                        <select 
-                            name="sortGroup" 
+                        <select
+                            name="sortGroup"
                             className="author-sort-select"
-                            value={`${filters.sortBy}-${filters.direction}`} 
+                            value={`${filters.sortBy}-${filters.direction}`}
                             onChange={handleFilterChange}
                         >
+                            <option value="id-desc">Mas Recientes</option>
                             <option value="name-asc">Nombre (A-Z)</option>
                             <option value="name-desc">Nombre (Z-A)</option>
                             <option value="nationality-asc">Nacionalidad (A-Z)</option>

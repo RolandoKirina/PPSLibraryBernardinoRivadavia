@@ -1,16 +1,11 @@
 import './SearchPartner.css';
 import Btn from '../../common/btn/Btn';
-import { useState } from 'react';
-import PopUp from '../../common/popup-table/PopUp';
-import PartnerMemo from '../partnermemo/PartnerMemo';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useEntityLookup } from '../../../hooks/useEntityLookup';
 
 export default function SearchPartner({ onFilterChange, method, menu, onDataChange, partnerData }) {
-  const [memoPopup, setMemoPopup] = useState(false);
   const [partnerMessageError, setPartnerMessageError] = useState(false);
   const [errorTarget, setErrorTarget] = useState(null);
-
 
   const { data: foundPartner, error: partnerError, loading: partnerLoading } = useEntityLookup(
     partnerData.partnerNumber,
@@ -39,13 +34,10 @@ export default function SearchPartner({ onFilterChange, method, menu, onDataChan
     }
   }, [partnerData?.partnerNumber]);
 
-
   const handleMenu = (option) => {
-    const hasPartner =
-      foundPartner ||
-      (partnerData?.partnerName && partnerData.partnerName.trim() !== "");
+    const pNumber = foundPartner ? foundPartner.partnerNumber : partnerData.partnerNumber;
 
-    if (!hasPartner) {
+    if (!pNumber) {
       setPartnerMessageError(true);
       setErrorTarget(option);
       return;
@@ -53,11 +45,17 @@ export default function SearchPartner({ onFilterChange, method, menu, onDataChan
 
     setPartnerMessageError(false);
     setErrorTarget(null);
-    menu(option);
+
+    // Lógica para abrir en NUEVA PESTAÑA (_blank)
+    if (option === 'unpaidFees') {
+      window.open(`/fees?partnerNumber=${pNumber}&status=unpaid`, '_blank');
+    } else if (option === 'pendingBooks') {
+      window.open(`/books?partnerNumber=${pNumber}&status=pending`, '_blank');
+    } else {
+      // Memo del socio se queda como PopUp (comportamiento original)
+      menu(option);
+    }
   };
-
-
-
 
   return (
     <div className='search-partner-container'>
@@ -68,7 +66,6 @@ export default function SearchPartner({ onFilterChange, method, menu, onDataChan
             <div className='input'>
               <label>Número <span className='required'>*</span></label>
               <p>{partnerData.partnerNumber ?? '—'}</p>
-
             </div>
             <div className='input'>
               <label>Nombre completo <span className='required'>*</span></label>
@@ -92,13 +89,10 @@ export default function SearchPartner({ onFilterChange, method, menu, onDataChan
                 </p>
               )}
               {partnerLoading && <p className="status-text loading-text">Buscando socio...</p>}
-
             </div>
 
             <div className="input">
-              <label>
-                Nombre completo <span className="required">*</span>
-              </label>
+              <label>Nombre completo <span className="required">*</span></label>
               <p>
                 {foundPartner
                   ? `${foundPartner.name} ${foundPartner.surname}`
@@ -110,47 +104,27 @@ export default function SearchPartner({ onFilterChange, method, menu, onDataChan
       </div>
 
       <div className='search-partner-buttons'>
-
         <div className='partnerOptionBtn'>
-          <Btn
-            text={'Cuotas Impagas'}
-            onClick={() => handleMenu('unpaidFees')}
-          />
+          <Btn text={'Cuotas Impagas'} onClick={() => handleMenu('unpaidFees')} />
           {partnerMessageError && errorTarget === 'unpaidFees' && (
-            <p className="partner-error">
-              Debes ingresar un número de socio
-            </p>
+            <p className="partner-error">Debes ingresar un número de socio</p>
           )}
         </div>
 
         <div className='partnerOptionBtn'>
-          <Btn
-            text={'Libros Pendientes'}
-            onClick={() => handleMenu('pendingBooks')}
-          />
+          <Btn text={'Libros Pendientes'} onClick={() => handleMenu('pendingBooks')} />
           {partnerMessageError && errorTarget === 'pendingBooks' && (
-            <p className="partner-error">
-              Debes ingresar un número de socio
-            </p>
+            <p className="partner-error">Debes ingresar un número de socio</p>
           )}
         </div>
 
         <div className='partnerOptionBtn'>
-          <Btn
-            text={'Memo del Socio'}
-            onClick={() => handleMenu('partnerMemo')}
-          />
-          {partnerMessageError && errorTarget === 'memo' && (
-            <p className="partner-error">
-              Debes ingresar un número de socio
-            </p>
+          <Btn text={'Memo del Socio'} onClick={() => handleMenu('partnerMemo')} />
+          {partnerMessageError && errorTarget === 'partnerMemo' && (
+            <p className="partner-error">Debes ingresar un número de socio</p>
           )}
         </div>
-
       </div>
-
-
-
     </div>
   );
 }

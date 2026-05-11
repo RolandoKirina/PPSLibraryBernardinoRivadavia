@@ -21,12 +21,14 @@ import UnpaidFees from '../../components/loan-components/unpaidfees/UnpaidFees.j
 import PaymentDate from '../../components/fees-components/paymentDate/PaymentDate.jsx';
 import GlobalUnpaidFees from '../../components/fees-components/globalunpaidfees/GlobalUnpaidFees.jsx';
 import BillingForm from '../../components/fees-components/bilingform/BillingForm.jsx';
+import { useLocation } from 'react-router-dom';
 
 export const FeeSection = () => {
   const chunkSize = 100;
   const rowsPerPage = 5;
   const [offsetActual, setOffsetActual] = useState(0);
   const [resetPageTrigger, setResetPageTrigger] = useState(0);
+  const location = useLocation();
 
   const { auth } = useAuth();
 
@@ -61,6 +63,25 @@ export const FeeSection = () => {
     sortBy: 'id',
     direction: 'desc'
   });
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const partnerFromUrl = queryParams.get('partnerNumber');
+    const statusFromUrl = queryParams.get('status'); // <-- Agregamos esta línea
+
+    // Ahora validamos que al menos uno exista
+    if (partnerFromUrl || statusFromUrl) {
+      setFormData(prev => ({
+        ...prev,
+        partnerNumber: partnerFromUrl || prev.partnerNumber,
+        // Si tu formData usa 'feeStatus' o similar, podrías setearlo aquí
+        feeStatus: statusFromUrl || prev.feeStatus
+      }));
+
+      // Abrimos el popup automáticamente
+      setPopupGlobalUnpaidFees(true);
+    }
+  }, [location.search]);
 
   const handleFilterChange = (e) => {
     const { name, value, values } = e.target;
@@ -420,7 +441,7 @@ export const FeeSection = () => {
       key: 'globalUnpaidFees',
       title: 'Cuotas Impagas Global',
       classname: 'books-partners-amount-size',
-      content: <GlobalUnpaidFees />,
+      content: <GlobalUnpaidFees partnerNumber={formData.partnerNumber} />,
       close: () => setPopupGlobalUnpaidFees(false),
       condition: PopupGlobalUnpaidFees
     },

@@ -8,6 +8,7 @@ export const buildPartnerFilters = (query) => {
     surname,
     name,
     idState,
+    observations,
     pendingBooks,
     limit,
     offset,
@@ -27,6 +28,10 @@ export const buildPartnerFilters = (query) => {
 
   if (name) {
     wherePartner.name = { [Op.like]: `%${name}%` };
+  }
+
+  if (observations) {
+    wherePartner.observations = { [Op.like]: `%${observations}%` };
   }
 
   if (unpaidFees !== undefined) {

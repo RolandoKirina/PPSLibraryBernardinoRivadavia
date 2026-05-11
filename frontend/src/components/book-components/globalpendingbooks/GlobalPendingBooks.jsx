@@ -6,7 +6,7 @@ import ReturnIcon from '../../../assets/img/return-icon.svg';
 import RenewIcon from '../../../assets/img/renewe-icon.svg';
 import Btn from '../../common/btn/Btn.jsx';
 
-export default function GlobalPendingBooks() {
+export default function GlobalPendingBooks({ partnerNumber }) {
     const chunkSize = 100;
     const rowsPerPage = 5;
     const { auth } = useAuth();
@@ -27,6 +27,15 @@ export default function GlobalPendingBooks() {
         code: '',
         status: 'pending' // por defecto mostramos lo que falta devolver
     });
+
+    useEffect(() => {
+        if (partnerNumber) {
+            setFilters(prev => ({
+                ...prev,
+                partnerNumber: partnerNumber
+            }));
+        }
+    }, [partnerNumber]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
