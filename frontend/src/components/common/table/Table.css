@@ -137,3 +137,11 @@ td {
   color: var(--black);
   font-weight: 800;
 }
+
+.table-loading-container {
+  min-height: 400px; /* Ajusta este valor a la altura promedio de tu tabla */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}

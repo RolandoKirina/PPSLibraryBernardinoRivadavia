@@ -59,12 +59,17 @@ export const Table = ({
   return (
     <div className="content-table">
       {loading ? (
-        <p className="table-data-info">Cargando...</p>
+        /* Contenedor con altura mínima para evitar que el scroll salte al inicio */
+        <div className="table-loading-container" style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <p className="table-data-info">Cargando...</p>
+        </div>
       ) : data.length === 0 ? (
-        <p className="table-data-info">No hay datos</p>
+        <div className="table-loading-container" style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <p className="table-data-info">No hay datos</p>
+        </div>
       ) : (
         <table className={`table ${popupLength ? popupLength : ""}`}>
-          <thead className={isPrintList && "theadPrint"}>
+          <thead className={isPrintList ? "theadPrint" : ""}>
             <tr>
               {columns.map((col) => (
                 <th
@@ -77,7 +82,7 @@ export const Table = ({
             </tr>
           </thead>
 
-          <tbody className={isPrintList && "tbodyPrint"}>
+          <tbody className={isPrintList ? "tbodyPrint" : ""}>
             {currentRows.map((row, i) => (
               <tr key={i}>
                 {columns.map((col, j) => (
@@ -88,7 +93,8 @@ export const Table = ({
                         ? `${col.className || ""} action-cell`
                         : col.className || ""
                     }
-                    onClick={() => handleCellClick(col, row)}
+                    /* Al hacer clic, verificamos que no esté cargando para evitar popups accidentales */
+                    onClick={() => !loading && handleCellClick(col, row)}
                   >
                     <div className="td-scroll">
                       {col.render
@@ -103,9 +109,9 @@ export const Table = ({
         </table>
       )}
 
-      {/* PAGINATION */}
+      {/* PAGINATION: Mantenemos este bloque siempre visible o con espacio reservado */}
       <div className="pagination-items">
-        {data.length >= rowsPerPage && (
+        {data.length > 0 && (
           <Pagination
             totalItems={totalItems}
             itemsPerPage={rowsPerPage}
@@ -115,7 +121,7 @@ export const Table = ({
           />
         )}
 
-        {showCount && (
+        {showCount && data.length > 0 && (
           <span>
             {data.length}{" "}
             {data.length === 1 ? "Fila encontrada" : "Filas encontradas"}
@@ -128,7 +134,7 @@ export const Table = ({
       {/* POPUP INFO */}
       {selectedInfoPopup && (
         <PopUp
-          title={columns.find(c => c.accessor === selectedInfo.accessor)?.header}
+          title={columns.find(c => c.accessor === selectedInfo?.accessor)?.header}
           onClick={() => setSelectedInfoPopup(false)}
         >
           <TableInfo text={selectedInfo} />
