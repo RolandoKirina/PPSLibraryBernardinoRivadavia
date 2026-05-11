@@ -59,7 +59,7 @@ export const FeeSection = () => {
     periodStartDate: "",
     periodEndDate: "",
     sortBy: 'id',
-    direction: 'asc'
+    direction: 'desc'
   });
 
   const handleFilterChange = (e) => {

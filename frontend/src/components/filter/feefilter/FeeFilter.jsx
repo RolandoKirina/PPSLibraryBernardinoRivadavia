@@ -10,30 +10,39 @@ export default function FeeFilter({ formData, onChange }) {
   const handleLocalChange = (e) => {
     const { name, value } = e.target;
 
-    if (name === "sortBy" && value === "recent") {
-      // Enviamos el comando para ordenar por año y mes desc
+    if (name === "sortBy") {
+      let values = {};
+
+      switch (value) {
+        case "recent":
+          // "id" es el campo físico en tu modelo Fees (mapeado a "Id" en la DB)
+          values = { sortBy: "id", direction: "desc" };
+          break;
+
+        case "period":
+          // "periodDate" es el campo de fecha del mes/año de la cuota
+          values = { sortBy: "periodDate", direction: "desc" };
+          break;
+
+        case "partnerNumber":
+          // Usamos el nombre que definimos en el switch del Backend
+          values = { sortBy: "partnerNumber", direction: "asc" };
+          break;
+
+        default:
+          // Si no es ninguno de los especiales, enviamos el evento normal
+          return onChange(e);
+      }
+
+      // Enviamos el objeto con los valores múltiples al componente padre
       onChange({
         target: {
           name: "multiple",
-          values: {
-            sortBy: "createdAt",
-            direction: "desc"
-          }
+          values: values
         }
       });
-    }
-    else if (name === "sortBy" && value === "idPartner") {
-      onChange({
-        target: {
-          name: "multiple",
-          values: {
-            sortBy: "idPartner",
-            direction: "desc"
-          }
-        }
-      });
-    }
-    else {
+    } else {
+      // Si el cambio es en otro input que no sea sortBy
       onChange(e);
     }
   };
@@ -71,6 +80,30 @@ export default function FeeFilter({ formData, onChange }) {
       <div className="book-filter-form fee-filter-form-new">
         <form onSubmit={(e) => e.preventDefault()}>
           <h3 className="titleh3">Filtro de cuotas</h3>
+
+          <h4>Ordenar Cuotas</h4>
+          <hr />
+
+          <div className="book-form-input-group">
+            <label htmlFor="sortBy">Ordenar por</label>
+            <select
+              id="sortBy"
+              name="sortBy"
+              value={formData.sortBy ?? ""}
+              onChange={handleLocalChange}
+              className="feefiltercheckbox-select"
+            >
+              <option value="">Seleccionar...</option>
+              {/* Orden por ID: Útil para ver lo que se acaba de crear hoy */}
+              <option value="recent">Más recientes (Últimas generadas)</option>
+
+              {/* Orden por periodDate: Útil para ver las cuotas de los meses más actuales */}
+              <option value="period">Meses actuales (Calendario)</option>
+
+              {/* Orden por Socio */}
+              <option value="partnerNumber">Número de Socio</option>
+            </select>
+          </div>
 
           <h4>Búsqueda de socio</h4>
           <hr />
@@ -207,7 +240,7 @@ export default function FeeFilter({ formData, onChange }) {
             />
           </div>
 
-              <div className="book-form-input-group">
+          <div className="book-form-input-group">
             <label>Fecha de pago exacta </label>
             <input
               type="date"
@@ -255,24 +288,6 @@ export default function FeeFilter({ formData, onChange }) {
               value={formData.creationEndDate ?? ""}
               onChange={onChange}
             />
-          </div>
-
-          <h4>Ordenar Cuotas</h4>
-          <hr />
-
-          <div className="book-form-input-group">
-            <label htmlFor="sortBy">Ordenar por</label>
-            <select
-              id="sortBy"
-              name="sortBy"
-              value={formData.sortBy ?? ""}
-              onChange={handleLocalChange}
-              className="feefiltercheckbox-select"
-            >
-              <option value="">Seleccionar...</option>
-              <option value="recent">Más recientes (Año/Mes)</option>
-              <option value="idPartner">Número de Socio</option>
-            </select>
           </div>
 
         </form>

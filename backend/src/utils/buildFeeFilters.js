@@ -38,10 +38,10 @@ export const buildFeeFilters = (query) => {
     whereFees.status = true;
   }
 
-  if(registrationDate){
-      wherePartner.registrationDate = registrationDate;
+  if (registrationDate) {
+    wherePartner.registrationDate = registrationDate;
   }
-  
+
   if (paymentStartDate || paymentEndDate) {
     const dateFilter = {};
 
@@ -57,11 +57,11 @@ export const buildFeeFilters = (query) => {
   }
 
 
-  if(paymentDate){
+  if (paymentDate) {
     whereFees.date_of_paid = {
-        [Op.gte]: new Date(`${paymentDate}T00:00:00Z`),
-        [Op.lte]: new Date(`${paymentDate}T23:59:59Z`)
-      };
+      [Op.gte]: new Date(`${paymentDate}T00:00:00Z`),
+      [Op.lte]: new Date(`${paymentDate}T23:59:59Z`)
+    };
   }
 
   if (periodStartDate || periodEndDate) {
@@ -114,11 +114,36 @@ export const buildFeeFilters = (query) => {
     wherePartner.isActive = Number(idState);
   }
 
+  // Lógica de ordenamiento mejorada
+  let order = [['id', 'DESC']]; // Orden por defecto: las cuotas más nuevas arriba
+
+  if (sortBy) {
+    const dir = direction === 'asc' ? 'ASC' : 'DESC';
+
+    switch (sortBy) {
+      case 'partnerNumber':
+        // IMPORTANTE: ['AliasDelModelo', 'campo', 'dirección']
+        order = [['Partner', 'partnerNumber', dir]];
+        break;
+      case 'recent':
+        // Ordenamos por el ID de la cuota (la última generada)
+        order = [['id', dir]];
+        break;
+      case 'period':
+        // Si quisieras ordenar por el periodo de la cuota (Año/Mes)
+        order = [['year', dir], ['month', dir]];
+        break;
+      default:
+        // Para cualquier otro campo que pertenezca directamente a Fees (amount, paid, etc)
+        order = [[sortBy, dir]];
+    }
+  }
+
   return {
     wherePartner,
     whereFees,
     limit: limit ? Number(limit) : 35,
     offset: offset ? Number(offset) : 0,
-    order: sortBy ? [[sortBy, direction === 'asc' ? 'ASC' : 'DESC']] : undefined
+    order
   };
 };

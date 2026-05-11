@@ -3,38 +3,34 @@ import GenericSection from '../../components/generic/GenericSection/GenericSecti
 import PopUpDelete from '../../components/common/deletebtnComponent/PopUpDelete';
 import DeleteIcon from '../../assets/img/delete-icon.svg';
 import EditIcon from '../../assets/img/edit-icon.svg';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Btn from '../../components/common/btn/Btn';
 import PlusIcon from '../../assets/img/plus-icon.svg';
 import BookIcon from '../../assets/img/add-book-icon.svg';
 import AuthorBooks from '../../components/author-components/AuthorBooks/AuthorBooks';
-import { useEntityManager } from '../../hooks/useEntityManager';
 import { useEntityManagerAPI } from '../../hooks/useEntityManagerAPI';
 import ShowAuthorBooks from '../../components/author-components/ShowAuthorBooks/ShowAuthorBooks';
-
 import { useAuth } from '../../auth/AuthContext';
 import roles from '../../auth/roles';
-
-import { useEffect } from 'react';
 
 export default function AuthorSection() {
     const { auth } = useAuth();
     const BASE_URL = "http://localhost:4000/api/v1";
-    const [filterName, setFilterName] = useState("");
-    const [filterBookTitle, setFilterBookTitle] = useState("");
-    const [filterBookCode, setFilterBookCode] = useState("");
-    const [successMessage, setSuccessMessage] = useState('');
-    const [errorMessage, setErrorMessage] = useState("");
+    
+    // Estado de filtros incluyendo sortBy y direction
     const [filters, setFilters] = useState({
         authorName: "",
-        nationality: ""
+        nationality: "",
+        sortBy: "name",
+        direction: "asc"
     });
 
+    const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState("");
     const chunkSize = 100;
     const rowsPerPage = 5;
     const [offsetActual, setOffsetActual] = useState(0);
     const [resetPageTrigger, setResetPageTrigger] = useState(0);
-
 
     const {
         items,
@@ -46,11 +42,6 @@ export default function AuthorSection() {
         updateItem
     } = useEntityManagerAPI("authors");
 
-    const {
-        createItem: createBookAuthor
-    } = useEntityManagerAPI("book-authors");
-
-
     useEffect(() => {
         setErrorMessage("");
 
@@ -58,16 +49,24 @@ export default function AuthorSection() {
             setOffsetActual(0);
             setResetPageTrigger(prev => prev + 1);
 
+            // Filtramos solo los campos de búsqueda de texto para el objeto activeFilters
             const activeFilters = Object.fromEntries(
-                Object.entries(filters).filter(([_, v]) => v !== "" && v !== null && v !== undefined)
+                Object.entries(filters).filter(([key, v]) => 
+                    v !== "" && v !== null && v !== undefined && key !== 'sortBy' && key !== 'direction'
+                )
             );
 
-            getItems({ ...activeFilters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
+            getItems({ 
+                ...activeFilters, 
+                sortBy: filters.sortBy, 
+                direction: filters.direction, 
+                limit: chunkSize, 
+                offset: 0 
+            });
         }, 300);
 
         return () => clearTimeout(delay);
     }, [filters]);
-
 
     async function handleChangePage(page) {
         const numberPage = Number(page);
@@ -75,10 +74,13 @@ export default function AuthorSection() {
 
         if (items.length < totalItems && lastItemIndex > items.length) {
             const newOffset = items.length;
-            await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: newOffset }, true);
+            await getItems({ 
+                ...filters, 
+                limit: chunkSize, 
+                offset: newOffset 
+            }, true);
             setOffsetActual(newOffset);
         }
-
     }
 
     const [deletePopup, setDeletePopup] = useState(false);
@@ -87,23 +89,18 @@ export default function AuthorSection() {
     const [selected, setSelected] = useState(false);
     const [booksPopup, setBooksPopup] = useState(false);
 
-    //const { items: authorItems, getItem: getAuthorItem, createItem: createAuthorItem, updateItem: updateAuthorItem, deleteItem: deleteAuthorItem } = useEntityManager(mockAuthors, 'authors');
-
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
+        
+        // Lógica especial para el selector de orden combinado
+        if (name === "sortGroup") {
+            const [sortBy, direction] = value.split('-');
+            setFilters(prev => ({ ...prev, sortBy, direction }));
+            return;
+        }
+
         setFilters(prev => ({ ...prev, [name]: value }));
     };
-
-
-    function getAllBooksId(books) {
-        let booksId = [];
-
-        books.forEach(book => {
-            booksId.push(book.BookId);
-        });
-
-        return booksId;
-    }
 
     async function addNewAuthor(data) {
         try {
@@ -112,27 +109,17 @@ export default function AuthorSection() {
                 nationality: data.nationality,
                 books: data.books
             }
-
-            const res = await createItem(author);
-
+            await createItem(author);
             setSuccessMessage("Autor creado exitosamente");
-
             setTimeout(() => {
                 setAddPopup(false);
-
                 setSuccessMessage('');
-
                 setErrorMessage(null);
             }, 3000);
-
-
-            await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
-        }
-        catch (error) {
+            await getItems({ ...filters, limit: chunkSize, offset: 0 });
+        } catch (error) {
             setErrorMessage(error.message);
-            console.error("Error al crear un autor:", error);
         }
-
     }
 
     async function updateExistingAuthor(authorCode, data) {
@@ -145,40 +132,15 @@ export default function AuthorSection() {
 
             if (res) {
                 setSuccessMessage("Autor actualizado exitosamente");
-
                 setTimeout(() => {
                     setEditPopup(false);
-
                     setSuccessMessage('');
-
                     setErrorMessage(null);
                 }, 3000);
             }
-
-            await getItems({ ...filters, sortBy: 'name', direction: 'asc', limit: chunkSize, offset: 0 });
-        }
-        catch (error) {
-            setErrorMessage(error.message);
-            console.error("Error al actualizar un autor:", error);
-        }
-
-    }
-
-    async function deleteAllAuthorBooks(id) {
-        try {
-            const response = await fetch(`${BASE_URL}/book-authors/deleteAllOfAuthor/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    "Authorization": `Bearer ${auth.token}`
-                }
-            });
-
-            if (!response.ok) throw new Error('Error al eliminar los libros del autor');
-
-            const result = await response.json();
+            await getItems({ ...filters, limit: chunkSize, offset: 0 });
         } catch (error) {
-            console.error(error);
+            setErrorMessage(error.message);
         }
     }
 
@@ -192,9 +154,8 @@ export default function AuthorSection() {
                     title="Autor"
                     onConfirm={() => deleteItem(selected.id)}
                     closePopup={() => setDeletePopup(false)}
-                    refresh={() => getItems()}
+                    refresh={() => getItems({ ...filters, limit: chunkSize, offset: 0 })}
                 />,
-
             close: () => setDeletePopup(false),
             condition: deletePopup,
             variant: 'delete'
@@ -225,12 +186,13 @@ export default function AuthorSection() {
         },
     ];
 
-    let columns = [];
+    let columns = [
+        { header: 'Nombre', accessor: 'name' },
+        { header: 'Nacionalidad', accessor: 'nationality' },
+    ];
 
     if (auth.role === roles.admin) {
-        columns = [
-            { header: 'Nombre', accessor: 'name' },
-            { header: 'Nacionalidad', accessor: 'nationality' },
+        columns.push(
             {
                 header: 'Borrar',
                 accessor: 'delete',
@@ -256,83 +218,81 @@ export default function AuthorSection() {
                         <img src={EditIcon} alt="Editar" />
                     </button>
                 )
-            },
-            {
-                header: 'Ver libros',
-                accessor: 'books',
-                className: "action-buttons",
-                render: (_, row) => (
-                    <button className="button-table" onClick={() => {
-                        setSelected(row)
-                        setBooksPopup(true)
-                        // getLoanDetails(row)
-                    }}>
-                        <img src={BookIcon} alt="Detalles" />
-                    </button>
-                )
             }
-        ];
+        );
     }
-    else {
-        columns = [
-            { header: 'Nombre', accessor: 'name' },
-            { header: 'Nacionalidad', accessor: 'nationality' },
-            {
-                header: 'Ver libros',
-                accessor: 'books',
-                className: "action-buttons",
-                render: (_, row) => (
-                    <button className="button-table" onClick={() => {
-                        setSelected(row)
-                        setBooksPopup(true)
-                        // getLoanDetails(row)
-                    }}>
-                        <img src={BookIcon} alt="Detalles" />
-                    </button>
-                )
-            }
-        ];
-    }
+
+    columns.push({
+        header: 'Ver libros',
+        accessor: 'books',
+        className: "action-buttons",
+        render: (_, row) => (
+            <button className="button-table" onClick={() => {
+                setSelected(row)
+                setBooksPopup(true)
+            }}>
+                <img src={BookIcon} alt="Detalles" />
+            </button>
+        )
+    });
 
     return (
-        <>
-            <GenericSection title={'Listado de autores'} columns={columns} data={items} popups={authorsPopups} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger} showCount={true}
-                actions={
-                    <>
-                        <div className='author-actions'>
-                            {auth.role === roles.admin && (
-                                <div className='btn-new'>
-                                    <Btn text={'Nuevo'} onClick={() => setAddPopup(true)} icon={<img src={PlusIcon} alt='plusIconBtn' />} variant="primary" />
-
-                                </div>
-                            )}
-
-                            <div className='author-filter'>
-                                <label>Filtro por nombre: </label>
-                                <input
-                                    type='text'
-                                    name='authorName'
-                                    value={filters.authorName}
-                                    onChange={handleFilterChange}
-                                    placeholder='Escribe un nombre...'
-                                />
-                            </div>
-
-                            <div className='author-filter'>
-                                <label>Filtro por Nacionalidad: </label>
-                                <input
-                                    type='text'
-                                    name='nationality'
-                                    value={filters.nationality}
-                                    onChange={handleFilterChange}
-                                    placeholder='Escribe una nacionalidad...'
-                                />
-                            </div>
+        <GenericSection 
+            title={'Listado de autores'} 
+            columns={columns} 
+            data={items} 
+            popups={authorsPopups} 
+            totalItems={totalItems} 
+            handleChangePage={handleChangePage} 
+            loading={loading} 
+            resetPageTrigger={resetPageTrigger} 
+            showCount={true}
+            actions={
+                <div className='author-actions'>
+                    {auth.role === roles.admin && (
+                        <div className='btn-new'>
+                            <Btn text={'Nuevo'} onClick={() => setAddPopup(true)} icon={<img src={PlusIcon} alt='plusIconBtn' />} variant="primary" />
                         </div>
+                    )}
 
-                    </>
-                }
-            />
-        </>
-    )
+                    <div className='author-filter'>
+                        <label>Ordenar por: </label>
+                        <select 
+                            name="sortGroup" 
+                            className="author-sort-select"
+                            value={`${filters.sortBy}-${filters.direction}`} 
+                            onChange={handleFilterChange}
+                        >
+                            <option value="name-asc">Nombre (A-Z)</option>
+                            <option value="name-desc">Nombre (Z-A)</option>
+                            <option value="nationality-asc">Nacionalidad (A-Z)</option>
+                            <option value="nationality-desc">Nacionalidad (Z-A)</option>
+                        </select>
+                    </div>
+
+                    <div className='author-filter'>
+                        <label>Filtro por nombre: </label>
+                        <input
+                            type='text'
+                            name='authorName'
+                            value={filters.authorName}
+                            onChange={handleFilterChange}
+                            placeholder='Escribe un nombre...'
+                        />
+                    </div>
+
+                    <div className='author-filter'>
+                        <label>Filtro por Nacionalidad: </label>
+                        <input
+                            type='text'
+                            name='nationality'
+                            value={filters.nationality}
+                            onChange={handleFilterChange}
+                            placeholder='Escribe una nacionalidad...'
+                        />
+                    </div>
+                </div>
+            }
+        />
+    );
 }
