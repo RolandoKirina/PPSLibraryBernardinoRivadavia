@@ -29,7 +29,6 @@ export const Table = ({
   ];
 
   const [currentPage, setCurrentPage] = useState(1);
-
   const [selectedInfo, setSelectedInfo] = useState(null);
   const [selectedInfoPopup, setSelectedInfoPopup] = useState(false);
 
@@ -42,13 +41,24 @@ export const Table = ({
   }, [resetPageTrigger]);
 
   const handleCellClick = (col, row) => {
+    // 1. Si la columna está en la lista de acciones, no hacer nada
     if (actionAccessors.includes(col.accessor)) return;
+
+    // 2. Obtener el valor que se renderizaría
+    const renderedValue = col.render 
+      ? col.render(row[col.accessor], row) 
+      : row[col.accessor];
+
+    // 3. Validar si el contenido es un objeto de React (un botón o componente)
+    // Las celdas con botones suelen devolver objetos JSX en el render.
+    // Si es un objeto y no es nulo, evitamos abrir el TableInfo.
+    if (typeof renderedValue === 'object' && renderedValue !== null) {
+        return;
+    }
 
     setSelectedInfo({
       accessor: col.accessor,
-      value: col.render
-        ? col.render(row[col.accessor], row)
-        : row[col.accessor],
+      value: renderedValue,
     });
 
     setSelectedInfoPopup(true);
@@ -57,7 +67,6 @@ export const Table = ({
   return (
     <div className="content-table">
       {loading ? (
-        /* Contenedor con altura mínima para evitar que el scroll salte al inicio */
         <div className="table-loading-container" style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <p className="table-data-info">Cargando...</p>
         </div>
@@ -70,10 +79,7 @@ export const Table = ({
           <thead className={isPrintList ? "theadPrint" : ""}>
             <tr>
               {columns.map((col) => (
-                <th
-                  key={col.accessor}
-                  className={col.className ? col.className : ""}
-                >
+                <th key={col.accessor} className={col.className || ""}>
                   {col.header}
                 </th>
               ))}
@@ -91,7 +97,6 @@ export const Table = ({
                         ? `${col.className || ""} action-cell`
                         : col.className || ""
                     }
-                    /* Al hacer clic, verificamos que no esté cargando para evitar popups accidentales */
                     onClick={() => !loading && handleCellClick(col, row)}
                   >
                     <div className="td-scroll">
@@ -107,7 +112,6 @@ export const Table = ({
         </table>
       )}
 
-      {/* PAGINATION: Mantenemos este bloque siempre visible o con espacio reservado */}
       <div className="pagination-items">
         {data.length > 0 && (
           <Pagination
@@ -129,7 +133,6 @@ export const Table = ({
 
       {children}
 
-      {/* POPUP INFO */}
       {selectedInfoPopup && (
         <PopUp
           title={columns.find(c => c.accessor === selectedInfo?.accessor)?.header}
