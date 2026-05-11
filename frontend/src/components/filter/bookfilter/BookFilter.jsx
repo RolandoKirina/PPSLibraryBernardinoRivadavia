@@ -4,10 +4,6 @@ import roles from '../../../auth/roles';
 import { useAuth } from '../../../auth/AuthContext';
 
 export default function BookFilter({ formData, onChange }) {
-
-  const [partnerNumber, setPartnerNumber] = useState('');
-  const [paidFeeCount, setPaidFeeCount] = useState(0);
-
   const { auth } = useAuth();
 
   return (
@@ -15,6 +11,23 @@ export default function BookFilter({ formData, onChange }) {
       <div className="book-filter-form">
         <form>
           <h3 className='titleh3'>Filtro de libros</h3>
+
+          {/* NUEVA SECCIÓN DE ORDENAMIENTO */}
+          <div className="book-form-input-group">
+            <label>Orden de visualización</label>
+            <select
+              name="sortGroup"
+              className="loan-filter-select" // Puedes reusar la clase de préstamos o crear una nueva
+              value={`${formData.sortBy}-${formData.direction}`}
+              onChange={onChange}
+            >
+              <option value="title-asc">Título (A-Z)</option>
+              <option value="title-desc">Título (Z-A)</option>
+              <option value="BookId-desc">Más recientes (ID)</option>
+              <option value="BookId-asc">Más antiguos (ID)</option>
+            </select>
+          </div>
+          <hr />
 
           <div className="book-form-input-group">
             <label>Autor</label>
