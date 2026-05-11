@@ -1,10 +1,38 @@
 import Pagination from "../pagination/Pagination";
-import './Table.css';
+import "./Table.css";
 import { useState, useEffect } from "react";
-export const Table = ({ columns = [], data = [], children, popupLength, isPrintList, rowsPerPage = 5, totalItems, handleChangePage, loading, resetPageTrigger, showCount }) => {
+import TableInfo from "../tableinfo/TableInfo";
+import PopUp from "../popup-table/PopUp";
 
-  const actionAccessors = ["add", "delete", "edit", "details", "return", "renewe", "choose", "materials"];
+export const Table = ({
+  columns = [],
+  data = [],
+  children,
+  popupLength,
+  isPrintList,
+  rowsPerPage = 5,
+  totalItems,
+  handleChangePage,
+  loading,
+  resetPageTrigger,
+  showCount,
+}) => {
+  const actionAccessors = [
+    "add",
+    "delete",
+    "edit",
+    "details",
+    "return",
+    "renewe",
+    "choose",
+    "materials",
+  ];
+
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [selectedInfo, setSelectedInfo] = useState(null);
+  const [selectedInfoPopup, setSelectedInfoPopup] = useState(false);
+
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = data.slice(indexOfFirstRow, indexOfLastRow);
@@ -13,6 +41,21 @@ export const Table = ({ columns = [], data = [], children, popupLength, isPrintL
     setCurrentPage(1);
   }, [resetPageTrigger]);
 
+  const handleCellClick = (col, row) => {
+    if (actionAccessors.includes(col.accessor)) return;
+
+    setSelectedInfo({
+      accessor: col.accessor,
+      value: col.render
+        ? col.render(row[col.accessor], row)
+        : row[col.accessor],
+    });
+
+    console.log(selectedInfo);
+
+    setSelectedInfoPopup(true);
+  };
+
   return (
     <div className="content-table">
       {loading ? (
@@ -20,17 +63,21 @@ export const Table = ({ columns = [], data = [], children, popupLength, isPrintL
       ) : data.length === 0 ? (
         <p className="table-data-info">No hay datos</p>
       ) : (
-        <table className={`table ${popupLength ? popupLength : ''}`}>
-          <thead className={isPrintList && 'theadPrint'}>
+        <table className={`table ${popupLength ? popupLength : ""}`}>
+          <thead className={isPrintList && "theadPrint"}>
             <tr>
-              {columns.map(col => (
-                <th key={col.accessor} className={col.className ? col.className : ''}>
+              {columns.map((col) => (
+                <th
+                  key={col.accessor}
+                  className={col.className ? col.className : ""}
+                >
                   {col.header}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className={isPrintList && 'tbodyPrint'}>
+
+          <tbody className={isPrintList && "tbodyPrint"}>
             {currentRows.map((row, i) => (
               <tr key={i}>
                 {columns.map((col, j) => (
@@ -41,8 +88,13 @@ export const Table = ({ columns = [], data = [], children, popupLength, isPrintL
                         ? `${col.className || ""} action-cell`
                         : col.className || ""
                     }
+                    onClick={() => handleCellClick(col, row)}
                   >
-                    {col.render ? col.render(row[col.accessor], row) : row[col.accessor]}
+                    <div className="td-scroll">
+                      {col.render
+                        ? col.render(row[col.accessor], row)
+                        : row[col.accessor]}
+                    </div>
                   </td>
                 ))}
               </tr>
@@ -51,6 +103,7 @@ export const Table = ({ columns = [], data = [], children, popupLength, isPrintL
         </table>
       )}
 
+      {/* PAGINATION */}
       <div className="pagination-items">
         {data.length >= rowsPerPage && (
           <Pagination
@@ -64,13 +117,23 @@ export const Table = ({ columns = [], data = [], children, popupLength, isPrintL
 
         {showCount && (
           <span>
-            {data.length} {data.length === 1 ? 'Fila encontrada' : 'Filas encontradas'}
+            {data.length}{" "}
+            {data.length === 1 ? "Fila encontrada" : "Filas encontradas"}
           </span>
         )}
       </div>
 
-
       {children}
+
+      {/* POPUP INFO */}
+      {selectedInfoPopup && (
+        <PopUp
+          title={columns.find(c => c.accessor === selectedInfo.accessor)?.header}
+          onClick={() => setSelectedInfoPopup(false)}
+        >
+          <TableInfo text={selectedInfo} />
+        </PopUp>
+      )}
     </div>
   );
 };

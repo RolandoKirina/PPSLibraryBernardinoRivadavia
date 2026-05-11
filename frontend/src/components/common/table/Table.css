@@ -29,6 +29,15 @@ th {
   padding: 1em;
   white-space: normal;
   word-break: break-word;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table td:hover {
+  outline: 0.1em solid var(--secondary-light-2);
+  cursor: pointer;
 }
 
 
