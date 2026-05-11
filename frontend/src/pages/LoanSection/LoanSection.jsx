@@ -5,7 +5,7 @@ import EditIcon from '../../assets/img/edit-icon.svg';
 import DetailsIcon from '../../assets/img/details-icon.svg';
 import BookIcon from '../../assets/img/add-book-icon.svg';
 import LoanButtons from "../../components/loan-components/loanbuttons/LoanButtons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LoanForm from "../../components/loan-components/loanform/LoanForm";
 import LoanListings from "../../components/loan-components/loanlistings/LoanListings";
 import Return from "../../components/loan-components/return/Return";
@@ -14,7 +14,6 @@ import ShowDetails from "../../components/generic/ShowDetails/ShowDetails";
 import GenericSection from "../../components/generic/GenericSection/GenericSection";
 import { loanDetailsInfo } from '../../data/showdetails/LoanDetails';
 import PopUpDelete from '../../components/common/deletebtnComponent/PopUpDelete';
-import { useEffect } from "react";
 import { useAuth } from "../../auth/AuthContext";
 import { useEntityManagerAPI } from "../../hooks/useEntityManagerAPI";
 import LoanBooks from "../../components/loan-components/loanbooks/LoanBooks";
@@ -38,11 +37,9 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
     const [booksPopup, setBooksPopup] = useState(false);
     const [PopupGlobalPendingBooks, setPopupGlobalPendingBooks] = useState(false);
 
-
     const [filters, setFilters] = useState({});
 
-    const { auth, logout } = useAuth();
-
+    const { auth } = useAuth();
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
@@ -61,16 +58,21 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
             setRenewePopup(true);
         }
         localStorage.removeItem('loans');
-
     }, [openRenewes]);
 
     useEffect(() => {
         const delay = setTimeout(() => {
             setOffsetActual(0);
-
             setResetPageTrigger(prev => prev + 1);
 
-            getItems({ ...filters, sortBy: 'id', direction: 'asc', limit: chunkSize, offset: 0 });
+            // Sincronización: Usamos sortBy y direction dinámicos desde el componente Filter
+            getItems({ 
+                ...filters, 
+                sortBy: filters.sortBy || 'loanId', 
+                direction: filters.direction || 'desc', 
+                limit: chunkSize, 
+                offset: 0 
+            });
         }, 500);
 
         return () => clearTimeout(delay);
@@ -82,68 +84,59 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
 
         if (items.length < totalItems && lastItemIndex > items.length) {
             const newOffset = items.length;
-            await getItems({ ...filters, limit: chunkSize, offset: newOffset }, true);
+            await getItems({ 
+                ...filters, 
+                sortBy: filters.sortBy || 'id',
+                direction: filters.direction || 'desc',
+                limit: chunkSize, 
+                offset: newOffset 
+            }, true);
             setOffsetActual(newOffset);
         }
     }
 
+    // Handlers para CRUD (handleAddItem, handleUpdateItem) permanecen igual...
     async function handleAddItem(data) {
         try {
             const res = await createItem(data);
-
             if (res) {
                 setSuccessMessage("Prestamo creado exitosamente");
-
                 setTimeout(() => {
                     setAddPopup(false);
-
                     setSuccessMessage('');
-
                     setErrorMessage(null);
                 }, 1500);
-
-                await getItems({ ...filters, sortBy: 'id', direction: 'asc', limit: chunkSize, offset: 0 });
+                await getItems({ ...filters, sortBy: filters.sortBy || 'loanId', direction: filters.direction || 'desc', limit: chunkSize, offset: 0 });
             }
-
-        }
-        catch (error) {
+        } catch (error) {
             setErrorMessage(error.message);
             setSuccessMessage('');
-            console.error("Error al crear un Prestamo:", error);
         }
     }
 
     async function handleUpdateItem(data) {
         try {
             const res = await updateItem(selected.loanId, data);
-
             if (res) {
                 setSuccessMessage("Prestamo actualizado exitosamente");
-
                 setTimeout(() => {
                     setEditPopup(false);
-
                     setSuccessMessage('');
-
                     setErrorMessage(null);
                 }, 1500);
-
-                await getItems({ ...filters, sortBy: 'id', direction: 'asc', limit: chunkSize, offset: 0 });
+                await getItems({ ...filters, sortBy: filters.sortBy || 'loanId', direction: filters.direction || 'desc', limit: chunkSize, offset: 0 });
             }
-        }
-        catch (error) {
+        } catch (error) {
             setErrorMessage(error.message);
             setSuccessMessage('');
-            console.error("Error al actualizar un Prestamo:", error);
         }
     }
 
     let columns = [];
-
     if (auth.role === roles.admin) {
         columns = [
             { header: 'Nombre Socio', accessor: 'name' },
-            { header: 'Numero Socio', accessor: 'partnerNumber' },
+            { header: 'Número Socio', accessor: 'partnerNumber' },
             { header: 'Empleado', accessor: 'employee' },
             { header: 'Fecha retiro', accessor: 'retiredDate' },
             {
@@ -151,10 +144,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
                 accessor: 'delete',
                 className: "action-buttons",
                 render: (_, row) => (
-                    <button className="button-table" onClick={() => {
-                        setDeletePopup(true)
-                        setSelected(row)
-                    }}>
+                    <button className="button-table" onClick={() => { setDeletePopup(true); setSelected(row); }}>
                         <img src={DeleteIcon} alt="Borrar" />
                     </button>
                 )
@@ -164,10 +154,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
                 accessor: 'edit',
                 className: "action-buttons",
                 render: (_, row) => (
-                    <button className="button-table" onClick={() => {
-                        setEditPopup(true)
-                        setSelected(row)
-                    }}>
+                    <button className="button-table" onClick={() => { setEditPopup(true); setSelected(row); }}>
                         <img src={EditIcon} alt="Editar" />
                     </button>
                 )
@@ -177,10 +164,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
                 accessor: 'details',
                 className: "action-buttons",
                 render: (_, row) => (
-                    <button className="button-table" onClick={() => {
-                        setSelected(row)
-                        setDetailsPopup(true)
-                    }}>
+                    <button className="button-table" onClick={() => { setSelected(row); setDetailsPopup(true); }}>
                         <img src={DetailsIcon} alt="Detalles" />
                     </button>
                 )
@@ -190,18 +174,13 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
                 accessor: 'books',
                 className: "action-buttons",
                 render: (_, row) => (
-                    <button className="button-table" onClick={() => {
-                        setSelected(row)
-                        setBooksPopup(true)
-                        // getLoanDetails(row)
-                    }}>
-                        <img src={BookIcon} alt="Detalles" />
+                    <button className="button-table" onClick={() => { setSelected(row); setBooksPopup(true); }}>
+                        <img src={BookIcon} alt="Libros" />
                     </button>
                 )
             }
         ];
-    }
-    else if (auth.role === roles.partner) {
+    } else if (auth.role === roles.partner) {
         columns = [
             { header: 'Nombre Socio', accessor: 'name' },
             { header: 'Fecha retiro', accessor: 'retiredDate' },
@@ -213,31 +192,20 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
                 accessor: 'books',
                 className: "action-buttons",
                 render: (_, row) => (
-                    <button className="button-table" onClick={() => {
-                        setSelected(row)
-                        setBooksPopup(true)
-                        // getLoanDetails(row)
-                    }}>
-                        <img src={BookIcon} alt="Detalles" />
+                    <button className="button-table" onClick={() => { setSelected(row); setBooksPopup(true); }}>
+                        <img src={BookIcon} alt="Libros" />
                     </button>
                 )
             }
-        ]
+        ];
     }
 
-    //data para crear todos los popups que existen en la seccion
     const loanPopups = [
         {
             key: 'deletePopup',
             title: 'Borrar prestamo',
             className: 'delete-size-popup',
-            content:
-                <PopUpDelete
-                    title="Prestamo"
-                    onConfirm={() => deleteItem(selected.loanId)}
-                    closePopup={() => setDeletePopup(false)}
-                    refresh={() => getItems()}
-                />,
+            content: <PopUpDelete title="Prestamo" onConfirm={() => deleteItem(selected.loanId)} closePopup={() => setDeletePopup(false)} refresh={() => getItems({ ...filters, sortBy: filters.sortBy || 'loanId', direction: filters.direction || 'desc' })} />,
             close: () => setDeletePopup(false),
             condition: deletePopup,
             variant: 'delete'
@@ -247,11 +215,7 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
             title: 'Editar préstamo',
             className: 'loans-background',
             content: <LoanForm successMessage={successMessage} method="update" createLoanItem={handleUpdateItem} loanSelected={selected} errorMessage={errorMessage} />,
-            close: () => {
-                setEditPopup(false)
-                setSuccessMessage('');
-                setErrorMessage(null);
-            },
+            close: () => { setEditPopup(false); setSuccessMessage(''); setErrorMessage(null); },
             condition: editPopup
         },
         {
@@ -259,17 +223,12 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
             title: 'Agregar préstamo',
             className: 'loans-background',
             content: <LoanForm successMessage={successMessage} createLoanItem={handleAddItem} errorMessage={errorMessage} />,
-            close: () => {
-                setAddPopup(false)
-                setSuccessMessage('');
-                setErrorMessage(null);
-            },
+            close: () => { setAddPopup(false); setSuccessMessage(''); setErrorMessage(null); },
             condition: addPopup
         },
         {
             key: 'detailsPopup',
             title: 'Detalles del préstamo',
-            className: '',
             content: <ShowDetails data={selected} detailsData={loanDetailsInfo} isPopup={true} />,
             close: () => setDetailsPopup(false),
             condition: detailsPopup
@@ -277,7 +236,6 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
         {
             key: 'booksPopup',
             title: 'Libros del préstamo',
-            className: '',
             content: <LoanBooks loanSelected={selected} />,
             close: () => setBooksPopup(false),
             condition: booksPopup
@@ -317,18 +275,26 @@ export default function LoanSection({ openRenewes, pendientBooks }) {
     ];
 
     return (
-        <>
-            <GenericSection title={auth.role === roles.admin ? 'Listado de préstamos' : 'Listado de tus préstamos'} filters={<LoanFilter onFilterChange={setFilters} />} columns={columns} data={items} popups={loanPopups} totalItems={totalItems} handleChangePage={handleChangePage} loading={loading} resetPageTrigger={resetPageTrigger} showCount={true}
-                actions={
-                    <LoanButtons
-                        displayLoanform={() => setAddPopup(true)}
-                        displayReturnForm={() => setReturnsPopup(true)}
-                        displayListingsPopup={() => setListingsPopup(true)}
-                        displayRenewe={() => setRenewePopup(true)}
-                        displayPendingBooks={() => setPopupGlobalPendingBooks(true)}
-                    />
-                } />
-        </>
+        <GenericSection 
+            title={auth.role === roles.admin ? 'Listado de préstamos' : 'Listado de tus préstamos'} 
+            filters={<LoanFilter onFilterChange={setFilters} />} 
+            columns={columns} 
+            data={items} 
+            popups={loanPopups} 
+            totalItems={totalItems} 
+            handleChangePage={handleChangePage} 
+            loading={loading} 
+            resetPageTrigger={resetPageTrigger} 
+            showCount={true}
+            actions={
+                <LoanButtons
+                    displayLoanform={() => setAddPopup(true)}
+                    displayReturnForm={() => setReturnsPopup(true)}
+                    displayListingsPopup={() => setListingsPopup(true)}
+                    displayRenewe={() => setRenewePopup(true)}
+                    displayPendingBooks={() => setPopupGlobalPendingBooks(true)}
+                />
+            } 
+        />
     );
-
 }

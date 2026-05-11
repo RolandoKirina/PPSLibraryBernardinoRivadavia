@@ -109,9 +109,26 @@ export const buildLoanFilters = (query) => {
   const parsedLimit = parseInt(limit);
   const parsedOffset = parseInt(offset);
 
-  const order = sortBy
-    ? [[sortBy, direction === 'asc' ? 'ASC' : 'DESC']]
-    : undefined;
+  let order = [['id', 'DESC']]; // Orden por defecto (id de Loan)
+
+  if (sortBy) {
+    const dir = direction === 'asc' ? 'ASC' : 'DESC';
+
+    switch (sortBy) {
+      case 'partnerNumber':
+        // Orden por tabla asociada Partner
+        order = [['Partner', 'partnerNumber', dir]];
+        break;
+      case 'loanId':
+        order = [['id', dir]];
+        break;
+      case 'retiredDate':
+        order = [['retiredDate', dir]];
+        break;
+      default:
+        order = [[sortBy, dir]];
+    }
+  }
 
   return {
     whereLoan,

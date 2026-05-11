@@ -3,6 +3,7 @@ import { Op } from "sequelize";
 export const buildAuthorFilters = (query) => {
     const {
         authorName,
+        nationality,
         limit,
         offset,
         sortBy,
@@ -11,10 +12,8 @@ export const buildAuthorFilters = (query) => {
 
     const whereAuthor = {};
 
-
     if (authorName) whereAuthor.name = { [Op.iLike]: `%${authorName}%` };
-
-
+    if (nationality) whereAuthor.nationality = { [Op.iLike]: `%${nationality}%` };
 
     const parsedLimit = parseInt(limit);
     const parsedOffset = parseInt(offset);

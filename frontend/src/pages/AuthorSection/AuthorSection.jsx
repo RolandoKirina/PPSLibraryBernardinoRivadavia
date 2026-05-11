@@ -27,6 +27,7 @@ export default function AuthorSection() {
     const [errorMessage, setErrorMessage] = useState("");
     const [filters, setFilters] = useState({
         authorName: "",
+        nationality: ""
     });
 
     const chunkSize = 100;
@@ -314,6 +315,17 @@ export default function AuthorSection() {
                                     value={filters.authorName}
                                     onChange={handleFilterChange}
                                     placeholder='Escribe un nombre...'
+                                />
+                            </div>
+
+                            <div className='author-filter'>
+                                <label>Filtro por Nacionalidad: </label>
+                                <input
+                                    type='text'
+                                    name='nationality'
+                                    value={filters.nationality}
+                                    onChange={handleFilterChange}
+                                    placeholder='Escribe una nacionalidad...'
                                 />
                             </div>
                         </div>

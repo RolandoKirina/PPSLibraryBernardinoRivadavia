@@ -1,19 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './LoanFilter.css';
 import { useAuth } from '../../../auth/AuthContext';
 import roles from '../../../auth/roles';
 import { useEntityManagerAPI } from '../../../hooks/useEntityManagerAPI';
-import { useEffect } from 'react';
 
 export default function LoanFilter({ onFilterChange }) {
   const { auth } = useAuth();
 
-  const {
-    items: bookTypes,
-    getItems: getBookTypes,
-  } = useEntityManagerAPI("book-types");
-
   const [formData, setFormData] = useState({
+    sortBy: 'id',
+    direction: 'desc',
     state: '',
     materialType: '',
     selectedMaterial: '',
@@ -32,12 +28,19 @@ export default function LoanFilter({ onFilterChange }) {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+
+    if (name === "sortGroup") {
+      const [sortBy, direction] = value.split('-');
+      setFormData(prev => ({ ...prev, sortBy, direction }));
+      return;
+    }
+
     const newValue = type === 'checkbox' ? checked : value;
 
-    setFormData((prev) => {
-      const updated = { ...prev, [name]: newValue };
-      return updated;
-    });
+    setFormData((prev) => ({
+      ...prev,
+      [name]: newValue
+    }));
   };
 
   useEffect(() => {
@@ -49,9 +52,27 @@ export default function LoanFilter({ onFilterChange }) {
   return (
     <aside className="loan-filter-aside">
       <div className="loan-filter-form">
-        <form>
+        <form onSubmit={(e) => e.preventDefault()}>
           <div className="loan-filter-title">
             <h3>Filtro de préstamos</h3>
+          </div>
+
+          {/* SECCIÓN DE ORDENAMIENTO */}
+          <div className="loan-form-input-group">
+            <h4>Ordenar por</h4>
+            <select
+              name="sortGroup"
+              value={`${formData.sortBy}-${formData.direction}`}
+              onChange={handleChange}
+              className="loan-filter-select"
+            >
+              <option value="id-desc">Más recientes (ID)</option>
+              <option value="id-asc">Más antiguos (ID)</option>
+              <option value="retiredDate-desc">Fecha de retiro (Nuevo a Viejo)</option>
+              <option value="retiredDate-asc">Fecha de retiro (Viejo a Nuevo)</option>
+              <option value="partnerNumber-desc">Número socio (Mayor a Menor)</option>
+            </select>
+            <hr />
           </div>
 
           {auth.role === roles.admin && (
@@ -60,8 +81,8 @@ export default function LoanFilter({ onFilterChange }) {
                 <h4>Empleados</h4>
                 <hr />
                 <div className='partner-name-loan-filter'>
-                  <label>Codigo</label>
-                  <input className='' name="employeeCode" value={formData.employeeCode} onChange={handleChange} />
+                  <label>Código</label>
+                  <input name="employeeCode" value={formData.employeeCode} onChange={handleChange} />
                 </div>
               </div>
 
@@ -95,17 +116,17 @@ export default function LoanFilter({ onFilterChange }) {
               </div>
               <div className='partner-name-loan-filter'>
                 <label>Nombre</label>
-                <input className='' name="partnerName" value={formData.partnerName} onChange={handleChange} />
+                <input name="partnerName" value={formData.partnerName} onChange={handleChange} />
               </div>
 
               <div className='partner-name-loan-filter'>
                 <label>Apellido</label>
-                <input className='' name="partnerSurname" value={formData.partnerSurname} onChange={handleChange} />
+                <input name="partnerSurname" value={formData.partnerSurname} onChange={handleChange} />
               </div>
 
               <div className='partner-name-loan-filter'>
                 <label>Número de Socio</label>
-                <input type={'number'} className='' name="partnerNumber" value={formData.partnerNumber} onChange={handleChange} />
+                <input type='number' name="partnerNumber" value={formData.partnerNumber} onChange={handleChange} />
               </div>
             </div>
           )}
@@ -124,7 +145,8 @@ export default function LoanFilter({ onFilterChange }) {
           </div>
 
           <div className="loan-form-input-group">
-            <h4>Fecha de retiro</h4>
+            <h4>Prestamos</h4>
+            <hr />
             <label>Mayor a: </label>
             <input type="date" name="startDate" value={formData.startDate} onChange={handleChange} />
             <label>Y Menor a: </label>
@@ -138,7 +160,6 @@ export default function LoanFilter({ onFilterChange }) {
             <label>Y Menor a: </label>
             <input type="date" name="returnEndDate" value={formData.returnEndDate} onChange={handleChange} />
           </div>
-
         </form>
       </div>
     </aside>
