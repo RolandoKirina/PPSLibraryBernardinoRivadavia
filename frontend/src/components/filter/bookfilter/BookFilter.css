@@ -2,7 +2,13 @@
   background-color: var(--primary-dark-1);
   color: var(--white);
   width: 15%;
-  min-height: 75vh;
+
+  height: 100%;     /* 🔥 importante */
+  min-height: 0;    /* 🔥 clave en flex layouts */
+}
+
+.book-filter-aside {
+  overflow-y: auto;
 }
 
 .book-filter-title {
