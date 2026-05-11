@@ -34,8 +34,8 @@ export const buildPartnerFilters = (query) => {
   }
 
   if (idState) {
-    idState = Number(idState);
-    wherePartner.isActive = idState;
+    // No reasignes 'idState', asígnale el valor convertido a la propiedad del objeto directamente
+    wherePartner.isActive = Number(idState);
   }
 
   if (pendingBooks !== undefined) {
@@ -80,7 +80,7 @@ export const buildListPartnerFilters = (query) => {
     sortBy,
     direction,
   } = query;
-  
+
   const allowedSortFields = {
     surname: 'surname',
     name: 'name',

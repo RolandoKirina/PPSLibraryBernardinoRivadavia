@@ -1,0 +1,16 @@
+.tableinfo p {
+    font-size: large;
+    width:30em;
+}
+
+.tableinfo {
+    display: flex;
+    justify-content: center;
+}
+
+
+.tableinfo .unpaid-fee-input {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}

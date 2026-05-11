@@ -29,6 +29,15 @@ th {
   padding: 1em;
   white-space: normal;
   word-break: break-word;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table td:hover {
+  outline: 0.1em solid var(--secondary-light-2);
+  cursor: pointer;
 }
 
 
@@ -127,4 +136,12 @@ td {
 .pagination-items span {
   color: var(--black);
   font-weight: 800;
+}
+
+.table-loading-container {
+  min-height: 400px; /* Ajusta este valor a la altura promedio de tu tabla */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
