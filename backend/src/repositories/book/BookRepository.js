@@ -134,6 +134,7 @@ export const getAll = async (filters) => {
 
     return {
       ...bookJSON,
+      notesText: bookJSON.notesText || bookJSON.notes,
       authors: authorsString
     };
   });

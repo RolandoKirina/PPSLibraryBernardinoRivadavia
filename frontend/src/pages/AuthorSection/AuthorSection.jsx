@@ -21,8 +21,8 @@ export default function AuthorSection() {
     const [filters, setFilters] = useState({
         authorName: "",
         nationality: "",
-        sortBy: "name",
-        direction: "asc"
+        sortBy: "id",
+        direction: "desc"
     });
 
     const [successMessage, setSuccessMessage] = useState('');

@@ -51,8 +51,8 @@ export default function PartnerSection() {
     name: "",
     surname: "",
     observations: "",
-    sortBy: "name",
-    direction: "asc"
+    sortBy: "id",
+    direction: "desc"
   });
 
   useEffect(() => {
@@ -141,7 +141,7 @@ const handleFilterChange = (e) => {
 
     if (items.length < totalItems && lastItemIndex > items.length) {
       const newOffset = items.length;
-      await getItems({ ...formData, sortBy: 'id', direction: 'asc', limit: chunkSize, offset: newOffset }, true);
+      await getItems({ ...formData, sortBy: formData.sortBy, direction: formData.direction, limit: chunkSize, offset: newOffset }, true);
       setOffsetActual(newOffset);
     }
   }

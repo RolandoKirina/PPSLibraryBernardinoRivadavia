@@ -2,6 +2,7 @@ import * as BookService from "../../services/book/BookService.js";
 import { HTTP_STATUS } from "../../https/httpsStatus.js";
 import Book from "../../models/book/Book.js";
 import { buildBookFilters, buildFilterRanking, buildFilterLostBook, buildFilterPartnerAndBooks } from "../../utils/buildBookFilters.js";
+import { ValidationError } from "sequelize";
 
 export const getAllBooks = async (req, res) => {
     try {

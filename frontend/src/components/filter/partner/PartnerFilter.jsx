@@ -35,10 +35,10 @@ export default function PartnerFilter({ formData, onChange }) {
               className="feefiltercheckbox-select"
 
             >
+              <option value="recent">-- Más reciente --</option>
               <option value="name">Nombre</option>
               <option value="surname">Apellido</option>
               <option value="partnerNumber">Número de Socio</option>
-              <option value="recent">-- Más reciente --</option>
             </select>
           </div>
 
