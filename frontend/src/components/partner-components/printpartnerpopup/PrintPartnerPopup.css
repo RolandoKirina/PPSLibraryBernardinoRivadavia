@@ -6,7 +6,7 @@
     overflow-x: hidden;
     position: relative;
     background-color: var(--white);
-    
+
 }
 
 .partner-list-container {
@@ -15,7 +15,7 @@
     justify-content: center;
     align-items: center;
     height: 100%;
-     background-color: var(--primary-dark-2);
+    background-color: var(--primary-dark-2);
 
 }
 
@@ -147,7 +147,7 @@
 
 .preview-list-container {
     position: sticky;
-    top: 0;    
+    top: 0;
 }
 
 .preview-content {
@@ -155,8 +155,17 @@
     flex-direction: column;
     gap: 16px;
 }
+
 .print-button-container {
     display: flex;
-    justify-content: center; 
+    justify-content: center;
     margin-top: 10px;
+}
+
+.print-partners-container .preview-list-container {
+    width: 100%;
+}
+
+.print-partners-container .preview-list-container .generate-list-content {
+    width: 100%;
 }

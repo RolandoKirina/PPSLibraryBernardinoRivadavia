@@ -430,39 +430,39 @@ export const getPartnerPrintList = async (filters = {}) => {
       // 🔹 Motivo de baja (texto)
       [Sequelize.col('ReasonForWithdrawal.Motivo'), 'reason'],
 
-      // 🔹 TOTAL libros prestados (histórico)
-      [
-        Sequelize.literal(`(
-          SELECT COUNT(*)
-          FROM "PrestamoLibro" AS lb
-          INNER JOIN "Prestamo" AS l ON lb."IdPrestamo" = l."Id"
-          WHERE l."NumSocio" = "Partner"."id"
-        )`),
-        'totalBorrowedBooks'
-      ],
+      // // 🔹 TOTAL libros prestados (histórico)
+      // [
+      //   Sequelize.literal(`(
+      //     SELECT COUNT(*)
+      //     FROM "PrestamoLibro" AS lb
+      //     INNER JOIN "Prestamo" AS l ON lb."IdPrestamo" = l."Id"
+      //     WHERE l."NumSocio" = "Partner"."id"
+      //   )`),
+      //   'totalBorrowedBooks'
+      // ],
 
-      // 🔹 CUOTAS IMPAGAS
-      [
-        Sequelize.literal(`(
-          SELECT COUNT(*)
-          FROM "Cuotas" AS f
-          WHERE f."IdSocio" = "Partner"."id"
-          AND f."Paga" = false
-        )`),
-        'unpaidFees'
-      ],
+      // // 🔹 CUOTAS IMPAGAS
+      // [
+      //   Sequelize.literal(`(
+      //     SELECT COUNT(*)
+      //     FROM "Cuotas" AS f
+      //     WHERE f."IdSocio" = "Partner"."id"
+      //     AND f."Paga" = false
+      //   )`),
+      //   'unpaidFees'
+      // ],
 
-      // 🔹 LIBROS PENDIENTES (no devueltos)
-      [
-        Sequelize.literal(`(
-          SELECT COUNT(*)
-          FROM "PrestamoLibro" AS lb
-          INNER JOIN "Prestamo" AS l ON lb."IdPrestamo" = l."Id"
-          WHERE l."NumSocio" = "Partner"."id"
-          AND lb."FechaDevolucion" IS NULL
-        )`),
-        'pendingBooks'
-      ]
+      // // 🔹 LIBROS PENDIENTES (no devueltos)
+      // [
+      //   Sequelize.literal(`(
+      //     SELECT COUNT(*)
+      //     FROM "PrestamoLibro" AS lb
+      //     INNER JOIN "Prestamo" AS l ON lb."IdPrestamo" = l."Id"
+      //     WHERE l."NumSocio" = "Partner"."id"
+      //     AND lb."FechaDevolucion" IS NULL
+      //   )`),
+      //   'pendingBooks'
+      // ]
     ],
 
     include: [

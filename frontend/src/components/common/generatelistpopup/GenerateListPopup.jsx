@@ -39,7 +39,13 @@ export default function GenerateListPopup({
                             <h4>Entre el: {feeDates.beforeDate} y el: {feeDates.afterDate}</h4>
                         )}
 
-                        {dataByType.length > 0 ? (
+                        {/* --- LÓGICA DE CARGA Y RESULTADOS --- */}
+                        {loading && dataByType.length === 0 ? (
+                            <div className="loading-container">
+                                <div className="spinner"></div> {/* Puedes reemplazar esto por tu componente Spinner */}
+                                <p>Cargando datos...</p>
+                            </div>
+                        ) : dataByType.length > 0 ? (
                             <Table
                                 columns={columnsByType}
                                 data={dataByType}
@@ -67,11 +73,11 @@ export default function GenerateListPopup({
                     </div>
 
                     <div className='print-icon-btn'>
-
                         <Btn
                             onClick={() => onPrint && onPrint()}
                             variant={'primary'}
-                            text={'Generar PDF'}
+                            text={loading ? 'Procesando...' : 'Generar PDF'}
+                            disabled={loading || dataByType.length === 0} // Deshabilitar si carga o no hay datos
                             icon={<img src={printIcon} alt='printIcon' />}
                         />
                     </div>

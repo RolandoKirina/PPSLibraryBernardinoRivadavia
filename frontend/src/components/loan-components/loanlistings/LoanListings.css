@@ -34,3 +34,7 @@
     background: var(--white);
     padding: 1em 0em;
 }
+
+.loan-listing-size .preview-list-container .generate-list-content {
+    width: 100%;
+}
